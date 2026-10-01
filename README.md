@@ -19,6 +19,12 @@
 </p>
 
 <p align="center">
+  <a href="https://joe-store-2026.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/🌐_Live_Store-joe--store--2026.vercel.app-F59E0B?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 18" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Vite-6.1-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
