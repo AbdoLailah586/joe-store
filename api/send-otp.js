@@ -1,8 +1,21 @@
 import { neon } from '@neondatabase/serverless';
+import nodemailer from 'nodemailer';
 
 const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
+
+// Provider Credentials
+const SMTP_USER = process.env.SMTP_USER || '';
+const SMTP_PASS = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, '') : '';
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
+const SMTP_SECURE = process.env.SMTP_SECURE !== 'false'; // true for 465
+
+const BREVO_API_KEY = process.env.BREVO_API_KEY || '';
+const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || SMTP_USER || 'abdolailah586@gmail.com';
+const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'JOE Store';
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
-const FROM_EMAIL = process.env.VITE_EMAIL_FROM || 'JOE Store <onboarding@resend.dev>';
+const FROM_EMAIL = process.env.VITE_EMAIL_FROM || process.env.RESEND_FROM || 'JOE Store <onboarding@resend.dev>';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -74,7 +87,7 @@ export default async function handler(req, res) {
     const accentColor = templateConfig.email_accent_color || '#F59E0B';
     const subject = (templateConfig.email_subject_template || `رمز تأكيد حسابك في متجر جو ستور ⚡ (كود: {code})`).replace('{code}', otpCode);
 
-    // 4. Prepare Anti-Spam Highly-Trusted HTML Email Template
+    // 4. Prepare High-Deliverability HTML Email Template
     const emailHtml = `
       <!DOCTYPE html>
       <html lang="ar" dir="rtl">
@@ -138,69 +151,139 @@ export default async function handler(req, res) {
 
     const plainText = `مرحباً ${name}، رمز التحقق الخاص بحسابك في ${headerTitle} هو: [ ${otpCode} ]. هذا الرمز صالح لمدة 10 دقائق فقط. الدعم: ${supportPhone} - ${storeAddress}.`;
 
-    // 5. Send strictly via Resend
-    const apiKey = process.env.RESEND_API_KEY || RESEND_API_KEY;
+    // 5. Multi-Provider Dispatch Engine
+    let deliverySuccess = false;
+    let providerUsed = '';
+    let lastError = null;
 
-    if (!apiKey) {
-      return res.status(500).json({
-        success: false,
-        error: 'مفتاح Resend API غير مضبوط على السيرفر (RESEND_API_KEY). يرجى إضافته في إعدادات Vercel.'
-      });
-    }
+    // --- Provider A: SMTP (Gmail / Custom SMTP) ---
+    // Sends to ANY recipient without domain verification, 100% free (500 emails/day on Gmail).
+    if (SMTP_USER && SMTP_PASS) {
+      try {
+        const transporter = nodemailer.createTransport({
+          host: SMTP_HOST,
+          port: SMTP_PORT,
+          secure: SMTP_SECURE,
+          auth: {
+            user: SMTP_USER,
+            pass: SMTP_PASS
+          },
+          connectionTimeout: 10000,
+          greetingTimeout: 10000,
+          socketTimeout: 15000
+        });
 
-    let resendResult = null;
-    let resendError = null;
+        const fromAddress = process.env.SMTP_FROM || `"${headerTitle}" <${SMTP_USER}>`;
 
-    try {
-      const resendRes = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          from: FROM_EMAIL,
-          to: [cleanEmail],
+        await transporter.sendMail({
+          from: fromAddress,
+          to: cleanEmail,
           subject: subject,
           html: emailHtml,
-          text: plainText,
-          headers: {
-            'X-Entity-Ref-ID': `joe-otp-${Date.now()}`
-          }
-        })
-      });
+          text: plainText
+        });
 
-      const resendData = await resendRes.json();
-      if (resendRes.ok && resendData?.id) {
-        resendResult = resendData;
-      } else {
-        resendError = resendData;
-        console.error('[Resend API Error]:', resendData);
+        deliverySuccess = true;
+        providerUsed = 'Gmail / SMTP';
+      } catch (smtpErr) {
+        console.error('[SMTP Delivery Error]:', smtpErr);
+        lastError = smtpErr;
       }
-    } catch (err) {
-      resendError = { message: err.message };
-      console.error('[Resend Network Error]:', err);
     }
 
-    if (resendResult && resendResult.id) {
+    // --- Provider B: Brevo (Sendinblue) REST API ---
+    // 300 free emails/day to ANY recipient without domain verification.
+    if (!deliverySuccess && BREVO_API_KEY) {
+      try {
+        const brevoRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+          method: 'POST',
+          headers: {
+            'api-key': BREVO_API_KEY,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            sender: {
+              name: BREVO_SENDER_NAME,
+              email: BREVO_SENDER_EMAIL
+            },
+            to: [{ email: cleanEmail, name: name }],
+            subject: subject,
+            htmlContent: emailHtml,
+            textContent: plainText
+          })
+        });
+
+        const brevoData = await brevoRes.json();
+        if (brevoRes.ok && (brevoData?.messageId || brevoData?.id)) {
+          deliverySuccess = true;
+          providerUsed = 'Brevo';
+        } else {
+          lastError = new Error(brevoData?.message || 'Brevo API error');
+          console.error('[Brevo API Error]:', brevoData);
+        }
+      } catch (brevoErr) {
+        console.error('[Brevo Network Error]:', brevoErr);
+        lastError = brevoErr;
+      }
+    }
+
+    // --- Provider C: Resend REST API ---
+    if (!deliverySuccess && RESEND_API_KEY) {
+      try {
+        const resendRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: FROM_EMAIL,
+            to: [cleanEmail],
+            subject: subject,
+            html: emailHtml,
+            text: plainText,
+            headers: {
+              'X-Entity-Ref-ID': `joe-otp-${Date.now()}`
+            }
+          })
+        });
+
+        const resendData = await resendRes.json();
+        if (resendRes.ok && resendData?.id) {
+          deliverySuccess = true;
+          providerUsed = 'Resend';
+        } else {
+          const rawErrMsg = resendData?.message || '';
+          if (rawErrMsg.includes('only send testing emails to your own email address') || rawErrMsg.includes('resend.com/domains')) {
+            return res.status(403).json({
+              success: false,
+              error: 'حساب Resend التجريبي مقيد بإرسال الإيميلات للعنوان المسجل لديه فقط. لإرسال الأكواد لأي زبون مجاناً، يرجى تفعيل إرسال Gmail SMTP عبر إضافة المتغيرين SMTP_USER و SMTP_PASS في إعدادات Vercel.'
+            });
+          }
+          lastError = new Error(rawErrMsg || 'Resend API error');
+          console.error('[Resend API Error]:', resendData);
+        }
+      } catch (resendErr) {
+        lastError = resendErr;
+        console.error('[Resend Network Error]:', resendErr);
+      }
+    }
+
+    // 6. Response
+    if (deliverySuccess) {
       return res.status(200).json({
         success: true,
+        provider: providerUsed,
         message: 'تم إرسال كود التأكيد إلى بريدك الإلكتروني بنجاح (يرجى مراجعة البريد وصندوق الـ Spam).'
       });
     }
 
-    // Handle delivery errors strictly
-    const rawErrMsg = resendError?.message || '';
-    if (rawErrMsg.includes('only send testing emails to your own email address') || rawErrMsg.includes('resend.com/domains')) {
-      return res.status(403).json({
-        success: false,
-        error: 'حساب Resend التجريبي حالياً يرسل فقط للإيميل المسجل لديهم (abdolailah586@gmail.com). لإرسال الإيميل لأي عنوان آخر، يلزم توثيق دومين المتجر في resend.com/domains.'
-      });
-    }
-
+    // If no provider succeeded or configured:
+    const errorDetail = lastError?.message || 'لم يتم ضبط بيانات خادم إرسال البريد الإلكتروني (SMTP_USER / SMTP_PASS أو BREVO_API_KEY).';
     return res.status(400).json({
       success: false,
-      error: `فشل إرسال كود التحقق عبر البريد الإلكتروني: ${rawErrMsg || 'خطأ غير معروف في خادم الإرسال.'}`
+      error: `تعذر إرسال كود التأكيد: ${errorDetail}`
     });
 
   } catch (err) {
