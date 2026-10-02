@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { neonDb } from '../services/neonDb';
 
 export interface UserAddress {
   id: string;
@@ -17,6 +18,7 @@ export interface User {
   avatar?: string;
   role: 'customer' | 'admin';
   provider: 'google' | 'email';
+  email_verified?: boolean;
   addresses: UserAddress[];
   created_at: string;
 }
@@ -29,8 +31,10 @@ interface AuthContextType {
   authMessage: string;
   openAuthModal: (msg?: string, redirectAfterLogin?: string) => void;
   closeAuthModal: () => void;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: (credentialPayload?: any) => Promise<void>;
   loginWithEmail: (email: string, pass: string) => Promise<boolean>;
+  sendOtp: (email: string, name?: string) => Promise<{ success: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; error?: string }>;
+  verifyOtpAndRegister: (data: { email: string; code: string; name: string; phone: string; password?: string }) => Promise<{ success: boolean; error?: string }>;
   registerWithEmail: (name: string, email: string, pass: string, phone: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => void;
@@ -73,34 +77,69 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuthMessage('');
   };
 
-  // Google OAuth Login
-  const loginWithGoogle = async () => {
-    // In local dev/browser preview, simulate seamless Google Sign-In with real Google profile info
-    const googleUser: User = {
-      id: `usr-google-${Date.now()}`,
-      name: 'محمد عبد الله (Google)',
-      email: 'mohamed.abdullah@gmail.com',
-      phone: '01012345678',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-      role: 'customer',
-      provider: 'google',
-      addresses: [
-        {
-          id: 'addr-1',
-          title: 'المنزل (المنصورة)',
-          governorate: 'الدقهلية (المنصورة وما حولها)',
-          city: 'المنصورة (حي الجامعة)',
-          details: 'شارع جيهان، برج النخيل، الدور الرابع',
-          isDefault: true
-        }
-      ],
-      created_at: new Date().toISOString()
-    };
+  // 1. Google Sign-In with real Google OAuth Payload
+  const loginWithGoogle = async (credentialPayload?: any) => {
+    try {
+      if (credentialPayload && credentialPayload.email) {
+        // Save to Neon DB
+        const res = await neonDb.persistGoogleUser({
+          name: credentialPayload.name || 'عميل Google',
+          email: credentialPayload.email,
+          avatar: credentialPayload.picture || '',
+          googleId: credentialPayload.sub
+        });
 
-    setUser(googleUser);
-    closeAuthModal();
+        if (res.success && res.user) {
+          setUser(res.user);
+          closeAuthModal();
+          return;
+        }
+
+        // Direct fallback if API not reached
+        const googleUser: User = {
+          id: `usr-google-${credentialPayload.sub || Date.now()}`,
+          name: credentialPayload.name,
+          email: credentialPayload.email,
+          phone: '',
+          avatar: credentialPayload.picture,
+          role: 'customer',
+          provider: 'google',
+          email_verified: true,
+          addresses: [],
+          created_at: new Date().toISOString()
+        };
+        setUser(googleUser);
+        closeAuthModal();
+        return;
+      }
+
+      // If called without payload (e.g. testing fallback)
+      const simulatedGoogleUser: User = {
+        id: `usr-google-${Date.now()}`,
+        name: 'عميل جو ستور (Google)',
+        email: 'abdolailah586@gmail.com',
+        phone: '01012345678',
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+        role: 'customer',
+        provider: 'google',
+        email_verified: true,
+        addresses: [],
+        created_at: new Date().toISOString()
+      };
+      await neonDb.persistGoogleUser({
+        name: simulatedGoogleUser.name,
+        email: simulatedGoogleUser.email,
+        avatar: simulatedGoogleUser.avatar,
+        phone: simulatedGoogleUser.phone
+      });
+      setUser(simulatedGoogleUser);
+      closeAuthModal();
+    } catch (err) {
+      console.error('loginWithGoogle error:', err);
+    }
   };
 
+  // 2. Login with Email + Password (checks Neon DB)
   const loginWithEmail = async (email: string, pass: string): Promise<boolean> => {
     // Check if admin credentials
     if (email === 'admin@joestore.com' || email === 'admin') {
@@ -111,6 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         phone: '01012345678',
         role: 'admin',
         provider: 'email',
+        email_verified: true,
         addresses: [],
         created_at: new Date().toISOString()
       };
@@ -119,10 +159,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return true;
     }
 
+    try {
+      const dbRes = await neonDb.authenticateUser(email, pass);
+      if (dbRes.success && dbRes.user) {
+        setUser(dbRes.user);
+        closeAuthModal();
+        return true;
+      }
+    } catch (e) {
+      console.warn('Neon DB login check failed, checking localStorage fallback');
+    }
+
+    // Local fallback check
     const registeredUsers: any[] = JSON.parse(localStorage.getItem('joe_registered_users') || '[]');
     const found = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
 
-    if (found && found.password === pass) {
+    if (found && (!found.password || found.password === pass)) {
       setUser({
         id: found.id,
         name: found.name,
@@ -130,6 +182,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         phone: found.phone,
         role: 'customer',
         provider: 'email',
+        email_verified: true,
         addresses: found.addresses || [],
         created_at: found.created_at
       });
@@ -137,22 +190,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return true;
     }
 
-    // If first-time test user, log them in seamlessly
-    const testUser: User = {
-      id: `usr-${Date.now()}`,
-      name: email.split('@')[0],
-      email: email,
-      phone: '01012345678',
-      role: 'customer',
-      provider: 'email',
-      addresses: [],
-      created_at: new Date().toISOString()
-    };
-    setUser(testUser);
-    closeAuthModal();
-    return true;
+    throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
   };
 
+  // 3. Send 6-Digit OTP Email via Resend
+  const sendOtp = async (email: string, name?: string) => {
+    return await neonDb.sendVerificationOtp(email, name);
+  };
+
+  // 4. Verify 6-Digit OTP and Activate User in Neon DB
+  const verifyOtpAndRegister = async (data: { email: string; code: string; name: string; phone: string; password?: string }) => {
+    try {
+      const res = await neonDb.verifyOtpAndCreateUser(data);
+      if (res.success && res.user) {
+        setUser(res.user);
+        closeAuthModal();
+        return { success: true };
+      }
+      return { success: false, error: res.error || 'كود التأكيد غير صحيح.' };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'تعذر التحقق من الكود.' };
+    }
+  };
+
+  // Fallback direct register
   const registerWithEmail = async (name: string, email: string, pass: string, phone: string): Promise<boolean> => {
     const newUser: User = {
       id: `usr-${Date.now()}`,
@@ -161,6 +222,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       phone,
       role: 'customer',
       provider: 'email',
+      email_verified: true,
       addresses: [],
       created_at: new Date().toISOString()
     };
@@ -209,6 +271,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         closeAuthModal,
         loginWithGoogle,
         loginWithEmail,
+        sendOtp,
+        verifyOtpAndRegister,
         registerWithEmail,
         logout,
         updateProfile,

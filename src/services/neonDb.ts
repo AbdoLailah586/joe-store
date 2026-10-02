@@ -605,5 +605,94 @@ export const neonDb = {
         searchTags: []
       };
     }
+  },
+
+  // ==========================================
+  // AUTHENTICATION & EMAIL OTP VERIFICATION
+  // ==========================================
+
+  async sendVerificationOtp(email: string, name?: string): Promise<{ success: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; error?: string }> {
+    try {
+      const res = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name })
+      });
+      const data = await res.json();
+      return data;
+    } catch (err: any) {
+      console.error('❌ neonDb.sendVerificationOtp error:', err);
+      return { success: false, error: 'تعذر الاتصال بخدمة التحقق من البريد.' };
+    }
+  },
+
+  async verifyOtpAndCreateUser(data: { email: string; code: string; name: string; phone: string; password?: string }): Promise<{ success: boolean; user?: any; error?: string }> {
+    try {
+      const res = await fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      return result;
+    } catch (err: any) {
+      console.error('❌ neonDb.verifyOtpAndCreateUser error:', err);
+      return { success: false, error: 'تعذر التحقق من الكود.' };
+    }
+  },
+
+  async authenticateUser(email: string, password: string): Promise<{ success: boolean; user?: any; error?: string }> {
+    try {
+      const cleanEmail = email.trim().toLowerCase();
+      const rows = await sql`
+        SELECT id, name, email, phone, avatar, role, provider, email_verified, addresses, created_at, password_hash
+        FROM users
+        WHERE email = ${cleanEmail}
+        LIMIT 1;
+      `;
+
+      if (!rows || rows.length === 0) {
+        return { success: false, error: 'البريد الإلكتروني غير مسجل، يرجى إنشاء حساب جديد.' };
+      }
+
+      const user = rows[0];
+      if (user.password_hash && user.password_hash !== password) {
+        return { success: false, error: 'كلمة المرور غير صحيحة.' };
+      }
+
+      return {
+        success: true,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          avatar: user.avatar,
+          role: user.role,
+          provider: user.provider,
+          email_verified: user.email_verified,
+          addresses: Array.isArray(user.addresses) ? user.addresses : [],
+          created_at: user.created_at
+        }
+      };
+    } catch (err: any) {
+      console.error('❌ neonDb.authenticateUser error:', err);
+      return { success: false, error: err.message || 'حدث خطأ أثناء تسجيل الدخول.' };
+    }
+  },
+
+  async persistGoogleUser(googleUser: { name: string; email: string; avatar?: string; googleId?: string; phone?: string }): Promise<{ success: boolean; user?: any; error?: string }> {
+    try {
+      const res = await fetch('/api/google-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(googleUser)
+      });
+      const result = await res.json();
+      return result;
+    } catch (err: any) {
+      console.error('❌ neonDb.persistGoogleUser error:', err);
+      return { success: false, error: 'تعذر حفظ بيانات حساب Google.' };
+    }
   }
 };
