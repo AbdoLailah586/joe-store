@@ -130,13 +130,14 @@ export default async function handler(req, res) {
     // 5. Send via Resend
     let resendResult = null;
     let resendError = null;
+    const apiKey = process.env.RESEND_API_KEY || RESEND_API_KEY;
 
-    if (RESEND_API_KEY) {
+    if (apiKey) {
       try {
         const resendRes = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Authorization': `Bearer ${apiKey}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -156,28 +157,33 @@ export default async function handler(req, res) {
           resendResult = resendData;
         } else {
           resendError = resendData;
+          console.warn('[Resend API Delivery Notice]:', resendData);
         }
       } catch (err) {
-        resendError = err.message;
+        resendError = { message: err.message };
+        console.warn('[Resend Network Error]:', err);
       }
     }
 
     if (resendResult && resendResult.id) {
       return res.status(200).json({
         success: true,
+        delivered: true,
         message: 'تم إرسال كود التأكيد إلى بريدك الإلكتروني بنجاح.',
         emailId: resendResult.id,
         otpCode: otpCode
       });
     }
 
-    // In development or if recipient is outside Resend test email whitelist:
+    // If recipient is outside Resend test email whitelist or in local dev sandbox:
     return res.status(200).json({
       success: true,
-      message: 'تم إرسال كود التحقق بنجاح.',
-      isSimulatedNotice: Boolean(resendError),
+      delivered: false,
+      isSimulatedNotice: true,
       simulatedCode: otpCode,
-      resendNotice: resendError?.message || 'تم إرسال الكود'
+      otpCode: otpCode,
+      message: 'تم توليد كود التحقق بنجاح.',
+      resendNotice: resendError?.message || 'تم حظر الإرسال الخارجي بالدومين التجريبي لـ Resend'
     });
 
   } catch (err) {

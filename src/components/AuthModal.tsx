@@ -54,6 +54,8 @@ export const AuthModal: React.FC = () => {
   const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [devNotice, setDevNotice] = useState<string | null>(null);
+  const [simulatedCode, setSimulatedCode] = useState<string | null>(null);
+  const [emailDelivered, setEmailDelivered] = useState<boolean>(true);
 
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -177,14 +179,18 @@ export const AuthModal: React.FC = () => {
         }
 
         // Send 6-digit Verification Code via Resend
-        const otpRes = await sendOtp(email.trim(), name.trim());
+        const otpRes: any = await sendOtp(email.trim(), name.trim());
         if (otpRes.success) {
           setMode('otp_verify');
           setResendCooldown(60);
-          setSuccessMsg(`تم إرسال كود التأكيد إلى بريدك الإلكتروني: ${email}`);
+          setEmailDelivered(Boolean(otpRes.delivered));
 
-          if (otpRes.isSimulatedNotice && otpRes.simulatedCode) {
-            setDevNotice(`كود التحقق الخاص بك هو: ${otpRes.simulatedCode}`);
+          if (otpRes.delivered) {
+            setSuccessMsg(`تم إرسال كود التأكيد مباشرة إلى بريدك الإلكتروني: ${email}`);
+            setSimulatedCode(null);
+          } else {
+            setSuccessMsg('');
+            setSimulatedCode(otpRes.simulatedCode || otpRes.otpCode || null);
           }
         } else {
           setErrorMsg(otpRes.error || 'تعذر إرسال كود التأكيد، يرجى مراجعة البريد الإلكتروني.');
@@ -284,12 +290,16 @@ export const AuthModal: React.FC = () => {
     setDevNotice(null);
 
     try {
-      const res = await sendOtp(email.trim(), name.trim());
+      const res: any = await sendOtp(email.trim(), name.trim());
       if (res.success) {
         setResendCooldown(60);
-        setSuccessMsg('تمت إعادة إرسال كود التأكيد إلى بريدك الإلكتروني بنجاح!');
-        if (res.isSimulatedNotice && res.simulatedCode) {
-          setDevNotice(`كود التحقق الخاص بك هو: ${res.simulatedCode}`);
+        setEmailDelivered(Boolean(res.delivered));
+        if (res.delivered) {
+          setSuccessMsg('تمت إعادة إرسال كود التأكيد إلى بريدك الإلكتروني بنجاح!');
+          setSimulatedCode(null);
+        } else {
+          setSuccessMsg('');
+          setSimulatedCode(res.simulatedCode || res.otpCode || null);
         }
       } else {
         setErrorMsg(res.error || 'تعذر إعادة إرسال الكود.');
@@ -527,11 +537,43 @@ export const AuthModal: React.FC = () => {
               </div>
             </div>
 
-            {/* Development / Testing Notice */}
-            {devNotice && (
-              <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                <span>{devNotice}</span>
+            {/* Resend Sandbox Notice / Immediate OTP Code Banner */}
+            {simulatedCode && (
+              <div className="p-4 rounded-2xl bg-amber-500/15 border-2 border-amber-500/50 text-amber-200 text-xs space-y-2.5 shadow-glow-gold text-right">
+                <div className="flex items-center justify-between border-b border-amber-500/30 pb-2">
+                  <div className="flex items-center gap-1.5 font-black text-amber-400">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>كود التفعيل الفوري (OTP Code):</span>
+                  </div>
+                  <span className="font-mono text-xl font-black text-white bg-amber-500/30 px-3 py-0.5 rounded-xl border border-amber-400 tracking-widest">
+                    {simulatedCode}
+                  </span>
+                </div>
+
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  💡 <strong className="text-amber-300">تنويه نظام Resend:</strong> في الباقة التجريبية، تصل الإيميلات الحقيقية فقط إلى إيميل المالك المسجل لديهم وهو (<span className="text-amber-200 font-mono font-bold">abdolailah586@gmail.com</span>). ولأنك تجرّب بإيميل آخر، وفرنا لك كود التفعيل هنا مباشرة لتفعّل الحساب وتختبره فوراً بنقرة زر واحدة!
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const digits = simulatedCode.split('').slice(0, 6);
+                    setOtpCode(digits);
+                    otpInputsRef.current[5]?.focus();
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <KeyRound className="w-4 h-4" />
+                  <span>تعبئة الكود تلقائياً والتفعيل فوراً ⚡</span>
+                </button>
+              </div>
+            )}
+
+            {/* If delivered to real inbox */}
+            {emailDelivered && !simulatedCode && (
+              <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <span>تم إرسال كود التأكيد إلى بريدك الإلكتروني: {email} (يرجى فحص صندوق الوارد والـ Spam).</span>
               </div>
             )}
 

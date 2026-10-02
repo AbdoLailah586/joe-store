@@ -612,7 +612,7 @@ export const neonDb = {
   // AUTHENTICATION & EMAIL OTP VERIFICATION
   // ==========================================
 
-  async sendVerificationOtp(email: string, name?: string): Promise<{ success: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; error?: string }> {
+  async sendVerificationOtp(email: string, name?: string): Promise<{ success: boolean; delivered?: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; otpCode?: string; resendNotice?: string; error?: string }> {
     try {
       const res = await fetch('/api/send-otp', {
         method: 'POST',

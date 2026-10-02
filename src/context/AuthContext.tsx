@@ -44,7 +44,7 @@ interface AuthContextType {
   closeAuthModal: () => void;
   loginWithGoogle: (credentialPayload?: any) => Promise<void>;
   loginWithEmail: (email: string, pass: string) => Promise<boolean>;
-  sendOtp: (email: string, name?: string) => Promise<{ success: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; error?: string }>;
+  sendOtp: (email: string, name?: string) => Promise<{ success: boolean; delivered?: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; otpCode?: string; resendNotice?: string; error?: string }>;
   verifyOtpAndRegister: (data: { email: string; code: string; name: string; phone: string; password?: string }) => Promise<{ success: boolean; error?: string }>;
   registerWithEmail: (name: string, email: string, pass: string, phone: string) => Promise<boolean>;
   logout: () => void;
