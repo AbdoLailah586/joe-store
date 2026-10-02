@@ -4,11 +4,11 @@ import nodemailer from 'nodemailer';
 const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
 
 // Provider Credentials
-const SMTP_USER = process.env.SMTP_USER || '';
+const SMTP_USER = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : '';
 const SMTP_PASS = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, '') : '';
 const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
-const SMTP_SECURE = process.env.SMTP_SECURE !== 'false'; // true for 465
+const SMTP_SECURE = process.env.SMTP_SECURE !== 'false';
 
 const BREVO_API_KEY = process.env.BREVO_API_KEY || '';
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || SMTP_USER || 'abdolailah586@gmail.com';
@@ -154,25 +154,38 @@ export default async function handler(req, res) {
     // 5. Multi-Provider Dispatch Engine
     let deliverySuccess = false;
     let providerUsed = '';
-    let lastError = null;
+    let smtpErrorDetails = null;
 
     // --- Provider A: SMTP (Gmail / Custom SMTP) ---
     // Sends to ANY recipient without domain verification, 100% free (500 emails/day on Gmail).
     if (SMTP_USER && SMTP_PASS) {
       try {
-        const transporter = nodemailer.createTransport({
-          host: SMTP_HOST,
-          port: SMTP_PORT,
-          secure: SMTP_SECURE,
-          auth: {
-            user: SMTP_USER,
-            pass: SMTP_PASS
-          },
-          connectionTimeout: 10000,
-          greetingTimeout: 10000,
-          socketTimeout: 15000
-        });
+        const isGmail = SMTP_USER.endsWith('@gmail.com') || SMTP_HOST.includes('gmail');
+        const transporterConfig = isGmail
+          ? {
+              service: 'gmail',
+              auth: {
+                user: SMTP_USER,
+                pass: SMTP_PASS
+              },
+              connectionTimeout: 10000,
+              greetingTimeout: 10000,
+              socketTimeout: 15000
+            }
+          : {
+              host: SMTP_HOST,
+              port: SMTP_PORT,
+              secure: SMTP_SECURE,
+              auth: {
+                user: SMTP_USER,
+                pass: SMTP_PASS
+              },
+              connectionTimeout: 10000,
+              greetingTimeout: 10000,
+              socketTimeout: 15000
+            };
 
+        const transporter = nodemailer.createTransport(transporterConfig);
         const fromAddress = process.env.SMTP_FROM || `"${headerTitle}" <${SMTP_USER}>`;
 
         await transporter.sendMail({
@@ -184,15 +197,14 @@ export default async function handler(req, res) {
         });
 
         deliverySuccess = true;
-        providerUsed = 'Gmail / SMTP';
+        providerUsed = 'Gmail SMTP';
       } catch (smtpErr) {
         console.error('[SMTP Delivery Error]:', smtpErr);
-        lastError = smtpErr;
+        smtpErrorDetails = smtpErr?.message || String(smtpErr);
       }
     }
 
     // --- Provider B: Brevo (Sendinblue) REST API ---
-    // 300 free emails/day to ANY recipient without domain verification.
     if (!deliverySuccess && BREVO_API_KEY) {
       try {
         const brevoRes = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -218,18 +230,14 @@ export default async function handler(req, res) {
         if (brevoRes.ok && (brevoData?.messageId || brevoData?.id)) {
           deliverySuccess = true;
           providerUsed = 'Brevo';
-        } else {
-          lastError = new Error(brevoData?.message || 'Brevo API error');
-          console.error('[Brevo API Error]:', brevoData);
         }
       } catch (brevoErr) {
         console.error('[Brevo Network Error]:', brevoErr);
-        lastError = brevoErr;
       }
     }
 
-    // --- Provider C: Resend REST API ---
-    if (!deliverySuccess && RESEND_API_KEY) {
+    // --- Provider C: Resend REST API (Only if SMTP was NOT configured) ---
+    if (!deliverySuccess && !SMTP_USER && RESEND_API_KEY) {
       try {
         const resendRes = await fetch('https://api.resend.com/emails', {
           method: 'POST',
@@ -258,14 +266,11 @@ export default async function handler(req, res) {
           if (rawErrMsg.includes('only send testing emails to your own email address') || rawErrMsg.includes('resend.com/domains')) {
             return res.status(403).json({
               success: false,
-              error: 'حساب Resend التجريبي مقيد بإرسال الإيميلات للعنوان المسجل لديه فقط. لإرسال الأكواد لأي زبون مجاناً، يرجى تفعيل إرسال Gmail SMTP عبر إضافة المتغيرين SMTP_USER و SMTP_PASS في إعدادات Vercel.'
+              error: 'حساب Resend التجريبي مقيد بإرسال الإيميلات للعنوان المسجل لديه فقط. لتفعيل إرسال Gmail SMTP، يرجى مراجعة إعدادات SMTP_USER و SMTP_PASS في Vercel.'
             });
           }
-          lastError = new Error(rawErrMsg || 'Resend API error');
-          console.error('[Resend API Error]:', resendData);
         }
       } catch (resendErr) {
-        lastError = resendErr;
         console.error('[Resend Network Error]:', resendErr);
       }
     }
@@ -279,11 +284,21 @@ export default async function handler(req, res) {
       });
     }
 
-    // If no provider succeeded or configured:
-    const errorDetail = lastError?.message || 'لم يتم ضبط بيانات خادم إرسال البريد الإلكتروني (SMTP_USER / SMTP_PASS أو BREVO_API_KEY).';
+    // If SMTP was configured but failed:
+    if (SMTP_USER && smtpErrorDetails) {
+      let friendlyError = smtpErrorDetails;
+      if (smtpErrorDetails.includes('Username and Password not accepted') || smtpErrorDetails.includes('535-5.7.8') || smtpErrorDetails.includes('BadCredentials')) {
+        friendlyError = 'كلمة مرور التطبيقات (App Password) لجيميل غير مقبولة. يرجى التأكد من استخراج كلمة مرور التطبيقات من Google (16 حرفاً) وتفعيل التحقق بخطوتين، وليس استخدام كلمة مرور الحساب العادية.';
+      }
+      return res.status(400).json({
+        success: false,
+        error: `تعذر إرسال الإيميل عبر Gmail SMTP: ${friendlyError}`
+      });
+    }
+
     return res.status(400).json({
       success: false,
-      error: `تعذر إرسال كود التأكيد: ${errorDetail}`
+      error: 'تعذر إرسال كود التأكيد. يرجى التأكد من ضبط إعدادات SMTP_USER و SMTP_PASS في Vercel.'
     });
 
   } catch (err) {
