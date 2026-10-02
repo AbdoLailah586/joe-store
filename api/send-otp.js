@@ -34,23 +34,34 @@ export default async function handler(req, res) {
     // 2. Save in Neon PostgreSQL with 10 minutes expiry
     let templateConfig = customTemplate || {};
 
-    if (DB_URL) {
-      try {
-        const sql = neon(DB_URL);
-        await sql`
-          INSERT INTO email_verifications (email, code, expires_at)
-          VALUES (${cleanEmail}, ${otpCode}, NOW() + INTERVAL '10 minutes')
-        `;
+    if (!DB_URL) {
+      return res.status(500).json({
+        success: false,
+        error: 'إعدادات قاعدة البيانات (DATABASE_URL) غير متوفرة على السيرفر.'
+      });
+    }
 
-        if (!customTemplate) {
+    try {
+      const sql = neon(DB_URL);
+      await sql`
+        INSERT INTO email_verifications (email, code, expires_at)
+        VALUES (${cleanEmail}, ${otpCode}, NOW() + INTERVAL '10 minutes')
+      `;
+
+      if (!customTemplate) {
+        try {
           const settingsRows = await sql`SELECT * FROM store_settings LIMIT 1;`;
           if (settingsRows && settingsRows.length > 0) {
             templateConfig = settingsRows[0] || {};
           }
-        }
-      } catch (dbErr) {
-        console.warn('[send-otp DB Warning]', dbErr);
+        } catch (_) {}
       }
+    } catch (dbErr) {
+      console.error('[send-otp DB Error]', dbErr);
+      return res.status(500).json({
+        success: false,
+        error: 'تعذر الاتصال بقاعدة البيانات لحفظ كود التحقق. يرجى التأكد من ضبط DATABASE_URL في لوحة التحكم.'
+      });
     }
 
     // 3. Resolve dynamic template values
@@ -127,67 +138,73 @@ export default async function handler(req, res) {
 
     const plainText = `مرحباً ${name}، رمز التحقق الخاص بحسابك في ${headerTitle} هو: [ ${otpCode} ]. هذا الرمز صالح لمدة 10 دقائق فقط. الدعم: ${supportPhone} - ${storeAddress}.`;
 
-    // 5. Send via Resend
-    let resendResult = null;
-    let resendError = null;
+    // 5. Send strictly via Resend
     const apiKey = process.env.RESEND_API_KEY || RESEND_API_KEY;
 
-    if (apiKey) {
-      try {
-        const resendRes = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            from: FROM_EMAIL,
-            to: [cleanEmail],
-            subject: subject,
-            html: emailHtml,
-            text: plainText,
-            headers: {
-              'X-Entity-Ref-ID': `joe-otp-${Date.now()}`
-            }
-          })
-        });
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        error: 'مفتاح Resend API غير مضبوط على السيرفر (RESEND_API_KEY). يرجى إضافته في إعدادات Vercel.'
+      });
+    }
 
-        const resendData = await resendRes.json();
-        if (resendRes.ok) {
-          resendResult = resendData;
-        } else {
-          resendError = resendData;
-          console.warn('[Resend API Delivery Notice]:', resendData);
-        }
-      } catch (err) {
-        resendError = { message: err.message };
-        console.warn('[Resend Network Error]:', err);
+    let resendResult = null;
+    let resendError = null;
+
+    try {
+      const resendRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: FROM_EMAIL,
+          to: [cleanEmail],
+          subject: subject,
+          html: emailHtml,
+          text: plainText,
+          headers: {
+            'X-Entity-Ref-ID': `joe-otp-${Date.now()}`
+          }
+        })
+      });
+
+      const resendData = await resendRes.json();
+      if (resendRes.ok && resendData?.id) {
+        resendResult = resendData;
+      } else {
+        resendError = resendData;
+        console.error('[Resend API Error]:', resendData);
       }
+    } catch (err) {
+      resendError = { message: err.message };
+      console.error('[Resend Network Error]:', err);
     }
 
     if (resendResult && resendResult.id) {
       return res.status(200).json({
         success: true,
-        delivered: true,
-        message: 'تم إرسال كود التأكيد إلى بريدك الإلكتروني بنجاح.',
-        emailId: resendResult.id,
-        otpCode: otpCode
+        message: 'تم إرسال كود التأكيد إلى بريدك الإلكتروني بنجاح (يرجى مراجعة البريد وصندوق الـ Spam).'
       });
     }
 
-    // If recipient is outside Resend test email whitelist or in local dev sandbox:
-    return res.status(200).json({
-      success: true,
-      delivered: false,
-      isSimulatedNotice: true,
-      simulatedCode: otpCode,
-      otpCode: otpCode,
-      message: 'تم توليد كود التحقق بنجاح.',
-      resendNotice: resendError?.message || 'تم حظر الإرسال الخارجي بالدومين التجريبي لـ Resend'
+    // Handle delivery errors strictly
+    const rawErrMsg = resendError?.message || '';
+    if (rawErrMsg.includes('only send testing emails to your own email address') || rawErrMsg.includes('resend.com/domains')) {
+      return res.status(403).json({
+        success: false,
+        error: 'حساب Resend التجريبي حالياً يرسل فقط للإيميل المسجل لديهم (abdolailah586@gmail.com). لإرسال الإيميل لأي عنوان آخر، يلزم توثيق دومين المتجر في resend.com/domains.'
+      });
+    }
+
+    return res.status(400).json({
+      success: false,
+      error: `فشل إرسال كود التحقق عبر البريد الإلكتروني: ${rawErrMsg || 'خطأ غير معروف في خادم الإرسال.'}`
     });
 
   } catch (err) {
-    console.error('[send-otp Error]', err);
+    console.error('[send-otp Fatal Error]', err);
     return res.status(500).json({ success: false, error: 'حدث خطأ في الخادم أثناء إرسال الكود.' });
   }
 }
