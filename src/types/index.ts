@@ -152,5 +152,14 @@ export interface StoreSettings {
   active_theme?: 'royal_gold' | 'titanium_blue' | 'emerald_tech';
   theme_mode?: 'dark' | 'light';
   hero_slides?: HeroSlide[];
+  // Email Template Customization
+  email_subject_template?: string;
+  email_header_title?: string;
+  email_header_subtitle?: string;
+  email_welcome_msg?: string;
+  email_support_phone?: string;
+  email_store_address?: string;
+  email_security_note?: string;
+  email_accent_color?: string;
 }
 

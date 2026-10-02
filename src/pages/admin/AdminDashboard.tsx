@@ -33,7 +33,8 @@ import {
   CreditCard,
   PhoneCall,
   Layers,
-  Users
+  Users,
+  Mail
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -43,6 +44,7 @@ import { downloadSampleExcelTemplate, exportCatalogToExcel } from '../../utils/e
 import { generateWhatsAppWebLink, sendWhatsAppMessage } from '../../utils/whatsappService';
 import { InventoryTab } from './InventoryTab';
 import { CustomerCrmTab } from './CustomerCrmTab';
+import { EmailTemplatesTab } from './EmailTemplatesTab';
 
 export const AdminDashboard: React.FC = () => {
   const { 
@@ -66,7 +68,7 @@ export const AdminDashboard: React.FC = () => {
 
   const { t, language, formatPrice } = useLanguage();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'inventory' | 'orders' | 'crm' | 'whatsapp' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'inventory' | 'orders' | 'crm' | 'emails' | 'whatsapp' | 'settings'>('overview');
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -321,6 +323,16 @@ export const AdminDashboard: React.FC = () => {
                 {abandonedCartsCount}
               </span>
             )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('emails')}
+            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'emails' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-300 hover:text-white'
+            }`}
+          >
+            <Mail className="w-3.5 h-3.5 text-purple-400" />
+            <span>تخصيص الإيميل</span>
           </button>
 
           <button
@@ -915,7 +927,12 @@ export const AdminDashboard: React.FC = () => {
         <CustomerCrmTab />
       )}
 
-      {/* TAB 6: WHATSAPP AUTOMATION HUB */}
+      {/* TAB 6: EMAIL TEMPLATES & OTP CUSTOMIZATION STUDIO */}
+      {activeTab === 'emails' && (
+        <EmailTemplatesTab />
+      )}
+
+      {/* TAB 7: WHATSAPP AUTOMATION HUB */}
       {activeTab === 'whatsapp' && (
         <div className="space-y-6">
           <div className="p-6 rounded-3xl bg-[#0F1626] border border-emerald-500/30 shadow-2xl space-y-4">
