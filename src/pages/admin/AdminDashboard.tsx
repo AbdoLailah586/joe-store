@@ -34,10 +34,13 @@ import {
   PhoneCall,
   Layers,
   Users,
-  Mail
+  Mail,
+  ShieldAlert,
+  KeyRound
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
 import { Product, Order, OrderStatus, CategoryKey, ProductCondition, HeroSlide } from '../../types';
 import { ExcelImportModal } from '../../components/ExcelImportModal';
 import { downloadSampleExcelTemplate, exportCatalogToExcel } from '../../utils/excelParser';
@@ -45,8 +48,10 @@ import { generateWhatsAppWebLink, sendWhatsAppMessage } from '../../utils/whatsa
 import { InventoryTab } from './InventoryTab';
 import { CustomerCrmTab } from './CustomerCrmTab';
 import { EmailTemplatesTab } from './EmailTemplatesTab';
+import { UsersTab } from './UsersTab';
 
 export const AdminDashboard: React.FC = () => {
+  const { user, isAdmin, openAuthModal } = useAuth();
   const { 
     products, 
     addProduct, 
@@ -68,7 +73,60 @@ export const AdminDashboard: React.FC = () => {
 
   const { t, language, formatPrice } = useLanguage();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'inventory' | 'orders' | 'crm' | 'emails' | 'whatsapp' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'inventory' | 'orders' | 'crm' | 'emails' | 'whatsapp' | 'users' | 'settings'>('overview');
+
+  // Strict Admin Guard: Block non-admins from viewing or interacting with admin panel
+  if (!isAdmin) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 font-cairo">
+        <div className="max-w-md w-full p-8 rounded-3xl bg-[#0F1626] border border-rose-500/40 text-center space-y-6 shadow-2xl relative overflow-hidden">
+          <div className="w-20 h-20 rounded-3xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mx-auto shadow-lg shadow-rose-500/10">
+            <ShieldAlert className="w-10 h-10" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 font-black text-[11px] border border-rose-500/30">
+              منطقة إدارية مقيدة ⛔
+            </span>
+            <h2 className="text-xl font-black text-white">لوحة تحكم الإدارة للإداريين فقط</h2>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              عذراً، لا تمتلك صلاحية الوصول لهذه اللوحة. الدخول مقتصر على حساب المالك العام (<span className="text-amber-400 font-outfit font-bold">abdolailah586@gmail.com</span>) والحسابات التي تمت ترقيتها كمسؤولين (Admins).
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-900/80 border border-white/5 text-[11px] text-slate-400 text-right space-y-1.5 font-cairo">
+            <div className="flex items-center justify-between text-slate-300 font-bold border-b border-white/5 pb-1">
+              <span className="flex items-center gap-1.5">
+                <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+                <span>بيانات الحساب الحالي:</span>
+              </span>
+              <span className={`px-2 py-0.2 rounded text-[10px] ${user ? 'bg-blue-500/20 text-blue-300' : 'bg-slate-800 text-slate-400'}`}>
+                {user ? user.role : 'غير مسجل'}
+              </span>
+            </div>
+            <p className="text-slate-300">الاسم: {user?.name || 'زائر غير مسجل'}</p>
+            <p className="text-slate-300 font-outfit">البريد: {user?.email || 'لا يوجد'}</p>
+            {user?.phone && <p className="text-slate-300 font-outfit">الهاتف: {user.phone}</p>}
+          </div>
+
+          <div className="flex flex-col gap-2.5 pt-2">
+            <button
+              onClick={() => openAuthModal('يرجى تسجيل الدخول بحساب الإدارة المصرح له', 'admin')}
+              className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-glow-gold transition-all"
+            >
+              تسجيل الدخول بحساب الإدارة
+            </button>
+            <button
+              onClick={() => navigate('home')}
+              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all"
+            >
+              الرجوع إلى المتجر الرئيسي
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -343,6 +401,16 @@ export const AdminDashboard: React.FC = () => {
           >
             <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
             <span>{t('whatsappTab')}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'users' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-300 hover:text-white'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5 text-amber-400" />
+            <span>المستخدمين والرتب</span>
           </button>
 
           <button
@@ -1480,6 +1548,11 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* TAB 8: USERS & ROLES MANAGER (Promote/Demote Admins & Delete Accounts) */}
+      {activeTab === 'users' && (
+        <UsersTab />
       )}
 
       {/* MODAL 1: ADD / EDIT PRODUCT INTERACTIVE MODAL */}

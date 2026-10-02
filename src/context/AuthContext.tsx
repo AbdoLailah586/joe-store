@@ -21,6 +21,17 @@ export interface User {
   email_verified?: boolean;
   addresses: UserAddress[];
   created_at: string;
+  bio?: string;
+}
+
+export function isAccountAdmin(u?: Partial<User> | null): boolean {
+  if (!u) return false;
+  if (u.role === 'admin') return true;
+  const email = (u.email || '').toLowerCase().trim();
+  if (email === 'abdolailah586@gmail.com' || email === 'admin@joestore.com') return true;
+  const phone = (u.phone || '').replace(/[\s\-\+]/g, '');
+  if (phone.includes('01554826209') || phone.includes('01012345678')) return true;
+  return false;
 }
 
 interface AuthContextType {
@@ -37,7 +48,10 @@ interface AuthContextType {
   verifyOtpAndRegister: (data: { email: string; code: string; name: string; phone: string; password?: string }) => Promise<{ success: boolean; error?: string }>;
   registerWithEmail: (name: string, email: string, pass: string, phone: string) => Promise<boolean>;
   logout: () => void;
-  updateProfile: (data: Partial<User>) => void;
+  updateProfile: (data: Partial<User>) => Promise<{ success: boolean; error?: string }>;
+  changePassword: (oldPass: string, newPass: string) => Promise<{ success: boolean; error?: string }>;
+  updateEmail: (newEmail: string) => Promise<{ success: boolean; error?: string }>;
+  deleteAccount: () => Promise<{ success: boolean; error?: string }>;
   addAddress: (address: Omit<UserAddress, 'id'>) => void;
   deleteAddress: (id: string) => void;
   redirectAfterLogin: string | null;
@@ -49,7 +63,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('joe_store_user');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
+      try { 
+        const parsed = JSON.parse(saved);
+        if (isAccountAdmin(parsed)) {
+          parsed.role = 'admin';
+        }
+        return parsed;
+      } catch (e) {}
     }
     return null;
   });
@@ -77,6 +97,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuthMessage('');
   };
 
+  // Compute strict Admin status
+  const isAdmin = isAccountAdmin(user);
+
   // 1. Google Sign-In with real Google OAuth Payload
   const loginWithGoogle = async (credentialPayload?: any) => {
     try {
@@ -90,19 +113,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
 
         if (res.success && res.user) {
-          setUser(res.user);
+          const loadedUser: User = {
+            ...res.user,
+            role: isAccountAdmin(res.user) ? 'admin' : (res.user.role || 'customer')
+          };
+          setUser(loadedUser);
           closeAuthModal();
           return;
         }
 
         // Direct fallback if API not reached
+        const isEligibleAdmin = credentialPayload.email.toLowerCase() === 'abdolailah586@gmail.com';
         const googleUser: User = {
           id: `usr-google-${credentialPayload.sub || Date.now()}`,
           name: credentialPayload.name,
           email: credentialPayload.email,
-          phone: '',
+          phone: isEligibleAdmin ? '01554826209' : '',
           avatar: credentialPayload.picture,
-          role: 'customer',
+          role: isEligibleAdmin ? 'admin' : 'customer',
           provider: 'google',
           email_verified: true,
           addresses: [],
@@ -116,11 +144,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // If called without payload (e.g. testing fallback)
       const simulatedGoogleUser: User = {
         id: `usr-google-${Date.now()}`,
-        name: 'عميل جو ستور (Google)',
+        name: 'عبدالله ليلة (المالك)',
         email: 'abdolailah586@gmail.com',
-        phone: '01012345678',
+        phone: '01554826209',
         avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-        role: 'customer',
+        role: 'admin',
         provider: 'google',
         email_verified: true,
         addresses: [],
@@ -141,13 +169,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // 2. Login with Email + Password (checks Neon DB)
   const loginWithEmail = async (email: string, pass: string): Promise<boolean> => {
-    // Check if admin credentials
-    if (email === 'admin@joestore.com' || email === 'admin') {
+    const cleanEmail = email.trim().toLowerCase();
+    // Check if admin master credentials
+    if (cleanEmail === 'admin@joestore.com' || cleanEmail === 'abdolailah586@gmail.com' || cleanEmail === 'admin') {
       const adminUser: User = {
-        id: 'usr-admin',
-        name: 'مدير متجر جو ستور',
-        email: 'admin@joestore.com',
-        phone: '01012345678',
+        id: 'usr-admin-owner',
+        name: 'عبدالله ليلة (المدير العام)',
+        email: cleanEmail === 'admin' ? 'admin@joestore.com' : cleanEmail,
+        phone: '01554826209',
         role: 'admin',
         provider: 'email',
         email_verified: true,
@@ -160,32 +189,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
-      const dbRes = await neonDb.authenticateUser(email, pass);
+      const dbRes = await neonDb.authenticateUser(cleanEmail, pass);
       if (dbRes.success && dbRes.user) {
-        setUser(dbRes.user);
+        const authedUser: User = {
+          ...dbRes.user,
+          role: isAccountAdmin(dbRes.user) ? 'admin' : (dbRes.user.role || 'customer')
+        };
+        setUser(authedUser);
         closeAuthModal();
         return true;
       }
     } catch (e) {
-      console.warn('Neon DB login check failed, checking localStorage fallback');
+      console.warn('Neon DB login check failed, checking fallback');
     }
 
     // Local fallback check
     const registeredUsers: any[] = JSON.parse(localStorage.getItem('joe_registered_users') || '[]');
-    const found = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const found = registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
 
     if (found && (!found.password || found.password === pass)) {
-      setUser({
+      const fallbackUser: User = {
         id: found.id,
         name: found.name,
         email: found.email,
         phone: found.phone,
-        role: 'customer',
+        role: isAccountAdmin(found) ? 'admin' : (found.role || 'customer'),
         provider: 'email',
         email_verified: true,
         addresses: found.addresses || [],
         created_at: found.created_at
-      });
+      };
+      setUser(fallbackUser);
       closeAuthModal();
       return true;
     }
@@ -203,7 +237,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await neonDb.verifyOtpAndCreateUser(data);
       if (res.success && res.user) {
-        setUser(res.user);
+        const registeredUser: User = {
+          ...res.user,
+          role: isAccountAdmin(res.user) ? 'admin' : (res.user.role || 'customer')
+        };
+        setUser(registeredUser);
         closeAuthModal();
         return { success: true };
       }
@@ -215,12 +253,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Fallback direct register
   const registerWithEmail = async (name: string, email: string, pass: string, phone: string): Promise<boolean> => {
+    const isOwner = email.trim().toLowerCase() === 'abdolailah586@gmail.com' || phone.includes('01554826209');
     const newUser: User = {
       id: `usr-${Date.now()}`,
       name,
       email,
       phone,
-      role: 'customer',
+      role: isOwner ? 'admin' : 'customer',
       provider: 'email',
       email_verified: true,
       addresses: [],
@@ -240,8 +279,73 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
-  const updateProfile = (data: Partial<User>) => {
-    setUser(prev => prev ? { ...prev, ...data } : null);
+  // Profile Update (Name, Phone, Avatar, Addresses, Bio)
+  const updateProfile = async (data: Partial<User>): Promise<{ success: boolean; error?: string }> => {
+    if (!user) return { success: false, error: 'غير مسجل دخول' };
+    try {
+      const updatedUser: User = { ...user, ...data };
+      if (isAccountAdmin(updatedUser)) {
+        updatedUser.role = 'admin';
+      }
+      setUser(updatedUser);
+      localStorage.setItem('joe_store_user', JSON.stringify(updatedUser));
+
+      // Sync to Neon DB
+      await neonDb.updateUserProfile(user.id, {
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        avatar: data.avatar,
+        addresses: data.addresses || updatedUser.addresses
+      });
+      return { success: true };
+    } catch (err: any) {
+      console.error('updateProfile error:', err);
+      return { success: false, error: err.message || 'حدث خطأ أثناء حفظ البيانات.' };
+    }
+  };
+
+  // Change Password
+  const changePassword = async (oldPass: string, newPass: string): Promise<{ success: boolean; error?: string }> => {
+    if (!user) return { success: false, error: 'غير مسجل دخول' };
+    try {
+      const res = await neonDb.changePassword(user.id, oldPass, newPass);
+      return res;
+    } catch (err: any) {
+      return { success: false, error: err.message || 'فشل تحديث كلمة المرور.' };
+    }
+  };
+
+  // Update Email
+  const updateEmail = async (newEmail: string): Promise<{ success: boolean; error?: string }> => {
+    if (!user) return { success: false, error: 'غير مسجل دخول' };
+    const clean = newEmail.trim().toLowerCase();
+    if (!clean.includes('@')) return { success: false, error: 'البريد الإلكتروني غير صالح.' };
+    try {
+      const updated = { ...user, email: clean };
+      if (isAccountAdmin(updated)) {
+        updated.role = 'admin';
+      }
+      setUser(updated);
+      localStorage.setItem('joe_store_user', JSON.stringify(updated));
+      await neonDb.updateUserProfile(user.id, { email: clean });
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'فشل تعديل البريد الإلكتروني.' };
+    }
+  };
+
+  // Delete Account
+  const deleteAccount = async (): Promise<{ success: boolean; error?: string }> => {
+    if (!user) return { success: false, error: 'غير مسجل دخول' };
+    try {
+      await neonDb.deleteUser(user.id);
+      localStorage.removeItem('joe_store_user');
+      setUser(null);
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'فشل حذف الحساب.' };
+    }
   };
 
   const addAddress = (addr: Omit<UserAddress, 'id'>) => {
@@ -251,12 +355,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `addr-${Date.now()}`
     };
     const updated = [...user.addresses, newAddress];
-    setUser({ ...user, addresses: updated });
+    updateProfile({ addresses: updated });
   };
 
   const deleteAddress = (id: string) => {
     if (!user) return;
-    setUser({ ...user, addresses: user.addresses.filter(a => a.id !== id) });
+    const updated = user.addresses.filter(a => a.id !== id);
+    updateProfile({ addresses: updated });
   };
 
   return (
@@ -264,7 +369,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         isAuthenticated: !!user,
-        isAdmin: user?.role === 'admin',
+        isAdmin,
         isAuthModalOpen,
         authMessage,
         openAuthModal,
@@ -276,6 +381,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         registerWithEmail,
         logout,
         updateProfile,
+        changePassword,
+        updateEmail,
+        deleteAccount,
         addAddress,
         deleteAddress,
         redirectAfterLogin

@@ -694,5 +694,88 @@ export const neonDb = {
       console.error('❌ neonDb.persistGoogleUser error:', err);
       return { success: false, error: 'تعذر حفظ بيانات حساب Google.' };
     }
+  },
+
+  async getAllUsers(): Promise<any[]> {
+    try {
+      const rows = await sql`
+        SELECT id, name, email, phone, avatar, role, provider, email_verified, addresses, created_at
+        FROM users
+        ORDER BY created_at DESC;
+      `;
+      return rows || [];
+    } catch (err) {
+      console.error('❌ neonDb.getAllUsers error:', err);
+      return [];
+    }
+  },
+
+  async updateUserRole(userId: string, newRole: 'admin' | 'customer'): Promise<{ success: boolean; error?: string }> {
+    try {
+      await sql`
+        UPDATE users
+        SET role = ${newRole}, updated_at = NOW()
+        WHERE id = ${userId};
+      `;
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.updateUserRole error:', err);
+      return { success: false, error: err.message };
+    }
+  },
+
+  async deleteUser(userId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      await sql`DELETE FROM users WHERE id = ${userId};`;
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.deleteUser error:', err);
+      return { success: false, error: err.message };
+    }
+  },
+
+  async updateUserProfile(userId: string, data: { name?: string; phone?: string; email?: string; avatar?: string; addresses?: any[] }): Promise<{ success: boolean; user?: any; error?: string }> {
+    try {
+      const rows = await sql`
+        UPDATE users
+        SET 
+          name = COALESCE(${data.name || null}, name),
+          phone = COALESCE(${data.phone || null}, phone),
+          email = COALESCE(${data.email || null}, email),
+          avatar = COALESCE(${data.avatar || null}, avatar),
+          addresses = COALESCE(${data.addresses ? JSON.stringify(data.addresses) : null}::jsonb, addresses),
+          updated_at = NOW()
+        WHERE id = ${userId}
+        RETURNING id, name, email, phone, avatar, role, provider, email_verified, addresses, created_at;
+      `;
+      if (rows && rows.length > 0) {
+        return { success: true, user: rows[0] };
+      }
+      return { success: false, error: 'لم يتم العثور على المستخدم.' };
+    } catch (err: any) {
+      console.error('❌ neonDb.updateUserProfile error:', err);
+      return { success: false, error: err.message };
+    }
+  },
+
+  async changePassword(userId: string, oldPass: string, newPass: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const rows = await sql`SELECT password_hash FROM users WHERE id = ${userId};`;
+      if (!rows || rows.length === 0) return { success: false, error: 'المستخدم غير موجود.' };
+      
+      if (rows[0].password_hash && rows[0].password_hash !== oldPass) {
+        return { success: false, error: 'كلمة المرور الحالية غير صحيحة.' };
+      }
+
+      await sql`
+        UPDATE users 
+        SET password_hash = ${newPass}, updated_at = NOW() 
+        WHERE id = ${userId};
+      `;
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.changePassword error:', err);
+      return { success: false, error: err.message };
+    }
   }
 };
