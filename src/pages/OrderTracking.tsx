@@ -97,7 +97,13 @@ export const OrderTracking: React.FC = () => {
                 <span className="text-base font-black text-white font-outfit">
                   #{searchedOrder.order_number}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                  searchedOrder.order_status === 'cancelled' 
+                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' 
+                    : searchedOrder.order_status === 'delivered'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                    : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                }`}>
                   {searchedOrder.order_status === 'pending' && 'قيد المراجعة'}
                   {searchedOrder.order_status === 'confirmed' && 'تم التأكيد'}
                   {searchedOrder.order_status === 'processing' && 'جاري التجهيز'}
@@ -110,6 +116,11 @@ export const OrderTracking: React.FC = () => {
               <p className="text-xs text-slate-400 mt-1">
                 تاريخ التسجيل: {new Date(searchedOrder.created_at).toLocaleDateString('ar-EG')} • العميل: {searchedOrder.customer_name}
               </p>
+              {searchedOrder.order_status === 'cancelled' && (
+                <div className="mt-2 p-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs">
+                  ⚠️ <strong>تم إلغاء هذا الطلب:</strong> {searchedOrder.cancellation_reason || 'بناءً على طلب العميل'}
+                </div>
+              )}
             </div>
 
             <div className="text-right sm:text-left">
@@ -205,6 +216,33 @@ export const OrderTracking: React.FC = () => {
               </a>
             </div>
           </div>
+
+          {/* Cancellation Request Section */}
+          {searchedOrder.order_status !== 'cancelled' && searchedOrder.order_status !== 'delivered' && (
+            <div className="p-4 sm:p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
+              <div className="space-y-1">
+                <span className="font-bold text-rose-400 text-sm flex items-center gap-1.5 font-cairo">
+                  <span>هل ترغب في إلغاء هذا الطلب أو تعديله؟</span>
+                </span>
+                <p className="text-[11px] text-slate-400 font-cairo">
+                  يمكنك التواصل مباشرة مع خدمة عملاء جو ستور عبر واتساب لطلب إلغاء الأوردر أو استبدال أي صنف قبل شحنه.
+                </p>
+              </div>
+
+              <a
+                href={generateWhatsAppWebLink(
+                  settings.store_whatsapp,
+                  `مرحباً متجر جو ستور بالمنصورة، أود تقديم طلب لإلغاء طلبي رقم #${searchedOrder.order_number} لسبب: `
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2 px-4 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs font-cairo flex items-center gap-2 transition-all flex-shrink-0 shadow-md"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>طلب إلغاء الأوردر عبر واتساب</span>
+              </a>
+            </div>
+          )}
         </div>
       ) : hasSearched ? (
         <div className="p-8 rounded-3xl bg-[#0F1626] border border-white/10 text-center space-y-3">

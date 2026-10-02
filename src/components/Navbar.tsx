@@ -41,8 +41,17 @@ export const Navbar: React.FC = () => {
     setSelectedCategory,
     products,
     settings,
-    updateSettings
+    updateSettings,
+    trackActivity
   } = useStore();
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      trackActivity('search', undefined, { query: searchQuery.trim(), category: selectedCategory });
+    }
+    setIsSearchFocused(false);
+    navigate('catalog');
+  };
 
   const { t, language, toggleLanguage, formatPrice, isRTL } = useLanguage();
   const { user, isAuthenticated, openAuthModal } = useAuth();
@@ -264,16 +273,14 @@ export const Navbar: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
               placeholder={t('searchPlaceholder')}
               className="w-full bg-transparent px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none font-cairo"
             />
 
             {/* Search Button */}
             <button
-              onClick={() => {
-                navigate('catalog');
-                setIsSearchFocused(false);
-              }}
+              onClick={handleSearchSubmit}
               className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black px-5 py-2.5 font-bold transition-all flex items-center justify-center"
             >
               <Search className="w-4 h-4" />
@@ -407,11 +414,12 @@ export const Navbar: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
             placeholder={t('searchPlaceholder')}
             className="w-full bg-transparent px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none font-cairo"
           />
           <button
-            onClick={() => navigate('catalog')}
+            onClick={handleSearchSubmit}
             className="bg-amber-500 text-black px-3.5 py-2 hover:bg-amber-400"
           >
             <Search className="w-3.5 h-3.5" />

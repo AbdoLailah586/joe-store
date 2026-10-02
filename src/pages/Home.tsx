@@ -11,16 +11,37 @@ import {
   Smartphone, 
   ChevronLeft, 
   ChevronRight, 
-  MessageCircle 
+  MessageCircle,
+  TrendingUp
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ProductCard } from '../components/ProductCard';
-import { CategoryKey } from '../types';
+import { CategoryKey, Product } from '../types';
+import { neonDb } from '../services/neonDb';
 
 export const Home: React.FC = () => {
-  const { products, navigate, setSelectedCategory, settings } = useStore();
+  const { products, navigate, setSelectedCategory, settings, sessionId } = useStore();
   const { t, language, formatPrice, isRTL } = useLanguage();
+
+  const [recommendations, setRecommendations] = useState<{
+    hasHistory: boolean;
+    recommendedProducts: Product[];
+    searchTags: string[];
+    topCategory?: string;
+  }>({
+    hasHistory: false,
+    recommendedProducts: [],
+    searchTags: []
+  });
+
+  useEffect(() => {
+    neonDb.getPersonalizedRecommendations(sessionId).then(res => {
+      if (res && res.recommendedProducts.length > 0) {
+        setRecommendations(res);
+      }
+    }).catch(console.warn);
+  }, [sessionId]);
 
   const slides = settings.hero_slides && settings.hero_slides.length > 0 ? settings.hero_slides : [
     {
@@ -266,6 +287,60 @@ export const Home: React.FC = () => {
                 {language === 'ar' ? 'تحديثات فورية لحالة الشحنة لهاتفك' : 'Instant invoice & tracking on WhatsApp'}
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2.5 Dynamic Personalized Recommendation Section */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30 relative overflow-hidden shadow-lg">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/40 text-xs font-bold font-cairo mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+                <span>
+                  {recommendations.hasHistory 
+                    ? (language === 'ar' ? 'مخصص لك بناءً على نشاطك وبحثك' : 'Tailored For You Based On Activity') 
+                    : (language === 'ar' ? 'التريند الأكثر طلباً في المنصورة' : 'Trending Now in Mansoura')
+                  }
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-cairo">
+                {recommendations.hasHistory
+                  ? (language === 'ar' ? 'ترشيحات ذكية اختيرت لأجلك ✨' : 'Smart Picks Chosen For You ✨')
+                  : (language === 'ar' ? 'أقوى العروض الرائجة في المتجر اليوم 🔥' : 'Trending Hot Deals in Store Today 🔥')
+                }
+              </h2>
+              {recommendations.searchTags.length > 0 && (
+                <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-cairo">
+                    {language === 'ar' ? 'بناءً على اهتمامك بـ:' : 'Based on your interest in:'}
+                  </span>
+                  {recommendations.searchTags.map((tag, i) => (
+                    <span key={i} className="text-[11px] px-2.5 py-0.5 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30">
+                      "{tag}"
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => { setSelectedCategory('all'); navigate('catalog'); }}
+              className="px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 font-bold text-xs font-cairo border border-amber-500/30 transition-all flex items-center gap-1.5"
+            >
+              <span>{t('viewAll')}</span>
+              {isRTL ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {(recommendations.recommendedProducts.length > 0 
+              ? recommendations.recommendedProducts.slice(0, 4) 
+              : products.slice(0, 4)
+            ).map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
           </div>
         </div>
       </section>

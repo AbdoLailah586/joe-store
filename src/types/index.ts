@@ -40,6 +40,8 @@ export interface Product {
   is_featured?: boolean;
   is_flash_sale?: boolean;
   is_best_seller?: boolean;
+  is_active?: boolean;
+  cost_price?: number;
   created_at?: string;
 }
 
@@ -93,6 +95,9 @@ export interface Order {
   courier_name?: string;
   tracking_number?: string;
   whatsapp_notification_sent: boolean;
+  cancellation_reason?: string;
+  cancelled_by?: string;
+  cancelled_at?: string;
   created_at: string;
   updated_at: string;
 }

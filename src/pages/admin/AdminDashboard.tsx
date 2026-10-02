@@ -31,7 +31,9 @@ import {
   Image as ImageIcon,
   MapPin,
   CreditCard,
-  PhoneCall
+  PhoneCall,
+  Layers,
+  Users
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -39,6 +41,8 @@ import { Product, Order, OrderStatus, CategoryKey, ProductCondition, HeroSlide }
 import { ExcelImportModal } from '../../components/ExcelImportModal';
 import { downloadSampleExcelTemplate, exportCatalogToExcel } from '../../utils/excelParser';
 import { generateWhatsAppWebLink, sendWhatsAppMessage } from '../../utils/whatsappService';
+import { InventoryTab } from './InventoryTab';
+import { CustomerCrmTab } from './CustomerCrmTab';
 
 export const AdminDashboard: React.FC = () => {
   const { 
@@ -48,6 +52,7 @@ export const AdminDashboard: React.FC = () => {
     deleteProduct, 
     duplicateProduct,
     orders, 
+    cancelOrder,
     updateOrderStatus, 
     updatePaymentStatus,
     manualSendWhatsAppNotification,
@@ -55,12 +60,13 @@ export const AdminDashboard: React.FC = () => {
     refreshWhatsAppLogs,
     settings, 
     updateSettings,
+    activeCarts,
     navigate 
   } = useStore();
 
   const { t, language, formatPrice } = useLanguage();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'whatsapp' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'inventory' | 'orders' | 'crm' | 'whatsapp' | 'settings'>('overview');
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -215,6 +221,8 @@ export const AdminDashboard: React.FC = () => {
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
   const pendingOrders = orders.filter(o => o.order_status === 'pending');
   const deliveredOrders = orders.filter(o => o.order_status === 'delivered');
+  const lowStockCount = products.filter(p => (p.stock ?? 0) < 3).length;
+  const abandonedCartsCount = activeCarts.filter(c => c.is_abandoned).length;
 
   // Filtered orders list
   const filteredOrders = orders.filter(o => {
@@ -271,6 +279,21 @@ export const AdminDashboard: React.FC = () => {
           </button>
 
           <button
+            onClick={() => setActiveTab('inventory')}
+            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'inventory' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-300 hover:text-white'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5 text-amber-400" />
+            <span>المخزون والظهور</span>
+            {lowStockCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10px] font-bold font-outfit" title="تنبيهات نواقص المخزن">
+                {lowStockCount}
+              </span>
+            )}
+          </button>
+
+          <button
             onClick={() => setActiveTab('orders')}
             className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
               activeTab === 'orders' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-300 hover:text-white'
@@ -281,6 +304,21 @@ export const AdminDashboard: React.FC = () => {
             {pendingOrders.length > 0 && (
               <span className="w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center font-outfit">
                 {pendingOrders.length}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('crm')}
+            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'crm' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-300 hover:text-white'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5 text-cyan-400" />
+            <span>ذكاء العملاء والسلات</span>
+            {abandonedCartsCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px] font-bold font-outfit animate-pulse" title="سلات متروكة تحتاج تواصل">
+                {abandonedCartsCount}
               </span>
             )}
           </button>
@@ -577,7 +615,16 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 3: ORDERS & SALES MANAGER (WhatsApp Automated Status Triggers) */}
+      {/* TAB 3: INVENTORY & STOCK MANAGER (Live toggle, Quick stock editing, Pre-owned) */}
+      {activeTab === 'inventory' && (
+        <InventoryTab
+          onOpenAddProduct={handleOpenAddProduct}
+          onOpenEditProduct={handleOpenEditProduct}
+          onOpenExcelModal={() => setIsExcelModalOpen(true)}
+        />
+      )}
+
+      {/* TAB 4: ORDERS & SALES MANAGER (WhatsApp Automated Status Triggers) */}
       {activeTab === 'orders' && (
         <div className="space-y-6">
           {/* Order Status Filter */}
@@ -585,7 +632,7 @@ export const AdminDashboard: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-400 font-bold">تصفية حسب الحالة:</span>
               <div className="flex gap-1 overflow-x-auto text-xs">
-                {['all', 'pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered'].map((st) => (
+                {['all', 'pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'].map((st) => (
                   <button
                     key={st}
                     onClick={() => setOrderStatusFilter(st)}
@@ -602,6 +649,7 @@ export const AdminDashboard: React.FC = () => {
                     {st === 'shipped' && 'تم الشحن'}
                     {st === 'out_for_delivery' && 'مع المندوب'}
                     {st === 'delivered' && 'تم التوصيل'}
+                    {st === 'cancelled' && 'ملغي'}
                   </button>
                 ))}
               </div>
@@ -805,6 +853,30 @@ export const AdminDashboard: React.FC = () => {
                           <span>إرسال طلب تقييم واتساب ⭐</span>
                         </button>
                       )}
+
+                      {/* Admin Order Cancellation with Automatic Restocking */}
+                      {ord.order_status !== 'cancelled' ? (
+                        <button
+                          onClick={async () => {
+                            const reason = prompt('سبب إلغاء الطلب (سيتم استرجاع قطع المنتجات إلى المخزن تلقائياً):', 'طلب العميل أو تغيير المواصفات');
+                            if (reason !== null) {
+                              if (confirm(`هل أنت متأكد من إلغاء الطلب #${ord.order_number} وإعادة المنتجات للمخزن فوراً؟`)) {
+                                await cancelOrder(ord.id, reason, 'admin');
+                                alert(`تم إلغاء الطلب #${ord.order_number} واسترجاع المخزون بنجاح.`);
+                              }
+                            }
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs font-bold transition-all flex items-center gap-1"
+                          title="إلغاء الطلب وإرجاع المنتجات للمخزون"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          <span>إلغاء الطلب واسترجاع المخزن ❌</span>
+                        </button>
+                      ) : (
+                        <span className="px-2.5 py-1 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold">
+                          تم إلغاء الطلب واسترجاع القطع للمخزن ↺
+                        </span>
+                      )}
                     </div>
 
                     {/* Direct WhatsApp Message Modal Trigger */}
@@ -838,7 +910,12 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 4: WHATSAPP AUTOMATION HUB */}
+      {/* TAB 5: CUSTOMER INTELLIGENCE & ABANDONED CARTS CRM */}
+      {activeTab === 'crm' && (
+        <CustomerCrmTab />
+      )}
+
+      {/* TAB 6: WHATSAPP AUTOMATION HUB */}
       {activeTab === 'whatsapp' && (
         <div className="space-y-6">
           <div className="p-6 rounded-3xl bg-[#0F1626] border border-emerald-500/30 shadow-2xl space-y-4">
