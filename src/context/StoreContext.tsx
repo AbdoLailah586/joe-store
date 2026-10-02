@@ -76,7 +76,7 @@ interface StoreContextType {
 
   // Navigation & Search
   currentTab: AppTab;
-  navigate: (tab: AppTab, productId?: string) => void;
+  navigate: (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string }) => void;
   selectedProductId: string | null;
   quickViewProduct: Product | null;
   setQuickViewProduct: (prod: Product | null) => void;
@@ -94,6 +94,59 @@ interface StoreContextType {
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
+
+interface ParsedRoute {
+  tab: AppTab;
+  productId?: string;
+  category?: CategoryKey;
+  search?: string;
+}
+
+export const parseRouteFromLocation = (): ParsedRoute => {
+  if (typeof window === 'undefined') return { tab: 'home' };
+
+  const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
+  const searchParams = new URLSearchParams(window.location.search);
+
+  // 1. /product/:id or /p/:id
+  const productMatch = pathname.match(/^\/(?:product|p)\/([^/]+)/);
+  if (productMatch) {
+    return {
+      tab: 'product',
+      productId: decodeURIComponent(productMatch[1])
+    };
+  }
+
+  // 2. /catalog or /products or /shop
+  if (pathname === '/catalog' || pathname === '/products' || pathname === '/shop') {
+    const cat = (searchParams.get('category') || 'all') as CategoryKey;
+    const q = searchParams.get('q') || searchParams.get('search') || '';
+    return {
+      tab: 'catalog',
+      category: cat,
+      search: q
+    };
+  }
+
+  // 3. /category/:catKey
+  const categoryMatch = pathname.match(/^\/category\/([^/]+)/);
+  if (categoryMatch) {
+    return {
+      tab: 'catalog',
+      category: decodeURIComponent(categoryMatch[1]) as CategoryKey
+    };
+  }
+
+  // 4. Standalone tabs
+  if (pathname === '/checkout') return { tab: 'checkout' };
+  if (pathname === '/order-success') return { tab: 'order-success' };
+  if (pathname === '/track-order' || pathname === '/tracking') return { tab: 'track-order' };
+  if (pathname === '/profile' || pathname === '/account') return { tab: 'profile' };
+  if (pathname === '/admin') return { tab: 'admin' };
+  if (pathname === '/cart') return { tab: 'cart' };
+
+  return { tab: 'home' };
+};
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Products State
@@ -250,21 +303,92 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setWhatsappLogs(getWhatsAppLogs());
   };
 
-  // Navigation State
-  const [currentTab, setCurrentTab] = useState<AppTab>('home');
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  // Navigation State with URL Deep Linking
+  const initialRoute = parseRouteFromLocation();
+  const [currentTab, setCurrentTab] = useState<AppTab>(initialRoute.tab);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(initialRoute.productId || null);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<CategoryKey>('all');
+  const [isCartOpen, setIsCartOpen] = useState(initialRoute.tab === 'cart');
+  const [searchQuery, setSearchQuery] = useState(initialRoute.search || '');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryKey>(initialRoute.category || 'all');
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
 
-  const navigate = (tab: AppTab, productId?: string) => {
+  // Sync state when user clicks Browser Back/Forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = parseRouteFromLocation();
+      setCurrentTab(route.tab);
+      if (route.productId) {
+        setSelectedProductId(route.productId);
+      }
+      if (route.category) {
+        setSelectedCategory(route.category);
+      }
+      if (route.search !== undefined) {
+        setSearchQuery(route.search);
+      }
+      if (window.location.pathname === '/cart') {
+        setIsCartOpen(true);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigate = (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string }) => {
     setCurrentTab(tab);
+    let targetProductId = selectedProductId;
     if (productId) {
       setSelectedProductId(productId);
+      targetProductId = productId;
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (options?.category) {
+      setSelectedCategory(options.category);
+    }
+    if (options?.search !== undefined) {
+      setSearchQuery(options.search);
+    }
+
+    let targetPath = '/';
+    if (tab === 'product' && (productId || targetProductId)) {
+      targetPath = `/product/${encodeURIComponent(productId || targetProductId || '')}`;
+    } else if (tab === 'catalog') {
+      const cat = options?.category || selectedCategory;
+      const q = options?.search !== undefined ? options.search : searchQuery;
+      const params = new URLSearchParams();
+      if (cat && cat !== 'all') params.set('category', cat);
+      if (q) params.set('q', q);
+      const queryStr = params.toString();
+      targetPath = queryStr ? `/catalog?${queryStr}` : '/catalog';
+    } else if (tab === 'checkout') {
+      targetPath = '/checkout';
+    } else if (tab === 'order-success') {
+      targetPath = '/order-success';
+    } else if (tab === 'track-order') {
+      targetPath = '/track-order';
+    } else if (tab === 'profile') {
+      targetPath = '/profile';
+    } else if (tab === 'admin') {
+      targetPath = '/admin';
+    } else if (tab === 'cart') {
+      targetPath = '/catalog';
+      setIsCartOpen(true);
+    } else {
+      targetPath = '/';
+    }
+
+    if (typeof window !== 'undefined') {
+      const currentFullUrl = window.location.pathname + window.location.search;
+      if (currentFullUrl !== targetPath) {
+        if (options?.replace) {
+          window.history.replaceState({ tab, productId: targetProductId }, '', targetPath);
+        } else {
+          window.history.pushState({ tab, productId: targetProductId }, '', targetPath);
+        }
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   // Product Operations

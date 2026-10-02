@@ -35,20 +35,46 @@ export const ProductDetails: React.FC = () => {
 
   const { t, language, formatPrice, isRTL } = useLanguage();
 
-  const product = products.find(p => p.id === selectedProductId) || products[0];
+  const product = products.find(p => p.id === selectedProductId) || (products.length > 0 ? products[0] : null);
 
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedStorage, setSelectedStorage] = useState(
-    product?.available_storages?.[0] || product?.storage || ''
-  );
-  const [selectedColor, setSelectedColor] = useState(
-    product?.available_colors?.[0]?.name_ar || product?.color_ar || ''
-  );
+  const [selectedStorage, setSelectedStorage] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'specs' | 'inspection' | 'reviews'>('specs');
   const [addedToast, setAddedToast] = useState(false);
+  const [shareToast, setShareToast] = useState(false);
 
-  if (!product) return null;
+  // Sync state and document title whenever product changes
+  React.useEffect(() => {
+    if (product) {
+      setSelectedImage(0);
+      setSelectedStorage(product.available_storages?.[0] || product.storage || '');
+      setSelectedColor(product.available_colors?.[0]?.name_ar || product.color_ar || '');
+      document.title = `${language === 'ar' ? product.name_ar : product.name_en} | متجر جو ستور`;
+    }
+  }, [product?.id, language]);
+
+  if (!product) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-24 text-center space-y-5">
+        <div className="w-16 h-16 mx-auto rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center animate-pulse">
+          <Sparkles className="w-8 h-8 text-amber-400" />
+        </div>
+        <h2 className="text-xl font-bold text-white font-cairo">
+          {products.length === 0 ? 'جاري تحميل تفاصيل المنتج المباشرة...' : 'عفواً، هذا المنتج غير متوفر حالياً أو تم حذفه'}
+        </h2>
+        {products.length > 0 && (
+          <button
+            onClick={() => navigate('catalog')}
+            className="px-6 py-2.5 rounded-xl bg-amber-500 text-black font-bold font-cairo hover:bg-amber-400 transition-colors shadow-glow-gold"
+          >
+            تصفح جميع المنتجات المتاحة في المتجر
+          </button>
+        )}
+      </div>
+    );
+  }
 
   const isLiked = isInWishlist(product.id);
 
@@ -61,6 +87,31 @@ export const ProductDetails: React.FC = () => {
   const handleBuyNow = () => {
     addToCart(product, quantity, selectedStorage, selectedColor);
     navigate('checkout');
+  };
+
+  const handleShareProduct = async () => {
+    const shareUrl = window.location.href;
+    const shareTitle = `${product.name_ar} | متجر جو ستور`;
+    const shareText = `شاهد تفاصيل وسعر ${product.name_ar} في متجر جو ستور:`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        });
+        return;
+      } catch (_) {}
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareToast(true);
+      setTimeout(() => setShareToast(false), 2500);
+    } catch (_) {
+      window.prompt('انسخ رابط المنتج المباشر:', shareUrl);
+    }
   };
 
   // Direct WhatsApp inquiry URL
@@ -295,9 +346,19 @@ export const ProductDetails: React.FC = () => {
               {/* Wishlist */}
               <button
                 onClick={() => toggleWishlist(product.id)}
+                title={language === 'ar' ? 'إضافة إلى المفضلة' : 'Add to wishlist'}
                 className="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-rose-400 border border-white/10 transition-colors"
               >
                 <Heart className={`w-5 h-5 ${isLiked ? 'fill-rose-500 text-rose-500' : ''}`} />
+              </button>
+
+              {/* Share Direct Product Link */}
+              <button
+                onClick={handleShareProduct}
+                title={language === 'ar' ? 'مشاركة رابط المنتج' : 'Share product link'}
+                className="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 hover:text-amber-300 border border-white/10 transition-all active:scale-95 flex items-center justify-center"
+              >
+                <Share2 className="w-5 h-5" />
               </button>
             </div>
 
@@ -326,6 +387,13 @@ export const ProductDetails: React.FC = () => {
               <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2">
                 <Check className="w-4 h-4" />
                 <span>{language === 'ar' ? 'تمت إضافة المنتج إلى عربة التسوق بنجاح!' : 'Product added to cart successfully!'}</span>
+              </div>
+            )}
+
+            {shareToast && (
+              <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center gap-2 animate-fadeIn">
+                <CheckCircle className="w-4 h-4 text-amber-400" />
+                <span>{language === 'ar' ? 'تم نسخ رابط المنتج المباشر بنجاح! 📋 يمكنك مشاركته الآن' : 'Product direct link copied! 📋 Ready to share'}</span>
               </div>
             )}
           </div>
