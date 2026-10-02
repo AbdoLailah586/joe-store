@@ -551,17 +551,6 @@ export const AuthModal: React.FC = () => {
                 ))}
               </div>
 
-              {errorMsg && (
-                <p className="text-xs text-rose-400 font-semibold bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20 text-center">
-                  {errorMsg}
-                </p>
-              )}
-
-              {successMsg && !errorMsg && (
-                <p className="text-xs text-emerald-400 font-semibold bg-emerald-500/10 p-2 rounded-xl border border-emerald-500/20 text-center">
-                  {successMsg}
-                </p>
-              )}
 
               {/* Submit Verification */}
               <button
