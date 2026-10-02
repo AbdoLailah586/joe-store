@@ -36,7 +36,7 @@ export const EmailTemplatesTab: React.FC = () => {
     settings.email_welcome_msg || 'سعداء بانضمامك إلى عائلة جو ستور. لإتمام إنشاء حسابك والتحقق من بريدك الإلكتروني، يرجى استخدام رمز الأمان التالي:'
   );
   const [supportPhone, setSupportPhone] = useState(
-    settings.email_support_phone || settings.store_phone || '01012345678'
+    settings.email_support_phone || settings.store_phone || '01554826209'
   );
   const [storeAddress, setStoreAddress] = useState(
     settings.email_store_address || settings.store_address_ar || 'المنصورة - شارع الإمام محمد عبده - ناصية آمون'
@@ -81,7 +81,7 @@ export const EmailTemplatesTab: React.FC = () => {
     setHeaderSubtitle('وجهتك الموثوقة للهواتف والإكسسوارات الأصلية - المنصورة');
     setSubjectTemplate('رمز تأكيد حسابك في متجر جو ستور ⚡ (كود: {code})');
     setWelcomeMsg('سعداء بانضمامك إلى عائلة جو ستور. لإتمام إنشاء حسابك والتحقق من بريدك الإلكتروني، يرجى استخدام رمز الأمان التالي:');
-    setSupportPhone('01012345678');
+    setSupportPhone('01554826209');
     setStoreAddress('المنصورة - شارع الإمام محمد عبده - ناصية آمون');
     setSecurityNote('هذا الرمز صالح للاستخدام خلال 10 دقائق فقط. حفاظاً على أمانك، لا تشارك هذا الرمز مع أي شخص.');
     setAccentColor('#F59E0B');
@@ -258,7 +258,7 @@ export const EmailTemplatesTab: React.FC = () => {
                 value={supportPhone}
                 onChange={(e) => setSupportPhone(e.target.value)}
                 className="w-full bg-slate-950 border border-amber-500/40 rounded-xl px-3 py-2 text-xs text-white font-outfit font-bold focus:outline-none focus:border-amber-300 text-left"
-                placeholder="01012345678"
+                placeholder="01554826209"
                 dir="ltr"
               />
               <p className="text-[10px] text-slate-400">

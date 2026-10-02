@@ -56,6 +56,8 @@ export default async function handler(req, res) {
 
     // 3. Upsert user in Neon PostgreSQL users table
     const userId = `usr-${Date.now()}`;
+    const defaultRole = (cleanEmail === 'abdolailah586@gmail.com' || cleanEmail === 'admin@joestore.com') ? 'admin' : 'customer';
+
     const userRows = await sql`
       INSERT INTO users (id, name, email, phone, password_hash, role, provider, email_verified)
       VALUES (
@@ -64,7 +66,7 @@ export default async function handler(req, res) {
         ${cleanEmail}, 
         ${phone || ''}, 
         ${password || ''}, 
-        'customer', 
+        ${defaultRole}, 
         'email', 
         true
       )

@@ -63,9 +63,12 @@ export default async function handler(req, res) {
 
       if (!customTemplate) {
         try {
-          const settingsRows = await sql`SELECT * FROM store_settings LIMIT 1;`;
+          const settingsRows = await sql`SELECT * FROM store_settings WHERE id = 'main' LIMIT 1;`;
           if (settingsRows && settingsRows.length > 0) {
-            templateConfig = settingsRows[0] || {};
+            const raw = settingsRows[0];
+            templateConfig = (typeof raw.settings === 'object' && raw.settings !== null)
+              ? { ...raw.settings, ...raw }
+              : (raw || {});
           }
         } catch (_) {}
       }
@@ -78,11 +81,11 @@ export default async function handler(req, res) {
     }
 
     // 3. Resolve dynamic template values
-    const headerTitle = templateConfig.email_header_title || 'JOE Store | متجر جو ستور';
+    const headerTitle = templateConfig.email_header_title || templateConfig.store_name_ar || 'JOE Store | متجر جو ستور';
     const headerSubtitle = templateConfig.email_header_subtitle || 'وجهتك الموثوقة للهواتف والإكسسوارات الأصلية - المنصورة';
     const welcomeMsg = templateConfig.email_welcome_msg || 'سعداء بانضمامك إلى عائلة جو ستور. لإتمام إنشاء حسابك والتحقق من بريدك الإلكتروني، يرجى استخدام رمز الأمان التالي:';
-    const supportPhone = templateConfig.email_support_phone || templateConfig.store_phone || '01012345678';
-    const storeAddress = templateConfig.email_store_address || templateConfig.store_address_ar || 'المنصورة - شارع الإمام محمد عبده - ناصية آمون';
+    const supportPhone = templateConfig.email_support_phone || templateConfig.store_phone || '01554826209';
+    const storeAddress = templateConfig.email_store_address || templateConfig.store_address_ar || 'المنصورة – شارع الإمام محمد عبده – ناصية آمون';
     const securityNote = templateConfig.email_security_note || 'هذا الرمز صالح للاستخدام خلال 10 دقائق فقط. حفاظاً على أمانك، لا تشارك هذا الرمز مع أي شخص.';
     const accentColor = templateConfig.email_accent_color || '#F59E0B';
     const subject = (templateConfig.email_subject_template || `رمز تأكيد حسابك في متجر جو ستور ⚡ (كود: {code})`).replace('{code}', otpCode);

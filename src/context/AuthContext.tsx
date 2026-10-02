@@ -29,8 +29,6 @@ export function isAccountAdmin(u?: Partial<User> | null): boolean {
   if (u.role === 'admin') return true;
   const email = (u.email || '').toLowerCase().trim();
   if (email === 'abdolailah586@gmail.com' || email === 'admin@joestore.com') return true;
-  const phone = (u.phone || '').replace(/[\s\-\+]/g, '');
-  if (phone.includes('01554826209') || phone.includes('01012345678')) return true;
   return false;
 }
 
@@ -253,7 +251,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Fallback direct register
   const registerWithEmail = async (name: string, email: string, pass: string, phone: string): Promise<boolean> => {
-    const isOwner = email.trim().toLowerCase() === 'abdolailah586@gmail.com' || phone.includes('01554826209');
+    const isOwner = email.trim().toLowerCase() === 'abdolailah586@gmail.com' || email.trim().toLowerCase() === 'admin@joestore.com';
     const newUser: User = {
       id: `usr-${Date.now()}`,
       name,
