@@ -2,10 +2,11 @@
 import { neon } from '@neondatabase/serverless';
 import { Product, Order, CategoryKey, OrderStatus, PaymentMethod, PaymentStatus } from '../types';
 
-// Fallback connection string or from environment variables
+// Read connection string strictly from environment variables
 const DB_URL = 
   (typeof import.meta !== 'undefined' && import.meta.env?.VITE_DATABASE_URL) || 
-  'postgresql://neondb_owner:npg_iZDByh9KMPY5@ep-patient-cherry-b1hjbgjn-pooler.c-5.eu-central-1.aws.neon.tech/neondb?sslmode=require';
+  (typeof process !== 'undefined' && (process.env?.VITE_DATABASE_URL || process.env?.DATABASE_URL)) ||
+  '';
 
 const sql = neon(DB_URL);
 
