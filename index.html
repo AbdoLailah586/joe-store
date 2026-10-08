@@ -20,7 +20,32 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body class="bg-[#080C14] text-slate-100 antialiased selection:bg-amber-500 selection:text-black">
-    <div id="root"></div>
+    <div id="root">
+      <main id="store-loading" dir="rtl" style="min-height:100vh;display:grid;place-content:center;text-align:center;padding:24px;font-family:Arial,sans-serif;background:#080C14;color:#f1f5f9">
+        <h1 style="color:#fbbf24">JOE Store | جو ستور</h1>
+        <p id="store-loading-message">جاري تحميل المتجر…</p>
+        <button id="store-retry" type="button" hidden style="padding:12px 24px;border:0;border-radius:12px;background:#fbbf24;font-weight:bold;cursor:pointer">إعادة المحاولة</button>
+        <noscript>فعّل JavaScript في المتصفح لفتح المتجر.</noscript>
+      </main>
+    </div>
+    <script>
+      (function () {
+        function showRetry() {
+          var message = document.getElementById('store-loading-message');
+          var retry = document.getElementById('store-retry');
+          if (message && retry) {
+            message.textContent = 'تعذّر تحميل المتجر. تحقق من الاتصال وأعد المحاولة.';
+            retry.hidden = false;
+          }
+        }
+        document.getElementById('store-retry').addEventListener('click', function () {
+          window.location.reload();
+        });
+        window.addEventListener('error', showRetry, true);
+        window.addEventListener('unhandledrejection', showRetry);
+        window.setTimeout(showRetry, 15000);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

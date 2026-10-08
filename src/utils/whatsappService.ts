@@ -1,4 +1,5 @@
 import { Order, WhatsAppNotification, StoreSettings } from '../types';
+import { readStoredArray, writeStoredJson, isStoredNotification } from './browserStorage';
 
 export const defaultSettings: StoreSettings = {
   store_name_ar: 'جو ستور - JOE Store',
@@ -78,20 +79,16 @@ export const formatPhoneForWhatsApp = (rawPhone: string): string => {
 // Log a notification to local storage
 export const recordWhatsAppNotification = (notification: WhatsAppNotification) => {
   try {
-    const existing: WhatsAppNotification[] = JSON.parse(localStorage.getItem('joe_whatsapp_logs') || '[]');
+    const existing = readStoredArray('joe_whatsapp_logs', isStoredNotification);
     existing.unshift(notification);
-    localStorage.setItem('joe_whatsapp_logs', JSON.stringify(existing.slice(0, 100)));
+    writeStoredJson('joe_whatsapp_logs', existing.slice(0, 100));
   } catch (e) {
     console.error('Error saving WhatsApp notification log', e);
   }
 };
 
 export const getWhatsAppLogs = (): WhatsAppNotification[] => {
-  try {
-    return JSON.parse(localStorage.getItem('joe_whatsapp_logs') || '[]');
-  } catch (e) {
-    return [];
-  }
+  return readStoredArray('joe_whatsapp_logs', isStoredNotification);
 };
 
 // Authenticate with WhatsApp Pro Automation server if needed

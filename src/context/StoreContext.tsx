@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { 
   Product, 
   CartItem, 
@@ -22,6 +22,10 @@ import {
   buildReviewRequestMessage
 } from '../utils/whatsappService';
 import { neonDb, ActiveCartRecord } from '../services/neonDb';
+import {
+  readStorage, writeStorage, removeStorage, writeStoredJson, readStoredArray, readStoredSettings,
+  isStoredProduct, isStoredCartItem, isStoredOrder
+} from '../utils/browserStorage';
 
 export type AppTab = 
   | 'home' 
@@ -149,61 +153,74 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 };
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Products State with automatic catalog version sync
+  const CURRENT_VERSION = 'v4_full_excel_catalog_2245';
+  const productCacheDirty = useRef(false);
+  const locallyEditedIds = useRef(new Set<string>());
+  const locallyDeletedIds = useRef(new Set(readStoredArray('joe_store_product_deletions',
+    (value): value is string => typeof value === 'string')));
+  // The bundled catalog is already available offline. Cache only administrator edits,
+  // leaving browser storage available for carts, account preferences and orders.
   const [products, setProducts] = useState<Product[]>(() => {
-    const CURRENT_VERSION = 'v4_full_excel_catalog_2245';
-    const savedVersion = localStorage.getItem('joe_store_catalog_ver');
-    const saved = localStorage.getItem('joe_store_products');
-    
-    if (savedVersion === CURRENT_VERSION && saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 2200 && parsed.some(p => p.id === 'prod-joyroom-jr-t03s-plus')) {
-          return parsed;
+    const savedVersion = readStorage('joe_store_catalog_ver');
+    const saved = readStoredArray('joe_store_products', isStoredProduct);
+    if (saved.length) {
+      const seedById = new Map(initialProducts.map(product => [product.id, product]));
+      for (const product of saved) {
+        if (JSON.stringify(product) !== JSON.stringify(seedById.get(product.id))) {
+          locallyEditedIds.current.add(product.id);
         }
-      } catch (e) {}
+      }
+      if (saved.length === initialProducts.length && locallyEditedIds.current.size === 0
+        && locallyDeletedIds.current.size === 0) {
+        // This is an exact duplicate of the bundled seed, not administrator data.
+        removeStorage('joe_store_products');
+        return initialProducts;
+      }
+      if (savedVersion === CURRENT_VERSION && saved.length >= 2200) {
+        const savedIds = new Set(saved.map(product => product.id));
+        initialProducts.forEach(product => {
+          if (!savedIds.has(product.id)) locallyDeletedIds.current.add(product.id);
+        });
+        return saved;
+      }
+      // Older/partial caches may contain administrator edits. Retain them while
+      // filling missing catalog entries from the current bundled inventory.
+      const cachedById = new Map(saved.map(product => [product.id, product]));
+      const seededIds = new Set(initialProducts.map(product => product.id));
+      return [
+        ...saved.filter(product => !seededIds.has(product.id)),
+        ...initialProducts.filter(product => !locallyDeletedIds.current.has(product.id))
+          .map(product => cachedById.get(product.id) || product)
+      ];
     }
-    
-    // Refresh to latest enriched catalog with Joyroom JR-T03S Plus & all 2,233+ Excel items
-    try {
-      localStorage.setItem('joe_store_catalog_ver', CURRENT_VERSION);
-      localStorage.setItem('joe_store_products', JSON.stringify(initialProducts));
-    } catch (err) {
-      console.warn('localStorage quota reached when caching catalog, operating in memory', err);
-    }
-    return initialProducts;
+    return initialProducts.filter(product => !locallyDeletedIds.current.has(product.id));
   });
 
-  // Save products to local storage safely
   useEffect(() => {
-    try {
-      localStorage.setItem('joe_store_products', JSON.stringify(products));
-    } catch (err) {
-      console.warn('localStorage quota reached when syncing products', err);
+    if (productCacheDirty.current) {
+      if (writeStoredJson('joe_store_products', products)) {
+        writeStorage('joe_store_catalog_ver', CURRENT_VERSION);
+      }
+      writeStoredJson('joe_store_product_deletions', [...locallyDeletedIds.current]);
+      productCacheDirty.current = false;
     }
   }, [products]);
 
   // Session ID for behavioral personalization & active cart signals
   const [sessionId] = useState<string>(() => {
-    let sid = localStorage.getItem('joe_session_id');
+    let sid = readStorage('joe_session_id');
     if (!sid) {
       sid = `sess_${Math.random().toString(36).substring(2, 9)}_${Date.now()}`;
-      localStorage.setItem('joe_session_id', sid);
+      writeStorage('joe_session_id', sid);
     }
     return sid;
   });
 
   // Cart State
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('joe_store_cart');
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
-    }
-    return [];
-  });
+  const [cart, setCart] = useState<CartItem[]>(() => readStoredArray('joe_store_cart', isStoredCartItem));
 
   useEffect(() => {
-    localStorage.setItem('joe_store_cart', JSON.stringify(cart));
+    writeStoredJson('joe_store_cart', cart);
     const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
     neonDb.syncActiveCart({
       sessionId,
@@ -213,29 +230,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [cart, sessionId]);
 
   // Wishlist State
-  const [wishlist, setWishlist] = useState<string[]>(() => {
-    const saved = localStorage.getItem('joe_store_wishlist');
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
-    }
-    return [];
-  });
+  const [wishlist, setWishlist] = useState<string[]>(() =>
+    readStoredArray('joe_store_wishlist', (value): value is string => typeof value === 'string'));
 
   useEffect(() => {
-    localStorage.setItem('joe_store_wishlist', JSON.stringify(wishlist));
+    writeStoredJson('joe_store_wishlist', wishlist);
   }, [wishlist]);
 
   // Orders State
-  const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem('joe_store_orders');
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
-    }
-    return [];
-  });
+  const [orders, setOrders] = useState<Order[]>(() => readStoredArray('joe_store_orders', isStoredOrder));
 
   useEffect(() => {
-    localStorage.setItem('joe_store_orders', JSON.stringify(orders));
+    writeStoredJson('joe_store_orders', orders);
   }, [orders]);
 
   // Active & Abandoned Carts State for Admin CRM
@@ -255,7 +261,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // 1. Fetch live products from Neon
     neonDb.getProducts({ limit: 100, includeHidden: true }).then(({ products: dbProds }) => {
       if (dbProds && dbProds.length > 0) {
-        setProducts(dbProds);
+        setProducts(previous => {
+          const previousById = new Map(previous.map(product => [product.id, product]));
+          const dbIds = new Set(dbProds.map(product => product.id));
+          return [
+            ...dbProds.filter(product => !locallyDeletedIds.current.has(product.id))
+              .map(product => locallyEditedIds.current.has(product.id)
+                ? previousById.get(product.id) || product : product),
+            ...previous.filter(product => locallyEditedIds.current.has(product.id)
+              && !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id))
+          ];
+        });
       }
     }).catch(console.warn);
 
@@ -272,35 +288,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Settings State
   const [settings, setSettings] = useState<StoreSettings>(() => {
-    const saved = localStorage.getItem('joe_store_settings');
-    if (saved) {
-      try { 
-        const parsed = JSON.parse(saved);
-        // Force migration of outdated TikTok URLs to official @joestore2026
-        const tiktok_url = (!parsed.tiktok_url || (parsed.tiktok_url.includes('@joestore') && !parsed.tiktok_url.includes('2026')))
-          ? 'https://www.tiktok.com/@joestore2026'
-          : parsed.tiktok_url;
-
-        const merged: StoreSettings = { 
-          ...defaultSettings, 
-          ...parsed,
-          tiktok_url
-        };
-
-        if (parsed.tiktok_url !== tiktok_url) {
-          localStorage.setItem('joe_store_settings', JSON.stringify(merged));
-        }
-
-        return merged;
-      } catch (e) {}
+    const merged = readStoredSettings(defaultSettings);
+    if (!merged.tiktok_url || (merged.tiktok_url.includes('@joestore') && !merged.tiktok_url.includes('2026'))) {
+      merged.tiktok_url = 'https://www.tiktok.com/@joestore2026';
+      writeStoredJson('joe_store_settings', merged);
     }
-    return defaultSettings;
+    return merged;
   });
 
   const updateSettings = (newSettings: Partial<StoreSettings>) => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings };
-      localStorage.setItem('joe_store_settings', JSON.stringify(updated));
+      writeStoredJson('joe_store_settings', updated);
       return updated;
     });
   };
@@ -440,6 +439,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       created_at: new Date().toISOString().split('T')[0]
     };
 
+    productCacheDirty.current = true;
+    locallyEditedIds.current.add(fullProd.id);
+    locallyDeletedIds.current.delete(fullProd.id);
     setProducts(prev => [fullProd, ...prev]);
   };
 
@@ -472,11 +474,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       created_at: new Date().toISOString().split('T')[0]
     }));
 
+    productCacheDirty.current = true;
+    fullProducts.forEach(product => {
+      locallyEditedIds.current.add(product.id);
+      locallyDeletedIds.current.delete(product.id);
+    });
     setProducts(prev => [...fullProducts, ...prev]);
     neonDb.bulkInsertProducts(fullProducts).catch(console.warn);
   };
 
   const updateProduct = (id: string, updated: Partial<Product>) => {
+    productCacheDirty.current = true;
+    locallyEditedIds.current.add(id);
     setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updated } : p));
     neonDb.updateProduct(id, {
       price: updated.price,
@@ -488,6 +497,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const toggleProductVisibility = async (id: string, isActive: boolean): Promise<boolean> => {
+    productCacheDirty.current = true;
+    locallyEditedIds.current.add(id);
     setProducts(prev => prev.map(p => p.id === id ? { ...p, is_active: isActive, in_stock: isActive && p.stock > 0 } : p));
     return await neonDb.toggleProductVisibility(id, isActive);
   };
@@ -506,6 +517,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const deleteProduct = (id: string) => {
+    productCacheDirty.current = true;
+    locallyDeletedIds.current.add(id);
     setProducts(prev => prev.filter(p => p.id !== id));
   };
 
@@ -520,6 +533,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       name_en: `${target.name_en} (Copy)`,
       created_at: new Date().toISOString().split('T')[0]
     };
+    productCacheDirty.current = true;
+    locallyEditedIds.current.add(clone.id);
     setProducts(prev => [clone, ...prev]);
   };
 

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { neonDb } from '../services/neonDb';
+import { readStoredJson, readStoredArray, writeStoredJson, removeStorage, isStoredUser } from '../utils/browserStorage';
 
 export interface UserAddress {
   id: string;
@@ -59,17 +60,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('joe_store_user');
-    if (saved) {
-      try { 
-        const parsed = JSON.parse(saved);
-        if (isAccountAdmin(parsed)) {
-          parsed.role = 'admin';
-        }
-        return parsed;
-      } catch (e) {}
+    const saved = readStoredJson<User | null>('joe_store_user', null, isStoredUser);
+    if (saved && isAccountAdmin(saved)) {
+      return { ...saved, role: 'admin' };
     }
-    return null;
+    return saved;
   });
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -78,9 +73,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem('joe_store_user', JSON.stringify(user));
+      writeStoredJson('joe_store_user', user);
     } else {
-      localStorage.removeItem('joe_store_user');
+      removeStorage('joe_store_user');
     }
   }, [user]);
 
@@ -202,7 +197,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     // Local fallback check
-    const registeredUsers: any[] = JSON.parse(localStorage.getItem('joe_registered_users') || '[]');
+    const registeredUsers = readStoredArray('joe_registered_users', isStoredUser);
     const found = registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
 
     if (found && (!found.password || found.password === pass)) {
@@ -264,9 +259,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       created_at: new Date().toISOString()
     };
 
-    const registeredUsers: any[] = JSON.parse(localStorage.getItem('joe_registered_users') || '[]');
+    const registeredUsers = readStoredArray('joe_registered_users', isStoredUser);
     registeredUsers.push({ ...newUser, password: pass });
-    localStorage.setItem('joe_registered_users', JSON.stringify(registeredUsers));
+    writeStoredJson('joe_registered_users', registeredUsers);
 
     setUser(newUser);
     closeAuthModal();
@@ -286,7 +281,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updatedUser.role = 'admin';
       }
       setUser(updatedUser);
-      localStorage.setItem('joe_store_user', JSON.stringify(updatedUser));
+      writeStoredJson('joe_store_user', updatedUser);
 
       // Sync to Neon DB
       await neonDb.updateUserProfile(user.id, {
@@ -325,7 +320,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updated.role = 'admin';
       }
       setUser(updated);
-      localStorage.setItem('joe_store_user', JSON.stringify(updated));
+      writeStoredJson('joe_store_user', updated);
       await neonDb.updateUserProfile(user.id, { email: clean });
       return { success: true };
     } catch (err: any) {
@@ -338,7 +333,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!user) return { success: false, error: 'غير مسجل دخول' };
     try {
       await neonDb.deleteUser(user.id);
-      localStorage.removeItem('joe_store_user');
+      removeStorage('joe_store_user');
       setUser(null);
       return { success: true };
     } catch (err: any) {

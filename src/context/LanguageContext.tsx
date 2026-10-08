@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { readStorage, writeStorage } from '../utils/browserStorage';
 
 export type Language = 'ar' | 'en';
 
@@ -199,12 +200,12 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('joe_store_lang');
+    const saved = readStorage('joe_store_lang');
     return (saved === 'en' || saved === 'ar') ? saved : 'ar';
   });
 
   useEffect(() => {
-    localStorage.setItem('joe_store_lang', language);
+    writeStorage('joe_store_lang', language);
     document.documentElement.lang = language;
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
   }, [language]);
