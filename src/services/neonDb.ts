@@ -68,7 +68,8 @@ function mapRowToProduct(row: any): Product {
     available_colors: details.available_colors || (Array.isArray(row.colors) ? row.colors : []),
     price: Number(row.price),
     original_price: row.old_price ? Number(row.old_price) : undefined,
-    cost_price: row.cost_price != null ? Number(row.cost_price) : undefined,
+    cost_price: details.cost_price != null ? Number(details.cost_price)
+      : row.cost_price != null ? Number(row.cost_price) : undefined,
     discount_percentage: row.old_price && Number(row.old_price) > Number(row.price) 
       ? Math.round(((Number(row.old_price) - Number(row.price)) / Number(row.old_price)) * 100) 
       : undefined,
@@ -274,7 +275,7 @@ export const neonDb = {
           params.push(JSON.stringify(product.images));
         }
         const details = Object.fromEntries(Object.entries(product).filter(([key]) =>
-          !['id', 'price', 'stock', 'cost_price', 'specs', 'images'].includes(key)));
+          !['id', 'price', 'stock', 'specs', 'images'].includes(key)));
         const existingSpecs = product.specs === undefined ? "COALESCE(specs, '{}'::jsonb)"
           : "COALESCE((SELECT jsonb_object_agg(key,value) FROM jsonb_each(COALESCE(specs, '{}'::jsonb)) WHERE left(key,2) = '__'), '{}'::jsonb)";
         setParts.push(`specs = jsonb_set(${existingSpecs} || $${pIdx + 1}::jsonb,

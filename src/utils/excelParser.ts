@@ -271,6 +271,7 @@ export const exportCatalogToExcel = (products: Product[]) => {
     'المساحة': p.storage || '',
     'اللون': p.color_ar || '',
     'السعر (ج.م)': p.price,
+    'سعر التاجر الأصلي': p.cost_price ?? '',
     'السعر الأصلي': p.original_price || '',
     'المخزون': p.stock,
     'المخزون الأصلي': p.raw_source_stock ?? p.stock,

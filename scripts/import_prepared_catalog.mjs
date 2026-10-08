@@ -42,7 +42,8 @@ const records = products.map(p => {
     is_featured: false, is_preowned: p.condition === 'mint' || p.condition === 'used_good',
     battery_health: null, warranty: null,
     colors: p.available_colors || [], storage_options: p.available_storages || [], images: p.images,
-    specs: { ...specs, __product_data: displayData }, discount_label: null
+    // Currency columns have scale 2; JSONB retains the exact spreadsheet cost.
+    specs: { ...specs, __product_data: { ...displayData, cost_price } }, discount_label: null
   };
 });
 
@@ -78,7 +79,7 @@ if (apply) {
     sql.query(`INSERT INTO products (${columns}) SELECT ${columns} FROM joe_catalog_stage
       ON CONFLICT (id) DO UPDATE SET ${updateColumns.map(column => `${column}=EXCLUDED.${column}`).join(',')},updated_at=NOW()`),
     sql.query(`SELECT count(*)::int AS matched_rows,
-      count(*) FILTER (WHERE p.price <> s.price OR p.cost_price <> s.cost_price
+      count(*) FILTER (WHERE p.price <> s.price OR p.cost_price <> round(s.cost_price, 2)
         OR p.stock_quantity <> s.stock_quantity OR p.name_ar <> s.name_ar
         OR p.images <> s.images OR p.specs <> s.specs OR p.is_active <> s.is_active)::int AS mismatches
       FROM products p JOIN joe_catalog_stage s USING(id)`)
