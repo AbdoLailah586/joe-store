@@ -34,6 +34,15 @@ export const Footer: React.FC = () => {
   return (
     <>
       <footer className="bg-[#05080E] border-t border-amber-500/20 text-slate-400 font-cairo text-xs mt-16 pb-20 md:pb-6">
+        {/* Amazon-style Back to Top button */}
+        <div 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="w-full py-3.5 bg-[#131B2E] hover:bg-[#1C2742] text-slate-300 hover:text-amber-400 text-xs font-bold text-center cursor-pointer transition-colors border-b border-white/5 select-none flex items-center justify-center gap-2"
+        >
+          <span>الرجوع إلى أعلى الصفحة</span>
+          <span className="text-amber-400">↑</span>
+        </div>
+
         {/* 1. Value Props Banner */}
         <div className="border-b border-white/5 py-8 px-4 bg-slate-900/40">
           <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">

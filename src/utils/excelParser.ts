@@ -111,39 +111,79 @@ export const parseExcelFile = (file: File): Promise<ParsedProductResult> => {
             return '';
           };
 
-          const name_ar = String(getVal('name_ar', 'اسم المنتج بالعربي', 'اسم المنتج', 'name') || '').trim();
+          // Name extraction (supports POS 'اسم الصنف' and standard 'name_ar')
+          const name_ar = String(getVal('اسم الصنف', 'name_ar', 'اسم المنتج بالعربي', 'اسم المنتج', 'name') || '').trim();
           const name_en = String(getVal('name_en', 'اسم المنتج بالإنجليزي', 'english name') || name_ar).trim();
-          const brand = String(getVal('brand', 'الماركة', 'الشركة') || 'Generic').trim();
           
-          let rawCategory = String(getVal('category', 'القسم', 'التصنيف') || 'accessories').toLowerCase().trim();
+          // Auto detect brand
+          let detectedBrand = String(getVal('brand', 'الماركة', 'الشركة') || '').trim();
+          if (!detectedBrand || detectedBrand === 'Generic') {
+            const lower = name_ar.toLowerCase();
+            if (lower.includes('joyroom') || lower.includes('jr-') || lower.includes('جويروم')) detectedBrand = 'Joyroom';
+            else if (lower.includes('oraimo') || lower.includes('اورايمو')) detectedBrand = 'Oraimo';
+            else if (lower.includes('anker') || lower.includes('انكر') || lower.includes('أنكر')) detectedBrand = 'Anker';
+            else if (lower.includes('apple') || lower.includes('iphone') || lower.includes('آيفون') || lower.includes('ايفون') || lower.includes('airpod')) detectedBrand = 'Apple';
+            else if (lower.includes('samsung') || lower.includes('سامسونج') || lower.includes('galaxy')) detectedBrand = 'Samsung';
+            else if (lower.includes('pitaka')) detectedBrand = 'Pitaka';
+            else if (lower.includes('green lion') || lower.includes('lion')) detectedBrand = 'Green Lion';
+            else detectedBrand = 'JOE Store';
+          }
+          const brand = detectedBrand;
+          
+          let rawCategory = String(getVal('category', 'القسم', 'التصنيف') || '').toLowerCase().trim();
           let category: CategoryKey = 'accessories';
-          if (rawCategory.includes('smart') || rawCategory.includes('phone') || rawCategory.includes('موبايل') || rawCategory.includes('هاتف')) category = 'smartphones';
-          else if (rawCategory.includes('watch') || rawCategory.includes('ساع')) category = 'smartwatches';
-          else if (rawCategory.includes('audio') || rawCategory.includes('ear') || rawCategory.includes('سماع')) category = 'audio';
-          else if (rawCategory.includes('charg') || rawCategory.includes('cable') || rawCategory.includes('شاحن') || rawCategory.includes('كابل') || rawCategory.includes('سلك')) category = 'chargers_cables';
-          else if (rawCategory.includes('power') || rawCategory.includes('بانك') || rawCategory.includes('باور')) category = 'powerbanks';
-          else if (rawCategory.includes('case') || rawCategory.includes('cover') || rawCategory.includes('جراب') || rawCategory.includes('حماي') || rawCategory.includes('سكرين')) category = 'cases_protection';
+          const nameLower = name_ar.toLowerCase();
+
+          if (rawCategory.includes('smart') || rawCategory.includes('phone') || rawCategory.includes('موبايل') || rawCategory.includes('هاتف') || nameLower.includes('iphone') || nameLower.includes('galaxy')) category = 'smartphones';
+          else if (rawCategory.includes('watch') || rawCategory.includes('ساع') || nameLower.includes('watch') || nameLower.includes('ساعة')) category = 'smartwatches';
+          else if (rawCategory.includes('audio') || rawCategory.includes('ear') || rawCategory.includes('سماع') || nameLower.includes('airpod') || nameLower.includes('buds') || nameLower.includes('سماعة')) category = 'audio';
+          else if (rawCategory.includes('charg') || rawCategory.includes('cable') || rawCategory.includes('شاحن') || rawCategory.includes('كابل') || rawCategory.includes('سلك') || nameLower.includes('cable') || nameLower.includes('plug') || nameLower.includes('charge')) category = 'chargers_cables';
+          else if (rawCategory.includes('power') || rawCategory.includes('بانك') || rawCategory.includes('باور') || nameLower.includes('power')) category = 'powerbanks';
+          else if (rawCategory.includes('case') || rawCategory.includes('cover') || rawCategory.includes('جراب') || rawCategory.includes('حماي') || rawCategory.includes('سكرين') || nameLower.includes('screen') || nameLower.includes('cover')) category = 'cases_protection';
 
           let rawCondition = String(getVal('condition', 'الحالة') || 'brand_new').toLowerCase().trim();
           let condition: ProductCondition = 'brand_new';
           if (rawCondition.includes('mint') || rawCondition.includes('كسر') || rawCondition.includes('زيرو')) condition = 'mint';
           else if (rawCondition.includes('used') || rawCondition.includes('مستعمل') || rawCondition.includes('استعمال')) condition = 'used_good';
 
-          const price = Number(getVal('price', 'السعر')) || 0;
-          const original_price = Number(getVal('original_price', 'السعر قبل الخصم', 'القديم')) || 0;
-          const stock = Number(getVal('stock', 'الكمية', 'المخزون')) || 1;
+          // Price extraction (supports POS 'سعر البيع' and 'price')
+          const price = Number(getVal('سعر البيع', 'price', 'السعر')) || 0;
+          const cost_price = Number(getVal('متوسط سعر الشراء', 'cost_price', 'آخر سعر شراء')) || 0;
+          const original_price = Number(getVal('original_price', 'السعر قبل الخصم', 'القديم')) || (price > 0 ? Math.round(price * 1.25) : 0);
+          const stock = Number(getVal('إجمالى الكمية', 'stock', 'الكمية', 'المخزون')) || 5;
           const battery_health = Number(getVal('battery_health', 'نسبة البطارية', 'البطارية')) || null;
           const storage = String(getVal('storage', 'المساحة', 'الذاكرة') || '').trim();
           const color_ar = String(getVal('color_ar', 'اللون بالعربي', 'اللون') || '').trim();
           const color_en = String(getVal('color_en', 'اللون بالإنجليزي') || color_ar).trim();
-          const warranty_months = Number(getVal('warranty_months', 'شهور الضمان', 'الضمان')) || 6;
+          const warranty_months = Number(getVal('warranty_months', 'شهور الضمان', 'الضمان')) || 12;
+          const barcode = String(getVal('باركود', 'كود الصنف 1', 'رقم الصنف', 'barcode', 'sku') || '').trim();
           
+          // Image assignment based on category/brand
           const rawImages = String(getVal('images', 'الصور', 'روابط الصور') || '').trim();
-          const images = rawImages ? rawImages.split(',').map(s => s.trim()).filter(Boolean) : [
+          let defaultImages = [
             'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'
           ];
+          if (category === 'audio') {
+            defaultImages = [
+              'https://media.btech.com/catalogs/5/b/3/0/5b30682c1bde5818abbcb3ce8d3a975ba8e2ef22_41k4ezc8fal._ac_sl1000_.jpg',
+              'https://2b.com.eg/media/catalog/product/cache/d33f1c152d6eb7e8608a208d80f21a14/h/p/hp37t-min.jpg',
+              'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80'
+            ];
+          } else if (category === 'chargers_cables') {
+            defaultImages = [
+              'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=800&q=80',
+              'https://images.unsplash.com/photo-1622445262464-84b1ebae0705?auto=format&fit=crop&w=800&q=80'
+            ];
+          } else if (category === 'cases_protection') {
+            defaultImages = [
+              'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=800&q=80',
+              'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=800&q=80'
+            ];
+          }
 
-          const description_ar = String(getVal('description_ar', 'الوصف بالعربي', 'الوصف') || `${name_ar} متوفر الآن لدى متجر جو ستور`).trim();
+          const images = rawImages ? rawImages.split(',').map(s => s.trim()).filter(Boolean) : defaultImages;
+
+          const description_ar = String(getVal('description_ar', 'الوصف بالعربي', 'الوصف') || `${name_ar} متوفر الآن لدى متجر جو ستور بأفضل سعر وضمان معتمد`).trim();
           const description_en = String(getVal('description_en', 'الوصف بالإنجليزي') || `${name_en} available now at JOE Store`).trim();
 
           if (!name_ar) {
@@ -158,7 +198,8 @@ export const parseExcelFile = (file: File): Promise<ParsedProductResult> => {
 
           const product: Partial<Product> = {
             id: `prod-excel-${Date.now()}-${index}`,
-            sku: `JOE-EXL-${Math.floor(1000 + Math.random() * 9000)}`,
+            sku: barcode || `JOE-EXL-${Math.floor(1000 + Math.random() * 9000)}`,
+            asin: `B0${(barcode || '78912').replace(/[^0-9A-Z]/gi, '').slice(0, 8)}`,
             name_ar,
             name_en,
             brand,
@@ -169,6 +210,7 @@ export const parseExcelFile = (file: File): Promise<ParsedProductResult> => {
             color_ar: color_ar || undefined,
             color_en: color_en || undefined,
             price,
+            cost_price,
             original_price: original_price > price ? original_price : undefined,
             discount_percentage: original_price > price ? Math.round(((original_price - price) / original_price) * 100) : undefined,
             stock,
@@ -177,6 +219,7 @@ export const parseExcelFile = (file: File): Promise<ParsedProductResult> => {
             description_ar,
             description_en,
             specs: {
+              'الماركة': brand,
               'القسم': category,
               'الحالة': condition === 'brand_new' ? 'جديد متبرشم' : condition === 'mint' ? 'كسر زيرو' : 'استعمال ممتاز',
               ...(storage ? { 'المساحة': storage } : {}),

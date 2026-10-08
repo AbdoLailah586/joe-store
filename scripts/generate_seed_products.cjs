@@ -1,4 +1,14 @@
-import { Product } from '../types';
+const fs = require('fs');
+const xlsx = require('xlsx');
+
+// Read the excel file
+const wb = xlsx.readFile('pyVnA7LPDzn4VTOH8Pe0KKhjKijPlM5bWqjcHyM9euaamNaa27.xlsx');
+const sheet = wb.Sheets[wb.SheetNames[0]];
+const excelRows = xlsx.utils.sheet_to_json(sheet, { header: 1 });
+
+console.log('Generating enriched seed products catalog...');
+
+const seedProductsContent = `import { Product } from '../types';
 
 export const initialProducts: Product[] = [
   // 1. STAR PRODUCT: JOYROOM JR-T03S PLUS (From the User's Amazon Link: ASIN B0CH8G5DL8)
@@ -713,3 +723,7 @@ export const initialProducts: Product[] = [
     created_at: '2026-03-12'
   }
 ];
+`;
+
+fs.writeFileSync('src/data/seedProducts.ts', seedProductsContent, 'utf8');
+console.log('Successfully updated src/data/seedProducts.ts with rich catalog!');

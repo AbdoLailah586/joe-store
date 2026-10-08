@@ -10,9 +10,40 @@ export type CategoryKey =
 
 export type ProductCondition = 'brand_new' | 'mint' | 'used_good';
 
+export interface ProductFeatureBanner {
+  title: string;
+  subtitle?: string;
+  description: string;
+  image_url: string;
+  tag?: string;
+}
+
+export interface CustomerReviewItem {
+  id: string;
+  author: string;
+  location?: string;
+  rating: number;
+  date: string;
+  title: string;
+  comment: string;
+  verified_purchase: boolean;
+  helpful_count: number;
+  avatar?: string;
+}
+
+export interface RatingBreakdown {
+  five_star: number;
+  four_star: number;
+  three_star: number;
+  two_star: number;
+  one_star: number;
+}
+
 export interface Product {
   id: string;
   sku?: string;
+  asin?: string;
+  model_name?: string;
   name_ar: string;
   name_en: string;
   brand: string;
@@ -43,6 +74,14 @@ export interface Product {
   is_active?: boolean;
   cost_price?: number;
   created_at?: string;
+  bought_past_month?: number;
+  about_item?: string[];
+  quick_specs?: { [key: string]: string };
+  feature_banners?: ProductFeatureBanner[];
+  frequently_bought_together?: string[];
+  rating_breakdown?: RatingBreakdown;
+  customer_reviews?: CustomerReviewItem[];
+  model_variants?: { name: string; id?: string; price?: number }[];
 }
 
 export interface CartItem {

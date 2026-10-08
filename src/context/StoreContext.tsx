@@ -149,15 +149,24 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 };
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Products State
+  // Products State with automatic catalog version sync
   const [products, setProducts] = useState<Product[]>(() => {
+    const CURRENT_VERSION = 'v3_amazon_joyroom_enriched';
+    const savedVersion = localStorage.getItem('joe_store_catalog_ver');
     const saved = localStorage.getItem('joe_store_products');
-    if (saved) {
+    
+    if (savedVersion === CURRENT_VERSION && saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed.some(p => p.id === 'prod-joyroom-jr-t03s-plus')) {
+          return parsed;
+        }
       } catch (e) {}
     }
+    
+    // Refresh to latest enriched catalog with Joyroom JR-T03S Plus & Excel items
+    localStorage.setItem('joe_store_catalog_ver', CURRENT_VERSION);
+    localStorage.setItem('joe_store_products', JSON.stringify(initialProducts));
     return initialProducts;
   });
 
