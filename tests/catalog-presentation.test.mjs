@@ -102,6 +102,13 @@ test('unknown direct product URL renders a not-found result rather than another 
   assert.doesNotMatch(html, /سماعة مسجلة/);
 });
 
+test('direct product links show loading until the complete catalog arrives', () => {
+  setContext({ selectedProductId: 'not-in-seed', products: [], isCatalogLoading: true });
+  const html = renderToString(React.createElement(ProductDetails));
+  assert.match(html, /جاري تحميل بيانات المنتج/);
+  assert.doesNotMatch(html, /هذا المنتج غير موجود/);
+});
+
 test('full details expose sources and uncertainty, hide reserved metadata and zero-review stars', () => {
   setContext();
   const html = renderToString(React.createElement(ProductDetails));

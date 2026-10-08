@@ -42,7 +42,8 @@ import { Product } from '../types';
 export const ProductDetails: React.FC = () => {
   const { 
     selectedProductId, 
-    products, 
+    products,
+    isCatalogLoading,
     addToCart, 
     isInWishlist, 
     toggleWishlist, 
@@ -114,9 +115,11 @@ export const ProductDetails: React.FC = () => {
           <Sparkles className="w-8 h-8 text-amber-400" />
         </div>
         <h2 className="text-xl font-bold text-white font-cairo">
-          {language === 'ar' ? 'عفواً، هذا المنتج غير موجود أو غير متاح حالياً' : 'This product could not be found or is currently unavailable'}
+          {isCatalogLoading
+            ? (language === 'ar' ? 'جاري تحميل بيانات المنتج…' : 'Loading product details…')
+            : (language === 'ar' ? 'عفواً، هذا المنتج غير موجود أو غير متاح حالياً' : 'This product could not be found or is currently unavailable')}
         </h2>
-        {(
+        {!isCatalogLoading && (
           <button
             onClick={() => navigate('catalog')}
             className="px-6 py-2.5 rounded-xl bg-amber-500 text-black font-bold font-cairo hover:bg-amber-400 transition-colors shadow-glow-gold"

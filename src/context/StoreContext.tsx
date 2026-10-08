@@ -40,6 +40,7 @@ export type AppTab =
 
 interface StoreContextType {
   products: Product[];
+  isCatalogLoading: boolean;
   addProduct: (product: Partial<Product>) => void;
   bulkAddProducts: (newProducts: Partial<Product>[]) => void;
   updateProduct: (id: string, updated: Partial<Product>) => void;
@@ -156,6 +157,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const CURRENT_VERSION = 'v5_researched_excel_catalog';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
   const locallyEditedIds = useRef(new Set<string>());
   const locallyDeletedIds = useRef(new Set(readStoredArray('joe_store_product_deletions',
     (value): value is string => typeof value === 'string')));
@@ -230,7 +232,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       sessionId,
       items: cart,
       subtotal
-    }).catch(console.warn);
+    }).catch(console.warn).finally(() => setIsCatalogLoading(false));
   }, [cart, sessionId]);
 
   // Wishlist State
@@ -852,6 +854,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <StoreContext.Provider
       value={{
         products,
+        isCatalogLoading,
         addProduct,
         bulkAddProducts,
         updateProduct,
