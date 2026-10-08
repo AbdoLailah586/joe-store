@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Filter, 
   SlidersHorizontal, 
@@ -36,6 +36,7 @@ export const Catalog: React.FC = () => {
   const [selectedStorage, setSelectedStorage] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'featured' | 'price_asc' | 'price_desc' | 'rating' | 'newest'>('featured');
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState<number>(36);
 
   // Extract unique brands and storages
   const brands = useMemo(() => {
@@ -100,6 +101,15 @@ export const Catalog: React.FC = () => {
       return (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0);
     });
   }, [products, selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy]);
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(36);
+  }, [selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy]);
+
+  const displayedProducts = useMemo(() => {
+    return filteredProducts.slice(0, visibleCount);
+  }, [filteredProducts, visibleCount]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
@@ -371,10 +381,29 @@ export const Catalog: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {displayedProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+
+              {visibleCount < filteredProducts.length && (
+                <div className="flex flex-col items-center justify-center gap-3 pt-6 pb-4 border-t border-white/5">
+                  <p className="text-xs text-slate-400 font-cairo">
+                    {isAr 
+                      ? `تم عرض ${Math.min(visibleCount, filteredProducts.length)} من أصل ${filteredProducts.length.toLocaleString('ar-EG')} منتج` 
+                      : `Showing ${Math.min(visibleCount, filteredProducts.length)} of ${filteredProducts.length.toLocaleString()} products`}
+                  </p>
+                  <button
+                    onClick={() => setVisibleCount(prev => prev + 36)}
+                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black text-sm shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 active:scale-95 cursor-pointer font-cairo"
+                  >
+                    <span>{isAr ? 'عرض المزيد من المنتجات (+36)' : 'Load More Products (+36)'}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </main>

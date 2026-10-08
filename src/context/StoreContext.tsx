@@ -151,28 +151,36 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Products State with automatic catalog version sync
   const [products, setProducts] = useState<Product[]>(() => {
-    const CURRENT_VERSION = 'v3_amazon_joyroom_enriched';
+    const CURRENT_VERSION = 'v4_full_excel_catalog_2245';
     const savedVersion = localStorage.getItem('joe_store_catalog_ver');
     const saved = localStorage.getItem('joe_store_products');
     
     if (savedVersion === CURRENT_VERSION && saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0 && parsed.some(p => p.id === 'prod-joyroom-jr-t03s-plus')) {
+        if (Array.isArray(parsed) && parsed.length >= 2200 && parsed.some(p => p.id === 'prod-joyroom-jr-t03s-plus')) {
           return parsed;
         }
       } catch (e) {}
     }
     
-    // Refresh to latest enriched catalog with Joyroom JR-T03S Plus & Excel items
-    localStorage.setItem('joe_store_catalog_ver', CURRENT_VERSION);
-    localStorage.setItem('joe_store_products', JSON.stringify(initialProducts));
+    // Refresh to latest enriched catalog with Joyroom JR-T03S Plus & all 2,233+ Excel items
+    try {
+      localStorage.setItem('joe_store_catalog_ver', CURRENT_VERSION);
+      localStorage.setItem('joe_store_products', JSON.stringify(initialProducts));
+    } catch (err) {
+      console.warn('localStorage quota reached when caching catalog, operating in memory', err);
+    }
     return initialProducts;
   });
 
-  // Save products to local storage
+  // Save products to local storage safely
   useEffect(() => {
-    localStorage.setItem('joe_store_products', JSON.stringify(products));
+    try {
+      localStorage.setItem('joe_store_products', JSON.stringify(products));
+    } catch (err) {
+      console.warn('localStorage quota reached when syncing products', err);
+    }
   }, [products]);
 
   // Session ID for behavioral personalization & active cart signals
