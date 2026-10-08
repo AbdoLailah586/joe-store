@@ -8,7 +8,7 @@ export type CategoryKey =
   | 'cases_protection'
   | 'accessories';
 
-export type ProductCondition = 'brand_new' | 'mint' | 'used_good';
+export type ProductCondition = 'brand_new' | 'mint' | 'used_good' | 'unknown';
 
 export interface ProductFeatureBanner {
   title: string;
@@ -44,6 +44,13 @@ export interface Product {
   sku?: string;
   asin?: string;
   model_name?: string;
+  catalog_status?: 'verified' | 'estimated';
+  image_is_illustrative?: boolean;
+  data_sources?: { url: string; title?: string }[];
+  source_row?: number;
+  source_item_code?: string;
+  source_name?: string;
+  raw_source_stock?: number;
   name_ar: string;
   name_en: string;
   brand: string;
@@ -201,4 +208,3 @@ export interface StoreSettings {
   email_security_note?: string;
   email_accent_color?: string;
 }
-

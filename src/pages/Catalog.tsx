@@ -32,7 +32,8 @@ export const Catalog: React.FC = () => {
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [selectedCondition, setSelectedCondition] = useState<string>('all');
   const [minBatteryHealth, setMinBatteryHealth] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(65000);
+  const [maxPrice, setMaxPrice] = useState<number>(Number.POSITIVE_INFINITY);
+  const priceCeiling = useMemo(() => Math.max(65000, ...products.map(product => product.price)), [products]);
   const [selectedStorage, setSelectedStorage] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'featured' | 'price_asc' | 'price_desc' | 'rating' | 'newest'>('featured');
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
@@ -64,7 +65,7 @@ export const Catalog: React.FC = () => {
     setSelectedBrand('all');
     setSelectedCondition('all');
     setMinBatteryHealth(0);
-    setMaxPrice(65000);
+    setMaxPrice(priceCeiling);
     setSelectedStorage('all');
     setSearchQuery('');
   };
@@ -72,6 +73,7 @@ export const Catalog: React.FC = () => {
   // Filtered & Sorted Products
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
+      if (p.is_active === false) return false;
       // Category
       if (selectedCategory !== 'all' && p.category !== selectedCategory) return false;
       // Brand
@@ -261,15 +263,15 @@ export const Catalog: React.FC = () => {
                 {language === 'ar' ? 'الحد الأقصى للسعر:' : 'Max Price:'}
               </h4>
               <span className="text-xs font-bold text-amber-400 font-outfit">
-                {formatPrice(maxPrice)}
+                {formatPrice(Math.min(maxPrice, priceCeiling))}
               </span>
             </div>
             <input
               type="range"
               min="500"
-              max="65000"
+              max={priceCeiling}
               step="500"
-              value={maxPrice}
+              value={Math.min(maxPrice, priceCeiling)}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full accent-amber-500 bg-slate-800 rounded-lg cursor-pointer"
             />

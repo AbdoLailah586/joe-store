@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Search, 
   Eye, 
@@ -38,7 +38,8 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
   const { formatPrice, language } = useLanguage();
 
   const [search, setSearch] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'active' | 'hidden' | 'low_stock' | 'preowned'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'active' | 'hidden' | 'low_stock' | 'preowned' | 'estimated' | 'missing_price'>('all');
+  const [visibleCount, setVisibleCount] = useState(50);
   const [catFilter, setCatFilter] = useState<string>('all');
   const [editingStockId, setEditingStockId] = useState<string | null>(null);
   const [tempStock, setTempStock] = useState<number>(0);
@@ -66,10 +67,13 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
       if (filterType === 'hidden') matchType = p.is_active === false;
       if (filterType === 'low_stock') matchType = (p.stock ?? 0) < 3;
       if (filterType === 'preowned') matchType = p.condition === 'mint' || p.condition === 'used_good';
+      if (filterType === 'estimated') matchType = p.catalog_status === 'estimated';
+      if (filterType === 'missing_price') matchType = p.price <= 0;
 
       return matchSearch && matchCat && matchType;
     });
   }, [products, search, catFilter, filterType]);
+  useEffect(() => setVisibleCount(50), [search, catFilter, filterType]);
 
   const handleStockChange = (p: Product, delta: number) => {
     const nextStock = Math.max(0, (p.stock || 0) + delta);
@@ -84,6 +88,19 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
+      <div className="rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4 space-y-3">
+        <h2 className="font-bold text-amber-300">تقرير مراجعة بيانات المنتجات</h2>
+        <p className="text-xs text-slate-300">التفاصيل التقديرية والصور التوضيحية قابلة للمراجعة من زر تعديل المنتج. الأسعار والمخزون من ملف الأصناف.</p>
+        <div className="flex flex-wrap gap-2 text-xs">
+          <button onClick={() => setFilterType('estimated')} className="rounded-lg bg-amber-500/20 px-3 py-2 text-amber-300">
+            تحتاج مراجعة: {products.filter(p => p.catalog_status === 'estimated').length}
+          </button>
+          <button onClick={() => setFilterType('missing_price')} className="rounded-lg bg-rose-500/20 px-3 py-2 text-rose-300">
+            بدون سعر بيع: {products.filter(p => p.price <= 0).length}
+          </button>
+          <button onClick={() => exportCatalogToExcel(filteredProducts)} className="rounded-lg bg-white/10 px-3 py-2 text-white">تصدير التقرير الحالي</button>
+        </div>
+      </div>
       {/* 1. Header Metrics Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <div 
@@ -242,7 +259,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {filteredProducts.map((p) => {
+              {filteredProducts.slice(0, visibleCount).map((p) => {
                 const isPre = p.condition === 'mint' || p.condition === 'used_good';
                 const isHidden = p.is_active === false;
                 const isLow = (p.stock || 0) < 3;
@@ -269,6 +286,10 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                           <span className="text-[10px] text-slate-500 font-outfit block">
                             SKU: {p.sku || p.id} • {p.brand}
                           </span>
+                          {p.catalog_status && <span className={`text-[10px] block ${p.catalog_status === 'estimated' ? 'text-amber-300' : 'text-emerald-300'}`}>
+                            {p.catalog_status === 'estimated' ? 'تفاصيل تقديرية / صور توضيحية' : 'موديل موثق'}
+                            {p.source_row ? ` • صف الإكسل ${p.source_row}` : ''}
+                          </span>}
                         </div>
                       </div>
                     </td>
@@ -374,7 +395,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                         </div>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[10px]">
-                          جديد متبرشم
+                          {p.condition === 'unknown' ? 'غير محددة' : 'جديد متبرشم'}
                         </span>
                       )}
                     </td>
@@ -416,6 +437,8 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
               })}
             </tbody>
           </table>
+          {visibleCount < filteredProducts.length && <button onClick={() => setVisibleCount(count => count + 50)}
+            className="m-4 rounded-xl bg-white/10 px-5 py-2 text-sm text-white">عرض المزيد ({Math.min(visibleCount, filteredProducts.length)} / {filteredProducts.length})</button>}
         </div>
       </div>
     </div>

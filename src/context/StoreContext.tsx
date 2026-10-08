@@ -153,8 +153,9 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 };
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const CURRENT_VERSION = 'v4_full_excel_catalog_2245';
+  const CURRENT_VERSION = 'v5_researched_excel_catalog';
   const productCacheDirty = useRef(false);
+  const [catalogLoaded, setCatalogLoaded] = useState(false);
   const locallyEditedIds = useRef(new Set<string>());
   const locallyDeletedIds = useRef(new Set(readStoredArray('joe_store_product_deletions',
     (value): value is string => typeof value === 'string')));
@@ -162,7 +163,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // leaving browser storage available for carts, account preferences and orders.
   const [products, setProducts] = useState<Product[]>(() => {
     const savedVersion = readStorage('joe_store_catalog_ver');
-    const saved = readStoredArray('joe_store_products', isStoredProduct);
+    // Previous builds generated Excel entries with guessed stock/prices. Keep
+    // their cache on disk, but use the reconciled database entries for those IDs.
+    const saved = readStoredArray('joe_store_products', isStoredProduct).filter(product =>
+      !product.id.startsWith('prod-pos-') || product.catalog_status !== undefined);
     if (saved.length) {
       const seedById = new Map(initialProducts.map(product => [product.id, product]));
       for (const product of saved) {
@@ -198,7 +202,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     if (productCacheDirty.current) {
-      if (writeStoredJson('joe_store_products', products)) {
+      if (writeStoredJson('joe_store_products', products.filter(product => locallyEditedIds.current.has(product.id)))) {
         writeStorage('joe_store_catalog_ver', CURRENT_VERSION);
       }
       writeStoredJson('joe_store_product_deletions', [...locallyDeletedIds.current]);
@@ -259,7 +263,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Initial load from Neon PostgreSQL (with graceful fallback to local cache)
   useEffect(() => {
     // 1. Fetch live products from Neon
-    neonDb.getProducts({ limit: 100, includeHidden: true }).then(({ products: dbProds }) => {
+    neonDb.getAllProducts({ includeHidden: true }).then(dbProds => {
       if (dbProds && dbProds.length > 0) {
         setProducts(previous => {
           const previousById = new Map(previous.map(product => [product.id, product]));
@@ -272,6 +276,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               && !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id))
           ];
         });
+        setCatalogLoaded(true);
       }
     }).catch(console.warn);
 
@@ -285,6 +290,21 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // 3. Load active carts for CRM
     refreshActiveCarts();
   }, []);
+
+  // Old carts contain product snapshots. Reconcile only after the complete live
+  // catalog arrives so a temporary seed/fetch failure cannot erase valid items.
+  useEffect(() => {
+    if (!catalogLoaded) return;
+    const currentById = new Map(products.map(product => [product.id, product]));
+    setCart(previous => {
+      const next = previous.flatMap(item => {
+        const current = currentById.get(item.product.id);
+        if (!current || current.is_active === false || !current.in_stock || current.price <= 0 || current.stock <= 0) return [];
+        return [{ ...item, product: current, quantity: Math.min(item.quantity, current.stock) }];
+      });
+      return JSON.stringify(previous) === JSON.stringify(next) ? previous : next;
+    });
+  }, [products, catalogLoaded]);
 
   // Settings State
   const [settings, setSettings] = useState<StoreSettings>(() => {
@@ -492,7 +512,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       old_price: updated.original_price,
       stock_quantity: updated.stock,
       is_active: updated.is_active,
-      is_featured: updated.is_featured
+      is_featured: updated.is_featured,
+      product: updated
     }).catch(console.warn);
   };
 
@@ -540,6 +561,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Cart Operations
   const addToCart = (product: Product, quantity = 1, storage?: string, color?: string) => {
+    if (product.is_active === false || !product.in_stock || product.price <= 0 || product.stock <= 0 || quantity <= 0) return;
     setCart(prev => {
       const matchIndex = prev.findIndex(item => 
         item.product.id === product.id && 
@@ -549,12 +571,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       if (matchIndex > -1) {
         const next = [...prev];
-        next[matchIndex].quantity += quantity;
+        next[matchIndex].quantity = Math.min(product.stock, next[matchIndex].quantity + quantity);
         return next;
       } else {
         return [...prev, {
           product,
-          quantity,
+          quantity: Math.min(quantity, product.stock),
           selected_storage: storage || product.storage,
           selected_color: color || product.color_ar
         }];
@@ -580,7 +602,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (item.product.id === productId && 
           item.selected_storage === storage && 
           item.selected_color === color) {
-        return { ...item, quantity };
+        return { ...item, quantity: Math.min(quantity, item.product.stock) };
       }
       return item;
     }));
@@ -604,9 +626,22 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const createOrder = async (
     orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at' | 'whatsapp_notification_sent'>
   ): Promise<Order> => {
+    const checkedItems = orderData.items.map(item => {
+      const current = products.find(product => product.id === item.product.id);
+      if (!current || current.is_active === false || !current.in_stock || current.price <= 0
+        || item.quantity <= 0 || item.quantity > current.stock) {
+        throw new Error('أحد المنتجات غير متاح بهذه الكمية. راجع عربة التسوق قبل تأكيد الطلب.');
+      }
+      if (current.price !== item.product.price) {
+        throw new Error('تم تحديث سعر أحد المنتجات. راجع عربة التسوق ثم أكد الطلب.');
+      }
+      return { ...item, product: current };
+    });
+    if (!checkedItems.length) throw new Error('عربة التسوق فارغة.');
     const orderNumber = `JOE-${Math.floor(10000 + Math.random() * 90000)}`;
     const newOrder: Order = {
       ...orderData,
+      items: checkedItems,
       id: `ord-${Date.now()}`,
       order_number: orderNumber,
       created_at: new Date().toISOString(),

@@ -1,0 +1,56 @@
+{
+  "verified_at": "2026-10-09",
+  "brands": [
+    {
+      "brand": "Anker",
+      "aliases": ["أنكر", "انكر"],
+      "description_ar": "أنكر علامة متخصصة في تقنيات شحن الأجهزة، وتشمل منتجاتها الشواحن السلكية واللاسلكية وشواحن السيارة والبطاريات المحمولة والكابلات.",
+      "description_en": "Anker develops charging products including wall and car chargers, wireless chargers, portable batteries, and cables.",
+      "source_urls": ["https://www.anker.com/uk/about"],
+      "notes_ar": "PD هو اختصار Power Delivery. لا يحدد وحده قدرة الكابل أو أطرافه؛ يلزم رقم الطراز وبيانات العبوة لتحديدهما. للشحن عبر PD يلزم كابل وشاحن وأجهزة تدعم التقنية.",
+      "terminology_source_urls": ["https://service.anker.com/article-description/Which-cable-connector-type-do-I-need", "https://www.anker.com/products/a8752"]
+    },
+    {
+      "brand": "Soundcore",
+      "aliases": ["Anker Soundcore", "ساوندكور"],
+      "description_ar": "ساوندكور علامة صوتيات ضمن عائلة أنكر، تقدم سماعات أذن وسماعات رأس ومكبرات صوت.",
+      "description_en": "Soundcore is an Anker audio brand offering earbuds, headphones, and speakers.",
+      "source_urls": ["https://www.anker.com/uk/about"]
+    },
+    {
+      "brand": "Joyroom",
+      "aliases": ["JOYROOM", "جوي روم"],
+      "description_ar": "جوي روم علامة إلكترونيات استهلاكية تأسست عام 2009، ويقع مقرها في شينزن. تشمل منتجاتها ملحقات الهواتف والشحن والصوتيات.",
+      "description_en": "Joyroom is a consumer electronics brand established in 2009 and headquartered in Shenzhen, offering phone, charging, and audio accessories.",
+      "source_urls": ["https://www.joyroom.com/pages/about-joyroom", "https://www.joyroom.com/pages/avada-sitemap-products"]
+    },
+    {
+      "brand": "Oraimo",
+      "aliases": ["oraimo", "أورايمو", "اورايمو"],
+      "description_ar": "أورايمو تقدم إلكترونيات وملحقات ذكية تشمل الصوتيات والأجهزة القابلة للارتداء ومنتجات الشحن والعناية الشخصية.",
+      "description_en": "Oraimo offers smart accessories, audio products, wearables, charging products, and personal care devices.",
+      "source_urls": ["https://us.oraimo.com/pages/about-us", "https://eg.oraimo.com/en/collections/audio"]
+    },
+    {
+      "brand": "Havit",
+      "aliases": ["HAVIT", "هافيت"],
+      "description_ar": "هافيت علامة إلكترونيات تأسست عام 1998، وتقدم أجهزة صوتية وملحقات ألعاب وملحقات هواتف وأجهزة للحياة الذكية.",
+      "description_en": "Founded in 1998, HAVIT offers audio equipment, gaming peripherals, mobile accessories, and smart lifestyle electronics.",
+      "source_urls": ["https://havitsmart.com/pages/about-us", "https://havitsmart.com/blogs/news/havit-brand-overview"]
+    },
+    {
+      "brand": "Baseus",
+      "aliases": ["BASEUS", "باسيوس"],
+      "description_ar": "باسيوس علامة لملحقات الإلكترونيات تركز على المنتجات العملية للاستخدام اليومي.",
+      "description_en": "Baseus is an electronics accessory brand focused on practical products for everyday use.",
+      "source_urls": ["https://www.baseus.com/pages/about-us"]
+    },
+    {
+      "brand": "UGREEN",
+      "aliases": ["Ugreen", "يوجرين"],
+      "description_ar": "يوجرين علامة تقنيات استهلاكية تأسست عام 2012. تشمل فئاتها الشحن وملحقات المكتب والصوت والصورة والتخزين.",
+      "description_en": "Founded in 2012, UGREEN develops consumer technology for charging, office connectivity, audio/video, and storage.",
+      "source_urls": ["https://www.ugreen.com/en-ca/pages/about-ugreen"]
+    }
+  ]
+}

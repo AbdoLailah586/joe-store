@@ -36,7 +36,7 @@ import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ProductCard } from '../components/ProductCard';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
-import { enrichProductData } from '../utils/amazonEnricher';
+import { enrichProductData, canPurchaseProduct, productNotice, priceLabel, publicSpecs } from '../utils/amazonEnricher';
 import { Product } from '../types';
 
 export const ProductDetails: React.FC = () => {
@@ -52,10 +52,7 @@ export const ProductDetails: React.FC = () => {
 
   const { t, language, formatPrice, isRTL } = useLanguage();
 
-  // Find product by selected ID or default to Joyroom or first product
-  const rawProduct = products.find(p => p.id === selectedProductId) 
-    || products.find(p => p.id === 'prod-joyroom-jr-t03s-plus') 
-    || (products.length > 0 ? products[0] : null);
+  const rawProduct = products.find(p => p.id === selectedProductId && p.is_active !== false) || null;
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedStorage, setSelectedStorage] = useState('');
@@ -96,6 +93,7 @@ export const ProductDetails: React.FC = () => {
   useEffect(() => {
     if (product && enriched) {
       setSelectedImage(0);
+      setQuantity(1);
       setSelectedStorage(product.available_storages?.[0] || product.storage || '');
       setSelectedColor(product.available_colors?.[0]?.name_ar || product.color_ar || '');
       document.title = `${enriched.detailed_title_ar.slice(0, 60)} | متجر جو ستور`;
@@ -116,9 +114,9 @@ export const ProductDetails: React.FC = () => {
           <Sparkles className="w-8 h-8 text-amber-400" />
         </div>
         <h2 className="text-xl font-bold text-white font-cairo">
-          {products.length === 0 ? 'جاري تحميل تفاصيل المنتج...' : 'عفواً، هذا المنتج غير متوفر حالياً'}
+          {language === 'ar' ? 'عفواً، هذا المنتج غير موجود أو غير متاح حالياً' : 'This product could not be found or is currently unavailable'}
         </h2>
-        {products.length > 0 && (
+        {(
           <button
             onClick={() => navigate('catalog')}
             className="px-6 py-2.5 rounded-xl bg-amber-500 text-black font-bold font-cairo hover:bg-amber-400 transition-colors shadow-glow-gold"
@@ -131,6 +129,9 @@ export const ProductDetails: React.FC = () => {
   }
 
   const isLiked = isInWishlist(product.id);
+  const canPurchase = canPurchaseProduct(product);
+  const notice = productNotice(product, language);
+  const displayedPrice = priceLabel(product, language, formatPrice);
 
   // Zoom handlers
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -142,6 +143,7 @@ export const ProductDetails: React.FC = () => {
   };
 
   const handleAddToCart = () => {
+    if (!canPurchase || quantity < 1 || quantity > product.stock) return;
     addToCart(product, quantity, selectedStorage, selectedColor);
     setAddedToast(true);
     confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 } });
@@ -149,6 +151,7 @@ export const ProductDetails: React.FC = () => {
   };
 
   const handleBuyNow = () => {
+    if (!canPurchase || quantity < 1 || quantity > product.stock) return;
     addToCart(product, quantity, selectedStorage, selectedColor);
     navigate('checkout');
   };
@@ -179,7 +182,7 @@ export const ProductDetails: React.FC = () => {
   };
 
   // Direct WhatsApp inquiry URL
-  const inquiryText = `مرحباً متجر جو ستور، أود الاستفسار وحجز المنتج:\n*${product.name_ar}*\n- السعر: ${formatPrice(product.price)}\n- كود المنتج / ASIN: ${enriched.asin}\n- اللون المختار: ${selectedColor || 'الافتراضي'}\n- الكمية: ${quantity}`;
+  const inquiryText = `مرحباً متجر جو ستور، أود الاستفسار عن المنتج:\n*${product.name_ar}*\n- السعر: ${displayedPrice}\n- كود المنتج: ${product.sku || product.id}\n- اللون المختار: ${selectedColor || 'الافتراضي'}\n- الكمية: ${quantity}`;
   const whatsappUrl = generateWhatsAppWebLink(settings.store_whatsapp, inquiryText);
 
   // Bundle pricing calculation
@@ -189,10 +192,11 @@ export const ProductDetails: React.FC = () => {
   ];
 
   const bundleRawTotal = selectedBundleItems.reduce((sum, item) => sum + item.price, 0);
-  const bundleDiscount = selectedBundleItems.length >= 2 ? Math.round(bundleRawTotal * 0.1) : 0;
+  const bundleDiscount = 0;
   const bundleFinalTotal = bundleRawTotal - bundleDiscount;
 
   const handleAddBundleToCart = () => {
+    if (!selectedBundleItems.length || !selectedBundleItems.every(canPurchaseProduct)) return;
     selectedBundleItems.forEach(item => {
       addToCart(item, 1);
     });
@@ -224,8 +228,8 @@ export const ProductDetails: React.FC = () => {
       date: 'اليوم',
       title: newReviewTitle || 'تقييم ممتاز وتجربة رائعة',
       comment: newReviewComment,
-      verified_purchase: true,
-      helpful_count: 1
+      verified_purchase: false,
+      helpful_count: 0
     };
 
     enriched.customer_reviews.unshift(newRev);
@@ -324,7 +328,8 @@ export const ProductDetails: React.FC = () => {
                 className="aspect-square w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10 relative cursor-crosshair group select-none shadow-xl"
               >
                 <img
-                  src={product.images[selectedImage] || product.images[0]}
+                  src={product.images[selectedImage] || product.images[0] || '/product-placeholder.svg'}
+                  onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
                   alt={product.name_ar}
                   className={`w-full h-full object-contain p-4 transition-transform duration-200 ${
                     isZooming ? 'scale-125' : 'scale-100'
@@ -340,7 +345,7 @@ export const ProductDetails: React.FC = () => {
 
                 {/* Badges on Main Image */}
                 <div className="absolute top-3 right-3 flex flex-col gap-1.5 pointer-events-none">
-                  {product.discount_percentage && (
+                  {product.discount_percentage > 0 && (
                     <span className="px-2.5 py-1 rounded-lg bg-rose-600/90 text-white font-extrabold text-[11px] backdrop-blur-md shadow-md">
                       خصم {product.discount_percentage}%
                     </span>
@@ -351,9 +356,6 @@ export const ProductDetails: React.FC = () => {
                       الأكثر مبيعاً
                     </span>
                   )}
-                  <span className="px-2.5 py-1 rounded-lg bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold backdrop-blur-md">
-                    أصلي معتمد 100%
-                  </span>
                 </div>
 
                 {/* Expand Fullscreen Button */}
@@ -406,28 +408,30 @@ export const ProductDetails: React.FC = () => {
                   <span>{enriched.brand_store_name}</span>
                   <Award className="w-3.5 h-3.5 text-amber-400" />
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
-                  متجر موثق
-                </span>
               </div>
 
               {/* Amazon Detailed Title */}
               <h1 className="text-lg sm:text-xl font-black text-white font-cairo leading-snug">
                 {language === 'ar' ? enriched.detailed_title_ar : enriched.detailed_title_en}
               </h1>
+              {notice && <p role="note" className="mt-3 p-3 rounded-xl border border-amber-500/50 bg-amber-500/10 text-xs leading-relaxed text-amber-300 font-bold">{notice}</p>}
+              {!!product.data_sources?.length && <div className="mt-2 text-[11px] text-slate-400 flex flex-wrap gap-2">
+                <span>{language === 'ar' ? 'مصادر معلومات المنتج:' : 'Product sources:'}</span>
+                {product.data_sources.filter(source => /^https?:\/\//.test(source.url)).map(source =>
+                  <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="text-amber-400 underline">{source.title || source.url}</a>)}
+              </div>}
 
               {/* ASIN / SKU */}
               <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-1 font-outfit">
-                <span>ASIN: <strong className="text-slate-300">{enriched.asin}</strong></span>
-                <span>•</span>
-                <span>SKU: <strong className="text-slate-300">{product.sku || 'JOE-DIR-01'}</strong></span>
+                {enriched.asin && <span>ASIN: <strong className="text-slate-300">{enriched.asin}</strong></span>}
+                <span>SKU: <strong className="text-slate-300">{product.sku || product.id}</strong></span>
               </div>
             </div>
 
             {/* Ratings & Social Proof Strip */}
             <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-white/5 text-xs">
               {/* Star Rating */}
-              <a href="#customer-reviews" className="flex items-center gap-1 text-amber-400 hover:underline">
+              {product.reviews_count > 0 && product.rating > 0 && <a href="#customer-reviews" className="flex items-center gap-1 text-amber-400 hover:underline">
                 <span className="font-extrabold font-outfit text-sm text-white">{product.rating}</span>
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
@@ -438,33 +442,33 @@ export const ProductDetails: React.FC = () => {
                   ))}
                 </div>
                 <span className="text-slate-400 text-[11px] mr-1">({product.reviews_count} تقييم)</span>
-              </a>
+              </a>}
 
               {/* Amazon's Choice Badge */}
-              <span className="px-2 py-0.5 rounded bg-[#131921] border border-amber-500/40 text-[11px] font-bold text-amber-400 flex items-center gap-1">
+              {product.is_featured && <span className="px-2 py-0.5 rounded bg-[#131921] border border-amber-500/40 text-[11px] font-bold text-amber-400 flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-amber-400" />
                 <span>اختيار جو ستور</span>
-              </span>
+              </span>}
 
               {/* Bought in Past Month */}
-              <div className="w-full sm:w-auto flex items-center gap-1 text-[11px] text-emerald-400 font-semibold bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded-md">
+              {enriched.bought_past_month > 0 && <div className="w-full sm:w-auto flex items-center gap-1 text-[11px] text-emerald-400 font-semibold bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded-md">
                 <Flame className="w-3 h-3 text-emerald-400" />
                 <span>تم شراء أكثر من {enriched.bought_past_month.toLocaleString('ar-EG')} قطعة الشهر الماضي</span>
-              </div>
+              </div>}
             </div>
 
             {/* Price Box */}
             <div className="p-4 rounded-2xl bg-[#0F1626] border border-white/10 space-y-2">
               <div className="flex items-baseline gap-3 flex-wrap">
-                {product.discount_percentage && (
+                {product.discount_percentage > 0 && (
                   <span className="text-2xl font-black text-rose-500 font-outfit">
                     -{product.discount_percentage}%
                   </span>
                 )}
                 <span className="text-3xl font-black text-amber-400 font-outfit">
-                  {formatPrice(product.price)}
+                  {displayedPrice}
                 </span>
-                {product.original_price && (
+                {product.original_price > product.price && product.price > 0 && (
                   <span className="text-xs text-slate-500 line-through font-outfit">
                     سعر القائمة: {formatPrice(product.original_price)}
                   </span>
@@ -472,13 +476,13 @@ export const ProductDetails: React.FC = () => {
               </div>
 
               <p className="text-[11px] text-slate-400">
-                الأسعار تشمل ضريبة القيمة المضافة وضمان جو ستور المحلي.
+                {language === 'ar' ? 'تأكد من الملحقات والضمان والتوافق مع المحل قبل الشراء.' : 'Confirm included items, warranty and compatibility with the store before buying.'}
               </p>
 
               {/* Installment teaser */}
               <div className="pt-2 border-t border-white/5 flex items-center gap-2 text-[11px] text-amber-300">
                 <Zap className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                <span>أو 4 دفعات بدون فوائد بقيمة <strong>{formatPrice(Math.round(product.price / 4))}</strong> مع تابي / فاليو</span>
+                <span>{language === 'ar' ? 'اسأل المحل عن خيارات الدفع المتاحة.' : 'Ask the store about available payment options.'}</span>
               </div>
             </div>
 
@@ -613,10 +617,10 @@ export const ProductDetails: React.FC = () => {
               {/* Price inside Buy Box */}
               <div>
                 <div className="text-2xl font-black text-amber-400 font-outfit">
-                  {formatPrice(product.price)}
+                  {displayedPrice}
                 </div>
                 <p className="text-[11px] text-slate-400 mt-0.5">
-                  شامل ضريبة القيمة المضافة
+                  {language === 'ar' ? 'سعر البيع المسجل لدى المحل' : 'Store-listed selling price'}
                 </p>
               </div>
 
@@ -625,9 +629,9 @@ export const ProductDetails: React.FC = () => {
                 <div className="flex items-start gap-2 text-slate-200">
                   <Truck className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-bold text-emerald-400">توصيل سريع مجاني: غداً</span>
+                    <span className="font-bold text-emerald-400">{language === 'ar' ? 'التوصيل حسب المحافظة' : 'Delivery depends on your location'}</span>
                     <p className="text-[11px] text-slate-400">
-                      اطلب خلال 3 ساعات و 15 دقيقة
+                      {language === 'ar' ? 'التكلفة والموعد عند تأكيد الطلب' : 'Cost and timing are confirmed with your order'}
                     </p>
                   </div>
                 </div>
@@ -642,9 +646,9 @@ export const ProductDetails: React.FC = () => {
               <div className="space-y-1">
                 <div className="text-emerald-400 font-black text-sm flex items-center gap-1.5">
                   <CheckCircle className="w-4 h-4" />
-                  <span>متوفر في المخزون</span>
+                  <span>{product.stock > 0 && product.in_stock !== false ? (language === 'ar' ? 'متوفر في المخزون' : 'In stock') : (language === 'ar' ? 'غير متوفر حالياً' : 'Out of stock')}</span>
                 </div>
-                {product.stock <= 20 && (
+                {product.stock > 0 && product.stock <= 20 && (
                   <p className="text-[11px] text-amber-400 font-bold">
                     متبقي فقط {product.stock} قطع في المحل - اطلب قريباً!
                   </p>
@@ -657,6 +661,7 @@ export const ProductDetails: React.FC = () => {
                 <div className="flex items-center bg-slate-900 border border-white/10 rounded-xl px-2 py-1">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={!canPurchase || quantity <= 1}
                     className="text-slate-400 hover:text-white px-2 font-bold text-sm"
                   >
                     -
@@ -664,6 +669,7 @@ export const ProductDetails: React.FC = () => {
                   <span className="px-2 font-outfit font-bold text-white text-sm">{quantity}</span>
                   <button
                     onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                    disabled={!canPurchase || quantity >= product.stock}
                     className="text-slate-400 hover:text-white px-2 font-bold text-sm"
                   >
                     +
@@ -676,6 +682,7 @@ export const ProductDetails: React.FC = () => {
                 {/* Add to Cart (Amazon Amber) */}
                 <button
                   onClick={handleAddToCart}
+                  disabled={!canPurchase}
                   className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-glow-gold transition-all active:scale-95"
                 >
                   <ShoppingCart className="w-4 h-4" />
@@ -685,6 +692,7 @@ export const ProductDetails: React.FC = () => {
                 {/* Buy Now (Amazon Gold) */}
                 <button
                   onClick={handleBuyNow}
+                  disabled={!canPurchase}
                   className="w-full py-3 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md"
                 >
                   <Zap className="w-4 h-4 fill-black" />
@@ -699,7 +707,7 @@ export const ProductDetails: React.FC = () => {
                   className="w-full py-2.5 px-4 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 font-bold text-xs flex items-center justify-center gap-2 transition-all"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>حجز فوري عبر واتساب</span>
+                  <span>{language === 'ar' ? 'استفسر عبر واتساب' : 'Ask on WhatsApp'}</span>
                 </a>
               </div>
 
@@ -715,11 +723,11 @@ export const ProductDetails: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-1.5 text-emerald-400 pt-1">
                   <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span>معاملة آمنة ومعاينة مع المندوب قبل الدفع</span>
+                  <span>{language === 'ar' ? 'تأكد من تفاصيل المنتج مع المحل' : 'Confirm product details with the store'}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-slate-300">
                   <RotateCcw className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                  <span>إرجاع واستبدال مجاني خلال 14 يوماً</span>
+                  <span>{language === 'ar' ? 'تطبق سياسة الاستبدال والاسترجاع الخاصة بالمحل' : 'Store return and exchange policies apply'}</span>
                 </div>
               </div>
 
@@ -749,10 +757,10 @@ export const ProductDetails: React.FC = () => {
             <div>
               <h2 className="text-base sm:text-lg font-black text-white font-cairo flex items-center gap-2">
                 <Layers className="w-5 h-5 text-amber-400" />
-                <span>اشتريها معاً (Frequently bought together)</span>
+                <span>{language === 'ar' ? 'منتجات مقترحة مع هذه السلعة' : 'Suggested companion products'}</span>
               </h2>
               <p className="text-xs text-slate-400 mt-1">
-                وفر 10% إضافية عند شراء هذه المنتجات معاً كباقة واحدة معتمدة من جو ستور.
+                {language === 'ar' ? 'اقتراحات من الكتالوج؛ تحقق من التوافق قبل الشراء. الأسعار تجمع دون خصم إضافي.' : 'Catalog suggestions; confirm compatibility before buying. Prices are summed without an extra discount.'}
               </p>
             </div>
 
@@ -765,7 +773,7 @@ export const ProductDetails: React.FC = () => {
                     <img src={product.images[0]} alt="" className="w-full h-full object-contain" />
                   </div>
                   <p className="text-[11px] font-bold text-white truncate px-1">{product.name_ar}</p>
-                  <p className="text-xs font-black text-amber-400 font-outfit">{formatPrice(product.price)}</p>
+                  <p className="text-xs font-black text-amber-400 font-outfit">{displayedPrice}</p>
                 </div>
 
                 {/* Plus sign */}
@@ -836,7 +844,7 @@ export const ProductDetails: React.FC = () => {
                 {/* Add Bundle Button */}
                 <button
                   onClick={handleAddBundleToCart}
-                  disabled={selectedBundleItems.length === 0}
+                  disabled={selectedBundleItems.length === 0 || !selectedBundleItems.every(canPurchaseProduct)}
                   className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-glow-gold active:scale-95"
                 >
                   <Plus className="w-4 h-4" />
@@ -860,14 +868,14 @@ export const ProductDetails: React.FC = () => {
           <div className="border-b border-white/10 pb-3 flex items-center justify-between flex-wrap gap-2">
             <div>
               <div className="text-xs font-bold text-amber-400 uppercase tracking-wider font-outfit">
-                من الشركة المصنعة | FROM THE MANUFACTURER
+                {language === 'ar' ? 'تفاصيل الكتالوج' : 'CATALOG DETAILS'}
               </div>
               <h2 className="text-xl sm:text-2xl font-black text-white font-cairo">
-                ميزات وتفاصيل {product.brand} الحصرية
+                {language === 'ar' ? 'ميزات وتفاصيل المنتج' : 'Product features and details'}
               </h2>
             </div>
             <span className="px-3 py-1 rounded-full bg-slate-900 border border-white/10 text-xs text-slate-400">
-              محتوى تسويقي رسمي معتمد
+              {product.catalog_status === 'estimated' ? (language === 'ar' ? 'محتوى تقديري يحتاج مراجعة' : 'Estimated content for review') : (language === 'ar' ? 'محتوى المنتج المسجل' : 'Saved product content')}
             </span>
           </div>
 
@@ -966,11 +974,11 @@ export const ProductDetails: React.FC = () => {
                   <tr>
                     <td className="p-3 text-slate-400 font-semibold">السعر</td>
                     <td className="p-3 text-center font-black font-outfit text-amber-400 bg-amber-500/5 border-x border-amber-500/20">
-                      {formatPrice(product.price)}
+                      {displayedPrice}
                     </td>
                     {enriched.comparison_items.map(comp => (
                       <td key={comp.id} className="p-3 text-center font-bold font-outfit text-white">
-                        {formatPrice(comp.price)}
+                        {priceLabel(comp, language, formatPrice)}
                       </td>
                     ))}
                   </tr>
@@ -979,13 +987,11 @@ export const ProductDetails: React.FC = () => {
                   <tr>
                     <td className="p-3 text-slate-400 font-semibold">التقييم</td>
                     <td className="p-3 text-center bg-amber-500/5 border-x border-amber-500/20">
-                      <span className="font-bold text-white font-outfit">★ {product.rating}</span>
-                      <span className="text-[10px] text-slate-400 block font-outfit">({product.reviews_count})</span>
+                      {product.reviews_count > 0 && product.rating > 0 ? <><span className="font-bold text-white font-outfit">★ {product.rating}</span><span className="text-[10px] text-slate-400 block font-outfit">({product.reviews_count})</span></> : <span>{language === 'ar' ? 'لا توجد تقييمات' : 'No reviews'}</span>}
                     </td>
                     {enriched.comparison_items.map(comp => (
                       <td key={comp.id} className="p-3 text-center">
-                        <span className="font-bold text-white font-outfit">★ {comp.rating}</span>
-                        <span className="text-[10px] text-slate-400 block font-outfit">({comp.reviews_count})</span>
+                        {comp.reviews_count > 0 && comp.rating > 0 ? <><span className="font-bold text-white font-outfit">★ {comp.rating}</span><span className="text-[10px] text-slate-400 block font-outfit">({comp.reviews_count})</span></> : <span>{language === 'ar' ? 'لا توجد تقييمات' : 'No reviews'}</span>}
                       </td>
                     ))}
                   </tr>
@@ -994,11 +1000,11 @@ export const ProductDetails: React.FC = () => {
                   <tr>
                     <td className="p-3 text-slate-400 font-semibold">عمر البطارية</td>
                     <td className="p-3 text-center text-emerald-400 font-bold bg-amber-500/5 border-x border-amber-500/20">
-                      {product.category === 'audio' ? '40 ساعة إجمالية' : 'طوال اليوم'}
+                      {publicSpecs(product.specs)['عمر البطارية'] || (language === 'ar' ? 'غير مذكور' : 'Not specified')}
                     </td>
                     {enriched.comparison_items.map(comp => (
                       <td key={comp.id} className="p-3 text-center text-slate-300">
-                        {comp.category === 'audio' ? '30-45 ساعة' : 'استخدام مكثف'}
+                        {publicSpecs(comp.specs)['عمر البطارية'] || (language === 'ar' ? 'غير مذكور' : 'Not specified')}
                       </td>
                     ))}
                   </tr>
@@ -1007,11 +1013,11 @@ export const ProductDetails: React.FC = () => {
                   <tr>
                     <td className="p-3 text-slate-400 font-semibold">الشحن اللاسلكي</td>
                     <td className="p-3 text-center text-emerald-400 font-bold bg-amber-500/5 border-x border-amber-500/20">
-                      يدعم Qi اللاسلكي السريع
+                      {publicSpecs(product.specs)['الشحن اللاسلكي'] || (language === 'ar' ? 'غير مذكور' : 'Not specified')}
                     </td>
                     {enriched.comparison_items.map(comp => (
                       <td key={comp.id} className="p-3 text-center text-slate-400">
-                        سلكي Type-C / لاسلكي
+                        {publicSpecs(comp.specs)['الشحن اللاسلكي'] || (language === 'ar' ? 'غير مذكور' : 'Not specified')}
                       </td>
                     ))}
                   </tr>
@@ -1022,6 +1028,7 @@ export const ProductDetails: React.FC = () => {
                     <td className="p-3 text-center bg-amber-500/5 border-x border-amber-500/20">
                       <button
                         onClick={handleAddToCart}
+                        disabled={!canPurchase}
                         className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs"
                       >
                         أضف للسلة
@@ -1031,10 +1038,12 @@ export const ProductDetails: React.FC = () => {
                       <td key={comp.id} className="p-3 text-center">
                         <button
                           onClick={() => {
+                            if (!canPurchaseProduct(comp)) return;
                             addToCart(comp, 1);
                             setAddedToast(true);
                             setTimeout(() => setAddedToast(false), 2000);
                           }}
+                          disabled={!canPurchaseProduct(comp)}
                           className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs"
                         >
                           أضف للسلة
@@ -1057,19 +1066,19 @@ export const ProductDetails: React.FC = () => {
           </h2>
           <div className="rounded-2xl border border-white/10 bg-[#0F1626] p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-              {Object.entries(product.specs).map(([key, val]) => (
+              {Object.entries(publicSpecs(product.specs)).map(([key, val]) => (
                 <div key={key} className="flex justify-between items-center p-3 rounded-xl bg-slate-900 border border-white/5">
                   <span className="text-slate-400 font-medium">{key}</span>
                   <span className="text-white font-bold">{val}</span>
                 </div>
               ))}
               <div className="flex justify-between items-center p-3 rounded-xl bg-slate-900 border border-white/5">
-                <span className="text-slate-400 font-medium">الباركود الدولي</span>
-                <span className="text-white font-mono font-bold">{product.sku || '6921385920147'}</span>
+                <span className="text-slate-400 font-medium">{language === 'ar' ? 'كود المنتج' : 'Product code'}</span>
+                <span className="text-white font-mono font-bold">{product.sku || product.id}</span>
               </div>
               <div className="flex justify-between items-center p-3 rounded-xl bg-slate-900 border border-white/5">
                 <span className="text-slate-400 font-medium">الضمان المعتمد</span>
-                <span className="text-emerald-400 font-bold">{product.warranty_months} شهور من متجر جو ستور</span>
+                <span className="text-emerald-400 font-bold">{product.warranty_months > 0 ? `${product.warranty_months} ${language === 'ar' ? 'شهور' : 'months'}` : (language === 'ar' ? 'اسأل المحل عن الضمان' : 'Ask about warranty')}</span>
               </div>
             </div>
           </div>
@@ -1078,23 +1087,24 @@ export const ProductDetails: React.FC = () => {
         {/* ==============================================================
             6. CUSTOMER REVIEWS & RATINGS BREAKDOWN (تقييمات وآراء العملاء)
            ============================================================== */}
-        <div id="customer-reviews" className="space-y-6 pt-6 border-t border-white/10">
+        {enriched.customer_reviews.length > 0 ? <div id="customer-reviews" className="space-y-6 pt-6 border-t border-white/10">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-white font-cairo">
-                تقييمات وآراء العملاء الموثقة
+                تقييمات وآراء العملاء المسجلة
               </h2>
               <p className="text-xs text-slate-400 mt-1">
-                تجارب حقيقية من مشترين معتمدين قاموا بشراء واستلام المنتج من متجر جو ستور.
+                المراجعات المتاحة لهذا المنتج؛ تظهر علامة الشراء الموثق فقط عند تسجيلها.
               </p>
             </div>
 
             <button
-              onClick={() => setShowReviewModal(true)}
+              disabled
+              title="تقديم المراجعات غير متاح حالياً"
               className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 font-bold text-xs flex items-center gap-2 transition-all"
             >
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-              <span>اكتب تقييماً لهذا المنتج</span>
+              <span>تقديم المراجعات قريباً</span>
             </button>
           </div>
 
@@ -1140,26 +1150,6 @@ export const ProductDetails: React.FC = () => {
                 ))}
               </div>
 
-              {/* Feature Ratings */}
-              <div className="pt-4 border-t border-white/10 space-y-2 text-xs">
-                <h4 className="font-bold text-white mb-2">تقييم الميزات:</h4>
-                <div className="flex justify-between text-slate-300">
-                  <span>جودة الصوت والبيس:</span>
-                  <span className="font-bold text-amber-400">4.9 ★</span>
-                </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>عمر البطارية والشحن:</span>
-                  <span className="font-bold text-amber-400">4.9 ★</span>
-                </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>راحة الارتداء في الأذن:</span>
-                  <span className="font-bold text-amber-400">4.8 ★</span>
-                </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>القيمة مقابل السعر:</span>
-                  <span className="font-bold text-amber-400">5.0 ★</span>
-                </div>
-              </div>
             </div>
 
             {/* Right Reviews List Column (8 cols) */}
@@ -1262,7 +1252,7 @@ export const ProductDetails: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> : <div id="customer-reviews" className="pt-6 border-t border-white/10 text-sm text-slate-400">{language === 'ar' ? 'لا توجد مراجعات مسجلة لهذا المنتج بعد.' : 'No recorded reviews for this product yet.'}</div>}
 
         {/* ==============================================================
             7. RELATED PRODUCTS CAROUSEL / GRID
@@ -1283,7 +1273,7 @@ export const ProductDetails: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {products
-              .filter(p => p.id !== product.id)
+              .filter(p => p.id !== product.id && p.is_active !== false)
               .slice(0, 4)
               .map(p => (
                 <ProductCard key={p.id} product={p} />

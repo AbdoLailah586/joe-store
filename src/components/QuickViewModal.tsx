@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ShoppingCart, MessageCircle, Heart, ShieldCheck, BatteryMedium, Star, Check } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
+import { canPurchaseProduct, productNotice, priceLabel } from '../utils/amazonEnricher';
 
 export const QuickViewModal: React.FC = () => {
   const { 
@@ -17,22 +18,27 @@ export const QuickViewModal: React.FC = () => {
 
   const { t, language, formatPrice } = useLanguage();
 
-  if (!quickViewProduct) return null;
-
-  const product = quickViewProduct;
-  const isLiked = isInWishlist(product.id);
-
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedStorage, setSelectedStorage] = useState(
-    product.available_storages?.[0] || product.storage || ''
-  );
-  const [selectedColor, setSelectedColor] = useState(
-    product.available_colors?.[0]?.name_ar || product.color_ar || ''
-  );
+  const [selectedStorage, setSelectedStorage] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [addedAnimation, setAddedAnimation] = useState(false);
+  useEffect(() => {
+    setSelectedImage(0);
+    setSelectedStorage(quickViewProduct?.available_storages?.[0] || quickViewProduct?.storage || '');
+    setSelectedColor(quickViewProduct?.available_colors?.[0]?.name_ar || quickViewProduct?.color_ar || '');
+    setQuantity(1);
+    setAddedAnimation(false);
+  }, [quickViewProduct?.id]);
+
+  if (!quickViewProduct || quickViewProduct.is_active === false) return null;
+  const product = quickViewProduct;
+  const isLiked = isInWishlist(product.id);
+  const canPurchase = canPurchaseProduct(product);
+  const notice = productNotice(product, language);
 
   const handleAddToCart = () => {
+    if (!canPurchase || quantity > product.stock) return;
     addToCart(product, quantity, selectedStorage, selectedColor);
     setAddedAnimation(true);
     setTimeout(() => {
@@ -62,11 +68,12 @@ export const QuickViewModal: React.FC = () => {
         <div className="md:w-1/2 p-6 bg-slate-900/60 flex flex-col items-center justify-between border-b md:border-b-0 md:border-l border-white/10">
           <div className="w-full aspect-square rounded-2xl overflow-hidden bg-slate-900 border border-white/10 mb-4 relative">
             <img
-              src={product.images[selectedImage] || product.images[0]}
+              src={product.images[selectedImage] || product.images[0] || '/product-placeholder.svg'}
+              onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
               alt={product.name_ar}
               className="w-full h-full object-cover object-center"
             />
-            {product.battery_health && (
+            {product.battery_health > 0 && (
               <div className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 backdrop-blur-md">
                 <BatteryMedium className="w-4 h-4 text-emerald-400" />
                 <span>{language === 'ar' ? `صحة البطارية: ${product.battery_health}%` : `Battery: ${product.battery_health}%`}</span>
@@ -97,30 +104,31 @@ export const QuickViewModal: React.FC = () => {
           <div>
             <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
               <span className="font-bold text-amber-400 uppercase tracking-wider font-outfit">{product.brand}</span>
-              <div className="flex items-center gap-1 text-amber-400">
+              {product.reviews_count > 0 && product.rating > 0 && <div className="flex items-center gap-1 text-amber-400">
                 <Star className="w-4 h-4 fill-amber-400" />
                 <span className="font-bold text-xs text-white">{product.rating}</span>
                 <span className="text-[11px] text-slate-500 font-outfit">
                   ({product.reviews_count} {language === 'ar' ? 'تقييم' : 'reviews'})
                 </span>
-              </div>
+              </div>}
             </div>
 
             <h2 className="text-lg font-bold text-white font-cairo leading-snug">
               {language === 'ar' ? product.name_ar : product.name_en}
             </h2>
+            {notice && <p className="mt-2 p-2 rounded-lg border border-amber-500/40 bg-amber-500/10 text-[11px] leading-relaxed text-amber-300 font-semibold">{notice}</p>}
 
             {/* Price Row */}
             <div className="flex items-baseline gap-3 mt-2">
               <span className="text-2xl font-black text-amber-400 font-outfit">
-                {formatPrice(product.price)}
+                {priceLabel(product, language, formatPrice)}
               </span>
-              {product.original_price && (
+              {product.original_price > product.price && product.price > 0 && (
                 <span className="text-sm text-slate-500 line-through font-outfit">
                   {formatPrice(product.original_price)}
                 </span>
               )}
-              {product.discount_percentage && (
+              {product.discount_percentage > 0 && (
                 <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold font-outfit">
                   {language === 'ar' ? `وفر ${product.discount_percentage}%` : `Save ${product.discount_percentage}%`}
                 </span>
@@ -137,13 +145,13 @@ export const QuickViewModal: React.FC = () => {
                   ? (language === 'ar' ? 'كسر زيرو ممتاز' : 'Mint Like-New') 
                   : product.condition === 'brand_new' 
                   ? (language === 'ar' ? 'جديد متبرشم' : 'Brand New Sealed') 
-                  : (language === 'ar' ? 'استعمال خفيف' : 'Light Use')}
+                  : product.condition === 'used_good' ? (language === 'ar' ? 'استعمال خفيف' : 'Light Use') : (language === 'ar' ? 'تحتاج تأكيد' : 'Confirm condition')}
               </strong>
             </div>
             <div className="p-2.5 rounded-xl bg-slate-900 border border-white/5">
               <span className="text-slate-400 block text-[10px]">{language === 'ar' ? 'الضمان المعتمد' : 'Certified Warranty'}</span>
               <strong className="text-emerald-400 mt-0.5 block font-bold">
-                {product.warranty_months} {language === 'ar' ? 'شهور جو ستور' : 'Mo JOE Store'}
+                {product.warranty_months > 0 ? `${product.warranty_months} ${language === 'ar' ? 'شهور جو ستور' : 'Mo JOE Store'}` : (language === 'ar' ? 'اسأل عن الضمان' : 'Ask about warranty')}
               </strong>
             </div>
           </div>
@@ -208,8 +216,8 @@ export const QuickViewModal: React.FC = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleAddToCart}
-                disabled={addedAnimation}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-glow-gold transition-all active:scale-95"
+                disabled={addedAnimation || !canPurchase}
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-glow-gold transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {addedAnimation ? (
                   <>
@@ -219,7 +227,7 @@ export const QuickViewModal: React.FC = () => {
                 ) : (
                   <>
                     <ShoppingCart className="w-4 h-4" />
-                    <span>{t('addToCart')}</span>
+                    <span>{canPurchase ? t('addToCart') : product.price <= 0 ? (language === 'ar' ? 'اسأل عن السعر' : 'Ask for price') : (language === 'ar' ? 'غير متوفر' : 'Out of stock')}</span>
                   </>
                 )}
               </button>

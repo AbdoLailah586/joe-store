@@ -34,37 +34,59 @@ export interface CustomerActivityRecord {
 // Convert PostgreSQL DB row to frontend Product type
 function mapRowToProduct(row: any): Product {
   const isPreowned = Boolean(row.is_preowned);
+  let details: Partial<Product> = {};
+  try {
+    const saved = row.specs?.__product_data;
+    details = typeof saved === 'string' ? JSON.parse(saved) : (saved || {});
+    if (!details || typeof details !== 'object' || Array.isArray(details)) details = {};
+  } catch { details = {}; }
+  const publicSpecs = Object.fromEntries(Object.entries(row.specs || {})
+    .filter(([key, value]) => !key.startsWith('__') && !key.startsWith('description_') && typeof value === 'string'));
+  const imported = row.id?.startsWith('prod-pos-');
   return {
     id: row.id,
-    sku: row.id.toUpperCase(),
+    sku: details.sku || row.id.toUpperCase(),
+    model_name: details.model_name,
+    catalog_status: details.catalog_status,
+    image_is_illustrative: details.image_is_illustrative,
+    data_sources: details.data_sources,
+    source_row: details.source_row,
+    source_item_code: details.source_item_code,
+    source_name: details.source_name,
+    raw_source_stock: details.raw_source_stock,
     name_ar: row.name_ar,
     name_en: row.name_en,
     category: row.category as CategoryKey,
     brand: row.brand,
-    condition: isPreowned ? 'mint' : 'brand_new',
+    condition: details.condition || (isPreowned ? 'mint' : imported ? 'unknown' : 'brand_new'),
     battery_health: row.battery_health ? parseInt(String(row.battery_health).replace('%', '')) : undefined,
-    storage: Array.isArray(row.storage_options) && row.storage_options.length > 0 ? row.storage_options[0] : undefined,
-    available_storages: Array.isArray(row.storage_options) ? row.storage_options : [],
-    color_ar: Array.isArray(row.colors) && row.colors.length > 0 ? row.colors[0]?.name_ar : undefined,
-    color_en: Array.isArray(row.colors) && row.colors.length > 0 ? row.colors[0]?.name_en : undefined,
-    color_hex: Array.isArray(row.colors) && row.colors.length > 0 ? row.colors[0]?.hex : undefined,
-    available_colors: Array.isArray(row.colors) ? row.colors : [],
+    storage: details.storage || (Array.isArray(row.storage_options) && row.storage_options.length > 0 ? row.storage_options[0] : undefined),
+    available_storages: details.available_storages || (Array.isArray(row.storage_options) ? row.storage_options : []),
+    color_ar: details.color_ar || (Array.isArray(row.colors) && row.colors.length > 0 ? row.colors[0]?.name_ar : undefined),
+    color_en: details.color_en || (Array.isArray(row.colors) && row.colors.length > 0 ? row.colors[0]?.name_en : undefined),
+    color_hex: details.color_hex || (Array.isArray(row.colors) && row.colors.length > 0 ? row.colors[0]?.hex : undefined),
+    available_colors: details.available_colors || (Array.isArray(row.colors) ? row.colors : []),
     price: Number(row.price),
     original_price: row.old_price ? Number(row.old_price) : undefined,
-    cost_price: row.cost_price ? Number(row.cost_price) : Math.round(Number(row.price) * 0.8),
+    cost_price: row.cost_price != null ? Number(row.cost_price) : undefined,
     discount_percentage: row.old_price && Number(row.old_price) > Number(row.price) 
       ? Math.round(((Number(row.old_price) - Number(row.price)) / Number(row.old_price)) * 100) 
       : undefined,
-    stock: row.stock_quantity ?? 10,
-    in_stock: (row.stock_quantity ?? 10) > 0 && (row.is_active ?? true),
+    stock: Math.max(0, row.stock_quantity ?? 0),
+    in_stock: (row.stock_quantity ?? 0) > 0 && Number(row.price) > 0 && (row.is_active ?? true),
     is_active: row.is_active ?? true,
     images: Array.isArray(row.images) && row.images.length > 0 ? row.images : ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],
-    description_ar: row.specs?.description_ar || `${row.name_ar} مع ضمان رسمي من جو ستور.`,
-    description_en: row.specs?.description_en || `${row.name_en} with official JOE Store warranty.`,
-    specs: row.specs || {},
-    warranty_months: 6,
-    rating: 4.9,
-    reviews_count: 24,
+    description_ar: details.description_ar || row.specs?.description_ar || row.name_ar,
+    description_en: details.description_en || row.specs?.description_en || row.name_en,
+    specs: publicSpecs as Record<string, string>,
+    warranty_months: details.warranty_months ?? (Number.parseInt(row.warranty, 10) || 0),
+    rating: details.rating ?? 0,
+    reviews_count: details.reviews_count ?? 0,
+    about_item: details.about_item,
+    quick_specs: details.quick_specs,
+    feature_banners: details.feature_banners,
+    customer_reviews: details.customer_reviews,
+    rating_breakdown: details.rating_breakdown,
     is_featured: Boolean(row.is_featured),
     is_best_seller: Boolean(row.is_featured),
     is_flash_sale: Boolean(row.old_price && Number(row.old_price) > Number(row.price)),
@@ -105,6 +127,21 @@ function mapRowToOrder(r: any): Order {
 }
 
 export const neonDb = {
+  async getAllProducts(params?: { includeHidden?: boolean }): Promise<Product[]> {
+    const pageSize = 300;
+    const first = await this.getProducts({ limit: pageSize, includeHidden: params?.includeHidden });
+    if (first.total <= pageSize) return first.products;
+    const remaining = await Promise.all(Array.from(
+      { length: Math.ceil(first.total / pageSize) - 1 },
+      (_, index) => this.getProducts({ limit: pageSize, offset: (index + 1) * pageSize,
+        includeHidden: params?.includeHidden })
+    ));
+    const products = [...first.products, ...remaining.flatMap(page => page.products)];
+    if (new Set(products.map(product => product.id)).size !== first.total) {
+      throw new Error('The catalog could not be loaded completely; retaining the previous catalog.');
+    }
+    return products;
+  },
   /**
    * 1. Get products for client catalog with pagination and search
    * Scalable for 12,000+ items using SQL indexes and LIMIT/OFFSET
@@ -147,7 +184,7 @@ export const neonDb = {
         paramIndex++;
       }
 
-      queryStr += ` ORDER BY is_featured DESC, created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+      queryStr += ` ORDER BY is_featured DESC, created_at DESC, id ASC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
       const finalParams = [...queryParams, limit, offset];
 
       const [rows, countRows] = await Promise.all([
@@ -191,6 +228,7 @@ export const neonDb = {
     stock_quantity: number;
     is_active: boolean;
     is_featured: boolean;
+    product: Partial<Product>;
   }>): Promise<boolean> {
     try {
       const setParts: string[] = ['updated_at = NOW()'];
@@ -221,6 +259,30 @@ export const neonDb = {
         setParts.push(`is_featured = $${pIdx}`);
         params.push(Boolean(updates.is_featured));
         pIdx++;
+      }
+
+      if (updates.product) {
+        const product = updates.product;
+        for (const key of ['name_ar', 'name_en', 'brand', 'category', 'cost_price'] as const) {
+          if (product[key] !== undefined) {
+            setParts.push(`${key} = $${pIdx++}`);
+            params.push(product[key]);
+          }
+        }
+        if (product.images) {
+          setParts.push(`images = $${pIdx++}::jsonb`);
+          params.push(JSON.stringify(product.images));
+        }
+        const details = Object.fromEntries(Object.entries(product).filter(([key]) =>
+          !['id', 'price', 'stock', 'cost_price', 'specs', 'images'].includes(key)));
+        const existingSpecs = product.specs === undefined ? "COALESCE(specs, '{}'::jsonb)"
+          : "COALESCE((SELECT jsonb_object_agg(key,value) FROM jsonb_each(COALESCE(specs, '{}'::jsonb)) WHERE left(key,2) = '__'), '{}'::jsonb)";
+        setParts.push(`specs = jsonb_set(${existingSpecs} || $${pIdx + 1}::jsonb,
+          '{__product_data}',
+          (CASE WHEN jsonb_typeof(specs->'__product_data') = 'object'
+            THEN specs->'__product_data' ELSE '{}'::jsonb END) || $${pIdx}::jsonb, true)`);
+        params.push(JSON.stringify(details), JSON.stringify(product.specs || {}));
+        pIdx += 2;
       }
 
       const q = `UPDATE products SET ${setParts.join(', ')} WHERE id = $1;`;
@@ -259,17 +321,17 @@ export const neonDb = {
               ${p.brand || 'Apple'},
               ${p.price},
               ${p.original_price || null},
-              ${p.cost_price || Math.round(p.price * 0.8)},
-              ${p.stock || 10},
+              ${p.cost_price ?? 0},
+              ${p.stock ?? 0},
               ${p.is_active !== false},
               ${p.is_featured || false},
               ${isPre},
               ${p.battery_health ? `${p.battery_health}%` : null},
-              ${p.specs?.['الضمان'] || `${p.warranty_months || 6} شهور`},
+              ${p.warranty_months > 0 ? `${p.warranty_months} شهور` : null},
               ${JSON.stringify(p.available_colors || [])}::jsonb,
               ${JSON.stringify(p.available_storages || [])}::jsonb,
               ${JSON.stringify(p.images || [])}::jsonb,
-              ${JSON.stringify(p.specs || {})}::jsonb
+              ${JSON.stringify({ ...p.specs, __product_data: { ...p, cost_price: undefined, specs: undefined, images: undefined } })}::jsonb
             )
             ON CONFLICT (id) DO UPDATE SET
               name_ar = EXCLUDED.name_ar,
@@ -281,6 +343,7 @@ export const neonDb = {
               colors = EXCLUDED.colors,
               storage_options = EXCLUDED.storage_options,
               images = EXCLUDED.images,
+              specs = EXCLUDED.specs,
               updated_at = NOW();
           `;
           inserted++;

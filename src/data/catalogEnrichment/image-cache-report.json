@@ -1,0 +1,4143 @@
+{
+  "observed_at": "2026-10-08T23:41:54.073Z",
+  "input_path": "C:\\Users\\abdol\\AppData\\Local\\Temp\\joe-prepared-catalog.json",
+  "output_path": "C:\\Users\\abdol\\OneDrive\\Desktop\\task\\joe-store\\src\\data\\allExcelProducts.json",
+  "cache_directory": "C:\\Users\\abdol\\OneDrive\\Desktop\\task\\joe-store\\public\\product-images",
+  "summary": {
+    "products": 2233,
+    "unique_remote_urls": 129,
+    "downloaded": 0,
+    "reused": 129,
+    "failed": 0,
+    "fallback_assignments": 0,
+    "total_bytes": 8379916,
+    "megabytes": 7.99
+  },
+  "mapping": [
+    {
+      "url": "https://www.greenlion.net/web/image/product.template/881/image_1920?unique=2c4b612",
+      "kinds": [
+        "screen_protector"
+      ],
+      "product_ids": [
+        "prod-pos-295",
+        "prod-pos-2165",
+        "prod-pos-2164",
+        "prod-pos-2163",
+        "prod-pos-1911",
+        "prod-pos-506",
+        "prod-pos-1869",
+        "prod-pos-1860",
+        "prod-pos-1708",
+        "prod-pos-296",
+        "prod-pos-1154",
+        "prod-pos-83",
+        "prod-pos-1392",
+        "prod-pos-1153",
+        "prod-pos-1631",
+        "prod-pos-390",
+        "prod-pos-964",
+        "prod-pos-1882",
+        "prod-pos-1192",
+        "prod-pos-1976",
+        "prod-pos-1387",
+        "prod-pos-1647",
+        "prod-pos-1295",
+        "prod-pos-1701",
+        "prod-pos-1861",
+        "prod-pos-1759",
+        "prod-pos-451",
+        "prod-pos-962",
+        "prod-pos-750",
+        "prod-pos-1509",
+        "prod-pos-2043",
+        "prod-pos-1813",
+        "prod-pos-965",
+        "prod-pos-1294",
+        "prod-pos-584",
+        "prod-pos-2181",
+        "prod-pos-1139",
+        "prod-pos-1656",
+        "prod-pos-1784",
+        "prod-pos-2219",
+        "prod-pos-1760",
+        "prod-pos-883",
+        "prod-pos-1246",
+        "prod-pos-2042",
+        "prod-pos-46",
+        "prod-pos-1722",
+        "prod-pos-376",
+        "prod-pos-281",
+        "prod-pos-348",
+        "prod-pos-44",
+        "prod-pos-545",
+        "prod-pos-237",
+        "prod-pos-235",
+        "prod-pos-884",
+        "prod-pos-353",
+        "prod-pos-935",
+        "prod-pos-559",
+        "prod-pos-358",
+        "prod-pos-1149",
+        "prod-pos-1190",
+        "prod-pos-49",
+        "prod-pos-42",
+        "prod-pos-1097",
+        "prod-pos-1051",
+        "prod-pos-1050",
+        "prod-pos-1377",
+        "prod-pos-1398",
+        "prod-pos-888",
+        "prod-pos-1470",
+        "prod-pos-806",
+        "prod-pos-587",
+        "prod-pos-360",
+        "prod-pos-326",
+        "prod-pos-274",
+        "prod-pos-251",
+        "prod-pos-85",
+        "prod-pos-2162",
+        "prod-pos-77",
+        "prod-pos-76",
+        "prod-pos-75",
+        "prod-pos-2175",
+        "prod-pos-48",
+        "prod-pos-45",
+        "prod-pos-43",
+        "prod-pos-41"
+      ],
+      "sources": [
+        "https://www.greenlion.net/shop/3d-uv-glass-screen-protector-881"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/a792cefeb7c50327e00a5792.png",
+      "bytes": 139404,
+      "content_type": "image/png"
+    },
+    {
+      "url": "https://www.greenlion.net/web/image/product.template/834/image_1920?unique=2c4b612",
+      "kinds": [
+        "phone_case"
+      ],
+      "product_ids": [
+        "prod-pos-2007",
+        "prod-pos-1655",
+        "prod-pos-1561",
+        "prod-pos-294",
+        "prod-pos-1162",
+        "prod-pos-504",
+        "prod-pos-1859",
+        "prod-pos-787",
+        "prod-pos-531",
+        "prod-pos-69",
+        "prod-pos-557",
+        "prod-pos-1553",
+        "prod-pos-1654",
+        "prod-pos-1058",
+        "prod-pos-1663",
+        "prod-pos-1275",
+        "prod-pos-1786",
+        "prod-pos-963",
+        "prod-pos-2152",
+        "prod-pos-1156",
+        "prod-pos-1442",
+        "prod-pos-1474",
+        "prod-pos-1643",
+        "prod-pos-2154",
+        "prod-pos-1858",
+        "prod-pos-2182",
+        "prod-pos-1700",
+        "prod-pos-1367",
+        "prod-pos-1646",
+        "prod-pos-1042",
+        "prod-pos-1778",
+        "prod-pos-1155",
+        "prod-pos-1675",
+        "prod-pos-1640",
+        "prod-pos-475",
+        "prod-pos-1236",
+        "prod-pos-1349",
+        "prod-pos-2153",
+        "prod-pos-1639",
+        "prod-pos-1434",
+        "prod-pos-1132",
+        "prod-pos-2038",
+        "prod-pos-1944",
+        "prod-pos-1764",
+        "prod-pos-1769",
+        "prod-pos-1133",
+        "prod-pos-1763",
+        "prod-pos-2037",
+        "prod-pos-2035",
+        "prod-pos-2151",
+        "prod-pos-1787",
+        "prod-pos-1471",
+        "prod-pos-1397",
+        "prod-pos-1347",
+        "prod-pos-1723",
+        "prod-pos-325",
+        "prod-pos-314",
+        "prod-pos-410",
+        "prod-pos-290",
+        "prod-pos-477",
+        "prod-pos-202",
+        "prod-pos-74",
+        "prod-pos-687",
+        "prod-pos-690",
+        "prod-pos-346",
+        "prod-pos-68",
+        "prod-pos-67",
+        "prod-pos-772",
+        "prod-pos-250",
+        "prod-pos-780",
+        "prod-pos-781",
+        "prod-pos-249",
+        "prod-pos-248",
+        "prod-pos-788",
+        "prod-pos-544",
+        "prod-pos-836",
+        "prod-pos-236",
+        "prod-pos-878",
+        "prod-pos-881",
+        "prod-pos-400",
+        "prod-pos-397",
+        "prod-pos-970",
+        "prod-pos-568",
+        "prod-pos-1015",
+        "prod-pos-1019",
+        "prod-pos-488",
+        "prod-pos-1035",
+        "prod-pos-1037",
+        "prod-pos-1089",
+        "prod-pos-357",
+        "prod-pos-324",
+        "prod-pos-315",
+        "prod-pos-313",
+        "prod-pos-302",
+        "prod-pos-282",
+        "prod-pos-1150",
+        "prod-pos-264",
+        "prod-pos-245",
+        "prod-pos-1170",
+        "prod-pos-1174",
+        "prod-pos-1175",
+        "prod-pos-1177",
+        "prod-pos-1187",
+        "prod-pos-1188",
+        "prod-pos-70",
+        "prod-pos-1245",
+        "prod-pos-1255",
+        "prod-pos-1263",
+        "prod-pos-1264",
+        "prod-pos-1268",
+        "prod-pos-1297",
+        "prod-pos-1302",
+        "prod-pos-1323",
+        "prod-pos-919",
+        "prod-pos-1443",
+        "prod-pos-1447",
+        "prod-pos-1452",
+        "prod-pos-1544",
+        "prod-pos-1552",
+        "prod-pos-700",
+        "prod-pos-1673",
+        "prod-pos-1683",
+        "prod-pos-1724",
+        "prod-pos-569",
+        "prod-pos-567",
+        "prod-pos-1732",
+        "prod-pos-533",
+        "prod-pos-524",
+        "prod-pos-1770",
+        "prod-pos-1820",
+        "prod-pos-1821",
+        "prod-pos-1823",
+        "prod-pos-1824",
+        "prod-pos-1840",
+        "prod-pos-442",
+        "prod-pos-437",
+        "prod-pos-1850",
+        "prod-pos-399",
+        "prod-pos-398",
+        "prod-pos-371",
+        "prod-pos-1941",
+        "prod-pos-1943",
+        "prod-pos-303",
+        "prod-pos-261",
+        "prod-pos-260",
+        "prod-pos-259",
+        "prod-pos-239",
+        "prod-pos-2036",
+        "prod-pos-91",
+        "prod-pos-84",
+        "prod-pos-73",
+        "prod-pos-72",
+        "prod-pos-71",
+        "prod-pos-2198",
+        "prod-pos-2211",
+        "prod-pos-2218"
+      ],
+      "sources": [
+        "https://www.greenlion.net/shop/gnasi13-green-lion-anti-shock-case-for-iphone-13-series-834"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/4b4ef492c2712eaa58fdaff0.png",
+      "bytes": 85133,
+      "content_type": "image/png"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/2_b2405409-b31b-4ddd-8a6f-1af95eea45f4.jpg?v=1739153843&width=1600",
+      "kinds": [
+        "gaming_accessory",
+        "accessory",
+        "power_strip",
+        "phone_cooler",
+        "tripod",
+        "electronic_ring",
+        "smartphone",
+        "mouse",
+        "camera",
+        "keyboard",
+        "flashlight"
+      ],
+      "product_ids": [
+        "prod-pos-130",
+        "prod-pos-1508",
+        "prod-pos-815",
+        "prod-pos-2158",
+        "prod-pos-974",
+        "prod-pos-2011",
+        "prod-pos-2077",
+        "prod-pos-1121",
+        "prod-pos-2063",
+        "prod-pos-2226",
+        "prod-pos-1566",
+        "prod-pos-1354",
+        "prod-pos-1448",
+        "prod-pos-2185",
+        "prod-pos-1576",
+        "prod-pos-2118",
+        "prod-pos-2227",
+        "prod-pos-1320",
+        "prod-pos-1852",
+        "prod-pos-1232",
+        "prod-pos-1933",
+        "prod-pos-2149",
+        "prod-pos-1422",
+        "prod-pos-2167",
+        "prod-pos-1518",
+        "prod-pos-2130",
+        "prod-pos-2052",
+        "prod-pos-1684",
+        "prod-pos-1947",
+        "prod-pos-1963",
+        "prod-pos-2115",
+        "prod-pos-2013",
+        "prod-pos-2136",
+        "prod-pos-2168",
+        "prod-pos-2212",
+        "prod-pos-1560",
+        "prod-pos-2148",
+        "prod-pos-2147",
+        "prod-pos-1975",
+        "prod-pos-1517",
+        "prod-pos-1510",
+        "prod-pos-2044",
+        "prod-pos-1746",
+        "prod-pos-2150",
+        "prod-pos-1914",
+        "prod-pos-2120",
+        "prod-pos-1276",
+        "prod-pos-2157",
+        "prod-pos-2040",
+        "prod-pos-903",
+        "prod-pos-1974",
+        "prod-pos-2049",
+        "prod-pos-2187",
+        "prod-pos-1762",
+        "prod-pos-2029",
+        "prod-pos-1902",
+        "prod-pos-1903",
+        "prod-pos-2106",
+        "prod-pos-1565",
+        "prod-pos-2061",
+        "prod-pos-2142",
+        "prod-pos-1582",
+        "prod-pos-2177",
+        "prod-pos-2121",
+        "prod-pos-1649",
+        "prod-pos-939",
+        "prod-pos-1521",
+        "prod-pos-1973",
+        "prod-pos-2051",
+        "prod-pos-1733",
+        "prod-pos-2197",
+        "prod-pos-534",
+        "prod-pos-462",
+        "prod-pos-160",
+        "prod-pos-479",
+        "prod-pos-131",
+        "prod-pos-640",
+        "prod-pos-641",
+        "prod-pos-672",
+        "prod-pos-686",
+        "prod-pos-688",
+        "prod-pos-689",
+        "prod-pos-693",
+        "prod-pos-145",
+        "prod-pos-218",
+        "prod-pos-737",
+        "prod-pos-744",
+        "prod-pos-746",
+        "prod-pos-760",
+        "prod-pos-761",
+        "prod-pos-786",
+        "prod-pos-793",
+        "prod-pos-804",
+        "prod-pos-818",
+        "prod-pos-819",
+        "prod-pos-845",
+        "prod-pos-512",
+        "prod-pos-869",
+        "prod-pos-876",
+        "prod-pos-885",
+        "prod-pos-895",
+        "prod-pos-174",
+        "prod-pos-178",
+        "prod-pos-317",
+        "prod-pos-951",
+        "prod-pos-952",
+        "prod-pos-585",
+        "prod-pos-553",
+        "prod-pos-548",
+        "prod-pos-546",
+        "prod-pos-1000",
+        "prod-pos-1001",
+        "prod-pos-445",
+        "prod-pos-440",
+        "prod-pos-1056",
+        "prod-pos-1061",
+        "prod-pos-407",
+        "prod-pos-1072",
+        "prod-pos-395",
+        "prod-pos-394",
+        "prod-pos-1095",
+        "prod-pos-1099",
+        "prod-pos-1128",
+        "prod-pos-311",
+        "prod-pos-240",
+        "prod-pos-1180",
+        "prod-pos-1215",
+        "prod-pos-1216",
+        "prod-pos-1233",
+        "prod-pos-1109",
+        "prod-pos-1258",
+        "prod-pos-1074",
+        "prod-pos-1282",
+        "prod-pos-1062",
+        "prod-pos-1291",
+        "prod-pos-1053",
+        "prod-pos-1306",
+        "prod-pos-1321",
+        "prod-pos-1324",
+        "prod-pos-1325",
+        "prod-pos-1339",
+        "prod-pos-1350",
+        "prod-pos-985",
+        "prod-pos-1352",
+        "prod-pos-1365",
+        "prod-pos-968",
+        "prod-pos-1379",
+        "prod-pos-1385",
+        "prod-pos-1393",
+        "prod-pos-933",
+        "prod-pos-1406",
+        "prod-pos-1427",
+        "prod-pos-1428",
+        "prod-pos-1431",
+        "prod-pos-1438",
+        "prod-pos-1450",
+        "prod-pos-1453",
+        "prod-pos-1465",
+        "prod-pos-1482",
+        "prod-pos-830",
+        "prod-pos-1488",
+        "prod-pos-1495",
+        "prod-pos-1500",
+        "prod-pos-816",
+        "prod-pos-1511",
+        "prod-pos-1512",
+        "prod-pos-801",
+        "prod-pos-1515",
+        "prod-pos-1516",
+        "prod-pos-1520",
+        "prod-pos-1538",
+        "prod-pos-770",
+        "prod-pos-1570",
+        "prod-pos-1573",
+        "prod-pos-1577",
+        "prod-pos-1583",
+        "prod-pos-1585",
+        "prod-pos-1586",
+        "prod-pos-1591",
+        "prod-pos-1599",
+        "prod-pos-704",
+        "prod-pos-697",
+        "prod-pos-1609",
+        "prod-pos-1627",
+        "prod-pos-1636",
+        "prod-pos-1637",
+        "prod-pos-1641",
+        "prod-pos-1644",
+        "prod-pos-650",
+        "prod-pos-1653",
+        "prod-pos-625",
+        "prod-pos-624",
+        "prod-pos-621",
+        "prod-pos-1685",
+        "prod-pos-1703",
+        "prod-pos-597",
+        "prod-pos-593",
+        "prod-pos-592",
+        "prod-pos-1714",
+        "prod-pos-1715",
+        "prod-pos-1716",
+        "prod-pos-1717",
+        "prod-pos-574",
+        "prod-pos-1735",
+        "prod-pos-1743",
+        "prod-pos-1747",
+        "prod-pos-1748",
+        "prod-pos-522",
+        "prod-pos-503",
+        "prod-pos-1788",
+        "prod-pos-1789",
+        "prod-pos-1790",
+        "prod-pos-1791",
+        "prod-pos-1792",
+        "prod-pos-1793",
+        "prod-pos-1794",
+        "prod-pos-1795",
+        "prod-pos-1796",
+        "prod-pos-1797",
+        "prod-pos-1798",
+        "prod-pos-1799",
+        "prod-pos-1807",
+        "prod-pos-1827",
+        "prod-pos-1828",
+        "prod-pos-1839",
+        "prod-pos-1843",
+        "prod-pos-1845",
+        "prod-pos-1857",
+        "prod-pos-1871",
+        "prod-pos-1872",
+        "prod-pos-1873",
+        "prod-pos-1897",
+        "prod-pos-1904",
+        "prod-pos-1905",
+        "prod-pos-1906",
+        "prod-pos-1907",
+        "prod-pos-1908",
+        "prod-pos-1909",
+        "prod-pos-1921",
+        "prod-pos-1932",
+        "prod-pos-1934",
+        "prod-pos-1935",
+        "prod-pos-1937",
+        "prod-pos-1942",
+        "prod-pos-1948",
+        "prod-pos-1949",
+        "prod-pos-1950",
+        "prod-pos-1992",
+        "prod-pos-1993",
+        "prod-pos-2015",
+        "prod-pos-246",
+        "prod-pos-2024",
+        "prod-pos-2028",
+        "prod-pos-238",
+        "prod-pos-2032",
+        "prod-pos-2033",
+        "prod-pos-229",
+        "prod-pos-227",
+        "prod-pos-2047",
+        "prod-pos-220",
+        "prod-pos-2050",
+        "prod-pos-2058",
+        "prod-pos-2062",
+        "prod-pos-199",
+        "prod-pos-2075",
+        "prod-pos-188",
+        "prod-pos-2078",
+        "prod-pos-185",
+        "prod-pos-175",
+        "prod-pos-2090",
+        "prod-pos-2095",
+        "prod-pos-2096",
+        "prod-pos-164",
+        "prod-pos-2100",
+        "prod-pos-2104",
+        "prod-pos-2116",
+        "prod-pos-2117",
+        "prod-pos-133",
+        "prod-pos-2126",
+        "prod-pos-2127",
+        "prod-pos-129",
+        "prod-pos-2129",
+        "prod-pos-126",
+        "prod-pos-2131",
+        "prod-pos-2133",
+        "prod-pos-2138",
+        "prod-pos-2141",
+        "prod-pos-98",
+        "prod-pos-96",
+        "prod-pos-94",
+        "prod-pos-93",
+        "prod-pos-92",
+        "prod-pos-2170",
+        "prod-pos-64",
+        "prod-pos-2183",
+        "prod-pos-2184",
+        "prod-pos-2186",
+        "prod-pos-2220",
+        "prod-pos-1980"
+      ],
+      "sources": [
+        "https://www.joyroom.com/products/joyroom-jr-zs368-magnetic-cable-organizer-9pcs-b2c"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/bcc1aec66c3e7044e18f11a2.webp",
+      "bytes": 138536,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/joyroom-jr-zs403-foldable-magnetic-car-phone-mount.jpg?v=1751274175&width=1600",
+      "kinds": [
+        "holder"
+      ],
+      "product_ids": [
+        "prod-pos-1371",
+        "prod-pos-1070",
+        "prod-pos-2166",
+        "prod-pos-2048",
+        "prod-pos-2236",
+        "prod-pos-2137",
+        "prod-pos-1847",
+        "prod-pos-1607",
+        "prod-pos-1740",
+        "prod-pos-2225",
+        "prod-pos-1900",
+        "prod-pos-1071",
+        "prod-pos-170",
+        "prod-pos-1230",
+        "prod-pos-2034",
+        "prod-pos-1997",
+        "prod-pos-1805",
+        "prod-pos-1652",
+        "prod-pos-514",
+        "prod-pos-136",
+        "prod-pos-703",
+        "prod-pos-291",
+        "prod-pos-222",
+        "prod-pos-833",
+        "prod-pos-1012",
+        "prod-pos-1025",
+        "prod-pos-408",
+        "prod-pos-403",
+        "prod-pos-1073",
+        "prod-pos-1218",
+        "prod-pos-1238",
+        "prod-pos-1430",
+        "prod-pos-1432",
+        "prod-pos-1498",
+        "prod-pos-1532",
+        "prod-pos-1584",
+        "prod-pos-1621",
+        "prod-pos-1622",
+        "prod-pos-1623",
+        "prod-pos-1670",
+        "prod-pos-1710",
+        "prod-pos-1711",
+        "prod-pos-1779",
+        "prod-pos-478",
+        "prod-pos-1846",
+        "prod-pos-1936",
+        "prod-pos-292",
+        "prod-pos-1983",
+        "prod-pos-1987",
+        "prod-pos-279",
+        "prod-pos-225",
+        "prod-pos-224",
+        "prod-pos-163",
+        "prod-pos-2122",
+        "prod-pos-134"
+      ],
+      "sources": [
+        "https://www.joyroom.com/products/joyroom-jr-zs403-foldable-magnetic-car-phone-mount"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/1eb83468cd59fda0e5a9ca9a.webp",
+      "bytes": 61474,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.greenlion.net/web/image/product.template/897/image_1920?unique=a7ab018",
+      "kinds": [
+        "watch_strap"
+      ],
+      "product_ids": [
+        "prod-pos-499",
+        "prod-pos-2070",
+        "prod-pos-1633",
+        "prod-pos-480",
+        "prod-pos-2143",
+        "prod-pos-1200",
+        "prod-pos-210",
+        "prod-pos-1408",
+        "prod-pos-137",
+        "prod-pos-1687",
+        "prod-pos-386",
+        "prod-pos-191",
+        "prod-pos-2059",
+        "prod-pos-581",
+        "prod-pos-432",
+        "prod-pos-1221",
+        "prod-pos-1634",
+        "prod-pos-1008",
+        "prod-pos-914",
+        "prod-pos-1096",
+        "prod-pos-1409",
+        "prod-pos-505",
+        "prod-pos-508",
+        "prod-pos-1689",
+        "prod-pos-1766",
+        "prod-pos-579",
+        "prod-pos-691",
+        "prod-pos-692",
+        "prod-pos-756",
+        "prod-pos-594",
+        "prod-pos-900",
+        "prod-pos-927",
+        "prod-pos-190",
+        "prod-pos-588",
+        "prod-pos-1179",
+        "prod-pos-1075",
+        "prod-pos-1340",
+        "prod-pos-1341",
+        "prod-pos-1407",
+        "prod-pos-1519",
+        "prod-pos-1617",
+        "prod-pos-1618",
+        "prod-pos-1688",
+        "prod-pos-1690",
+        "prod-pos-429",
+        "prod-pos-1855",
+        "prod-pos-330",
+        "prod-pos-1958",
+        "prod-pos-1959",
+        "prod-pos-1960",
+        "prod-pos-1961",
+        "prod-pos-1962"
+      ],
+      "sources": [
+        "https://www.greenlion.net/shop/gnnsws45-green-lion-woven-nylon-sport-loop-watch-strap-897"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/46655aab58598dc863a99673.png",
+      "bytes": 219761,
+      "content_type": "image/png"
+    },
+    {
+      "url": "https://www.ugreen.com/cdn/shop/files/f03805e90c36d9d42c96b88dcc43220b.webp?v=1772094306",
+      "kinds": [
+        "adapter"
+      ],
+      "product_ids": [
+        "prod-pos-1704",
+        "prod-pos-1601",
+        "prod-pos-1938",
+        "prod-pos-768",
+        "prod-pos-1989",
+        "prod-pos-1774",
+        "prod-pos-99",
+        "prod-pos-1501",
+        "prod-pos-391",
+        "prod-pos-1298",
+        "prod-pos-1826",
+        "prod-pos-89",
+        "prod-pos-566",
+        "prod-pos-187",
+        "prod-pos-148",
+        "prod-pos-766",
+        "prod-pos-915",
+        "prod-pos-378",
+        "prod-pos-35",
+        "prod-pos-726",
+        "prod-pos-1737",
+        "prod-pos-530",
+        "prod-pos-1895",
+        "prod-pos-219",
+        "prod-pos-200",
+        "prod-pos-197",
+        "prod-pos-158",
+        "prod-pos-86",
+        "prod-pos-34"
+      ],
+      "sources": [
+        "https://www.ugreen.com/en-au/products/au-45275"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/4312cb7f98e9ef14a712461d.webp",
+      "bytes": 34356,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/NG/product/2026/06/24/OTW-325-COSMICORANGE-MAIN.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-2105",
+        "prod-pos-635",
+        "prod-pos-950",
+        "prod-pos-1055",
+        "prod-pos-1076",
+        "prod-pos-1370",
+        "prod-pos-1391",
+        "prod-pos-1727",
+        "prod-pos-1916",
+        "prod-pos-152"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-spacebuds-lite-2-immersive-portable-true-wireless-earbuds-otw-325?ean=4894947121449"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/ecbb913986e025a9b95a05e0.webp",
+      "bytes": 61058,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/BD/product/2025/11/27/OCD-175CC-BLACK.png",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-1493",
+        "prod-pos-1052",
+        "prod-pos-1842",
+        "prod-pos-782",
+        "prod-pos-2172",
+        "prod-pos-312",
+        "prod-pos-1322",
+        "prod-pos-572",
+        "prod-pos-642",
+        "prod-pos-1022",
+        "prod-pos-1059",
+        "prod-pos-1092",
+        "prod-pos-1122",
+        "prod-pos-1222",
+        "prod-pos-1241",
+        "prod-pos-1102",
+        "prod-pos-1542",
+        "prod-pos-742",
+        "prod-pos-1802",
+        "prod-pos-1892",
+        "prod-pos-372",
+        "prod-pos-112",
+        "prod-pos-32"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-digiline-100w-type-c-to-type-c-data-cable-ocd-175cc?ean=4894947103339"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/f373f920874a9360e80e605a.webp",
+      "bytes": 57236,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0516/3761/6830/files/20260304-121406.png?v=1772597724",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1551",
+        "prod-pos-1257",
+        "prod-pos-501",
+        "prod-pos-873",
+        "prod-pos-1272",
+        "prod-pos-1887",
+        "prod-pos-2097",
+        "prod-pos-1540",
+        "prod-pos-1929",
+        "prod-pos-1629",
+        "prod-pos-354",
+        "prod-pos-732",
+        "prod-pos-1068",
+        "prod-pos-1314",
+        "prod-pos-1467",
+        "prod-pos-516",
+        "prod-pos-186",
+        "prod-pos-2112",
+        "prod-pos-144"
+      ],
+      "sources": [
+        "https://www.soundcore.com/products/p20i"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/3c06d2c8e8216b7d3f06254a.webp",
+      "bytes": 137322,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0519/2355/0368/files/A3957G11_DTC_listing_image_TD01_UK_V1_4_1.png?v=1772432648",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1252",
+        "prod-pos-2128",
+        "prod-pos-2119",
+        "prod-pos-2113",
+        "prod-pos-1972",
+        "prod-pos-124",
+        "prod-pos-817",
+        "prod-pos-223",
+        "prod-pos-901",
+        "prod-pos-922",
+        "prod-pos-481",
+        "prod-pos-1063",
+        "prod-pos-1069",
+        "prod-pos-1342",
+        "prod-pos-748",
+        "prod-pos-1613",
+        "prod-pos-1720",
+        "prod-pos-517"
+      ],
+      "sources": [
+        "https://www.soundcore.com/uk/products/a3957-liberty-5-tws-earbuds"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/0b3c3d1585deca66e25e52ea.webp",
+      "bytes": 35226,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2025/08/08/A-to-C.png",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-2231",
+        "prod-pos-1981",
+        "prod-pos-121",
+        "prod-pos-1366",
+        "prod-pos-1301",
+        "prod-pos-1021",
+        "prod-pos-201",
+        "prod-pos-461",
+        "prod-pos-521",
+        "prod-pos-681",
+        "prod-pos-701",
+        "prod-pos-751",
+        "prod-pos-591",
+        "prod-pos-1101",
+        "prod-pos-1211",
+        "prod-pos-1240",
+        "prod-pos-1091",
+        "prod-pos-1311",
+        "prod-pos-981",
+        "prod-pos-1441",
+        "prod-pos-1461",
+        "prod-pos-1801",
+        "prod-pos-1891",
+        "prod-pos-2031",
+        "prod-pos-31"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-usb-cable-1m?ean=4894947096464"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/f2e32a878558c86292b3a7d4.webp",
+      "bytes": 44778,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/NG/album/oep-650/oep-650-black.png",
+      "kinds": [
+        "wired_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-12",
+        "prod-pos-1281",
+        "prod-pos-2217",
+        "prod-pos-1014",
+        "prod-pos-1143",
+        "prod-pos-2055",
+        "prod-pos-1368",
+        "prod-pos-1449",
+        "prod-pos-108",
+        "prod-pos-1167",
+        "prod-pos-741",
+        "prod-pos-105",
+        "prod-pos-111",
+        "prod-pos-825",
+        "prod-pos-465",
+        "prod-pos-18",
+        "prod-pos-909",
+        "prod-pos-945",
+        "prod-pos-468",
+        "prod-pos-1191",
+        "prod-pos-1248",
+        "prod-pos-1269",
+        "prod-pos-864",
+        "prod-pos-1494",
+        "prod-pos-1533",
+        "prod-pos-1572",
+        "prod-pos-684",
+        "prod-pos-1638",
+        "prod-pos-639",
+        "prod-pos-633",
+        "prod-pos-1752",
+        "prod-pos-453",
+        "prod-pos-1863",
+        "prod-pos-2073",
+        "prod-pos-102",
+        "prod-pos-81",
+        "prod-pos-78",
+        "prod-pos-39",
+        "prod-pos-21",
+        "prod-pos-15"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-halo-airy-ergonomic-design-remote-control-in-ear-earphone?ean=4895180799907"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/aaeb8581277ea970d07a09ff.webp",
+      "bytes": 7828,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0493/9834/9974/files/A2637116_TD01_V1_1e30e3ad-4e1f-495f-abde-9246b1e1ea78.png?v=1764230004",
+      "kinds": [
+        "wall_charger"
+      ],
+      "product_ids": [
+        "prod-pos-1487",
+        "prod-pos-723",
+        "prod-pos-1090",
+        "prod-pos-1351",
+        "prod-pos-1595",
+        "prod-pos-2200",
+        "prod-pos-1523",
+        "prod-pos-1186",
+        "prod-pos-1247",
+        "prod-pos-2081",
+        "prod-pos-1296",
+        "prod-pos-2109",
+        "prod-pos-2110",
+        "prod-pos-1971",
+        "prod-pos-2207",
+        "prod-pos-1745",
+        "prod-pos-414",
+        "prod-pos-497",
+        "prod-pos-173",
+        "prod-pos-59",
+        "prod-pos-755",
+        "prod-pos-779",
+        "prod-pos-941",
+        "prod-pos-977",
+        "prod-pos-989",
+        "prod-pos-998",
+        "prod-pos-1005",
+        "prod-pos-491",
+        "prod-pos-1043",
+        "prod-pos-1049",
+        "prod-pos-1163",
+        "prod-pos-167",
+        "prod-pos-1229",
+        "prod-pos-1079",
+        "prod-pos-1361",
+        "prod-pos-1373",
+        "prod-pos-1481",
+        "prod-pos-1569",
+        "prod-pos-1671",
+        "prod-pos-1751",
+        "prod-pos-1889",
+        "prod-pos-341",
+        "prod-pos-299",
+        "prod-pos-1991",
+        "prod-pos-2010",
+        "prod-pos-149",
+        "prod-pos-2111",
+        "prod-pos-53",
+        "prod-pos-5"
+      ],
+      "sources": [
+        "https://www.anker.com/products/a2637-nano-20w-charger"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/2e3e4bbd2bcbf850051906b5.webp",
+      "bytes": 55420,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/joyroom-100w-sa55-fast-charging-zinc-alloy-data-cable-black-a-c.jpg?v=1755143514&width=1024",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-1228",
+        "prod-pos-1396",
+        "prod-pos-1009",
+        "prod-pos-899",
+        "prod-pos-2169",
+        "prod-pos-1299",
+        "prod-pos-2000",
+        "prod-pos-2173",
+        "prod-pos-2001",
+        "prod-pos-2140",
+        "prod-pos-1979",
+        "prod-pos-2139",
+        "prod-pos-1709",
+        "prod-pos-1256",
+        "prod-pos-1881",
+        "prod-pos-2179",
+        "prod-pos-88",
+        "prod-pos-2066",
+        "prod-pos-333",
+        "prod-pos-649",
+        "prod-pos-679",
+        "prod-pos-769",
+        "prod-pos-409",
+        "prod-pos-339",
+        "prod-pos-1227",
+        "prod-pos-1329",
+        "prod-pos-969",
+        "prod-pos-861",
+        "prod-pos-1464",
+        "prod-pos-1491",
+        "prod-pos-792",
+        "prod-pos-709",
+        "prod-pos-1611",
+        "prod-pos-1702",
+        "prod-pos-575",
+        "prod-pos-1804",
+        "prod-pos-1825",
+        "prod-pos-459",
+        "prod-pos-1829",
+        "prod-pos-1862",
+        "prod-pos-1883",
+        "prod-pos-1899",
+        "prod-pos-2002",
+        "prod-pos-119",
+        "prod-pos-29"
+      ],
+      "sources": [
+        "https://www.joyroom.com/products/joyroom-100w-sa55-fast-charging-zinc-alloy-data-cable-1-2m"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/8e0a1e7f57c1dd5cc349b355.webp",
+      "bytes": 87532,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0493/9834/9974/files/B8752011_TD01.png?v=1748225373",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-1489",
+        "prod-pos-2192",
+        "prod-pos-2027",
+        "prod-pos-1047",
+        "prod-pos-1457",
+        "prod-pos-127",
+        "prod-pos-2201",
+        "prod-pos-117",
+        "prod-pos-2067",
+        "prod-pos-122",
+        "prod-pos-1767",
+        "prod-pos-377",
+        "prod-pos-777",
+        "prod-pos-857",
+        "prod-pos-27",
+        "prod-pos-877",
+        "prod-pos-907",
+        "prod-pos-577",
+        "prod-pos-997",
+        "prod-pos-1027",
+        "prod-pos-457",
+        "prod-pos-1127",
+        "prod-pos-1137",
+        "prod-pos-1267",
+        "prod-pos-1327",
+        "prod-pos-1437",
+        "prod-pos-847",
+        "prod-pos-1537",
+        "prod-pos-1707",
+        "prod-pos-527",
+        "prod-pos-1877",
+        "prod-pos-2057"
+      ],
+      "sources": [
+        "https://www.anker.com/products/a8752"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/4eb8c59128f84c84a66cd390.webp",
+      "bytes": 226480,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/JOYROOMJR-TCF20PD20WChargerB2B.jpg?v=1750332832",
+      "kinds": [
+        "wall_charger"
+      ],
+      "product_ids": [
+        "prod-pos-2224",
+        "prod-pos-1486",
+        "prod-pos-802",
+        "prod-pos-1648",
+        "prod-pos-1998",
+        "prod-pos-1384",
+        "prod-pos-1360",
+        "prod-pos-1768",
+        "prod-pos-1144",
+        "prod-pos-490",
+        "prod-pos-166",
+        "prod-pos-724",
+        "prod-pos-58",
+        "prod-pos-52",
+        "prod-pos-232",
+        "prod-pos-586",
+        "prod-pos-580",
+        "prod-pos-976",
+        "prod-pos-1522",
+        "prod-pos-790",
+        "prod-pos-1528",
+        "prod-pos-1612",
+        "prod-pos-628",
+        "prod-pos-1706",
+        "prod-pos-576",
+        "prod-pos-556",
+        "prod-pos-1744",
+        "prod-pos-1806",
+        "prod-pos-406",
+        "prod-pos-1888",
+        "prod-pos-1898",
+        "prod-pos-1996",
+        "prod-pos-1999",
+        "prod-pos-172",
+        "prod-pos-4"
+      ],
+      "sources": [
+        "https://www.joyroom.com/products/joyroom-jr-tcf20-pd20w-charger-eu"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/0b3d820fd0afa2e334463341.webp",
+      "bytes": 39862,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MA/product/2025/10/16/OTW-324S-Product-New.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-2228",
+        "prod-pos-1803",
+        "prod-pos-1262",
+        "prod-pos-485",
+        "prod-pos-1199",
+        "prod-pos-1451"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-spacebuds-air-38-hours-smart-finder-true-wireless-earbuds-otw-324s?ean=4894947098888"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/6e6d1b963625b0c6b0d8666e.webp",
+      "bytes": 44826,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2025/02/12/OEP-320S-WHITE.png",
+      "kinds": [
+        "wired_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-379",
+        "prod-pos-1372",
+        "prod-pos-1990",
+        "prod-pos-841",
+        "prod-pos-103",
+        "prod-pos-661",
+        "prod-pos-82",
+        "prod-pos-538",
+        "prod-pos-712",
+        "prod-pos-466",
+        "prod-pos-799",
+        "prod-pos-826",
+        "prod-pos-838",
+        "prod-pos-865",
+        "prod-pos-463",
+        "prod-pos-913",
+        "prod-pos-448",
+        "prod-pos-1060",
+        "prod-pos-1105",
+        "prod-pos-1138",
+        "prod-pos-946",
+        "prod-pos-1534",
+        "prod-pos-1672",
+        "prod-pos-502",
+        "prod-pos-1810",
+        "prod-pos-469",
+        "prod-pos-1867",
+        "prod-pos-1876",
+        "prod-pos-2074",
+        "prod-pos-109",
+        "prod-pos-106",
+        "prod-pos-100",
+        "prod-pos-79",
+        "prod-pos-22",
+        "prod-pos-19",
+        "prod-pos-16",
+        "prod-pos-13",
+        "prod-pos-10"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-conch-2-neo-in-ear-wired-earphones?ean=4894947055393"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/74bfe757f25ee733a9591505.webp",
+      "bytes": 33680,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/BD/product/2025/12/01/OCD-1525CC-BLACK.png",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-2233",
+        "prod-pos-943",
+        "prod-pos-2213",
+        "prod-pos-203",
+        "prod-pos-1123",
+        "prod-pos-1383",
+        "prod-pos-1543",
+        "prod-pos-1923",
+        "prod-pos-923",
+        "prod-pos-1242",
+        "prod-pos-573",
+        "prod-pos-423",
+        "prod-pos-523",
+        "prod-pos-643",
+        "prod-pos-123",
+        "prod-pos-773",
+        "prod-pos-823",
+        "prod-pos-829",
+        "prod-pos-1103",
+        "prod-pos-1172",
+        "prod-pos-1183",
+        "prod-pos-1193",
+        "prod-pos-1214",
+        "prod-pos-1249",
+        "prod-pos-1023",
+        "prod-pos-1483",
+        "prod-pos-1753",
+        "prod-pos-1893",
+        "prod-pos-2003",
+        "prod-pos-2193"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-braidline-100w-type-c-to-type-c-tear-resistant-data-cable-ocd-1525cc?ean=4894947101519"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/271c81425e45f9f1b42b278a.webp",
+      "bytes": 42778,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2025/08/14/OTW-324-1080-lg.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1635"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/c776ce8728d1c08c4fd67cd3.webp",
+      "bytes": 19682,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2025/08/14/OTW-324-1080-1.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1635"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/6074471061b9e22af489b28a.webp",
+      "bytes": 47650,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2025/08/14/OTW-324-1080-2.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1635"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/300de1f58170d7c50ddca9cf.webp",
+      "bytes": 43168,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2025/08/14/OTW-324-1080-3.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1635"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/0b3e1f5fe74be22bb4cb1920.webp",
+      "bytes": 20962,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2024/07/10/OEP-320-BLACK.png",
+      "kinds": [
+        "wired_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-104",
+        "prod-pos-2216",
+        "prod-pos-2054",
+        "prod-pos-2009",
+        "prod-pos-1415",
+        "prod-pos-1181",
+        "prod-pos-107",
+        "prod-pos-467",
+        "prod-pos-632",
+        "prod-pos-470",
+        "prod-pos-464",
+        "prod-pos-221",
+        "prod-pos-821",
+        "prod-pos-842",
+        "prod-pos-848",
+        "prod-pos-866",
+        "prod-pos-20",
+        "prod-pos-917",
+        "prod-pos-953",
+        "prod-pos-983",
+        "prod-pos-986",
+        "prod-pos-452",
+        "prod-pos-1142",
+        "prod-pos-1145",
+        "prod-pos-1160",
+        "prod-pos-1436",
+        "prod-pos-827",
+        "prod-pos-1535",
+        "prod-pos-1571",
+        "prod-pos-1598",
+        "prod-pos-1610",
+        "prod-pos-536",
+        "prod-pos-1811",
+        "prod-pos-392",
+        "prod-pos-110",
+        "prod-pos-101",
+        "prod-pos-80",
+        "prod-pos-23",
+        "prod-pos-17",
+        "prod-pos-14",
+        "prod-pos-11"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-halo-lite-premium-sound-remote-control-half-in-ear-earphone?ean=4894947022234"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/c83f634f63b656add48a4d69.webp",
+      "bytes": 21348,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2025/07/14/oraimo-Wireless-Headphones-BoomPop-N-OHP-915N-0.png",
+      "kinds": [
+        "headphones"
+      ],
+      "product_ids": [
+        "prod-pos-430",
+        "prod-pos-1785",
+        "prod-pos-1355",
+        "prod-pos-705",
+        "prod-pos-835",
+        "prod-pos-890",
+        "prod-pos-310",
+        "prod-pos-320",
+        "prod-pos-1010",
+        "prod-pos-1265",
+        "prod-pos-1310",
+        "prod-pos-1386",
+        "prod-pos-1405",
+        "prod-pos-135"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-boompop-n-hybrid-noise-cancellation-wireless-headphones-anc-ohp-915n?ean=4894947084072"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/f6427a20c128ea77c56bc426.webp",
+      "bytes": 47924,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MA/product/2025/10/11/OTW-323SP-Total.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1161",
+        "prod-pos-1446",
+        "prod-pos-699",
+        "prod-pos-1728",
+        "prod-pos-720",
+        "prod-pos-489",
+        "prod-pos-1287",
+        "prod-pos-1338"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-spacebuds-air+-metallic-texture-ipx4-true-wireless-earbuds-otw-323sp?ean=4894947100390"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/1f18cf1191fad762930a2acf.webp",
+      "bytes": 37724,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0603/4296/0348/files/1.bip.png?v=1724317030",
+      "kinds": [
+        "headphones"
+      ],
+      "product_ids": [
+        "prod-pos-329",
+        "prod-pos-578",
+        "prod-pos-393",
+        "prod-pos-2099",
+        "prod-pos-1968",
+        "prod-pos-1832",
+        "prod-pos-128",
+        "prod-pos-708",
+        "prod-pos-713",
+        "prod-pos-714",
+        "prod-pos-318",
+        "prod-pos-803",
+        "prod-pos-834",
+        "prod-pos-1113",
+        "prod-pos-1208",
+        "prod-pos-1259",
+        "prod-pos-1048",
+        "prod-pos-1044",
+        "prod-pos-1309",
+        "prod-pos-1319",
+        "prod-pos-1353",
+        "prod-pos-1358",
+        "prod-pos-1359",
+        "prod-pos-1390",
+        "prod-pos-910",
+        "prod-pos-1423",
+        "prod-pos-1558",
+        "prod-pos-1559",
+        "prod-pos-1738",
+        "prod-pos-1739",
+        "prod-pos-1758",
+        "prod-pos-1851",
+        "prod-pos-1879",
+        "prod-pos-1880",
+        "prod-pos-1918",
+        "prod-pos-1919"
+      ],
+      "sources": [
+        "https://www.soundcore.com/au/products/soundcore-h30i-wireless-on-ear-headphones"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/e13abdbd48268c128d528274.webp",
+      "bytes": 493308,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.greenlion.net/web/image/product.template/2477/image_1920?unique=549c477",
+      "kinds": [
+        "ring_light"
+      ],
+      "product_ids": [
+        "prod-pos-159",
+        "prod-pos-1776",
+        "prod-pos-2041",
+        "prod-pos-321",
+        "prod-pos-1277",
+        "prod-pos-1913",
+        "prod-pos-161",
+        "prod-pos-1506",
+        "prod-pos-599",
+        "prod-pos-637",
+        "prod-pos-645",
+        "prod-pos-1087",
+        "prod-pos-1088",
+        "prod-pos-162",
+        "prod-pos-1278",
+        "prod-pos-1279",
+        "prod-pos-1280",
+        "prod-pos-1424",
+        "prod-pos-1603",
+        "prod-pos-1650",
+        "prod-pos-1651",
+        "prod-pos-646",
+        "prod-pos-1773",
+        "prod-pos-1775",
+        "prod-pos-345"
+      ],
+      "sources": [
+        "https://www.greenlion.net/shop/gnrnglit14-green-lion-button-mode-ringlight-14-2477"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/cd7ee5655082cebb066723ba.jpg",
+      "bytes": 67170,
+      "content_type": "image/jpeg"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/BD/product/2025/12/01/OCD-1145CC-BLACK.png",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-1594",
+        "prod-pos-1874",
+        "prod-pos-1894",
+        "prod-pos-2194",
+        "prod-pos-404",
+        "prod-pos-754",
+        "prod-pos-774",
+        "prod-pos-114",
+        "prod-pos-1024",
+        "prod-pos-1094",
+        "prod-pos-1104",
+        "prod-pos-334",
+        "prod-pos-1164",
+        "prod-pos-1173",
+        "prod-pos-1234",
+        "prod-pos-1004",
+        "prod-pos-824",
+        "prod-pos-794",
+        "prod-pos-1574",
+        "prod-pos-644",
+        "prod-pos-1754",
+        "prod-pos-424",
+        "prod-pos-1864",
+        "prod-pos-2004",
+        "prod-pos-234",
+        "prod-pos-24"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-robustline-high-speed-sturdy-data-cable-ocd-1145cc?ean=4894947100857"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/64a633e681bcac2333ea69e6.webp",
+      "bytes": 57882,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://us.ugreen.com/cdn/shop/products/ugreen-100w-usb-c-cable-676832.png?v=1693619596",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-2098",
+        "prod-pos-528",
+        "prod-pos-2086",
+        "prod-pos-1588",
+        "prod-pos-2178",
+        "prod-pos-1668",
+        "prod-pos-778",
+        "prod-pos-1878",
+        "prod-pos-1018",
+        "prod-pos-858",
+        "prod-pos-668",
+        "prod-pos-458",
+        "prod-pos-908",
+        "prod-pos-1168",
+        "prod-pos-1288",
+        "prod-pos-1328",
+        "prod-pos-1378",
+        "prod-pos-898",
+        "prod-pos-1458",
+        "prod-pos-828",
+        "prod-pos-1978",
+        "prod-pos-228",
+        "prod-pos-2068",
+        "prod-pos-118",
+        "prod-pos-38",
+        "prod-pos-28"
+      ],
+      "sources": [
+        "https://us.ugreen.com/products/100w-pd-fast-charging-cable"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/76d0220853455289673fbd29.webp",
+      "bytes": 31728,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0516/3761/6830/files/A3955Z11_TD01_V1.png?v=1749638743",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1067",
+        "prod-pos-1271",
+        "prod-pos-2069",
+        "prod-pos-1334",
+        "prod-pos-1466",
+        "prod-pos-999",
+        "prod-pos-1151",
+        "prod-pos-263",
+        "prod-pos-1313",
+        "prod-pos-1418",
+        "prod-pos-731",
+        "prod-pos-662",
+        "prod-pos-1676",
+        "prod-pos-515",
+        "prod-pos-1988"
+      ],
+      "sources": [
+        "https://www.soundcore.com/products/a3955z11"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/94425fab07568c44041e0a76.webp",
+      "bytes": 50894,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/EG/product/2026/02/09/OSW-8001N-EG-EN-main-Chrome.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1557",
+        "prod-pos-1674",
+        "prod-pos-2214",
+        "prod-pos-2223",
+        "prod-pos-747",
+        "prod-pos-738",
+        "prod-pos-2160",
+        "prod-pos-2025",
+        "prod-pos-540",
+        "prod-pos-603",
+        "prod-pos-891",
+        "prod-pos-441",
+        "prod-pos-1125",
+        "prod-pos-1197",
+        "prod-pos-1224",
+        "prod-pos-1116",
+        "prod-pos-1251",
+        "prod-pos-1080",
+        "prod-pos-1305",
+        "prod-pos-990",
+        "prod-pos-954",
+        "prod-pos-1413",
+        "prod-pos-1476",
+        "prod-pos-1593",
+        "prod-pos-1602",
+        "prod-pos-648",
+        "prod-pos-1665",
+        "prod-pos-1782",
+        "prod-pos-1818",
+        "prod-pos-1917",
+        "prod-pos-207",
+        "prod-pos-2196"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-watch-6-max-1.83-screen-hd-calling-smart-watch?ean=4894947104190"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/7caef21a2e147058fbfb8166.webp",
+      "bytes": 55012,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/BD/product/2025/12/22/OBS-680-BLACK.png",
+      "kinds": [
+        "speaker"
+      ],
+      "product_ids": [
+        "prod-pos-2107",
+        "prod-pos-1834",
+        "prod-pos-388",
+        "prod-pos-142",
+        "prod-pos-796",
+        "prod-pos-805",
+        "prod-pos-892",
+        "prod-pos-1078",
+        "prod-pos-1126",
+        "prod-pos-1141",
+        "prod-pos-262",
+        "prod-pos-1108",
+        "prod-pos-1285",
+        "prod-pos-1333",
+        "prod-pos-967",
+        "prod-pos-1402",
+        "prod-pos-1426",
+        "prod-pos-1462",
+        "prod-pos-1546",
+        "prod-pos-1549",
+        "prod-pos-1579",
+        "prod-pos-1660",
+        "prod-pos-1756",
+        "prod-pos-382",
+        "prod-pos-1927",
+        "prod-pos-2020",
+        "prod-pos-2023",
+        "prod-pos-2065",
+        "prod-pos-169",
+        "prod-pos-157",
+        "prod-pos-139"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-spacebox-active-25w-powerful-fm-custom-portable-wireless-speaker-obs-680?ean=4894947103667"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/5787639082e519b87826d83e.webp",
+      "bytes": 96934,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2025/01/15/OTW-626N-white.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1541",
+        "prod-pos-1730",
+        "prod-pos-176",
+        "prod-pos-1205",
+        "prod-pos-1304",
+        "prod-pos-1331",
+        "prod-pos-1667",
+        "prod-pos-1940"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-spacebuds-n-active-noise-cancellation-38-hour-play-time-true-wireless-earbuds?ean=4894947055423"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/e40a0d9bf864767f701aeb3d.webp",
+      "bytes": 19880,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/JOYROOMJR-DR01CapacitiveStylusPenB2B_2.jpg?v=1751963842&width=720",
+      "kinds": [
+        "stylus"
+      ],
+      "product_ids": [
+        "prod-pos-1115",
+        "prod-pos-2039",
+        "prod-pos-1616"
+      ],
+      "sources": [
+        "https://www.joyroom.com/products/jr-dr01-active-stylus-pen-b2b"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/6f9eae19c462005bf16e4ab9.webp",
+      "bytes": 11016,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2025/08/08/C-to-L.png",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-2072",
+        "prod-pos-2230",
+        "prod-pos-2180",
+        "prod-pos-1490",
+        "prod-pos-1169",
+        "prod-pos-1300",
+        "prod-pos-40",
+        "prod-pos-2080",
+        "prod-pos-570",
+        "prod-pos-680",
+        "prod-pos-460",
+        "prod-pos-120",
+        "prod-pos-850",
+        "prod-pos-940",
+        "prod-pos-590",
+        "prod-pos-1134",
+        "prod-pos-1210",
+        "prod-pos-1020",
+        "prod-pos-1440",
+        "prod-pos-1460",
+        "prod-pos-1550",
+        "prod-pos-670",
+        "prod-pos-550",
+        "prod-pos-1800",
+        "prod-pos-1890",
+        "prod-pos-230",
+        "prod-pos-90",
+        "prod-pos-30"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-cable-3a-1m?ean=4894947096495"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/f851371bb72741a7b5074a15.webp",
+      "bytes": 43160,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MA/product/2026/01/23/OCW-5451ECC.png",
+      "kinds": [
+        "wall_charger"
+      ],
+      "product_ids": [
+        "prod-pos-6",
+        "prod-pos-2202",
+        "prod-pos-612",
+        "prod-pos-1524",
+        "prod-pos-2088",
+        "prod-pos-1596",
+        "prod-pos-2208",
+        "prod-pos-2232",
+        "prod-pos-342",
+        "prod-pos-660",
+        "prod-pos-474",
+        "prod-pos-492",
+        "prod-pos-972",
+        "prod-pos-978",
+        "prod-pos-1002",
+        "prod-pos-510",
+        "prod-pos-1038",
+        "prod-pos-1212",
+        "prod-pos-1098",
+        "prod-pos-1362",
+        "prod-pos-942",
+        "prod-pos-1536",
+        "prod-pos-678",
+        "prod-pos-402",
+        "prod-pos-1896",
+        "prod-pos-2064",
+        "prod-pos-2076",
+        "prod-pos-168",
+        "prod-pos-60",
+        "prod-pos-54"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-powergan-451-45w-gan-ultra-fast-wall-charger-ocw-5451e?ean=4894947103735"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/05b65671ea0795b3b63c3a5b.webp",
+      "bytes": 36980,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/EG/product/2024/01/18/ocw-e94d-c53.png",
+      "kinds": [
+        "wall_charger"
+      ],
+      "product_ids": [
+        "prod-pos-2215",
+        "prod-pos-1995",
+        "prod-pos-2079",
+        "prod-pos-1953",
+        "prod-pos-1875",
+        "prod-pos-63",
+        "prod-pos-555",
+        "prod-pos-651",
+        "prod-pos-513",
+        "prod-pos-171",
+        "prod-pos-957",
+        "prod-pos-975",
+        "prod-pos-1041",
+        "prod-pos-387",
+        "prod-pos-1209",
+        "prod-pos-1119",
+        "prod-pos-987",
+        "prod-pos-1389",
+        "prod-pos-1463",
+        "prod-pos-807",
+        "prod-pos-1527",
+        "prod-pos-759",
+        "prod-pos-1809",
+        "prod-pos-471",
+        "prod-pos-405",
+        "prod-pos-165",
+        "prod-pos-87",
+        "prod-pos-57",
+        "prod-pos-51",
+        "prod-pos-9",
+        "prod-pos-3"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-powercube-3-pro-18w-fast-charging-charger-kit?ean=4895180772795"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/41455fdad2e4a848a46eb252.webp",
+      "bytes": 21000,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0045/4092/4007/files/1JXyXii4Opy6Kv4W_3c4fb8c9-6a9b-4b33-b2b8-867ff5f0620a.jpg?v=1752101236",
+      "kinds": [
+        "phone_battery"
+      ],
+      "product_ids": [
+        "prod-pos-2159",
+        "prod-pos-374",
+        "prod-pos-323",
+        "prod-pos-369",
+        "prod-pos-520",
+        "prod-pos-629",
+        "prod-pos-275",
+        "prod-pos-272",
+        "prod-pos-494",
+        "prod-pos-211",
+        "prod-pos-215",
+        "prod-pos-683",
+        "prod-pos-500",
+        "prod-pos-733",
+        "prod-pos-280",
+        "prod-pos-795",
+        "prod-pos-244",
+        "prod-pos-813",
+        "prod-pos-840",
+        "prod-pos-896",
+        "prod-pos-616",
+        "prod-pos-961",
+        "prod-pos-973",
+        "prod-pos-495",
+        "prod-pos-443",
+        "prod-pos-439",
+        "prod-pos-367",
+        "prod-pos-338",
+        "prod-pos-309",
+        "prod-pos-1165",
+        "prod-pos-1254",
+        "prod-pos-932",
+        "prod-pos-1439",
+        "prod-pos-846",
+        "prod-pos-676",
+        "prod-pos-669",
+        "prod-pos-634",
+        "prod-pos-627",
+        "prod-pos-618",
+        "prod-pos-615",
+        "prod-pos-519",
+        "prod-pos-473",
+        "prod-pos-435",
+        "prod-pos-421",
+        "prod-pos-361",
+        "prod-pos-308",
+        "prod-pos-300",
+        "prod-pos-286",
+        "prod-pos-271",
+        "prod-pos-242",
+        "prod-pos-226"
+      ],
+      "sources": [
+        "https://www.ifixit.com/products/iphone-12-12-pro-replacement-battery"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/96c599e40b236d02e3e2bdc0.webp",
+      "bytes": 105420,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.sandisk.com/content/dam/store/en-us/assets/products/usb-flash-drives/ultra-usb-3-0/gallery/ultra-usb-3-0-front.png",
+      "kinds": [
+        "usb_flash_drive"
+      ],
+      "product_ids": [
+        "prod-pos-2189",
+        "prod-pos-2188",
+        "prod-pos-1029",
+        "prod-pos-1031",
+        "prod-pos-1032",
+        "prod-pos-1444",
+        "prod-pos-1513",
+        "prod-pos-1548",
+        "prod-pos-1554",
+        "prod-pos-1555",
+        "prod-pos-1556",
+        "prod-pos-1946",
+        "prod-pos-1954",
+        "prod-pos-1955",
+        "prod-pos-1956",
+        "prod-pos-1957"
+      ],
+      "sources": [
+        "https://www.sandisk.com/products/usb-flash-drives/sandisk-ultra-usb-3-0"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/de651bbf14fa6cf324874293.png",
+      "bytes": 180433,
+      "content_type": "image/png"
+    },
+    {
+      "url": "https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1636600968.01485622.png",
+      "kinds": [
+        "mini_printer"
+      ],
+      "product_ids": [
+        "prod-pos-1677"
+      ],
+      "sources": [
+        "https://www.mi.com/uk/product/mi-portable-photo-printer/"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/b960a5bfecc7c9329c31469f.png",
+      "bytes": 333400,
+      "content_type": "image/png"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0611/6956/5874/files/11_2cbb6e67-2578-4c20-939b-8b98cda2b973.jpg?v=1747882793",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-125",
+        "prod-pos-2030",
+        "prod-pos-1400",
+        "prod-pos-350",
+        "prod-pos-1064",
+        "prod-pos-1217",
+        "prod-pos-1253",
+        "prod-pos-875",
+        "prod-pos-1568",
+        "prod-pos-482",
+        "prod-pos-1158"
+      ],
+      "sources": [
+        "https://www.soundcore.com/fr/products/a3994"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/e6de6366519f2a5880c7f888.webp",
+      "bytes": 20570,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/NG/album/oeb-e104dc/oeb-e104dc-black.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-854",
+        "prod-pos-1317",
+        "prod-pos-444",
+        "prod-pos-1284",
+        "prod-pos-1410",
+        "prod-pos-1725",
+        "prod-pos-150"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-freepods-3c-clear-voice-in-calls-long-playtime-enc-true-wireless-earbuds?ean=4895180798559"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/50745dbb44c3b3c3e45a5e81.webp",
+      "bytes": 24318,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/NG/album/oeb-e104dc/oeb-e104dc-4.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-854"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/b75ea0783bf1d4fde2bbc354.webp",
+      "bytes": 35372,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/EG/product/2026/09/22/OEB-E104DC-FB--02.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-854"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/59913085d4483756433fe9df.webp",
+      "bytes": 83636,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/NG/album/oeb-e104dc/oeb-e104dc-6.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-854"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/f32efd394f60d9535e553dfa.webp",
+      "bytes": 30100,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/JOYROOMJR-PBF122.4ALEDPowerBank22.5W10000mAh_4.jpg?v=1750917931&width=1024",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-1459",
+        "prod-pos-1696",
+        "prod-pos-1140",
+        "prod-pos-1404",
+        "prod-pos-1492",
+        "prod-pos-810",
+        "prod-pos-1695",
+        "prod-pos-1698",
+        "prod-pos-293",
+        "prod-pos-216"
+      ],
+      "sources": [
+        "https://www.joyroom.com/products/jr-pbf12-2-4a-led-power-bank-10000mah"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/5bc00fdc521b7ad707ff63bc.webp",
+      "bytes": 13288,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MA/product/2026/03/09/OSW-824-GRAPHITEBLACK.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1581",
+        "prod-pos-1626",
+        "prod-pos-2195",
+        "prod-pos-1590",
+        "prod-pos-2229",
+        "prod-pos-1680",
+        "prod-pos-636",
+        "prod-pos-537",
+        "prod-pos-735",
+        "prod-pos-924",
+        "prod-pos-960",
+        "prod-pos-1086",
+        "prod-pos-1131",
+        "prod-pos-1194",
+        "prod-pos-1419",
+        "prod-pos-879",
+        "prod-pos-753",
+        "prod-pos-600",
+        "prod-pos-1734",
+        "prod-pos-1815",
+        "prod-pos-1833",
+        "prod-pos-447",
+        "prod-pos-1977",
+        "prod-pos-204"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-watch-nova-2r-lite-1.43-amoled-30-day-standby-smart-watch-osw-824?ean=4894947107801"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/6d4a634f45d29dab71923b6f.webp",
+      "bytes": 58126,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://oss.boyamic.com/uploads/images/20241230/20241230100701564.webp",
+      "kinds": [
+        "microphone"
+      ],
+      "product_ids": [
+        "prod-pos-1620",
+        "prod-pos-1658",
+        "prod-pos-1420",
+        "prod-pos-2102",
+        "prod-pos-1312",
+        "prod-pos-1114",
+        "prod-pos-332",
+        "prod-pos-1290",
+        "prod-pos-1308",
+        "prod-pos-1414",
+        "prod-pos-1502",
+        "prod-pos-1686",
+        "prod-pos-1693",
+        "prod-pos-2006",
+        "prod-pos-138"
+      ],
+      "sources": [
+        "https://www.boyamic.com/product/lavalier-microphone-by-m1"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/7ba3923f68c14fad343c9459.webp",
+      "bytes": 21884,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0516/3761/6830/files/20250715-181408.png?v=1752574504",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1848",
+        "prod-pos-1812",
+        "prod-pos-1185",
+        "prod-pos-2094",
+        "prod-pos-1157",
+        "prod-pos-1605",
+        "prod-pos-666",
+        "prod-pos-855",
+        "prod-pos-582",
+        "prod-pos-198",
+        "prod-pos-1206",
+        "prod-pos-1332",
+        "prod-pos-1401",
+        "prod-pos-729",
+        "prod-pos-1731",
+        "prod-pos-1750",
+        "prod-pos-351"
+      ],
+      "sources": [
+        "https://www.soundcore.com/products/soundcore-p30i"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/c4465ece0a8e6ff5e75b1d74.webp",
+      "bytes": 29248,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2026/07/23/OCW-5351ECC-WHITE.png",
+      "kinds": [
+        "wall_charger"
+      ],
+      "product_ids": [
+        "prod-pos-2221",
+        "prod-pos-1837",
+        "prod-pos-2017",
+        "prod-pos-427",
+        "prod-pos-1771",
+        "prod-pos-667",
+        "prod-pos-1525",
+        "prod-pos-775",
+        "prod-pos-283",
+        "prod-pos-1057",
+        "prod-pos-343",
+        "prod-pos-1213",
+        "prod-pos-1231",
+        "prod-pos-1363",
+        "prod-pos-1531",
+        "prod-pos-757",
+        "prod-pos-727",
+        "prod-pos-1657",
+        "prod-pos-1705",
+        "prod-pos-535",
+        "prod-pos-1765",
+        "prod-pos-1951",
+        "prod-pos-61",
+        "prod-pos-55",
+        "prod-pos-2203",
+        "prod-pos-7",
+        "prod-pos-1"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-powergan-351-charger-ocw-5351e?ean=4894947101571"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/448e18ab08c70823e4462143.webp",
+      "bytes": 22228,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/BD/product/2025/09/12/ocd-118mcl-black.png",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-1106",
+        "prod-pos-1456",
+        "prod-pos-2026",
+        "prod-pos-1146",
+        "prod-pos-456",
+        "prod-pos-696",
+        "prod-pos-856",
+        "prod-pos-956",
+        "prod-pos-1036",
+        "prod-pos-396",
+        "prod-pos-1136",
+        "prod-pos-1203",
+        "prod-pos-1326",
+        "prod-pos-906",
+        "prod-pos-526",
+        "prod-pos-1986",
+        "prod-pos-2056",
+        "prod-pos-116",
+        "prod-pos-2176",
+        "prod-pos-26"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-duraline4-3a-1.2m-3-in-1-cable-ocd-118mcl?ean=4894947096877"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/c8d92fcdf5bf5037cb7dd40b.webp",
+      "bytes": 28832,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/JR-QP193.jpg?v=1786520720&width=3000",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-1505",
+        "prod-pos-2210",
+        "prod-pos-791",
+        "prod-pos-428",
+        "prod-pos-740",
+        "prod-pos-549",
+        "prod-pos-1033",
+        "prod-pos-1661",
+        "prod-pos-1697",
+        "prod-pos-1844",
+        "prod-pos-1970"
+      ],
+      "sources": [
+        "https://www.joyroom.com/products/qp193-power-bank-30000mah"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/9e32028db3e0730724596938.jpg",
+      "bytes": 295300,
+      "content_type": "image/jpeg"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/NG/product/2024/08/23/OCD-115CC-black.png",
+      "kinds": [
+        "usb_cable"
+      ],
+      "product_ids": [
+        "prod-pos-1395",
+        "prod-pos-1425",
+        "prod-pos-95",
+        "prod-pos-355",
+        "prod-pos-695",
+        "prod-pos-425",
+        "prod-pos-1375",
+        "prod-pos-725",
+        "prod-pos-1755",
+        "prod-pos-525",
+        "prod-pos-455",
+        "prod-pos-415",
+        "prod-pos-1985",
+        "prod-pos-115",
+        "prod-pos-25"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-silkline-2a-1m-multi-color-type-c-to-type-c-data-cable-20pcs-ring-plastic-package?ean=OCD-115CC-BLACK"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/c60094955915e907dc814ea0.webp",
+      "bytes": 12522,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/PK/product/2025/05/20/oraimo-BoomPop-Pro-OHP-917-wireless-headphones-GREY.png",
+      "kinds": [
+        "headphones"
+      ],
+      "product_ids": [
+        "prod-pos-2171",
+        "prod-pos-2016",
+        "prod-pos-1736",
+        "prod-pos-426",
+        "prod-pos-511",
+        "prod-pos-331",
+        "prod-pos-1303",
+        "prod-pos-1318",
+        "prod-pos-1356",
+        "prod-pos-656",
+        "prod-pos-1866",
+        "prod-pos-1931"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-boompop-pro-hybrid-noise-cancellation-swipe-contro-wireless-headphones?ean=4894947069345"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/815c79ccca90676607edc747.webp",
+      "bytes": 36634,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2024/11/01/spacebuds-z-otw-625-en-black.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1130"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/42bff31ffca76990366b15ee.webp",
+      "bytes": 58022,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/EG/product/2024/12/12/2.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1130"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/5d343b4bfe1fcbde68eb33d4.webp",
+      "bytes": 38212,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/EG/product/2024/12/12/3.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1130"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/4bea220da58147e7828ac3e2.webp",
+      "bytes": 34628,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/GH/product/2024/11/01/spacebuds-z-otw-625-en-4.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1130"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/c2ad56ac0a705812c355b304.webp",
+      "bytes": 29528,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2025/10/22/oraimo-hd-display-smart-watch-watch-lumos-n-osw-808n-image.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1915",
+        "prod-pos-1816",
+        "prod-pos-1645",
+        "prod-pos-547",
+        "prod-pos-205",
+        "prod-pos-718",
+        "prod-pos-736",
+        "prod-pos-880",
+        "prod-pos-925",
+        "prod-pos-583",
+        "prod-pos-1006",
+        "prod-pos-1159",
+        "prod-pos-1195",
+        "prod-pos-1330",
+        "prod-pos-745",
+        "prod-pos-1564",
+        "prod-pos-601",
+        "prod-pos-1780",
+        "prod-pos-1924"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-watch-lumos-n-hd-display-smart-watch-osw-808n?ean=4894947097652"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/e5c7f2fb248b64fc94b26a26.webp",
+      "bytes": 65954,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MA/product/2026/06/14/osw-827n.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1865",
+        "prod-pos-1982",
+        "prod-pos-542",
+        "prod-pos-614",
+        "prod-pos-785",
+        "prod-pos-920",
+        "prod-pos-596",
+        "prod-pos-1082",
+        "prod-pos-1235",
+        "prod-pos-1289",
+        "prod-pos-1046",
+        "prod-pos-911",
+        "prod-pos-1478",
+        "prod-pos-749",
+        "prod-pos-1604",
+        "prod-pos-605",
+        "prod-pos-551",
+        "prod-pos-1838",
+        "prod-pos-1964"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-watch-muse-2-ite-smart-watch-osw-827n-rosegold?ean=4894947124990"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/c03924ca346ddd46aa59b872.webp",
+      "bytes": 51626,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2026/04/10/oraimo-Earphone-Necklace-Neo-OEB-310-GRAVITYBLACK-mainimage.png",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-1286",
+        "prod-pos-2108",
+        "prod-pos-1469",
+        "prod-pos-2046"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-necklace-neo-long-lasting-immersive-neckband-wireless-earphone-oeb-310?ean=4894947118241"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/2232d9f6a51015da99a25f90.webp",
+      "bytes": 58482,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2024/11/29/OBS-382-1080.png",
+      "kinds": [
+        "speaker"
+      ],
+      "product_ids": [
+        "prod-pos-1835",
+        "prod-pos-2156",
+        "prod-pos-1514",
+        "prod-pos-1580",
+        "prod-pos-1364",
+        "prod-pos-143",
+        "prod-pos-623",
+        "prod-pos-860",
+        "prod-pos-380",
+        "prod-pos-1016",
+        "prod-pos-476",
+        "prod-pos-1034",
+        "prod-pos-209",
+        "prod-pos-1226",
+        "prod-pos-1283",
+        "prod-pos-1316",
+        "prod-pos-947",
+        "prod-pos-1454",
+        "prod-pos-1499",
+        "prod-pos-659",
+        "prod-pos-1718",
+        "prod-pos-1910",
+        "prod-pos-359",
+        "prod-pos-1922",
+        "prod-pos-1925",
+        "prod-pos-1928",
+        "prod-pos-2012",
+        "prod-pos-155",
+        "prod-pos-2114",
+        "prod-pos-140"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/fm-and-customizable-lights-and-eq-speaker-spacebox-obs-382?ean=4894947047947"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/c49de515f9a1cd640ded344b.webp",
+      "bytes": 120326,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/memory-cards/ultra-sd-uhs-i-v10/gallery/ultra-sd-uhs-i-v10-32gb-front.png",
+      "kinds": [
+        "memory_card"
+      ],
+      "product_ids": [
+        "prod-pos-1830",
+        "prod-pos-182",
+        "prod-pos-180",
+        "prod-pos-1713",
+        "prod-pos-993",
+        "prod-pos-1129",
+        "prod-pos-389",
+        "prod-pos-192",
+        "prod-pos-193",
+        "prod-pos-991",
+        "prod-pos-992",
+        "prod-pos-994",
+        "prod-pos-995",
+        "prod-pos-1028",
+        "prod-pos-1030",
+        "prod-pos-337",
+        "prod-pos-195",
+        "prod-pos-183",
+        "prod-pos-767",
+        "prod-pos-654",
+        "prod-pos-1712",
+        "prod-pos-1831",
+        "prod-pos-431",
+        "prod-pos-1870",
+        "prod-pos-336",
+        "prod-pos-335",
+        "prod-pos-1945",
+        "prod-pos-196",
+        "prod-pos-194",
+        "prod-pos-181",
+        "prod-pos-179"
+      ],
+      "sources": [
+        "https://www.sandisk.com/en-gb/products/memory-cards/sd-cards/sandisk-ultra-sd-uhs-i-v10"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/78139b4b4a715c020d0f16db.png",
+      "bytes": 355235,
+      "content_type": "image/png"
+    },
+    {
+      "url": "https://www.greenlion.net/web/image/product.template/112421/image_1920?unique=5095404",
+      "kinds": [
+        "fan"
+      ],
+      "product_ids": [
+        "prod-pos-2123",
+        "prod-pos-2022",
+        "prod-pos-966",
+        "prod-pos-2021"
+      ],
+      "sources": [
+        "https://www.greenlion.net/shop/gnantpcoolgn-green-lion-antarctica-clip-on-phone-cooler-green-112421"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/f43e11a47345b34fe768b7d4.webp",
+      "bytes": 31002,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2026/04/02/OSW-833N-ROSE-GOLD-MAIN.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-2191",
+        "prod-pos-1678",
+        "prod-pos-2155",
+        "prod-pos-832",
+        "prod-pos-949",
+        "prod-pos-598",
+        "prod-pos-571",
+        "prod-pos-1003",
+        "prod-pos-1039",
+        "prod-pos-1084",
+        "prod-pos-1093",
+        "prod-pos-1201",
+        "prod-pos-1219",
+        "prod-pos-1237",
+        "prod-pos-1336",
+        "prod-pos-1381",
+        "prod-pos-1399",
+        "prod-pos-1417",
+        "prod-pos-1480",
+        "prod-pos-1606",
+        "prod-pos-1615",
+        "prod-pos-1642",
+        "prod-pos-1966",
+        "prod-pos-2092"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-watch-muse-2-1.32%22-amoled-waterproof-health-smart-watch-osw-833n-rosegold?ean=4894947115684"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/3f4452f62308aae22858b473.webp",
+      "bytes": 133096,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0045/4092/4007/files/u6tvJJEqAdC6dxNh.jpg?v=1764954414",
+      "kinds": [
+        "replacement_screen"
+      ],
+      "product_ids": [
+        "prod-pos-2134",
+        "prod-pos-2135",
+        "prod-pos-563",
+        "prod-pos-565",
+        "prod-pos-328",
+        "prod-pos-529",
+        "prod-pos-383",
+        "prod-pos-562",
+        "prod-pos-607",
+        "prod-pos-608",
+        "prod-pos-322",
+        "prod-pos-434",
+        "prod-pos-631",
+        "prod-pos-276",
+        "prod-pos-638",
+        "prod-pos-487",
+        "prod-pos-212",
+        "prod-pos-674",
+        "prod-pos-306",
+        "prod-pos-349",
+        "prod-pos-706",
+        "prod-pos-716",
+        "prod-pos-730",
+        "prod-pos-301",
+        "prod-pos-256",
+        "prod-pos-417",
+        "prod-pos-758",
+        "prod-pos-762",
+        "prod-pos-763",
+        "prod-pos-764",
+        "prod-pos-366",
+        "prod-pos-365",
+        "prod-pos-630",
+        "prod-pos-247",
+        "prod-pos-609",
+        "prod-pos-839",
+        "prod-pos-849",
+        "prod-pos-851",
+        "prod-pos-496",
+        "prod-pos-859",
+        "prod-pos-862",
+        "prod-pos-868",
+        "prod-pos-870",
+        "prod-pos-882",
+        "prod-pos-886",
+        "prod-pos-897",
+        "prod-pos-916",
+        "prod-pos-362",
+        "prod-pos-929",
+        "prod-pos-930",
+        "prod-pos-934",
+        "prod-pos-979",
+        "prod-pos-980",
+        "prod-pos-984",
+        "prod-pos-518",
+        "prod-pos-486",
+        "prod-pos-347",
+        "prod-pos-344",
+        "prod-pos-327",
+        "prod-pos-285",
+        "prod-pos-284",
+        "prod-pos-269",
+        "prod-pos-266",
+        "prod-pos-265",
+        "prod-pos-254",
+        "prod-pos-253",
+        "prod-pos-1184",
+        "prod-pos-1189",
+        "prod-pos-959",
+        "prod-pos-958",
+        "prod-pos-918",
+        "prod-pos-894",
+        "prod-pos-1435",
+        "prod-pos-852",
+        "prod-pos-798",
+        "prod-pos-797",
+        "prod-pos-789",
+        "prod-pos-1562",
+        "prod-pos-1600",
+        "prod-pos-675",
+        "prod-pos-673",
+        "prod-pos-671",
+        "prod-pos-657",
+        "prod-pos-613",
+        "prod-pos-610",
+        "prod-pos-564",
+        "prod-pos-561",
+        "prod-pos-509",
+        "prod-pos-450",
+        "prod-pos-420",
+        "prod-pos-419",
+        "prod-pos-375",
+        "prod-pos-304",
+        "prod-pos-298",
+        "prod-pos-289",
+        "prod-pos-287",
+        "prod-pos-278",
+        "prod-pos-268",
+        "prod-pos-267",
+        "prod-pos-252",
+        "prod-pos-214",
+        "prod-pos-213"
+      ],
+      "sources": [
+        "https://www.ifixit.com/products/iphone-12-12-pro-screen"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/a903c0f0d007d193f9e6a778.webp",
+      "bytes": 53216,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2025/01/09/watch-5-lite-osw-804.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1994",
+        "prod-pos-1814",
+        "prod-pos-1868",
+        "prod-pos-1085",
+        "prod-pos-1967",
+        "prod-pos-2093",
+        "prod-pos-698",
+        "prod-pos-1040",
+        "prod-pos-446",
+        "prod-pos-1148",
+        "prod-pos-1166",
+        "prod-pos-1220",
+        "prod-pos-1292",
+        "prod-pos-1380",
+        "prod-pos-1382",
+        "prod-pos-1445",
+        "prod-pos-1589",
+        "prod-pos-653",
+        "prod-pos-1679",
+        "prod-pos-554",
+        "prod-pos-1886",
+        "prod-pos-2174"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-watch-5-lite-ip68-hd-smart-watch-osw-804?ean=4894947058752"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/94d55680f1445cc46de693ac.webp",
+      "bytes": 51030,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/BD/product/2025/09/15/OEB-611-BLACK.png",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-1669",
+        "prod-pos-589"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-necklace5-40hrs-playtime-vibration-alerts-wireless-earphone-oeb-611?ean=4894947096754"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/339138ded3f4d0dc8ee1bf7f.webp",
+      "bytes": 42136,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0493/9834/9974/files/Black_20_000_mAh-01.png?v=1732159201",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-1682",
+        "prod-pos-1681",
+        "prod-pos-151",
+        "prod-pos-560",
+        "prod-pos-1273",
+        "prod-pos-811",
+        "prod-pos-1630",
+        "prod-pos-664",
+        "prod-pos-184",
+        "prod-pos-2087",
+        "prod-pos-2190"
+      ],
+      "sources": [
+        "https://www.anker.com/products/a1688"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/15c3630cb4bb430b367edd7f.webp",
+      "bytes": 179120,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MA/product/2025/06/18/speaker-spacebox-pro-obs-682.png",
+      "kinds": [
+        "speaker"
+      ],
+      "product_ids": [
+        "prod-pos-1578",
+        "prod-pos-2124",
+        "prod-pos-663",
+        "prod-pos-558",
+        "prod-pos-483",
+        "prod-pos-156",
+        "prod-pos-498",
+        "prod-pos-381",
+        "prod-pos-1011",
+        "prod-pos-1017",
+        "prod-pos-1077",
+        "prod-pos-1107",
+        "prod-pos-1152",
+        "prod-pos-1260",
+        "prod-pos-1266",
+        "prod-pos-1026",
+        "prod-pos-1335",
+        "prod-pos-1455",
+        "prod-pos-1473",
+        "prod-pos-1497",
+        "prod-pos-1539",
+        "prod-pos-1545",
+        "prod-pos-1575",
+        "prod-pos-717",
+        "prod-pos-711",
+        "prod-pos-1719",
+        "prod-pos-1926",
+        "prod-pos-2019",
+        "prod-pos-153",
+        "prod-pos-141"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-portable-wireless-speaker-spacebox-pro?ean=4894947069413"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/3af3d5bd2ec35679a678251e.webp",
+      "bytes": 158524,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/AO/product/2026/01/04/OPB-7103c.png",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-1530",
+        "prod-pos-2234",
+        "prod-pos-1376",
+        "prod-pos-1343",
+        "prod-pos-1394",
+        "prod-pos-1625",
+        "prod-pos-1662",
+        "prod-pos-2014"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-power-nova-l11-10000mah-22.5w-fast-charge-type-c-power-bank-opb-7103c?ean=4894947101496"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/2e1f8fb369b614aba97f55d1.webp",
+      "bytes": 68950,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2024/09/03/OPB-1205N.png",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-1529",
+        "prod-pos-1100",
+        "prod-pos-1624",
+        "prod-pos-1749",
+        "prod-pos-231",
+        "prod-pos-2101"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-traveler-12-byte-12w-20000mah-power-bank?ean=4894947034480"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/08658293a33f56de09a5bd0c.webp",
+      "bytes": 26172,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/NG/product/2025/09/16/oraimo-smart-watch-watch-6n-osw-8000n-image-0.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-2199",
+        "prod-pos-1416",
+        "prod-pos-2091",
+        "prod-pos-606",
+        "prod-pos-552",
+        "prod-pos-912",
+        "prod-pos-921",
+        "prod-pos-948",
+        "prod-pos-543",
+        "prod-pos-1065",
+        "prod-pos-1083",
+        "prod-pos-1479",
+        "prod-pos-1587",
+        "prod-pos-1965"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-watch-6n-full-touch-clolor-screen-smart-watch-osw-8000n?ean=4894947097645"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/0e1a38acbfd018e570a0b515.webp",
+      "bytes": 47870,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2024/06/20/OEB-311-BLUE.png",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-1135"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/8652ffdc4801284d65b3708e.webp",
+      "bytes": 19246,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/MA/product/2024/03/19/oraimo-necklacelite-1.jpg",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-1135"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/820c590cc003fa21b550ff3f.webp",
+      "bytes": 66326,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/EG/product/2024/08/23/OEB-311-white.jpg",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-1135"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/e7eaac35caff9597035db419.webp",
+      "bytes": 42270,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/MA/product/2024/03/19/oraimo-necklacelite-3.jpg",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-1135"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/67ff82b9179a36c4984703f1.webp",
+      "bytes": 60318,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/JOYROOMJR-CCN0530WA_CminiMetalCarChargerB2B_5.png?v=1751278349&width=1500",
+      "kinds": [
+        "car_charger"
+      ],
+      "product_ids": [
+        "prod-pos-1628",
+        "prod-pos-1939",
+        "prod-pos-893",
+        "prod-pos-2209",
+        "prod-pos-734",
+        "prod-pos-820",
+        "prod-pos-36",
+        "prod-pos-1120",
+        "prod-pos-1147",
+        "prod-pos-1176",
+        "prod-pos-1182",
+        "prod-pos-1239",
+        "prod-pos-1388",
+        "prod-pos-936",
+        "prod-pos-1411",
+        "prod-pos-1614",
+        "prod-pos-1761",
+        "prod-pos-1884",
+        "prod-pos-1920",
+        "prod-pos-2146",
+        "prod-pos-66",
+        "prod-pos-65",
+        "prod-pos-37"
+      ],
+      "sources": [
+        "https://www.joyroom.com/products/jr-ccn05-30w-a-c-mini-metal-car-charger"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/b5e6d3bea2ecc40b6fd50a29.webp",
+      "bytes": 89976,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/NG/product/2024/07/11/SpaceBuds-OTW-630.png",
+      "kinds": [
+        "accessory",
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1244",
+        "prod-pos-1054",
+        "prod-pos-340",
+        "prod-pos-1243",
+        "prod-pos-1348",
+        "prod-pos-928",
+        "prod-pos-1726",
+        "prod-pos-319"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-spacebuds-50db-anc-noise-cancelling-earbuds-with-personalized-voice-prompt?ean=4894947029578"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/4d9ef5abc7c407a01787e3c6.webp",
+      "bytes": 22228,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/NG/product/2024/07/11/OTW-630-SpaceBuds-1.jpg",
+      "kinds": [
+        "accessory"
+      ],
+      "product_ids": [
+        "prod-pos-1244"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/340e687ab45461d19af8cee8.webp",
+      "bytes": 30910,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/NG/product/2024/08/15/OTW-630-680-3x.jpg",
+      "kinds": [
+        "accessory"
+      ],
+      "product_ids": [
+        "prod-pos-1244"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/e54acae9e50425b1df96a4dd.webp",
+      "bytes": 32706,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/NG/product/2024/08/15/OTW-630-680-5x.jpg",
+      "kinds": [
+        "accessory"
+      ],
+      "product_ids": [
+        "prod-pos-1244"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/3cf30d3196497eb0de8be7e1.webp",
+      "bytes": 70632,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2026/04/13/oraimo-Headphone-BoomPop-Air-OHP-316-GRAVITYBLACK-mainimage.png",
+      "kinds": [
+        "headphones"
+      ],
+      "product_ids": [
+        "prod-pos-1777",
+        "prod-pos-1472",
+        "prod-pos-677",
+        "prod-pos-837",
+        "prod-pos-1337",
+        "prod-pos-1357",
+        "prod-pos-1433",
+        "prod-pos-647",
+        "prod-pos-1757",
+        "prod-pos-507",
+        "prod-pos-1822",
+        "prod-pos-1912"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-boompop-air-lightweight-durable-wireless-headphones-ohp-316?ean=4894947114519"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/2f6a4429cc22be7bf427c7d1.webp",
+      "bytes": 42778,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/joyroom-jr-qp192-22-5w-power-bank-20000mah_8.jpg?v=1751010103&width=1500",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-988",
+        "prod-pos-721",
+        "prod-pos-694",
+        "prod-pos-812",
+        "prod-pos-889",
+        "prod-pos-944",
+        "prod-pos-955",
+        "prod-pos-1274",
+        "prod-pos-1692",
+        "prod-pos-1699",
+        "prod-pos-1969",
+        "prod-pos-97"
+      ],
+      "sources": [
+        "https://www.joyroom.com/products/joyroom-jr-qp192-22-5w-power-bank-20000mah"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/e57994024e71100493e3c68f.webp",
+      "bytes": 133156,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/EG/product/2026/02/02/OPB-7203C-GRAPHITEBLACK.png",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-1853",
+        "prod-pos-1721",
+        "prod-pos-665",
+        "prod-pos-401",
+        "prod-pos-808",
+        "prod-pos-1930",
+        "prod-pos-2018"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-powernova-l21-20000mah-30w-power-bank-opb-7203c?ean=4894947105456"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/7d4f0b796168f4e821af7b80.webp",
+      "bytes": 81056,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/MA/product/2025/09/17/Oraimo-True-Wireless-Earbuds-SpaceBuds-Air-OTW-324S-2-Features-EN.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1803"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/069c0813d83a536e7b2bac7e.webp",
+      "bytes": 43796,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/MA/product/2025/09/17/Oraimo-True-Wireless-Earbuds-SpaceBuds-Air-OTW-324S-4-38-Hour-EN.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1803"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/b0e0b4ae94ed2bcc5d3c0a89.webp",
+      "bytes": 24544,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/MA/product/2025/09/17/Oraimo-True-Wireless-Earbuds-SpaceBuds-Air-OTW-324S-3-Comfortable-EN.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1803"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/7992a3031f0c34b901c0555b.webp",
+      "bytes": 30128,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2025/01/09/spacebuds-neo-otw-323.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1849",
+        "prod-pos-1270",
+        "prod-pos-1429",
+        "prod-pos-316",
+        "prod-pos-1369",
+        "prod-pos-1597",
+        "prod-pos-484"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-spacebuds-neo-true-wireless-spatial-earbuds-otw-323?ean=4894947053689"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/6e5ef8f5f97f93a57da7d9aa.webp",
+      "bytes": 36576,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2025/07/14/oraimo-travel-adapter-PowerOmni-251-OCW-T01-Black.png",
+      "kinds": [
+        "wall_charger"
+      ],
+      "product_ids": [
+        "prod-pos-2084",
+        "prod-pos-902",
+        "prod-pos-1856",
+        "prod-pos-1808",
+        "prod-pos-722",
+        "prod-pos-752",
+        "prod-pos-56",
+        "prod-pos-776",
+        "prod-pos-2",
+        "prod-pos-938",
+        "prod-pos-1178",
+        "prod-pos-1202",
+        "prod-pos-1484",
+        "prod-pos-1496",
+        "prod-pos-1526",
+        "prod-pos-710",
+        "prod-pos-1772",
+        "prod-pos-1952",
+        "prod-pos-146",
+        "prod-pos-62",
+        "prod-pos-50",
+        "prod-pos-2204",
+        "prod-pos-8"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-poweromni-251-travel-adapter-2500w-high-power-output-ocw-t01?ean=4894947092138"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/ea4c59acebb6be94e23aacce.webp",
+      "bytes": 31152,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MA/product/2026/03/06/OSW-815N-CHROME.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-2060",
+        "prod-pos-1691",
+        "prod-pos-602",
+        "prod-pos-539",
+        "prod-pos-719",
+        "prod-pos-728",
+        "prod-pos-800",
+        "prod-pos-926",
+        "prod-pos-1007",
+        "prod-pos-368",
+        "prod-pos-1124",
+        "prod-pos-1196",
+        "prod-pos-1223",
+        "prod-pos-1250",
+        "prod-pos-971",
+        "prod-pos-1403",
+        "prod-pos-1412",
+        "prod-pos-1421",
+        "prod-pos-872",
+        "prod-pos-1475",
+        "prod-pos-1547",
+        "prod-pos-1592",
+        "prod-pos-1664",
+        "prod-pos-1781",
+        "prod-pos-1817",
+        "prod-pos-206",
+        "prod-pos-2132"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-watch-nova-2n-1.93''-amoled-33-day-standby-smart-watch-osw-815n?ean=4894947114243"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/4e8d676632e65b0ee5b8971d.webp",
+      "bytes": 58324,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2026/03/20/oraimo-Power-Bank-PowerFlow-L1-OPB-1103-mainimage.png",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-2235",
+        "prod-pos-1344",
+        "prod-pos-904",
+        "prod-pos-783",
+        "prod-pos-1608",
+        "prod-pos-1836",
+        "prod-pos-1885",
+        "prod-pos-2144"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oriamo-powerflow-l1-efficient-slim-powerflow-l1-opb-1103?ean=4894947109966"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/b07d056426cee16d3d760295.webp",
+      "bytes": 25814,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://oss.boyamic.com/uploads/images/20251205/20251205152128338.webp",
+      "kinds": [
+        "microphone"
+      ],
+      "product_ids": [
+        "prod-pos-1901",
+        "prod-pos-2103",
+        "prod-pos-2125",
+        "prod-pos-1013",
+        "prod-pos-1261",
+        "prod-pos-1485",
+        "prod-pos-1503",
+        "prod-pos-1619",
+        "prod-pos-1659",
+        "prod-pos-1694",
+        "prod-pos-1841",
+        "prod-pos-2005",
+        "prod-pos-233",
+        "prod-pos-2045",
+        "prod-pos-2053",
+        "prod-pos-177"
+      ],
+      "sources": [
+        "https://www.boyamic.com/product/on-camera-microphone-by-mm1"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/21f3ce8d0be76b46b12ae7a6.webp",
+      "bytes": 45124,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/EG/product/2026/01/28/oraimo-Smart-Watch-Watch-6-Lite-OSW-809-main.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-2222"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/003edee95c214db38ff7ed07.webp",
+      "bytes": 41080,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2025/07/03/oraimo-power-bank-powernova-q21-opb-7200q.png",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-2206",
+        "prod-pos-809",
+        "prod-pos-1293",
+        "prod-pos-831",
+        "prod-pos-743",
+        "prod-pos-655",
+        "prod-pos-1854",
+        "prod-pos-2085"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-powernova-q21-20000mah-power-bank-opb-7200q?ean=4894947071393"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/35564e5daa99d7088cf2eab2.webp",
+      "bytes": 29448,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/NG/product/2025/08/25/OSW-807.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1198",
+        "prod-pos-2161",
+        "prod-pos-2008",
+        "prod-pos-541",
+        "prod-pos-658",
+        "prod-pos-685",
+        "prod-pos-739",
+        "prod-pos-595",
+        "prod-pos-874",
+        "prod-pos-937",
+        "prod-pos-1225",
+        "prod-pos-1081",
+        "prod-pos-1045",
+        "prod-pos-1315",
+        "prod-pos-982",
+        "prod-pos-1477",
+        "prod-pos-1504",
+        "prod-pos-784",
+        "prod-pos-1567",
+        "prod-pos-1666",
+        "prod-pos-622",
+        "prod-pos-208",
+        "prod-pos-2071"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-watch-6-2.04%22-tft-ip68-smartwatch-osw-807?ean=4894947086137"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/8d8ace5dd2d85e291b1f77c5.webp",
+      "bytes": 44740,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2024/09/03/OPB-1100D.png",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-2083",
+        "prod-pos-1742",
+        "prod-pos-147",
+        "prod-pos-1346",
+        "prod-pos-844",
+        "prod-pos-620"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oriamo-toast-15-flash-1000mah-15w-fast-charging-power-bank?ean=4894947036101"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/29de5fca39e47e1d66d6045f.webp",
+      "bytes": 31274,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0045/4092/4007/files/TBSTITmQHCyHeya5.jpg?v=1733346551",
+      "kinds": [
+        "phone_spare_part"
+      ],
+      "product_ids": [
+        "prod-pos-1563",
+        "prod-pos-418",
+        "prod-pos-611",
+        "prod-pos-433",
+        "prod-pos-438",
+        "prod-pos-652",
+        "prod-pos-682",
+        "prod-pos-702",
+        "prod-pos-707",
+        "prod-pos-258",
+        "prod-pos-413",
+        "prod-pos-765",
+        "prod-pos-277",
+        "prod-pos-626",
+        "prod-pos-814",
+        "prod-pos-822",
+        "prod-pos-132",
+        "prod-pos-853",
+        "prod-pos-867",
+        "prod-pos-305",
+        "prod-pos-887",
+        "prod-pos-307",
+        "prod-pos-370",
+        "prod-pos-364",
+        "prod-pos-617",
+        "prod-pos-996",
+        "prod-pos-454",
+        "prod-pos-416",
+        "prod-pos-384",
+        "prod-pos-356",
+        "prod-pos-1111",
+        "prod-pos-1117",
+        "prod-pos-1118",
+        "prod-pos-1112",
+        "prod-pos-931",
+        "prod-pos-871",
+        "prod-pos-863",
+        "prod-pos-771",
+        "prod-pos-1819",
+        "prod-pos-449",
+        "prod-pos-422",
+        "prod-pos-412",
+        "prod-pos-411",
+        "prod-pos-363",
+        "prod-pos-297",
+        "prod-pos-288",
+        "prod-pos-273",
+        "prod-pos-270",
+        "prod-pos-257",
+        "prod-pos-255",
+        "prod-pos-243",
+        "prod-pos-154"
+      ],
+      "sources": [
+        "https://www.ifixit.com/products/iphone-12-12-pro-loudspeaker"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/47bf033a0055745b7d379624.webp",
+      "bytes": 118060,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/PK/product/2026/03/04/OPB-1102-ELEMENTALBLUE.png",
+      "kinds": [
+        "power_bank"
+      ],
+      "product_ids": [
+        "prod-pos-2145",
+        "prod-pos-843",
+        "prod-pos-905",
+        "prod-pos-1345",
+        "prod-pos-1741",
+        "prod-pos-2082",
+        "prod-pos-113"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-10000mah-power-bank-powerflow-b11-opb-1102?ean=4894947098567"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/4cf6fdf46b4f4ec191467127.webp",
+      "bytes": 28098,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2025/05/09/wireless-earphones-spacebuds-neo-plus-otw-323p-black.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-2205",
+        "prod-pos-189"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/spacebuds-neo-plus-active-noise-cancellation-spatial-audio-true-wireless-earphones?ean=4894947069055"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/1f56cf5324939ed5f57aa6ed.webp",
+      "bytes": 28948,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0519/2355/0368/files/51frTW-Ms6L.__AC_SX300_SY300_QL70_ML2_98c705c4-18fa-40b7-9d38-4e34e0979157.jpg?v=1744039399",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-493",
+        "prod-pos-619",
+        "prod-pos-604",
+        "prod-pos-1066",
+        "prod-pos-352",
+        "prod-pos-1171",
+        "prod-pos-1207",
+        "prod-pos-1468",
+        "prod-pos-1507",
+        "prod-pos-715",
+        "prod-pos-1783",
+        "prod-pos-472",
+        "prod-pos-436",
+        "prod-pos-373",
+        "prod-pos-1984",
+        "prod-pos-241",
+        "prod-pos-2089"
+      ],
+      "sources": [
+        "https://www.soundcore.com/uk/products/soundcore-a30i"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/87f59486b7375c090abd3934.avif",
+      "bytes": 4116,
+      "content_type": "image/avif"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/AE/product/2024/02/06/OTW-340-680-1.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-385",
+        "prod-pos-1204",
+        "prod-pos-1729",
+        "prod-pos-532",
+        "prod-pos-217"
+      ],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-airbuds-4-led-display-38-hours-playtime-enc-true-wireless-earbuds?ean=4894947015533"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/7ac7023e3b8af40cf84fbbce.webp",
+      "bytes": 37076,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2024/12/24/OSW-820.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1307"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/35ea490bacee8b78b898ea45.webp",
+      "bytes": 73646,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2025/01/14/OSW-820-3.jpg",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1307"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/19fcbc11008f98b92298d9de.webp",
+      "bytes": 42246,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2025/01/14/OSW-820-1.jpg",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1307"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/3bc91e67f37c3b68477b4c66.webp",
+      "bytes": 40710,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2025/01/14/OSW-820-2.jpg",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1307"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/72f7011e889c580ccab2cd93.webp",
+      "bytes": 42570,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/GH/product/2025/01/09/spacebuds-neo-otw-323-11.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1369"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/0fe20f33bcab6f000a7cda88.webp",
+      "bytes": 28836,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/GH/product/2025/01/09/spacebuds-neo-otw-323-13-spatial-audio.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1369"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/ada12eaa030b18a058b4d54d.webp",
+      "bytes": 27902,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/GH/product/2025/01/09/spacebuds-neo-otw-323-12-features.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1369"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/c47fb53a09b0a47cb7d33724.webp",
+      "bytes": 37292,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2024/12/24/OSW-830.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1374"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/5f4d5bdd9236f007deac1d2d.webp",
+      "bytes": 57354,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/GH/product/2025/09/08/oraimo-smart-watch-watch-5r-pro-osw-830-0.png",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1374"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/bb951554fc7c766cad28dfe8.webp",
+      "bytes": 56878,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2025/01/13/OSW-830-b1-2.jpg",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1374"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/0bc5ca78a1529e18ebc6e0a6.webp",
+      "bytes": 37168,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/NG/product/2025/04/08/OSW-830-b1-3-US.jpg",
+      "kinds": [
+        "smartwatch"
+      ],
+      "product_ids": [
+        "prod-pos-1374"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/d1008754cb5e65fd0d0c46b9.webp",
+      "bytes": 48530,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/KE/product/2024/12/20/OTW-626N-2.png",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1632"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/e62d71eca0cb36c76b947555.webp",
+      "bytes": 28398,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/EG/product/2026/08/31/OTW-626N-B1.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1632"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/78df24d7c6c194bbd0fb7727.webp",
+      "bytes": 34514,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/EG/product/2026/08/31/OTW-626N-B8.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1632"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/3c058b189f1f9ff08bbe5cc2.webp",
+      "bytes": 26956,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/EG/product/2026/08/31/OTW-626N-B9.jpg",
+      "kinds": [
+        "tws_earbuds"
+      ],
+      "product_ids": [
+        "prod-pos-1632"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/dcb3dae1414f46f424a5482f.webp",
+      "bytes": 35698,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/JOYROOM_JR-TCF20_PD20W_Charger_B2B_4.jpg?v=1750332896",
+      "kinds": [
+        "wall_charger"
+      ],
+      "product_ids": [
+        "prod-pos-1999"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/40436603afd652da0380bb96.jpg",
+      "bytes": 149495,
+      "content_type": "image/jpeg"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/JOYROOM_JR-TCF20_PD20W_Charger_B2B_5.jpg?v=1750332896",
+      "kinds": [
+        "wall_charger"
+      ],
+      "product_ids": [
+        "prod-pos-1999"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/e0ab2d633e898ef2f6b22858.jpg",
+      "bytes": 137669,
+      "content_type": "image/jpeg"
+    },
+    {
+      "url": "https://www.joyroom.com/cdn/shop/files/JOYROOM_JR-TCF20_PD20W_Charger_B2B_1.jpg?v=1750332896",
+      "kinds": [
+        "wall_charger"
+      ],
+      "product_ids": [
+        "prod-pos-1999"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/d19e897b7f8a580e393da3a7.webp",
+      "bytes": 115394,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2026/04/10/oraimo-Earphone-Necklace-Neo-OEB-310-01-THUMPING-BASS-ALL-DAY-BATTERY.jpg",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-2046"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/8b2df0f4caa69ebf2d6d321d.webp",
+      "bytes": 43726,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2026/04/10/oraimo-Earphone-Necklace-Neo-OEB-310-02-features.jpg",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-2046"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/748533019e9e72ef7aa596f2.webp",
+      "bytes": 40320,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/fit-in/600x600/KE/product/2026/04/10/oraimo-Earphone-Necklace-Neo-OEB-310-03-Up-to-30-Hour-Long-Playtime.jpg",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [
+        "prod-pos-2046"
+      ],
+      "sources": [],
+      "status": "cached",
+      "local_url": "/product-images/e57012515355036106f5e665.webp",
+      "bytes": 25286,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MA/product/2024/03/19/OEB-311.png",
+      "kinds": [
+        "neckband_earphones"
+      ],
+      "product_ids": [],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-necklace-lite-call-vibration-30-hrs-playtime-app-wireless-headphones?ean=4894947020087"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/11561fa3932ed9c41759979e.webp",
+      "bytes": 20158,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MA/product/2026/03/16/OPN-374N-BLACK-NEW.png",
+      "kinds": [
+        "open_ear_headphones"
+      ],
+      "product_ids": [],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-opensnap-n2-quick-charging-adaptive-volume-open-ear-true-wireless-earbuds-opn-374n?ean=4894947117992"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/c7446fa05736552fb1ac2625.webp",
+      "bytes": 47956,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/MZ/product/2026/07/10/oraimo-opensnap-air-open-ear-true-wireless-earbuds-africa-opn-371-black-mainimage.png",
+      "kinds": [
+        "open_ear_headphones"
+      ],
+      "product_ids": [],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-opensnap-air-open-ear-true-wireless-earbuds-africa-opn-371?ean=4894947122378"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/635d1f45c430d96577524c17.webp",
+      "bytes": 33724,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/NG/product/2025/05/16/OPN-675-1080-1.png",
+      "kinds": [
+        "open_ear_headphones"
+      ],
+      "product_ids": [],
+      "sources": [
+        "https://eg.oraimo.com/en/product/oraimo-openarc-open-ear-true-wireless-earphones-opn-675-spacegrey-36-hr-long-playtime?ean=4894947065736"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/a15a81e25c6540fff8310c13.webp",
+      "bytes": 47230,
+      "content_type": "image/webp"
+    },
+    {
+      "url": "https://cdn-img.oraimo.com/GH/product/2025/03/10/open-ear-headphones-open-circlet2-opn-672-0.png",
+      "kinds": [
+        "open_ear_headphones"
+      ],
+      "product_ids": [],
+      "sources": [
+        "https://eg.oraimo.com/en/product/opencirclet-2-ipx5-steps-tracking-open-ear-headphones-opn-672?ean=4894947058516"
+      ],
+      "status": "cached",
+      "local_url": "/product-images/c3b1b00d0157a383a8636772.webp",
+      "bytes": 39808,
+      "content_type": "image/webp"
+    }
+  ],
+  "substitutions": []
+}

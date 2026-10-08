@@ -1,0 +1,87 @@
+{
+  "workbook_sha256": "82f9161becfd5ed68ddd168d407f615dddfd6cde05a49320a24d133219b0b1db",
+  "sheet_name": "Sheet1",
+  "header_row": 3,
+  "product_rows": 2233,
+  "source_stock_sum": 5159,
+  "sellable_stock_sum": 5161,
+  "source_positive_stock_rows": 557,
+  "source_zero_stock_rows": 1674,
+  "source_negative_stock_rows": 2,
+  "missing_sale_price_rows": 308,
+  "negative_sale_price_rows": 0,
+  "public_rows": 2233,
+  "estimated_rows": 2201,
+  "verified_rows": 32,
+  "needs_price_rows": 308,
+  "verified_research_rows": 32,
+  "missing_image_rows": 0,
+  "duplicate_names": [
+    {
+      "name": "cover silcon",
+      "count": 2
+    },
+    {
+      "name": "handfree oraimo tc",
+      "count": 2
+    },
+    {
+      "name": "mp3 earldom",
+      "count": 2
+    },
+    {
+      "name": "جرس a12",
+      "count": 2
+    },
+    {
+      "name": "x-scoot 16g",
+      "count": 2
+    }
+  ],
+  "brand_context_rows": 196,
+  "pd_terminology_rows": 13,
+  "review_reason_counts": {
+    "exact_product_research_missing": 2201,
+    "sale_price_missing": 308,
+    "negative_stock_requires_reconciliation": 2
+  },
+  "item_kind_counts": {
+    "screen_protector": 85,
+    "phone_case": 156,
+    "gaming_accessory": 15,
+    "accessory": 168,
+    "holder": 55,
+    "power_strip": 5,
+    "watch_strap": 52,
+    "adapter": 29,
+    "tws_earbuds": 160,
+    "usb_cable": 270,
+    "phone_cooler": 9,
+    "tripod": 49,
+    "electronic_ring": 5,
+    "wired_earphones": 119,
+    "wall_charger": 195,
+    "headphones": 74,
+    "smartphone": 39,
+    "ring_light": 25,
+    "smartwatch": 207,
+    "speaker": 91,
+    "stylus": 3,
+    "phone_battery": 51,
+    "usb_flash_drive": 16,
+    "mini_printer": 1,
+    "power_bank": 94,
+    "microphone": 31,
+    "neckband_earphones": 7,
+    "memory_card": 31,
+    "fan": 4,
+    "replacement_screen": 102,
+    "mouse": 2,
+    "camera": 4,
+    "car_charger": 23,
+    "keyboard": 1,
+    "phone_spare_part": 52,
+    "flashlight": 3
+  },
+  "image_kind_fallback_rows": 132
+}

@@ -75,61 +75,11 @@ export const AdminDashboard: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'inventory' | 'orders' | 'crm' | 'emails' | 'whatsapp' | 'users' | 'settings'>('overview');
 
-  // Strict Admin Guard: Block non-admins from viewing or interacting with admin panel
-  if (!isAdmin) {
-    return (
-      <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 font-cairo">
-        <div className="max-w-md w-full p-8 rounded-3xl bg-[#0F1626] border border-rose-500/40 text-center space-y-6 shadow-2xl relative overflow-hidden">
-          <div className="w-20 h-20 rounded-3xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mx-auto shadow-lg shadow-rose-500/10">
-            <ShieldAlert className="w-10 h-10" />
-          </div>
-
-          <div className="space-y-2">
-            <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 font-black text-[11px] border border-rose-500/30">
-              منطقة إدارية مقيدة ⛔
-            </span>
-            <h2 className="text-xl font-black text-white">لوحة تحكم الإدارة للإداريين فقط</h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              عذراً، لا تمتلك صلاحية الوصول لهذه اللوحة. الدخول مقتصر على حساب المالك العام (<span className="text-amber-400 font-outfit font-bold">abdolailah586@gmail.com</span>) والحسابات التي تمت ترقيتها كمسؤولين (Admins).
-            </p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-white/5 text-[11px] text-slate-400 text-right space-y-1.5 font-cairo">
-            <div className="flex items-center justify-between text-slate-300 font-bold border-b border-white/5 pb-1">
-              <span className="flex items-center gap-1.5">
-                <KeyRound className="w-3.5 h-3.5 text-amber-400" />
-                <span>بيانات الحساب الحالي:</span>
-              </span>
-              <span className={`px-2 py-0.2 rounded text-[10px] ${user ? 'bg-blue-500/20 text-blue-300' : 'bg-slate-800 text-slate-400'}`}>
-                {user ? user.role : 'غير مسجل'}
-              </span>
-            </div>
-            <p className="text-slate-300">الاسم: {user?.name || 'زائر غير مسجل'}</p>
-            <p className="text-slate-300 font-outfit">البريد: {user?.email || 'لا يوجد'}</p>
-            {user?.phone && <p className="text-slate-300 font-outfit">الهاتف: {user.phone}</p>}
-          </div>
-
-          <div className="flex flex-col gap-2.5 pt-2">
-            <button
-              onClick={() => openAuthModal('يرجى تسجيل الدخول بحساب الإدارة المصرح له', 'admin')}
-              className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-glow-gold transition-all"
-            >
-              تسجيل الدخول بحساب الإدارة
-            </button>
-            <button
-              onClick={() => navigate('home')}
-              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all"
-            >
-              الرجوع إلى المتجر الرئيسي
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [specsInput, setSpecsInput] = useState('{}');
+  const [productSaveError, setProductSaveError] = useState('');
 
   // Filter states for orders & products
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
@@ -217,6 +167,8 @@ export const AdminDashboard: React.FC = () => {
 
   const handleOpenAddProduct = () => {
     setEditingProduct(null);
+    setSpecsInput('{}');
+    setProductSaveError('');
     setProdForm({
       name_ar: '',
       name_en: '',
@@ -239,17 +191,32 @@ export const AdminDashboard: React.FC = () => {
   const handleOpenEditProduct = (prod: Product) => {
     setEditingProduct(prod);
     setProdForm(prod);
+    setSpecsInput(JSON.stringify(prod.specs || {}, null, 2));
+    setProductSaveError('');
     setIsAddProductModalOpen(true);
   };
 
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!prodForm.name_ar || !prodForm.price) return;
+    if (!prodForm.name_ar || prodForm.price === undefined || prodForm.price < 0) return;
+    let specs: Record<string, string>;
+    try {
+      specs = JSON.parse(specsInput);
+      if (!specs || Array.isArray(specs) || typeof specs !== 'object' ||
+        Object.entries(specs).some(([key, value]) => key.startsWith('__') || typeof value !== 'string')) {
+        throw new Error();
+      }
+    } catch {
+      setProductSaveError('اكتب المواصفات بصيغة JSON، باستخدام اسم المواصفة وقيمتها كنصوص.');
+      return;
+    }
+    const saved = { ...prodForm, specs, quick_specs: specs,
+      in_stock: (prodForm.stock ?? 0) > 0 && (prodForm.price ?? 0) > 0 && prodForm.is_active !== false };
 
     if (editingProduct) {
-      updateProduct(editingProduct.id, prodForm);
+      updateProduct(editingProduct.id, saved);
     } else {
-      addProduct(prodForm);
+      addProduct(saved);
     }
     setIsAddProductModalOpen(false);
   };
@@ -299,6 +266,59 @@ export const AdminDashboard: React.FC = () => {
     }
     return true;
   });
+
+  // Strict Admin Guard: Block non-admins from viewing or interacting with admin panel
+  if (!isAdmin) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 font-cairo">
+        <div className="max-w-md w-full p-8 rounded-3xl bg-[#0F1626] border border-rose-500/40 text-center space-y-6 shadow-2xl relative overflow-hidden">
+          <div className="w-20 h-20 rounded-3xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mx-auto shadow-lg shadow-rose-500/10">
+            <ShieldAlert className="w-10 h-10" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 font-black text-[11px] border border-rose-500/30">
+              منطقة إدارية مقيدة ⛔
+            </span>
+            <h2 className="text-xl font-black text-white">لوحة تحكم الإدارة للإداريين فقط</h2>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              عذراً، لا تمتلك صلاحية الوصول لهذه اللوحة. الدخول مقتصر على حساب المالك العام (<span className="text-amber-400 font-outfit font-bold">abdolailah586@gmail.com</span>) والحسابات التي تمت ترقيتها كمسؤولين (Admins).
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-900/80 border border-white/5 text-[11px] text-slate-400 text-right space-y-1.5 font-cairo">
+            <div className="flex items-center justify-between text-slate-300 font-bold border-b border-white/5 pb-1">
+              <span className="flex items-center gap-1.5">
+                <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+                <span>بيانات الحساب الحالي:</span>
+              </span>
+              <span className={`px-2 py-0.2 rounded text-[10px] ${user ? 'bg-blue-500/20 text-blue-300' : 'bg-slate-800 text-slate-400'}`}>
+                {user ? user.role : 'غير مسجل'}
+              </span>
+            </div>
+            <p className="text-slate-300">الاسم: {user?.name || 'زائر غير مسجل'}</p>
+            <p className="text-slate-300 font-outfit">البريد: {user?.email || 'لا يوجد'}</p>
+            {user?.phone && <p className="text-slate-300 font-outfit">الهاتف: {user.phone}</p>}
+          </div>
+
+          <div className="flex flex-col gap-2.5 pt-2">
+            <button
+              onClick={() => openAuthModal('يرجى تسجيل الدخول بحساب الإدارة المصرح له', 'admin')}
+              className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-glow-gold transition-all"
+            >
+              تسجيل الدخول بحساب الإدارة
+            </button>
+            <button
+              onClick={() => navigate('home')}
+              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all"
+            >
+              الرجوع إلى المتجر الرئيسي
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8 font-cairo">
@@ -1632,6 +1652,7 @@ export const AdminDashboard: React.FC = () => {
                     <option value="mint">كسر زيرو ممتاز</option>
                     <option value="brand_new">جديد متبرشم</option>
                     <option value="used_good">استعمال خفيف</option>
+                    <option value="unknown">الحالة غير محددة</option>
                   </select>
                 </div>
 
@@ -1653,7 +1674,7 @@ export const AdminDashboard: React.FC = () => {
                   <input
                     type="number"
                     required
-                    value={prodForm.price || ''}
+                    value={prodForm.price ?? ''}
                     onChange={(e) => setProdForm({ ...prodForm, price: Number(e.target.value) })}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white font-outfit font-bold"
                   />
@@ -1673,7 +1694,7 @@ export const AdminDashboard: React.FC = () => {
                   <label className="block text-slate-300 mb-1">المخزون (الكمية)</label>
                   <input
                     type="number"
-                    value={prodForm.stock || 1}
+                    value={prodForm.stock ?? 0}
                     onChange={(e) => setProdForm({ ...prodForm, stock: Number(e.target.value) })}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white font-outfit"
                   />
@@ -1683,7 +1704,7 @@ export const AdminDashboard: React.FC = () => {
                   <label className="block text-slate-300 mb-1">شهور الضمان</label>
                   <input
                     type="number"
-                    value={prodForm.warranty_months || 6}
+                    value={prodForm.warranty_months ?? 0}
                     onChange={(e) => setProdForm({ ...prodForm, warranty_months: Number(e.target.value) })}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white font-outfit"
                   />
@@ -1691,11 +1712,11 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-slate-300 mb-1">رابط الصورة (URL)</label>
-                <input
-                  type="text"
-                  value={prodForm.images?.[0] || ''}
-                  onChange={(e) => setProdForm({ ...prodForm, images: [e.target.value] })}
+                <label className="block text-slate-300 mb-1">روابط الصور (رابط في كل سطر)</label>
+                <textarea
+                  rows={3}
+                  value={prodForm.images?.join('\n') || ''}
+                  onChange={(e) => setProdForm({ ...prodForm, images: e.target.value.split('\n') })}
                   className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white font-mono"
                 />
               </div>
@@ -1710,6 +1731,39 @@ export const AdminDashboard: React.FC = () => {
                 />
               </div>
 
+              <div>
+                <label className="block text-slate-300 mb-1">المواصفات (JSON)</label>
+                <textarea rows={7} value={specsInput} onChange={e => setSpecsInput(e.target.value)}
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white font-mono" />
+              </div>
+              <div>
+                <label className="block text-slate-300 mb-1">أهم المميزات (ميزة في كل سطر)</label>
+                <textarea rows={4} value={prodForm.about_item?.join('\n') || ''}
+                  onChange={e => setProdForm({ ...prodForm, about_item: e.target.value.split('\n') })}
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white" />
+              </div>
+              <div>
+                <label className="block text-slate-300 mb-1">الوصف بالإنجليزية</label>
+                <textarea rows={3} value={prodForm.description_en || ''}
+                  onChange={e => setProdForm({ ...prodForm, description_en: e.target.value })}
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="text-slate-300">حالة التفاصيل
+                  <select value={prodForm.catalog_status || 'estimated'}
+                    onChange={e => setProdForm({ ...prodForm, catalog_status: e.target.value as Product['catalog_status'] })}
+                    className="w-full mt-1 bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white">
+                    <option value="estimated">تقديرية / تحتاج مراجعة</option>
+                    <option value="verified">مؤكدة بعد المراجعة</option>
+                  </select>
+                </label>
+                <label className="text-slate-300 flex items-center gap-2">
+                  <input type="checkbox" checked={!!prodForm.image_is_illustrative}
+                    onChange={e => setProdForm({ ...prodForm, image_is_illustrative: e.target.checked })} />
+                  الصور توضيحية
+                </label>
+              </div>
+              {productSaveError && <p role="alert" className="text-rose-400">{productSaveError}</p>}
               <div className="pt-3 border-t border-white/10 flex justify-end gap-2">
                 <button
                   type="button"

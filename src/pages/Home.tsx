@@ -21,7 +21,8 @@ import { CategoryKey, Product } from '../types';
 import { neonDb } from '../services/neonDb';
 
 export const Home: React.FC = () => {
-  const { products, navigate, setSelectedCategory, settings, sessionId } = useStore();
+  const { products: allProducts, navigate, setSelectedCategory, settings, sessionId } = useStore();
+  const products = allProducts.filter(product => product.is_active !== false);
   const { t, language, formatPrice, isRTL } = useLanguage();
 
   const [recommendations, setRecommendations] = useState<{
@@ -38,7 +39,7 @@ export const Home: React.FC = () => {
   useEffect(() => {
     neonDb.getPersonalizedRecommendations(sessionId).then(res => {
       if (res && res.recommendedProducts.length > 0) {
-        setRecommendations(res);
+        setRecommendations({ ...res, recommendedProducts: res.recommendedProducts.filter(product => product.is_active !== false) });
       }
     }).catch(console.warn);
   }, [sessionId]);
@@ -381,7 +382,7 @@ export const Home: React.FC = () => {
                 {language === 'ar' ? cat.title_ar : cat.title_en}
               </h3>
               <span className="text-[10px] text-slate-500 dark:text-slate-400 font-outfit mt-1">
-                {language === 'ar' ? cat.count : cat.count_en}
+                {products.filter(product => product.category === cat.key).length} {language === 'ar' ? 'منتج' : 'products'}
               </span>
             </div>
           ))}
