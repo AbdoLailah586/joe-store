@@ -41,7 +41,7 @@ interface AuthContextType {
   authMessage: string;
   openAuthModal: (msg?: string, redirectAfterLogin?: string) => void;
   closeAuthModal: () => void;
-  loginWithGoogle: (credentialPayload?: any) => Promise<void>;
+  loginWithGoogle: (data: { credential: string }) => Promise<void>;
   loginWithEmail: (email: string, pass: string) => Promise<boolean>;
   sendOtp: (email: string, name?: string) => Promise<{ success: boolean; delivered?: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; otpCode?: string; resendNotice?: string; error?: string }>;
   verifyOtpAndRegister: (data: { email: string; code: string; name: string; phone: string; password?: string }) => Promise<{ success: boolean; error?: string }>;
@@ -93,71 +93,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Compute strict Admin status
   const isAdmin = isAccountAdmin(user);
 
-  // 1. Google Sign-In with real Google OAuth Payload
-  const loginWithGoogle = async (credentialPayload?: any) => {
-    try {
-      if (credentialPayload && credentialPayload.email) {
-        // Save to Neon DB
-        const res = await neonDb.persistGoogleUser({
-          name: credentialPayload.name || 'عميل Google',
-          email: credentialPayload.email,
-          avatar: credentialPayload.picture || '',
-          googleId: credentialPayload.sub
-        });
-
-        if (res.success && res.user) {
-          const loadedUser: User = {
-            ...res.user,
-            role: isAccountAdmin(res.user) ? 'admin' : (res.user.role || 'customer')
-          };
-          setUser(loadedUser);
-          closeAuthModal();
-          return;
-        }
-
-        // Direct fallback if API not reached
-        const isEligibleAdmin = credentialPayload.email.toLowerCase() === 'abdolailah586@gmail.com';
-        const googleUser: User = {
-          id: `usr-google-${credentialPayload.sub || Date.now()}`,
-          name: credentialPayload.name,
-          email: credentialPayload.email,
-          phone: isEligibleAdmin ? '01554826209' : '',
-          avatar: credentialPayload.picture,
-          role: isEligibleAdmin ? 'admin' : 'customer',
-          provider: 'google',
-          email_verified: true,
-          addresses: [],
-          created_at: new Date().toISOString()
-        };
-        setUser(googleUser);
-        closeAuthModal();
-        return;
-      }
-
-      // If called without payload (e.g. testing fallback)
-      const simulatedGoogleUser: User = {
-        id: `usr-google-${Date.now()}`,
-        name: 'عبدالله ليلة (المالك)',
-        email: 'abdolailah586@gmail.com',
-        phone: '01554826209',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-        role: 'admin',
-        provider: 'google',
-        email_verified: true,
-        addresses: [],
-        created_at: new Date().toISOString()
-      };
-      await neonDb.persistGoogleUser({
-        name: simulatedGoogleUser.name,
-        email: simulatedGoogleUser.email,
-        avatar: simulatedGoogleUser.avatar,
-        phone: simulatedGoogleUser.phone
-      });
-      setUser(simulatedGoogleUser);
-      closeAuthModal();
-    } catch (err) {
-      console.error('loginWithGoogle error:', err);
+  // A Google login only succeeds after the server accepts the signed credential.
+  const loginWithGoogle = async (data: { credential: string }) => {
+    if (!data?.credential) throw new Error('لم تكتمل موافقة Google. أعيدي المحاولة.');
+    const res = await neonDb.persistGoogleUser(data);
+    if (!res.success || !res.user) {
+      throw new Error(res.error || 'تعذّر تسجيل الدخول بحساب Google.');
     }
+    setUser({ ...res.user, role: res.user.role || 'customer' });
+    closeAuthModal();
   };
 
   // 2. Login with Email + Password (checks Neon DB)

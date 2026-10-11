@@ -18,6 +18,7 @@ import confetti from 'canvas-confetti';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useStore } from '../context/StoreContext';
+import { loadGoogleIdentity } from '../services/googleIdentity';
 
 declare global {
   interface Window {
@@ -57,6 +58,9 @@ export const AuthModal: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleStatus, setGoogleStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [googleError, setGoogleError] = useState('');
+  const [googleRetry, setGoogleRetry] = useState(0);
 
   // Google Sign-In Client ID
   const googleClientId = 
@@ -65,40 +69,36 @@ export const AuthModal: React.FC = () => {
 
   const googleBtnContainerRef = useRef<HTMLDivElement>(null);
 
-  // Initialize Google One-Tap & Identity Services
+  // Render the official sign-in button when Identity Services is ready.
   useEffect(() => {
-    if (!isAuthModalOpen) return;
-
-    const initGoogle = () => {
-      if (window.google?.accounts?.id && googleClientId) {
-        try {
-          window.google.accounts.id.initialize({
-            client_id: googleClientId,
-            callback: handleGoogleCredentialResponse,
-            auto_select: false,
-            cancel_on_tap_outside: true,
-          });
-
-          // Render official Google button if container exists
-          if (googleBtnContainerRef.current) {
-            window.google.accounts.id.renderButton(googleBtnContainerRef.current, {
-              theme: 'outline',
-              size: 'large',
-              width: 320,
-              text: 'continue_with',
-              shape: 'pill',
-              locale: 'ar'
-            });
-          }
-        } catch (e) {
-          console.warn('Google GSI init warning:', e);
-        }
-      }
-    };
-
-    const timer = setTimeout(initGoogle, 400);
-    return () => clearTimeout(timer);
-  }, [isAuthModalOpen, mode]);
+    if (!isAuthModalOpen || mode === 'otp_verify') return;
+    let cancelled = false;
+    setGoogleStatus('loading');
+    setGoogleError('');
+    loadGoogleIdentity().then(google => {
+      if (cancelled || !googleBtnContainerRef.current) return;
+      google.initialize({
+        client_id: googleClientId,
+        callback: handleGoogleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+      google.renderButton(googleBtnContainerRef.current, {
+        theme: 'outline',
+        size: 'large',
+        width: 320,
+        text: 'continue_with',
+        shape: 'pill',
+        locale: 'ar'
+      });
+      setGoogleStatus('ready');
+    }).catch(error => {
+      if (cancelled) return;
+      setGoogleStatus('error');
+      setGoogleError(error.message || 'تعذّر تجهيز تسجيل Google. أعيدي المحاولة.');
+    });
+    return () => { cancelled = true; };
+  }, [isAuthModalOpen, mode, googleRetry, googleClientId]);
 
   // Cooldown countdown timer for OTP resend
   useEffect(() => {
@@ -111,24 +111,14 @@ export const AuthModal: React.FC = () => {
 
   if (!isAuthModalOpen) return null;
 
-  // Decode JWT from Google Credential Response
+  // Send the signed credential to the server for verification.
   const handleGoogleCredentialResponse = async (response: any) => {
     if (!response || !response.credential) return;
     setLoading(true);
     setErrorMsg('');
 
     try {
-      const base64Url = response.credential.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      const payload = JSON.parse(jsonPayload);
-
-      await loginWithGoogle(payload);
+      await loginWithGoogle({ credential: response.credential });
       
       confetti({
         particleCount: 50,
@@ -138,20 +128,9 @@ export const AuthModal: React.FC = () => {
 
       if (redirectAfterLogin) navigate(redirectAfterLogin as any);
     } catch (err: any) {
-      console.error('Google Auth Error:', err);
-      setErrorMsg('تعذر تسجيل الدخول بحساب Google. يرجى المحاولة مرة أخرى.');
+      setErrorMsg(err.message || 'تعذر تسجيل الدخول بحساب Google. يرجى المحاولة مرة أخرى.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleCustomGoogleClick = () => {
-    if (window.google?.accounts?.id) {
-      window.google.accounts.id.prompt();
-    } else {
-      // Fallback
-      loginWithGoogle();
-      if (redirectAfterLogin) navigate(redirectAfterLogin as any);
     }
   };
 
@@ -333,23 +312,14 @@ export const AuthModal: React.FC = () => {
 
             {/* 1. Google One-Click Button */}
             <div className="space-y-2">
-              <div ref={googleBtnContainerRef} className="flex justify-center w-full min-h-[44px]">
-                {/* Fallback Custom Google Button */}
-                <button
-                  type="button"
-                  onClick={handleCustomGoogleClick}
-                  disabled={loading}
-                  className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-800 font-bold text-xs sm:text-sm flex items-center justify-center gap-3 shadow-md transition-all active:scale-95 border border-slate-200"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3.03h3.88c2.27-2.09 3.665-5.17 3.665-9.12z" />
-                    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.03c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.13C3.26 21.36 7.33 24 12 24z" />
-                    <path fill="#FBBC05" d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.13-1.57.38-2.29V6.58H1.26C.46 8.18 0 9.98 0 12s.46 3.82 1.26 5.42l4.02-3.13z" />
-                    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.26 6.58l4.02 3.13c.95-2.83 3.6-4.96 6.72-4.96z" />
-                  </svg>
-                  <span>المتابعة باستخدام حساب Google</span>
-                </button>
-              </div>
+              <div ref={googleBtnContainerRef} className={`flex justify-center w-full min-h-[44px] ${loading ? 'pointer-events-none opacity-60' : ''}`} />
+              {googleStatus === 'loading' && <p role="status" className="text-center text-xs text-slate-400">جاري تجهيز تسجيل الدخول باستخدام Google…</p>}
+              {googleStatus === 'error' && (
+                <div className="text-center space-y-2">
+                  <p role="alert" className="text-xs text-rose-300">{googleError}</p>
+                  <button type="button" onClick={() => setGoogleRetry(value => value + 1)} className="text-xs font-bold text-amber-400 underline">إعادة تحميل تسجيل Google</button>
+                </div>
+              )}
             </div>
 
             {/* Divider */}

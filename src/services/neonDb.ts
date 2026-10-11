@@ -746,7 +746,7 @@ export const neonDb = {
     }
   },
 
-  async persistGoogleUser(googleUser: { name: string; email: string; avatar?: string; googleId?: string; phone?: string }): Promise<{ success: boolean; user?: any; error?: string }> {
+  async persistGoogleUser(googleUser: { credential: string }): Promise<{ success: boolean; user?: any; error?: string }> {
     try {
       const res = await fetch('/api/google-auth', {
         method: 'POST',

@@ -1,11 +1,8 @@
 import { neon } from '@neondatabase/serverless';
-
-const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
+import { DEFAULT_GOOGLE_CLIENT_ID, verifyGoogleCredential } from '../lib/googleCredential.js';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Cache-Control', 'no-store');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -17,16 +14,19 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const { name, email, avatar, googleId, phone } = body || {};
-
-    if (!email) {
-      return res.status(400).json({ success: false, error: 'البريد الإلكتروني لحساب Google مطلوب.' });
+    const audience = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID;
+    let identity;
+    try {
+      identity = await verifyGoogleCredential(body?.credential, audience);
+    } catch {
+      return res.status(401).json({ success: false, error: 'تعذّر التحقق من حساب Google. حدّثي الصفحة وأعيدي تسجيل الدخول.' });
     }
+    const { name, email, avatar, googleId } = identity;
 
     const cleanEmail = email.trim().toLowerCase();
     const userId = googleId ? `usr-google-${googleId}` : `usr-${Date.now()}`;
 
-    const sql = neon(DB_URL);
+    const sql = neon(process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '');
     const userRows = await sql`
       INSERT INTO users (id, name, email, avatar, phone, role, provider, email_verified)
       VALUES (
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
         ${name || 'عميل Google'}, 
         ${cleanEmail}, 
         ${avatar || ''}, 
-        ${phone || ''}, 
+        ${''},
         'customer', 
         'google', 
         true
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     });
 
   } catch (err) {
-    console.error('[google-auth Error]', err);
+    console.error('[google-auth] Could not save verified Google user:', err?.code || 'server_error');
     return res.status(500).json({ success: false, error: 'حدث خطأ في الخادم أثناء تسجيل الدخول بحساب Google.' });
   }
 }

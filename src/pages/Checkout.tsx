@@ -30,7 +30,7 @@ import confetti from 'canvas-confetti';
 export const Checkout: React.FC = () => {
   const { cart, cartSubtotal, createOrder, navigate, settings } = useStore();
   const { t, language, formatPrice, isRTL } = useLanguage();
-  const { user, isAuthenticated, openAuthModal, loginWithGoogle } = useAuth();
+  const { user, isAuthenticated, openAuthModal } = useAuth();
 
   // Selected Address from profile or 'new'
   const [selectedAddressId, setSelectedAddressId] = useState<string>('new');
@@ -350,7 +350,7 @@ export const Checkout: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2.5">
                 <button
                   type="button"
-                  onClick={() => loginWithGoogle()}
+                  onClick={() => openAuthModal(undefined, 'checkout')}
                   className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs flex items-center gap-2 shadow-md transition-all active:scale-95 border border-slate-200"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
