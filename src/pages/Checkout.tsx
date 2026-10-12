@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  ShieldCheck, 
-  Truck, 
-  CreditCard, 
-  MessageCircle, 
-  CheckCircle, 
-  AlertCircle, 
-  Lock, 
-  ArrowRight, 
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  ShieldCheck,
+  Truck,
+  CreditCard,
+  MessageCircle,
+  CheckCircle,
+  AlertCircle,
+  Lock,
+  ArrowRight,
   ArrowLeft,
   Smartphone,
   Upload,
@@ -22,15 +22,17 @@ import {
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
-import { egyptianGovernorates } from '../data/governorates';
-import { PaymentMethod } from '../types';
+import { egyptianGovernorates, findAddressGovernorate } from '../data/governorates';
+import { DeliveryAddressFields, PaymentMethod } from '../types';
 import { useAuth } from '../context/AuthContext';
 import confetti from 'canvas-confetti';
+import { DetailedAddressFields } from '../components/DetailedAddressFields';
+import { buildAddressDetails, formatDeliveryAddress, pickDeliveryFields, normalizeDigits, normalizePhone, isEgyptianPhone, isGoogleMapsUrl } from '../utils/deliveryAddress';
 
 export const Checkout: React.FC = () => {
   const { cart, cartSubtotal, createOrder, navigate, settings } = useStore();
   const { t, language, formatPrice, isRTL } = useLanguage();
-  const { user, isAuthenticated, openAuthModal } = useAuth();
+  const { user, isAuthenticated, openAuthModal, addAddress } = useAuth();
 
   // Selected Address from profile or 'new'
   const [selectedAddressId, setSelectedAddressId] = useState<string>('new');
@@ -45,12 +47,13 @@ export const Checkout: React.FC = () => {
 
   // Address Breakdown States
   const [selectedGovId, setSelectedGovId] = useState(egyptianGovernorates[0].id);
+  const [customCity, setCustomCity] = useState(false);
   const [selectedCity, setSelectedCity] = useState('');
   const [addressDetails, setAddressDetails] = useState('');
-  const [buildingNo, setBuildingNo] = useState('');
-  const [floorNo, setFloorNo] = useState('');
-  const [apartmentNo, setApartmentNo] = useState('');
-  const [landmark, setLandmark] = useState('');
+  const [delivery, setDelivery] = useState<DeliveryAddressFields>({ address_type: 'home' });
+  const { district = '', street = '', building_no: buildingNo = '', floor_no: floorNo = '', apartment_no: apartmentNo = '', landmark = '' } = delivery;
+  const [saveAddress, setSaveAddress] = useState(false);
+  const loadedAddressFor = useRef<string | null>(null);
   const [notes, setNotes] = useState('');
 
   // Google Maps GPS Location States
@@ -63,19 +66,9 @@ export const Checkout: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod');
   const [paymentReference, setPaymentReference] = useState('');
   const [receiptImage, setReceiptImage] = useState<string>('');
-  
-  // Credit Card Form States
-  const [cardHolderName, setCardHolderName] = useState(user?.name || '');
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvv, setCardCvv] = useState('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-
-  // Auto-detect Card Type (Visa vs Mastercard)
-  const isVisa = cardNumber.replace(/\s/g, '').startsWith('4');
-  const isMastercard = /^5[1-5]|^2[2-7]/.test(cardNumber.replace(/\s/g, ''));
 
   // Pre-fill user data when user changes
   useEffect(() => {
@@ -84,16 +77,19 @@ export const Checkout: React.FC = () => {
       if (!customerPhone) setCustomerPhone(user.phone);
       if (!customerWhatsApp) setCustomerWhatsApp(user.phone);
       if (!customerEmail && user.email) setCustomerEmail(user.email);
-      if (!cardHolderName && user.name) setCardHolderName(user.name);
 
-      if (user.addresses && user.addresses.length > 0 && selectedAddressId === 'new') {
+      if (user.addresses?.length && loadedAddressFor.current !== user.id) {
+        loadedAddressFor.current = user.id;
         const defaultAddr = user.addresses.find(a => a.isDefault) || user.addresses[0];
         if (defaultAddr) {
           setSelectedAddressId(defaultAddr.id);
-          setAddressDetails(defaultAddr.details);
+          setDelivery(pickDeliveryFields(defaultAddr));
+          setGoogleMapsUrl(defaultAddr.google_maps_url || '');
+          setAddressDetails(defaultAddr.extra_details || (defaultAddr.street ? '' : defaultAddr.details));
           setSelectedCity(defaultAddr.city);
-          const foundGov = egyptianGovernorates.find(g => g.name_ar === defaultAddr.governorate);
-          if (foundGov) setSelectedGovId(foundGov.id);
+          const foundGov = findAddressGovernorate(defaultAddr.governorate, defaultAddr.city);
+          setSelectedGovId(foundGov?.id || '');
+          setCustomCity(false);
         }
       }
     }
@@ -101,12 +97,12 @@ export const Checkout: React.FC = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="max-w-md mx-auto my-16 p-8 rounded-3xl bg-[#0F1626] border border-white/10 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-3xl mx-auto">
+      <div className="max-w-md mx-auto my-16 p-8 rounded-3xl bg-white border border-slate-200 text-center space-y-4">
+        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-3xl mx-auto">
           🛒
         </div>
-        <h2 className="text-xl font-bold text-white font-cairo">عربة التسوق فارغة</h2>
-        <p className="text-xs text-slate-400 font-cairo">
+        <h2 className="text-xl font-bold text-slate-900 font-cairo">عربة التسوق فارغة</h2>
+        <p className="text-xs text-slate-600 font-cairo">
           يرجى إضافة هواتف أو ملحقات إلى عربة التسوق أولاً لإتمام الطلب.
         </p>
         <button
@@ -121,8 +117,8 @@ export const Checkout: React.FC = () => {
 
   // Selected Governorate calculations
   const currentGov = egyptianGovernorates.find(g => g.id === selectedGovId) || egyptianGovernorates[0];
-  const isFreeShipping = cartSubtotal >= (settings.free_shipping_threshold || 2500);
-  const shippingFee = isFreeShipping ? 0 : currentGov.shipping_fee;
+  const isFreeShipping = cartSubtotal >= (settings.free_shipping_threshold ?? 2500);
+  const shippingFee = isFreeShipping ? 0 : (currentGov.shipping_fee ?? settings.shipping_fee_default);
   const grandTotal = cartSubtotal + shippingFee;
 
   const handlePhoneChange = (val: string) => {
@@ -130,28 +126,6 @@ export const Checkout: React.FC = () => {
     if (sameAsPhone) {
       setCustomerWhatsApp(val);
     }
-  };
-
-  // Format Card Number (XXXX XXXX XXXX XXXX)
-  const handleCardNumberChange = (val: string) => {
-    const raw = val.replace(/\D/g, '').slice(0, 16);
-    const parts = raw.match(/[\s\S]{1,4}/g) || [];
-    setCardNumber(parts.join(' '));
-  };
-
-  // Format Card Expiry (MM/YY)
-  const handleExpiryChange = (val: string) => {
-    let raw = val.replace(/\D/g, '').slice(0, 4);
-    if (raw.length >= 3) {
-      raw = `${raw.slice(0, 2)}/${raw.slice(2)}`;
-    }
-    setCardExpiry(raw);
-  };
-
-  // Format CVV (3 digits)
-  const handleCvvChange = (val: string) => {
-    const raw = val.replace(/\D/g, '').slice(0, 4);
-    setCardCvv(raw);
   };
 
   // Free Google Maps GPS Location Fetcher
@@ -172,8 +146,8 @@ export const Checkout: React.FC = () => {
         const url = `https://www.google.com/maps?q=${lat},${lng}`;
         setGoogleMapsUrl(url);
         setLocationSuccess(
-          language === 'ar' 
-            ? `تم تحديد موقعك بدقة! (إحداثيات: ${lat.toFixed(4)}, ${lng.toFixed(4)})` 
+          language === 'ar'
+            ? `تم تحديد موقعك بدقة! (إحداثيات: ${lat.toFixed(4)}, ${lng.toFixed(4)})`
             : `Coordinates acquired! (${lat.toFixed(4)}, ${lng.toFixed(4)})`
         );
       },
@@ -207,9 +181,9 @@ export const Checkout: React.FC = () => {
     // Strict Requirement: User MUST be signed in to place an order
     if (!isAuthenticated) {
       openAuthModal(
-        language === 'ar' 
-          ? 'تسجيل الدخول مطلوب لإتمام طلبك وحفظ بيانات الشحن والضمان المعتمد.' 
-          : 'Sign in is required to complete your order and activate warranty.', 
+        language === 'ar'
+          ? 'تسجيل الدخول مطلوب لإتمام طلبك وحفظ بيانات الشحن والضمان المعتمد.'
+          : 'Sign in is required to complete your order and activate warranty.',
         'checkout'
       );
       setErrorMsg(
@@ -224,63 +198,57 @@ export const Checkout: React.FC = () => {
       setErrorMsg(language === 'ar' ? 'يرجى كتابة الاسم بالكامل.' : 'Please enter your full name.');
       return;
     }
-    if (!customerPhone.trim() || customerPhone.length < 10) {
-      setErrorMsg(language === 'ar' ? 'يرجى إدخال رقم هاتف صحيح للتواصل (10 أرقام على الأقل).' : 'Please enter a valid phone number.');
+    if (!isEgyptianPhone(customerPhone)) {
+      setErrorMsg(language === 'ar' ? 'يرجى إدخال رقم هاتف مصري صحيح للتواصل.' : 'Please enter a valid phone number.');
       return;
     }
     const finalWhatsApp = sameAsPhone ? customerPhone : customerWhatsApp;
-    if (!finalWhatsApp.trim()) {
+    if (!isEgyptianPhone(finalWhatsApp)) {
       setErrorMsg(language === 'ar' ? 'يرجى تحديد رقم الواتساب لإرسال تفاصيل الشحنة.' : 'Please provide WhatsApp number for shipment tracking.');
       return;
     }
-    if (!addressDetails.trim()) {
-      setErrorMsg(language === 'ar' ? 'يرجى كتابة اسم الشارع والمنطقة بالتفصيل.' : 'Please enter your street name and area.');
+    if (!selectedGovId || !selectedCity.trim() || (!street.trim() && !addressDetails.trim()) || (selectedAddressId === 'new' && !district.trim())) {
+      setErrorMsg(language === 'ar' ? 'يرجى اختيار المدينة وكتابة الحي واسم الشارع بالتفصيل.' : 'Please enter your street name and area.');
       return;
     }
 
-    // Credit Card Validation if selected
-    if (paymentMethod === 'credit_card') {
-      const rawCard = cardNumber.replace(/\s/g, '');
-      if (rawCard.length < 15) {
-        setErrorMsg(language === 'ar' ? 'يرجى إدخال رقم بطاقة بنكية صحيح (16 رقم).' : 'Please enter a valid 16-digit card number.');
-        return;
-      }
-      if (!cardExpiry || cardExpiry.length < 5) {
-        setErrorMsg(language === 'ar' ? 'يرجى إدخال تاريخ انتهاء البطاقة بصيغة MM/YY.' : 'Please enter card expiry date (MM/YY).');
-        return;
-      }
-      if (!cardCvv || cardCvv.length < 3) {
-        setErrorMsg(language === 'ar' ? 'يرجى إدخال رمز الأمان (CVV) المكون من 3 أرقام خلف البطاقة.' : 'Please enter 3-digit CVV security code.');
-        return;
-      }
-      if (!cardHolderName.trim()) {
-        setErrorMsg(language === 'ar' ? 'يرجى إدخال اسم صاحب البطاقة كما هو مدون عليها.' : 'Please enter cardholder name as written on card.');
-        return;
-      }
+    if (customerSecondaryPhone.trim() && !isEgyptianPhone(customerSecondaryPhone)) {
+      setErrorMsg(language === 'ar' ? 'رقم الهاتف البديل غير صحيح.' : 'The alternative phone number is invalid.'); return;
     }
-
+    if (delivery.postal_code && !/^\d{5}$/.test(normalizeDigits(delivery.postal_code))) {
+      setErrorMsg(language === 'ar' ? 'الرمز البريدي يتكون من 5 أرقام.' : 'Postal code must contain five digits.'); return;
+    }
+    if (!isGoogleMapsUrl(googleMapsUrl)) {
+      setErrorMsg(language === 'ar' ? 'يرجى إدخال رابط صحيح من Google Maps.' : 'Please enter a valid Google Maps link.'); return;
+    }
     setIsSubmitting(true);
 
     try {
-      const rawCard = cardNumber.replace(/\s/g, '');
-      const cardLast4 = rawCard.length >= 4 ? `**** **** **** ${rawCard.slice(-4)}` : undefined;
+      if (saveAddress && selectedAddressId === 'new') {
+        const saved = await addAddress({ ...delivery, extra_details: addressDetails, google_maps_url: googleMapsUrl || undefined,
+          title: delivery.address_type === 'work' ? 'العمل' : delivery.address_type === 'other' ? 'عنوان آخر' : 'المنزل',
+          governorate: currentGov.name_ar, city: selectedCity, details: buildAddressDetails(delivery, addressDetails),
+          isDefault: !user?.addresses?.length });
+        if (!saved.success) throw new Error(saved.error || 'تعذّر حفظ العنوان.');
+      }
 
       const order = await createOrder({
-        customer_name: customerName,
-        customer_phone: customerPhone,
-        customer_whatsapp: finalWhatsApp,
+        ...pickDeliveryFields(delivery),
+        extra_details: addressDetails || undefined,
+        postal_code: delivery.postal_code ? normalizeDigits(delivery.postal_code) : undefined,
+        customer_name: customerName.trim(),
+        customer_phone: normalizePhone(customerPhone),
+        customer_whatsapp: normalizePhone(finalWhatsApp),
         customer_email: customerEmail || undefined,
-        customer_secondary_phone: customerSecondaryPhone || undefined,
+        customer_secondary_phone: customerSecondaryPhone ? normalizePhone(customerSecondaryPhone) : undefined,
         governorate: currentGov.name_ar,
-        city: selectedCity || currentGov.cities[0]?.name_ar || 'المدينة',
-        address_details: addressDetails,
+        city: selectedCity.trim(),
+        address_details: buildAddressDetails(delivery, addressDetails),
         building_no: buildingNo || undefined,
         floor_no: floorNo || undefined,
         apartment_no: apartmentNo || undefined,
         landmark: landmark || undefined,
         google_maps_url: googleMapsUrl || undefined,
-        card_last4: cardLast4,
-        card_holder: paymentMethod === 'credit_card' ? cardHolderName : undefined,
         notes: notes || undefined,
         items: cart,
         subtotal: cartSubtotal,
@@ -288,9 +256,9 @@ export const Checkout: React.FC = () => {
         discount: 0,
         total: grandTotal,
         payment_method: paymentMethod,
-        payment_status: paymentMethod === 'cod' ? 'unpaid' : (paymentMethod === 'credit_card' || receiptImage || paymentReference) ? 'paid' : 'unpaid',
+        payment_status: 'unpaid',
         payment_receipt_url: receiptImage || undefined,
-        payment_reference: paymentReference || (paymentMethod === 'credit_card' ? `CARD-${rawCard.slice(-4)}-AUTH` : undefined),
+        payment_reference: paymentReference || undefined,
         order_status: 'pending',
       });
 
@@ -314,13 +282,13 @@ export const Checkout: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black text-white font-cairo flex items-center gap-2">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo flex items-center gap-2">
           <span>{t('checkoutTitle')}</span>
           <span className="w-2 h-2 rounded-full bg-amber-400"></span>
         </h1>
-        <p className="text-xs text-slate-400 font-cairo mt-1">
-          {language === 'ar' 
-            ? 'أدخل بيانات التوصيل الدقيقة واختر طريقة الدفع المناسبة لاستلام طلبك فوراً مع شهادة الضمان' 
+        <p className="text-xs text-slate-600 font-cairo mt-1">
+          {language === 'ar'
+            ? 'أدخل بيانات التوصيل الدقيقة واختر طريقة الدفع المناسبة لاستلام طلبك فوراً مع شهادة الضمان'
             : 'Enter precise delivery details and select your preferred payment method.'}
         </p>
       </div>
@@ -328,21 +296,21 @@ export const Checkout: React.FC = () => {
       <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* VIP Auth Requirement Banner */}
         {!isAuthenticated ? (
-          <div className="lg:col-span-12 p-6 rounded-3xl bg-gradient-to-r from-amber-500/15 via-[#0F1626] to-amber-500/10 border-2 border-amber-500/40 shadow-xl space-y-4 font-cairo">
+          <div className="lg:col-span-12 p-6 rounded-3xl bg-gradient-to-r from-amber-500/15 via-white to-amber-500/10 border-2 border-amber-500/40 shadow-xl space-y-4 font-cairo">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Lock className="w-5 h-5 text-amber-400" />
-                  <h3 className="font-extrabold text-white text-sm sm:text-base">
+                  <Lock className="w-5 h-5 text-amber-700" />
+                  <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">
                     {language === 'ar' ? 'تسجيل الدخول مطلوب لإتمام هذا الطلب' : 'Sign in required to place this order'}
                   </h3>
-                  <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-700 text-[10px] font-bold">
                     {language === 'ar' ? 'حفظ الضمان والبيانات' : 'Warranty & Invoices'}
                   </span>
                 </div>
-                <p className="text-xs text-slate-300">
-                  {language === 'ar' 
-                    ? 'تسجيل الدخول يتيح لك تفعيل شهادة الضمان المعتمدة لجهازك، متابعة حالة الشحنة بالواتساب، واسترجاع عناوينك المحفوظة.' 
+                <p className="text-xs text-slate-600">
+                  {language === 'ar'
+                    ? 'تسجيل الدخول يتيح لك تفعيل شهادة الضمان المعتمدة لجهازك، متابعة حالة الشحنة بالواتساب، واسترجاع عناوينك المحفوظة.'
                     : 'Signing in secures your warranty certificate, automated WhatsApp tracking, and saves your delivery address.'}
                 </p>
               </div>
@@ -375,16 +343,16 @@ export const Checkout: React.FC = () => {
         ) : (
           <div className="lg:col-span-12 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs font-cairo">
             <div className="flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-emerald-400" />
+              <CheckCircle className="w-5 h-5 text-emerald-700" />
               <div>
-                <span className="text-white font-bold">{language === 'ar' ? 'طلبك مسجل باسم العميل:' : 'Order registered to:'} {user?.name}</span>
-                <span className="text-slate-400 text-[11px] block">{user?.email} • {user?.phone}</span>
+                <span className="text-slate-900 font-bold">{language === 'ar' ? 'طلبك مسجل باسم العميل:' : 'Order registered to:'} {user?.name}</span>
+                <span className="text-slate-600 text-[11px] block">{user?.email} • {user?.phone}</span>
               </div>
             </div>
             <button
               type="button"
               onClick={() => navigate('profile')}
-              className="text-amber-400 hover:underline font-bold"
+              className="text-amber-700 hover:underline font-bold"
             >
               {language === 'ar' ? 'عرض ملفي الشخصي' : 'View Profile'}
             </button>
@@ -393,11 +361,11 @@ export const Checkout: React.FC = () => {
 
         {/* Left 7 Columns: Shipping Info & Payment Methods */}
         <div className="lg:col-span-7 space-y-6">
-          
+
           {/* Step 1: Recipient & Shipping Information */}
-          <div className="p-6 rounded-3xl bg-[#0F1626] border border-white/10 space-y-5">
-            <h2 className="text-base font-bold text-white font-cairo flex items-center gap-2 border-b border-white/5 pb-3">
-              <Truck className="w-5 h-5 text-amber-400" />
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-5">
+            <h2 className="text-base font-bold text-slate-900 font-cairo flex items-center gap-2 border-b border-slate-200 pb-3">
+              <Truck className="w-5 h-5 text-amber-700" />
               <span>{language === 'ar' ? '1. بيانات المستلم وعنوان التوصيل' : '1. Recipient & Shipping Address'}</span>
             </h2>
 
@@ -405,8 +373,8 @@ export const Checkout: React.FC = () => {
             {user?.addresses && user.addresses.length > 0 && (
               <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-3 font-cairo">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-amber-300 text-xs flex items-center gap-1.5">
-                    <Home className="w-4 h-4 text-amber-400" />
+                  <span className="font-bold text-amber-700 text-xs flex items-center gap-1.5">
+                    <Home className="w-4 h-4 text-amber-700" />
                     {language === 'ar' ? 'اختر من عناوينك المسجلة:' : 'Select from saved addresses:'}
                   </span>
                   <button
@@ -414,16 +382,15 @@ export const Checkout: React.FC = () => {
                     onClick={() => {
                       setSelectedAddressId('new');
                       setAddressDetails('');
-                      setBuildingNo('');
-                      setFloorNo('');
-                      setApartmentNo('');
-                      setLandmark('');
+                      setDelivery({ address_type: 'home' });
+                      setSelectedCity('');
+                      setCustomCity(false);
                       setGoogleMapsUrl('');
                     }}
                     className={`text-[11px] font-bold px-2 py-1 rounded transition-all ${
-                      selectedAddressId === 'new' 
-                        ? 'bg-amber-500 text-black' 
-                        : 'text-amber-400 hover:underline'
+                      selectedAddressId === 'new'
+                        ? 'bg-amber-500 text-black'
+                        : 'text-amber-700 hover:underline'
                     }`}
                   >
                     + {language === 'ar' ? 'كتابة عنوان جديد' : 'Enter new address'}
@@ -439,26 +406,29 @@ export const Checkout: React.FC = () => {
                         type="button"
                         onClick={() => {
                           setSelectedAddressId(addr.id);
-                          setAddressDetails(addr.details);
+                          setDelivery(pickDeliveryFields(addr));
+                          setGoogleMapsUrl(addr.google_maps_url || '');
+                          setAddressDetails(addr.extra_details || (addr.street ? '' : addr.details));
                           setSelectedCity(addr.city);
-                          const foundGov = egyptianGovernorates.find(g => g.name_ar === addr.governorate);
-                          if (foundGov) setSelectedGovId(foundGov.id);
+                          const foundGov = findAddressGovernorate(addr.governorate, addr.city);
+                          setSelectedGovId(foundGov?.id || '');
+          setCustomCity(false);
                         }}
                         className={`p-3 rounded-xl border text-right transition-all flex flex-col justify-between ${
                           isSelected
-                            ? 'bg-amber-500/20 border-amber-400 text-white shadow-md'
-                            : 'bg-slate-900/80 border-white/10 text-slate-300 hover:bg-slate-850'
+                            ? 'bg-amber-500/20 border-amber-400 text-slate-900 shadow-md'
+                            : 'bg-slate-100/80 border-slate-200 text-slate-600 hover:bg-slate-100'
                         }`}
                       >
                         <div className="flex items-center justify-between w-full">
-                          <span className="font-bold text-xs text-amber-300 flex items-center gap-1">
+                          <span className="font-bold text-xs text-amber-700 flex items-center gap-1">
                             <span>{addr.title}</span>
-                            {addr.isDefault && <span className="text-[9px] px-1 rounded bg-amber-400/20 text-amber-300">افتراضي</span>}
+                            {addr.isDefault && <span className="text-[9px] px-1 rounded bg-amber-400/20 text-amber-700">افتراضي</span>}
                           </span>
-                          {isSelected && <CheckCircle className="w-4 h-4 text-amber-400" />}
+                          {isSelected && <CheckCircle className="w-4 h-4 text-amber-700" />}
                         </div>
-                        <p className="text-[11px] text-slate-200 mt-1 line-clamp-2 leading-relaxed">{addr.details}</p>
-                        <span className="text-[10px] text-slate-400 mt-1">{addr.governorate} - {addr.city}</span>
+                        <p className="text-[11px] text-slate-800 mt-1 line-clamp-2 leading-relaxed">{addr.details}</p>
+                        <span className="text-[10px] text-slate-600 mt-1">{addr.governorate} - {addr.city}</span>
                       </button>
                     );
                   })}
@@ -469,50 +439,50 @@ export const Checkout: React.FC = () => {
             <div className="space-y-4 text-xs font-cairo">
               {/* Full Name */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-600 font-semibold mb-1">
                   الاسم الكامل للمستلم *
                 </label>
                 <input
                   type="text"
                   required
-                  value={customerName}
+                  autoComplete="name" aria-label="الاسم الكامل للمستلم" value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="مثال: أحمد محمد عبد الله"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder-slate-500 focus:outline-none focus:border-amber-400"
                 />
               </div>
 
               {/* Primary Phone & Secondary Backup Phone */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1">
-                    <Phone className="w-3.5 h-3.5 text-amber-400" />
+                  <label className="block text-slate-600 font-semibold mb-1 flex items-center gap-1">
+                    <Phone className="w-3.5 h-3.5 text-amber-700" />
                     <span>رقم الهاتف الأساسي *</span>
                   </label>
                   <input
                     type="tel"
                     required
-                    value={customerPhone}
+                    autoComplete="tel" dir="ltr" aria-label="رقم الهاتف الأساسي" value={customerPhone}
                     onChange={(e) => handlePhoneChange(e.target.value)}
                     placeholder="010XXXXXXXX"
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1 flex items-center justify-between">
+                  <label className="block text-slate-600 font-semibold mb-1 flex items-center justify-between">
                     <span className="flex items-center gap-1">
-                      <Phone className="w-3.5 h-3.5 text-slate-400" />
+                      <Phone className="w-3.5 h-3.5 text-slate-600" />
                       <span>رقم هاتف بديل / إضافي</span>
                     </span>
                     <span className="text-[10px] text-slate-500">للطوارئ ومندوب التوصيل</span>
                   </label>
                   <input
                     type="tel"
-                    value={customerSecondaryPhone}
+                    dir="ltr" aria-label="رقم الهاتف البديل" value={customerSecondaryPhone}
                     onChange={(e) => setCustomerSecondaryPhone(e.target.value)}
                     placeholder="011XXXXXXXX (اختياري)"
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
                   />
                 </div>
               </div>
@@ -520,11 +490,11 @@ export const Checkout: React.FC = () => {
               {/* WhatsApp Notification Number */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-slate-300 font-semibold flex items-center gap-1">
-                    <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <label className="text-slate-600 font-semibold flex items-center gap-1">
+                    <MessageCircle className="w-3.5 h-3.5 text-emerald-700" />
                     <span>رقم الواتساب لإرسال الفاتورة وتتبع الشحنة *</span>
                   </label>
-                  <label className="flex items-center gap-1 text-[11px] text-amber-400 cursor-pointer">
+                  <label className="flex items-center gap-1 text-[11px] text-amber-700 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={sameAsPhone}
@@ -540,30 +510,34 @@ export const Checkout: React.FC = () => {
                 <input
                   type="tel"
                   required
-                  value={sameAsPhone ? customerPhone : customerWhatsApp}
+                  dir="ltr" aria-label="رقم الواتساب" value={sameAsPhone ? customerPhone : customerWhatsApp}
                   disabled={sameAsPhone}
                   onChange={(e) => setCustomerWhatsApp(e.target.value)}
                   placeholder="010XXXXXXXX"
-                  className={`w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400 ${sameAsPhone ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  className={`w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400 ${sameAsPhone ? 'opacity-70 cursor-not-allowed' : ''}`}
                 />
               </div>
 
               {/* Governorate & City */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
+                  <label className="block text-slate-600 font-semibold mb-1">
                     المحافظة *
                   </label>
                   <select
+                    required
+                    aria-label={language === 'ar' ? 'المحافظة' : 'Governorate'}
                     value={selectedGovId}
                     onChange={(e) => {
                       setSelectedGovId(e.target.value);
                       setSelectedCity('');
+                      setCustomCity(false);
                     }}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white font-cairo focus:outline-none focus:border-amber-400 cursor-pointer"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 font-cairo focus:outline-none focus:border-amber-400 cursor-pointer"
                   >
+                    <option value="">اختر المحافظة...</option>
                     {egyptianGovernorates.map((gov) => (
-                      <option key={gov.id} value={gov.id} className="bg-slate-900">
+                      <option key={gov.id} value={gov.id} className="bg-slate-100">
                         {gov.name_ar} {gov.id === 'daqahlia' ? '⚡ (المنصورة)' : ''}
                       </option>
                     ))}
@@ -571,104 +545,48 @@ export const Checkout: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
+                  <label className="block text-slate-600 font-semibold mb-1">
                     المدينة / المركز / المنطقة *
                   </label>
                   <select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white font-cairo focus:outline-none focus:border-amber-400 cursor-pointer"
+                    aria-label={language === 'ar' ? 'المدينة / المركز' : 'City'}
+                    required
+                    value={customCity ? '__other__' : selectedCity}
+                    onChange={(e) => { if (e.target.value === '__other__') { setCustomCity(true); setSelectedCity(''); } else { setSelectedCity(e.target.value); } }}
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 font-cairo focus:outline-none focus:border-amber-400 cursor-pointer"
                   >
                     <option value="">اختر المنطقة / المركز...</option>
+                    {selectedCity && !currentGov.cities.some(c => c.name_ar === selectedCity) && <option value={selectedCity}>{selectedCity}</option>}
+                    <option value="__other__">اكتب مدينة / قرية أخرى</option>
                     {currentGov.cities.map((c, i) => (
-                      <option key={i} value={c.name_ar} className="bg-slate-900">
+                      <option key={i} value={c.name_ar} className="bg-slate-100">
                         {c.name_ar}
                       </option>
                     ))}
                   </select>
+                  {customCity && <input required aria-label="اسم المدينة أو القرية" value={selectedCity} maxLength={100} onChange={e => setSelectedCity(e.target.value)} placeholder="اكتب اسم المدينة / القرية" className="w-full mt-2 bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900" />}
                 </div>
               </div>
 
-              {/* Detailed Street Address */}
+              <DetailedAddressFields value={delivery} onChange={setDelivery} language={language} requiredStreet={selectedAddressId === 'new' || !!street} />
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
-                  اسم الشارع والحي *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={addressDetails}
-                  onChange={(e) => setAddressDetails(e.target.value)}
-                  placeholder="مثال: شارع المشاية السفلية / شارع الجيش"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-cairo"
-                />
+                <label htmlFor="address-extra" className="block text-slate-700 mb-1">{language === 'ar' ? 'تفاصيل إضافية للعنوان (اختياري)' : 'Additional address details (optional)'}</label>
+                <textarea id="address-extra" rows={2} maxLength={500} value={addressDetails} onChange={e => setAddressDetails(e.target.value)} className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900" />
               </div>
-
-              {/* Building, Floor, Apartment Breakdown */}
-              <div className="grid grid-cols-3 gap-2.5">
-                <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
-                    العمارة / البرج
-                  </label>
-                  <input
-                    type="text"
-                    value={buildingNo}
-                    onChange={(e) => setBuildingNo(e.target.value)}
-                    placeholder="مثال: برج الصفوة 4"
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-cairo"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
-                    الدور
-                  </label>
-                  <input
-                    type="text"
-                    value={floorNo}
-                    onChange={(e) => setFloorNo(e.target.value)}
-                    placeholder="الدور 3"
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-cairo"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
-                    الشقة
-                  </label>
-                  <input
-                    type="text"
-                    value={apartmentNo}
-                    onChange={(e) => setApartmentNo(e.target.value)}
-                    placeholder="شقة 12"
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-cairo"
-                  />
-                </div>
-              </div>
-
-              {/* Landmark */}
-              <div>
-                <label className="block text-slate-300 font-semibold mb-1">
-                  أقرب علامة مميزة لتسهيل وصول المندوب
-                </label>
-                <input
-                  type="text"
-                  value={landmark}
-                  onChange={(e) => setLandmark(e.target.value)}
-                  placeholder="مثال: أمام نادي الحوار / بجوار مسجد النصر / أعلى صيدلية الطرشوبي"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-cairo"
-                />
-              </div>
+              {selectedAddressId === 'new' && user && <label className="flex items-center gap-2 text-slate-700">
+                <input type="checkbox" className="accent-amber-600" checked={saveAddress} onChange={e => setSaveAddress(e.target.checked)} />
+                {language === 'ar' ? 'احفظ هذا العنوان في حسابي للطلبات القادمة' : 'Save this address for future orders'}
+              </label>}
 
               {/* Google Maps Location Integration (100% Free GPS) */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-950/40 via-slate-900 to-blue-950/20 border border-blue-500/30 space-y-3">
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50/40 via-slate-100 to-blue-50/20 border border-blue-500/30 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <span className="font-bold text-blue-300 text-xs flex items-center gap-1.5">
-                      <MapPin className="w-4 h-4 text-blue-400" />
+                    <span className="font-bold text-blue-700 text-xs flex items-center gap-1.5">
+                      <MapPin className="w-4 h-4 text-blue-700" />
                       <span>تحديد موقع التوصيل على خرائط جوجل (Google Maps)</span>
                     </span>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
+                    <p className="text-[11px] text-slate-600 mt-0.5">
                       يساعد المندوب في الوصول لباب بيتك فوراً بدون الحاجة للاتصال بك للاستفسار عن المكان.
                     </p>
                   </div>
@@ -677,16 +595,16 @@ export const Checkout: React.FC = () => {
                     type="button"
                     onClick={handleGetLocation}
                     disabled={isLocating}
-                    className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 disabled:opacity-50 flex-shrink-0"
+                    className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-on-brand font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 disabled:opacity-50 flex-shrink-0"
                   >
                     {isLocating ? (
                       <>
-                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-3.5 h-3.5 border-2 border-slate-200 border-t-transparent rounded-full animate-spin" />
                         <span>جاري التقاط الموقع...</span>
                       </>
                     ) : (
                       <>
-                        <Compass className="w-4 h-4 text-white" />
+                        <Compass className="w-4 h-4 text-slate-900" />
                         <span>📍 حدد موقعي الحالي (GPS)</span>
                       </>
                     )}
@@ -694,17 +612,17 @@ export const Checkout: React.FC = () => {
                 </div>
 
                 {locationSuccess && (
-                  <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-center justify-between">
+                  <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 text-xs flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-emerald-700 flex-shrink-0" />
                       <span>{locationSuccess}</span>
                     </div>
                     {googleMapsUrl && (
-                      <a 
-                        href={googleMapsUrl} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className="text-amber-400 hover:underline flex items-center gap-1 text-[11px] font-bold"
+                      <a
+                        href={googleMapsUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-amber-700 hover:underline flex items-center gap-1 text-[11px] font-bold"
                       >
                         <span>معاينة على الخريطة</span>
                         <ExternalLink className="w-3 h-3" />
@@ -714,7 +632,7 @@ export const Checkout: React.FC = () => {
                 )}
 
                 {locationError && (
-                  <div className="p-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[11px]">
+                  <div className="p-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-700 text-[11px]">
                     {locationError}
                   </div>
                 )}
@@ -722,17 +640,17 @@ export const Checkout: React.FC = () => {
                 <div>
                   <input
                     type="url"
-                    value={googleMapsUrl}
+                    aria-label="رابط Google Maps" maxLength={2000} value={googleMapsUrl}
                     onChange={(e) => setGoogleMapsUrl(e.target.value)}
                     placeholder="أو الصق رابط موقعك من Google Maps هنا مباشرة (اختياري)"
-                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-400 font-outfit"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-500 focus:outline-none focus:border-blue-400 font-outfit"
                   />
                 </div>
               </div>
 
               {/* Delivery Notes */}
               <div>
-                <label className="block text-slate-400 font-medium mb-1">
+                <label className="block text-slate-600 font-medium mb-1">
                   ملاحظات إضافية للتوصيل (اختياري)
                 </label>
                 <input
@@ -740,26 +658,26 @@ export const Checkout: React.FC = () => {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="مثال: يرجى الاتصال قبل الوصول بنصف ساعة / المعاينة قبل الاستلام"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2 text-xs text-slate-900 placeholder-slate-500 focus:outline-none focus:border-amber-400"
                 />
               </div>
             </div>
           </div>
 
           {/* Step 2: Payment Method Card */}
-          <div className="p-6 rounded-3xl bg-[#0F1626] border border-white/10 space-y-4">
-            <h2 className="text-base font-bold text-white font-cairo flex items-center gap-2 border-b border-white/5 pb-3">
-              <CreditCard className="w-5 h-5 text-amber-400" />
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-4">
+            <h2 className="text-base font-bold text-slate-900 font-cairo flex items-center gap-2 border-b border-slate-200 pb-3">
+              <CreditCard className="w-5 h-5 text-amber-700" />
               <span>2. طريقة الدفع</span>
             </h2>
 
             <div className="space-y-3">
               {/* COD Option */}
-              <label 
+              <label
                 className={`flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${
-                  paymentMethod === 'cod' 
-                    ? 'border-amber-400 bg-amber-500/10 shadow-glow-gold' 
-                    : 'border-white/10 bg-slate-900/60 hover:bg-slate-900'
+                  paymentMethod === 'cod'
+                    ? 'border-amber-400 bg-amber-500/10 shadow-glow-gold'
+                    : 'border-slate-200 bg-slate-100/60 hover:bg-slate-100'
                 }`}
               >
                 <input
@@ -772,25 +690,25 @@ export const Checkout: React.FC = () => {
                 />
                 <div className="flex-1 text-xs">
                   <div className="flex items-center justify-between">
-                    <strong className="text-white font-bold text-sm block">
+                    <strong className="text-slate-900 font-bold text-sm block">
                       💵 الدفع عند الاستلام (COD)
                     </strong>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 font-bold">
                       معاينة وفحص 100%
                     </span>
                   </div>
-                  <p className="text-slate-400 text-[11px] mt-1 leading-relaxed">
+                  <p className="text-slate-600 text-[11px] mt-1 leading-relaxed">
                     ادفع نقداً عند استلام شحنتك، مع حقك الكامل في فحص الجهاز والبطارية والتأكد من سلامتها مع مندوب التوصيل قبل الدفع.
                   </p>
                 </div>
               </label>
 
               {/* InstaPay Option */}
-              <label 
+              <label
                 className={`flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${
-                  paymentMethod === 'instapay' 
-                    ? 'border-purple-400 bg-purple-500/10 shadow-md' 
-                    : 'border-white/10 bg-slate-900/60 hover:bg-slate-900'
+                  paymentMethod === 'instapay'
+                    ? 'border-purple-400 bg-purple-500/10 shadow-md'
+                    : 'border-slate-200 bg-slate-100/60 hover:bg-slate-100'
                 }`}
               >
                 <input
@@ -802,31 +720,31 @@ export const Checkout: React.FC = () => {
                   className="mt-1 accent-purple-500"
                 />
                 <div className="flex-1 text-xs">
-                  <strong className="text-white font-bold text-sm block">
+                  <strong className="text-slate-900 font-bold text-sm block">
                     ⚡ تحويل لحظي عبر تطبيق إنستاباي (InstaPay)
                   </strong>
-                  <p className="text-slate-400 text-[11px] mt-1">
+                  <p className="text-slate-600 text-[11px] mt-1">
                     تحويل بنكي فوري بدون أي رسوم إضافية لحساب جو ستور الرسمي.
                   </p>
 
                   {paymentMethod === 'instapay' && (
-                    <div className="mt-3 p-3.5 rounded-xl bg-slate-950 border border-purple-500/30 space-y-2.5">
+                    <div className="mt-3 p-3.5 rounded-xl bg-slate-100 border border-purple-500/30 space-y-2.5">
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-slate-400">عنوان إنستاباي (IPA):</span>
-                        <strong className="text-purple-300 font-outfit text-xs bg-purple-900/50 px-2 py-0.5 rounded border border-purple-500/30">
+                        <span className="text-slate-600">عنوان إنستاباي (IPA):</span>
+                        <strong className="text-purple-700 font-outfit text-xs bg-purple-900/50 px-2 py-0.5 rounded border border-purple-500/30">
                           {settings.instapay_address}
                         </strong>
                       </div>
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-slate-400">رقم الهاتف للتحويل:</span>
-                        <strong className="text-white font-outfit text-xs">
+                        <span className="text-slate-600">رقم الهاتف للتحويل:</span>
+                        <strong className="text-slate-900 font-outfit text-xs">
                           {settings.store_phone}
                         </strong>
                       </div>
 
                       {/* Receipt Upload / Ref */}
-                      <div className="pt-2 border-t border-white/5 space-y-2">
-                        <label className="block text-[11px] text-slate-300 font-semibold">
+                      <div className="pt-2 border-t border-slate-200 space-y-2">
+                        <label className="block text-[11px] text-slate-600 font-semibold">
                           رقم العملية أو اسم الحساب المحول منه:
                         </label>
                         <input
@@ -834,7 +752,7 @@ export const Checkout: React.FC = () => {
                           value={paymentReference}
                           onChange={(e) => setPaymentReference(e.target.value)}
                           placeholder="مثال: تحويل من أحمد محمد / كود العملية 83719"
-                          className="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-white placeholder-slate-500"
+                          className="w-full bg-slate-100 border border-slate-200 rounded-lg p-2 text-xs text-slate-900 placeholder-slate-500"
                         />
                       </div>
                     </div>
@@ -843,11 +761,11 @@ export const Checkout: React.FC = () => {
               </label>
 
               {/* Vodafone Cash Option */}
-              <label 
+              <label
                 className={`flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${
-                  paymentMethod === 'vodafone_cash' 
-                    ? 'border-red-400 bg-red-500/10 shadow-md' 
-                    : 'border-white/10 bg-slate-900/60 hover:bg-slate-900'
+                  paymentMethod === 'vodafone_cash'
+                    ? 'border-red-400 bg-red-500/10 shadow-md'
+                    : 'border-slate-200 bg-slate-100/60 hover:bg-slate-100'
                 }`}
               >
                 <input
@@ -859,24 +777,24 @@ export const Checkout: React.FC = () => {
                   className="mt-1 accent-red-500"
                 />
                 <div className="flex-1 text-xs">
-                  <strong className="text-white font-bold text-sm block">
+                  <strong className="text-slate-900 font-bold text-sm block">
                     📱 فودافون كاش والمحافظ الإلكترونية (Orange / WE / Etisalat)
                   </strong>
-                  <p className="text-slate-400 text-[11px] mt-1">
+                  <p className="text-slate-600 text-[11px] mt-1">
                     تحويل مباشر على رقم محفظة جو ستور الرسمية.
                   </p>
 
                   {paymentMethod === 'vodafone_cash' && (
-                    <div className="mt-3 p-3.5 rounded-xl bg-slate-950 border border-red-500/30 space-y-2.5">
+                    <div className="mt-3 p-3.5 rounded-xl bg-slate-100 border border-red-500/30 space-y-2.5">
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-slate-400">رقم محفظة فودافون كاش:</span>
-                        <strong className="text-red-400 font-outfit text-sm bg-red-950/60 px-2 py-0.5 rounded border border-red-500/30">
+                        <span className="text-slate-600">رقم محفظة فودافون كاش:</span>
+                        <strong className="text-red-700 font-outfit text-sm bg-red-950/60 px-2 py-0.5 rounded border border-red-500/30">
                           {settings.vodafone_cash_number}
                         </strong>
                       </div>
 
-                      <div className="pt-2 border-t border-white/5 space-y-2">
-                        <label className="block text-[11px] text-slate-300 font-semibold">
+                      <div className="pt-2 border-t border-slate-200 space-y-2">
+                        <label className="block text-[11px] text-slate-600 font-semibold">
                           رقم الهاتف الذي قمت بالتحويل منه:
                         </label>
                         <input
@@ -884,7 +802,7 @@ export const Checkout: React.FC = () => {
                           value={paymentReference}
                           onChange={(e) => setPaymentReference(e.target.value)}
                           placeholder="مثال: تم التحويل من رقم 010XXXXXXXX"
-                          className="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-white placeholder-slate-500"
+                          className="w-full bg-slate-100 border border-slate-200 rounded-lg p-2 text-xs text-slate-900 placeholder-slate-500"
                         />
                       </div>
                     </div>
@@ -892,191 +810,40 @@ export const Checkout: React.FC = () => {
                 </div>
               </label>
 
-              {/* Credit Card Option with FULL interactive card and inputs */}
-              <label 
-                className={`flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${
-                  paymentMethod === 'credit_card' 
-                    ? 'border-blue-400 bg-blue-500/10 shadow-lg' 
-                    : 'border-white/10 bg-slate-900/60 hover:bg-slate-900'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="payment"
-                  value="credit_card"
-                  checked={paymentMethod === 'credit_card'}
-                  onChange={() => setPaymentMethod('credit_card')}
-                  className="mt-1 accent-blue-500"
-                />
-                <div className="flex-1 text-xs">
-                  <div className="flex items-center justify-between">
-                    <strong className="text-white font-bold text-sm block">
-                      💳 بطاقة بنكية (فيزا / ماستركارد / ميزة)
-                    </strong>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-600/30 text-blue-300 font-bold font-outfit">Visa</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-600/30 text-rose-300 font-bold font-outfit">Mastercard</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold font-outfit">Meeza</span>
-                    </div>
-                  </div>
-                  <p className="text-slate-400 text-[11px] mt-1">
-                    دفع إلكتروني فوري ومؤمن بتشفير 256-bit عبر البوابات المصرفية المعتمدة مع حماية 3D Secure.
-                  </p>
-
-                  {paymentMethod === 'credit_card' && (
-                    <div className="mt-4 space-y-4" onClick={(e) => e.stopPropagation()}>
-                      {/* Live 3D Luxury Metallic Card Preview */}
-                      <div className="w-full max-w-sm mx-auto p-5 rounded-2xl bg-gradient-to-tr from-slate-900 via-amber-950/40 to-slate-900 border border-amber-500/40 shadow-2xl relative overflow-hidden text-white font-outfit select-none">
-                        {/* Shimmer gradient */}
-                        <div className="absolute -top-12 -right-12 w-36 h-36 bg-amber-500/20 blur-2xl rounded-full" />
-                        <div className="absolute -bottom-12 -left-12 w-36 h-36 bg-blue-500/15 blur-2xl rounded-full" />
-                        
-                        <div className="flex items-center justify-between mb-6">
-                          <span className="text-xs font-black tracking-widest text-amber-400 font-cairo">JOE STORE BANK</span>
-                          <span className="text-lg font-black italic tracking-wider">
-                            {isVisa ? 'VISA' : isMastercard ? 'MASTERCARD' : 'PAYMENT'}
-                          </span>
-                        </div>
-
-                        {/* EMV Chip & Contactless */}
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-10 h-7 rounded bg-gradient-to-br from-amber-300 to-amber-600 border border-amber-200/50 shadow-inner flex items-center justify-center">
-                            <div className="w-7 h-5 border border-black/30 rounded-sm grid grid-cols-2 gap-0.5 opacity-60" />
-                          </div>
-                          <span className="text-amber-400/80 text-sm">📡</span>
-                        </div>
-
-                        {/* Card Number */}
-                        <div className="text-lg sm:text-xl font-mono tracking-widest text-amber-100 font-bold mb-4 drop-shadow">
-                          {cardNumber || '•••• •••• •••• ••••'}
-                        </div>
-
-                        {/* Card Holder & Expiry */}
-                        <div className="flex items-center justify-between text-xs">
-                          <div>
-                            <span className="text-[9px] text-slate-400 block tracking-wider uppercase font-cairo">صاحب البطاقة</span>
-                            <span className="font-bold tracking-wide uppercase text-slate-200">
-                              {cardHolderName || 'YOUR FULL NAME'}
-                            </span>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-[9px] text-slate-400 block tracking-wider uppercase">VALID THRU</span>
-                            <span className="font-bold font-mono text-slate-200">
-                              {cardExpiry || 'MM/YY'}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Card Details Input Fields */}
-                      <div className="p-4 rounded-2xl bg-slate-950 border border-blue-500/30 space-y-3 font-cairo">
-                        <div>
-                          <label className="block text-[11px] text-slate-300 font-semibold mb-1">
-                            اسم صاحب البطاقة (كما هو مدون على الكارت) *
-                          </label>
-                          <input
-                            type="text"
-                            required={paymentMethod === 'credit_card'}
-                            value={cardHolderName}
-                            onChange={(e) => setCardHolderName(e.target.value)}
-                            placeholder="AHMED MOHAMED"
-                            className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white uppercase placeholder-slate-500 focus:outline-none focus:border-blue-400 font-outfit"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-[11px] text-slate-300 font-semibold mb-1 flex items-center justify-between">
-                            <span>رقم البطاقة البنكية (16 رقم) *</span>
-                            <span className="text-[10px] text-slate-400 font-outfit">
-                              {isVisa ? '💳 فيزا (Visa)' : isMastercard ? '💳 ماستركارد (Mastercard)' : 'بطاقة بنكية'}
-                            </span>
-                          </label>
-                          <input
-                            type="text"
-                            required={paymentMethod === 'credit_card'}
-                            value={cardNumber}
-                            onChange={(e) => handleCardNumberChange(e.target.value)}
-                            placeholder="4000 1234 5678 9010"
-                            maxLength={19}
-                            className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white font-mono tracking-widest placeholder-slate-500 focus:outline-none focus:border-blue-400"
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-[11px] text-slate-300 font-semibold mb-1">
-                              تاريخ الانتهاء *
-                            </label>
-                            <input
-                              type="text"
-                              required={paymentMethod === 'credit_card'}
-                              value={cardExpiry}
-                              onChange={(e) => handleExpiryChange(e.target.value)}
-                              placeholder="MM/YY"
-                              maxLength={5}
-                              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white font-mono text-center placeholder-slate-500 focus:outline-none focus:border-blue-400"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-[11px] text-slate-300 font-semibold mb-1 flex items-center justify-between">
-                              <span>رمز الأمان (CVV) *</span>
-                              <span className="text-[10px] text-slate-400">3 أرقام بالخلف</span>
-                            </label>
-                            <input
-                              type="password"
-                              required={paymentMethod === 'credit_card'}
-                              value={cardCvv}
-                              onChange={(e) => handleCvvChange(e.target.value)}
-                              placeholder="•••"
-                              maxLength={4}
-                              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white font-mono text-center placeholder-slate-500 focus:outline-none focus:border-blue-400"
-                            />
-                          </div>
-                        </div>
-
-                        {/* Security Guarantees */}
-                        <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400">
-                          <span className="flex items-center gap-1">
-                            <Lock className="w-3 h-3 text-emerald-400" />
-                            <span>تشفير مصرفي 256-Bit SSL آمن</span>
-                          </span>
-                          <span className="text-emerald-400 font-bold">
-                            PCI-DSS Compliant 🛡️
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </label>
+              <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-600">
+                {language === 'ar' ? 'الدفع بالبطاقة غير متاح حاليًا. اختَر الدفع عند الاستلام أو أحد خيارات التحويل المتاحة.' : 'Card payment is currently unavailable. Choose cash on delivery or an available transfer option.'}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Right 5 Columns: Order Summary Card & Submit */}
-        <div className="lg:col-span-5 space-y-6 sticky top-28">
-          <div className="p-6 rounded-3xl bg-[#0F1626] border border-amber-500/30 shadow-2xl space-y-5">
-            <h2 className="text-base font-bold text-white font-cairo border-b border-white/10 pb-3 flex items-center justify-between">
+        <div className="lg:col-span-5 space-y-6 lg:sticky self-start" style={{ top: 'calc(var(--store-header-height, 150px) + 16px)' }}>
+          <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-2">
+            <h3 className="font-bold text-slate-900">{language === 'ar' ? 'راجع عنوان التسليم' : 'Check your delivery address'}</h3>
+            <p className="text-sm text-slate-700 leading-7">{formatDeliveryAddress({ ...delivery, governorate: currentGov.name_ar, city: selectedCity, address_details: buildAddressDetails(delivery, addressDetails) }, language)}</p>
+          </div>
+          <div className="p-6 rounded-3xl bg-white border border-amber-500/30 shadow-2xl space-y-5">
+            <h2 className="text-base font-bold text-slate-900 font-cairo border-b border-slate-200 pb-3 flex items-center justify-between">
               <span>{language === 'ar' ? 'ملخص الطلب' : 'Order Summary'} ({cart.reduce((s, i) => s + i.quantity, 0)})</span>
-              <span className="text-xs text-amber-400 font-outfit">{cart.length} {language === 'ar' ? 'أصناف' : 'Items'}</span>
+              <span className="text-xs text-amber-700 font-outfit">{cart.length} {language === 'ar' ? 'أصناف' : 'Items'}</span>
             </h2>
 
             {/* Items mini list */}
-            <div className="max-h-60 overflow-y-auto space-y-3 divide-y divide-white/5 pr-1">
+            <div className="max-h-60 overflow-y-auto space-y-3 divide-y divide-slate-200 pr-1">
               {cart.map((item, idx) => (
                 <div key={idx} className="pt-2 flex items-center gap-3">
                   <img
                     src={item.product.images[0]}
                     alt=""
-                    className="w-12 h-12 rounded-xl object-cover bg-slate-800 border border-white/10 flex-shrink-0"
+                    className="w-12 h-12 rounded-xl object-cover bg-slate-100 border border-slate-200 flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0 text-xs font-cairo">
-                    <h4 className="font-bold text-white truncate">{language === 'ar' ? item.product.name_ar : item.product.name_en}</h4>
-                    <p className="text-[10px] text-slate-400">
+                    <h4 className="font-bold text-slate-900 truncate">{language === 'ar' ? item.product.name_ar : item.product.name_en}</h4>
+                    <p className="text-[10px] text-slate-600">
                       {item.selected_storage || item.product.storage} • {language === 'ar' ? (item.selected_color || item.product.color_ar) : (item.selected_color || item.product.color_en)} × {item.quantity}
                     </p>
-                    <span className="text-amber-400 font-outfit font-bold">
+                    <span className="text-amber-700 font-outfit font-bold">
                       {formatPrice(item.product.price * item.quantity)}
                     </span>
                   </div>
@@ -1085,32 +852,32 @@ export const Checkout: React.FC = () => {
             </div>
 
             {/* Calculations Breakdown */}
-            <div className="space-y-2 pt-3 border-t border-white/10 text-xs font-cairo">
-              <div className="flex justify-between text-slate-400">
+            <div className="space-y-2 pt-3 border-t border-slate-200 text-xs font-cairo">
+              <div className="flex justify-between text-slate-600">
                 <span>{language === 'ar' ? 'المجموع الفرعي:' : 'Subtotal:'}</span>
-                <span className="font-outfit text-white font-semibold">{formatPrice(cartSubtotal)}</span>
+                <span className="font-outfit text-slate-900 font-semibold">{formatPrice(cartSubtotal)}</span>
               </div>
 
-              <div className="flex justify-between text-slate-400">
+              <div className="flex justify-between text-slate-600">
                 <span>{language === 'ar' ? `مصاريف الشحن (${currentGov.name_ar}):` : `Shipping (${currentGov.name_en}):`}</span>
                 <span className="font-outfit">
                   {isFreeShipping ? (
-                    <span className="text-emerald-400 font-bold">{language === 'ar' ? 'شحن مجاني 🎉' : 'Free Shipping 🎉'}</span>
+                    <span className="text-emerald-700 font-bold">{language === 'ar' ? 'شحن مجاني 🎉' : 'Free Shipping 🎉'}</span>
                   ) : (
                     <span>{formatPrice(shippingFee)}</span>
                   )}
                 </span>
               </div>
 
-              <div className="flex justify-between text-base font-black text-white pt-3 border-t border-white/10">
+              <div className="flex justify-between text-base font-black text-slate-900 pt-3 border-t border-slate-200">
                 <span>{language === 'ar' ? 'الإجمالي النهائي المطلوب:' : 'Grand Total:'}</span>
-                <span className="font-outfit text-amber-400 text-xl">{formatPrice(grandTotal)}</span>
+                <span className="font-outfit text-amber-700 text-xl">{formatPrice(grandTotal)}</span>
               </div>
             </div>
 
             {/* Error banner if any */}
             {errorMsg && (
-              <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2 font-cairo">
+              <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-700 text-xs flex items-center gap-2 font-cairo">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -1147,11 +914,11 @@ export const Checkout: React.FC = () => {
             )}
 
             {/* Guarantees Badges */}
-            <div className="pt-2 grid grid-cols-2 gap-2 text-[10px] text-slate-400 text-center font-cairo">
-              <div className="p-2 rounded-xl bg-slate-900 border border-white/5">
-                {language === 'ar' ? '🔒 دفع وتشفير بنكي آمن' : '🔒 100% Secure Checkout'}
+            <div className="pt-2 grid grid-cols-2 gap-2 text-[10px] text-slate-600 text-center font-cairo">
+              <div className="p-2 rounded-xl bg-slate-100 border border-slate-200">
+                {language === 'ar' ? 'راجع تفاصيل الطلب قبل التأكيد' : 'Review your order before confirming'}
               </div>
-              <div className="p-2 rounded-xl bg-slate-900 border border-white/5">
+              <div className="p-2 rounded-xl bg-slate-100 border border-slate-200">
                 {language === 'ar' ? '🛡️ ضمان استبدال رسمي' : '🛡️ Official Warranty'}
               </div>
             </div>

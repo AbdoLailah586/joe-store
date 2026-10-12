@@ -26,12 +26,12 @@ export const WhatsAppFloatingButton: React.FC = () => {
     <div className="fixed bottom-20 md:bottom-6 right-5 z-40 flex flex-col items-end">
       {/* Interactive Chat Popup */}
       {isOpen && (
-        <div className="mb-3 w-80 sm:w-96 bg-[#0F1626] border border-emerald-500/40 rounded-3xl shadow-2xl overflow-hidden text-slate-100 flex flex-col animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="mb-3 w-80 sm:w-96 bg-white border border-emerald-500/40 rounded-3xl shadow-2xl overflow-hidden text-slate-900 flex flex-col animate-in fade-in slide-in-from-bottom-5 duration-300">
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-emerald-600 to-teal-700 flex items-center justify-between text-white">
+          <div className="p-4 bg-gradient-to-r from-emerald-600 to-teal-700 flex items-center justify-between text-on-brand">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl">
+                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl">
                   📱
                 </div>
                 <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-emerald-700" />
@@ -47,31 +47,31 @@ export const WhatsAppFloatingButton: React.FC = () => {
 
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1 rounded-full hover:bg-white/20 text-white/80 hover:text-white"
+              className="p-1 rounded-full hover:bg-slate-100 text-slate-900 hover:text-slate-900"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Body */}
-          <div className="p-4 space-y-3 bg-[#0A0E1A]/90">
-            <div className="p-3 rounded-2xl bg-slate-900 border border-white/5 text-xs text-slate-200 leading-relaxed font-cairo">
+          <div className="p-4 space-y-3 bg-white">
+            <div className="p-3 rounded-2xl bg-slate-100 border border-slate-200 text-xs text-slate-800 leading-relaxed font-cairo">
               👋 أهلاً بك في متجر <strong>جو ستور (JOE Store)</strong>! كيف يمكننا مساعدتك اليوم بخصوص الهواتف، الإكسسوارات، أو طلباتك؟
             </div>
 
             {/* Quick Chips */}
             <div className="space-y-1.5">
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-cairo">
+              <p className="text-[10px] text-slate-600 font-bold uppercase tracking-wider font-cairo">
                 استفسارات سريعة شائعة:
               </p>
               {quickQuestions.map((q, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSend(q.text)}
-                  className="w-full text-right p-2 rounded-xl bg-slate-900/80 hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-500/30 text-xs text-slate-300 transition-all flex items-center gap-2 group"
+                  className="w-full text-right p-2 rounded-xl bg-slate-100/80 hover:bg-emerald-500/15 border border-slate-200 hover:border-emerald-500/30 text-xs text-slate-600 transition-all flex items-center gap-2 group"
                 >
                   <span>{q.icon}</span>
-                  <span className="flex-1 line-clamp-1 group-hover:text-emerald-300">{q.text}</span>
+                  <span className="flex-1 line-clamp-1 group-hover:text-emerald-700">{q.text}</span>
                 </button>
               ))}
             </div>
@@ -84,11 +84,11 @@ export const WhatsAppFloatingButton: React.FC = () => {
                 onChange={(e) => setCustomMsg(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && customMsg.trim() && handleSend(customMsg)}
                 placeholder="اكتب رسالتك مباشرة..."
-                className="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                className="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
               />
               <button
                 onClick={() => customMsg.trim() && handleSend(customMsg)}
-                className="p-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black flex items-center justify-center transition-all"
+                className="p-2 rounded-xl bg-emerald-700 hover:bg-emerald-400 text-black flex items-center justify-center transition-all"
               >
                 <Send className="w-4 h-4" />
               </button>

@@ -184,6 +184,7 @@ export const translations: Translations = {
   fastDeliveryDesc: { ar: 'توصيل في نفس اليوم داخل المنصورة، وشحن لجميع محافظات مصر خلال 24-48 ساعة.', en: 'Same-day delivery in Mansoura, and shipping to all Egypt governorates in 24-48 hours.' },
   whatsappTrackingTitle: { ar: 'إشعارات واتساب آلية', en: 'Automated WhatsApp Tracking' },
   whatsappTrackingDesc: { ar: 'متابعة مباشرة عبر الواتساب لتفاصيل طلبك وموقع الشحنة أولاً بأول.', en: 'Live updates on your order invoice and shipment location directly via WhatsApp.' },
+  testedCertifiedDesc: { ar: 'أجهزة مفحوصة مع تفاصيل ضمان موضحة لكل منتج.', en: 'Inspected devices with warranty terms shown for each product.' },
   themeCustomizer: { ar: 'مظهر وواجهة المتجر', en: 'Store Theme & UI' },
 };
 

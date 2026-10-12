@@ -1,18 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { 
-  Product, 
-  CartItem, 
-  Order, 
-  OrderStatus, 
-  CategoryKey, 
-  StoreSettings, 
-  WhatsAppNotification 
+import {
+  Product,
+  CartItem,
+  Order,
+  OrderStatus,
+  CategoryKey,
+  StoreSettings,
+  WhatsAppNotification
 } from '../types';
 import { initialProducts } from '../data/seedProducts';
-import { 
-  defaultSettings, 
-  sendWhatsAppMessage, 
-  recordWhatsAppNotification, 
+import {
+  defaultSettings,
+  sendWhatsAppMessage,
+  recordWhatsAppNotification,
   getWhatsAppLogs,
   buildOrderConfirmationMessage,
   buildPaymentConfirmedMessage,
@@ -27,14 +27,14 @@ import {
   isStoredProduct, isStoredCartItem, isStoredOrder
 } from '../utils/browserStorage';
 
-export type AppTab = 
-  | 'home' 
-  | 'catalog' 
-  | 'product' 
-  | 'cart' 
-  | 'checkout' 
-  | 'order-success' 
-  | 'track-order' 
+export type AppTab =
+  | 'home'
+  | 'catalog'
+  | 'product'
+  | 'cart'
+  | 'checkout'
+  | 'order-success'
+  | 'track-order'
   | 'profile'
   | 'admin';
 
@@ -315,12 +315,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       merged.tiktok_url = 'https://www.tiktok.com/@joestore2026';
       writeStoredJson('joe_store_settings', merged);
     }
-    return merged;
+    return { ...merged, theme_mode: 'light' };
   });
 
   const updateSettings = (newSettings: Partial<StoreSettings>) => {
     setSettings(prev => {
-      const updated = { ...prev, ...newSettings };
+      const updated = { ...prev, ...newSettings, theme_mode: 'light' as const };
       writeStoredJson('joe_store_settings', updated);
       return updated;
     });
@@ -328,11 +328,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', settings.active_theme || 'royal_gold');
-    if (settings.theme_mode === 'light') {
-      document.documentElement.classList.remove('dark');
-    } else {
-      document.documentElement.classList.add('dark');
-    }
+    document.documentElement.classList.remove('dark');
+    document.documentElement.style.colorScheme = 'light';
   }, [settings.active_theme, settings.theme_mode]);
 
   // WhatsApp Logs
@@ -565,8 +562,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const addToCart = (product: Product, quantity = 1, storage?: string, color?: string) => {
     if (product.is_active === false || !product.in_stock || product.price <= 0 || product.stock <= 0 || quantity <= 0) return;
     setCart(prev => {
-      const matchIndex = prev.findIndex(item => 
-        item.product.id === product.id && 
+      const matchIndex = prev.findIndex(item =>
+        item.product.id === product.id &&
         item.selected_storage === (storage || product.storage) &&
         item.selected_color === (color || product.color_ar)
       );
@@ -588,9 +585,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const removeFromCart = (productId: string, storage?: string, color?: string) => {
-    setCart(prev => prev.filter(item => 
-      !(item.product.id === productId && 
-        item.selected_storage === storage && 
+    setCart(prev => prev.filter(item =>
+      !(item.product.id === productId &&
+        item.selected_storage === storage &&
         item.selected_color === color)
     ));
   };
@@ -601,8 +598,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return;
     }
     setCart(prev => prev.map(item => {
-      if (item.product.id === productId && 
-          item.selected_storage === storage && 
+      if (item.product.id === productId &&
+          item.selected_storage === storage &&
           item.selected_color === color) {
         return { ...item, quantity: Math.min(quantity, item.product.stock) };
       }
@@ -617,7 +614,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Wishlist
   const toggleWishlist = (productId: string) => {
-    setWishlist(prev => 
+    setWishlist(prev =>
       prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
     );
   };
@@ -651,6 +648,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       whatsapp_notification_sent: false
     };
 
+    const persisted = await neonDb.createOrder(newOrder);
+    if (!persisted) throw new Error('تعذّر حفظ الطلب. سلتك محفوظة، حاول مرة أخرى.');
+
     // Deduct stock
     setProducts(prev => prev.map(p => {
       const orderedItem = orderData.items.find(item => item.product.id === p.id);
@@ -667,7 +667,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const msgText = buildOrderConfirmationMessage(newOrder, settings);
       const recipient = newOrder.customer_whatsapp || newOrder.customer_phone;
       const res = await sendWhatsAppMessage(recipient, msgText, settings);
-      
+
       recordWhatsAppNotification({
         id: `notif-${Date.now()}`,
         order_id: newOrder.id,
@@ -688,15 +688,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setCurrentOrder(newOrder);
     clearCart();
 
-    // Async persist to Neon PostgreSQL
-    neonDb.createOrder(newOrder).catch(console.warn);
 
     return newOrder;
   };
 
   const cancelOrder = async (
-    orderId: string, 
-    reason: string, 
+    orderId: string,
+    reason: string,
     cancelledBy: 'customer_whatsapp' | 'admin' = 'admin'
   ): Promise<boolean> => {
     const success = await neonDb.cancelOrder(orderId, reason, cancelledBy);
@@ -725,9 +723,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const updateOrderStatus = async (
-    orderId: string, 
-    newStatus: OrderStatus, 
-    courier?: string, 
+    orderId: string,
+    newStatus: OrderStatus,
+    courier?: string,
     trackingNo?: string
   ) => {
     let targetOrder: Order | undefined;
@@ -811,8 +809,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const manualSendWhatsAppNotification = async (
-    order: Order, 
-    type: WhatsAppNotification['type'], 
+    order: Order,
+    type: WhatsAppNotification['type'],
     customText?: string
   ) => {
     let msgText = customText || '';
@@ -843,8 +841,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const getOrderById = (idOrNumber: string): Order | undefined => {
     const clean = idOrNumber.trim().toUpperCase().replace('#', '');
-    return orders.find(o => 
-      o.id === idOrNumber || 
+    return orders.find(o =>
+      o.id === idOrNumber ||
       o.order_number.toUpperCase() === clean ||
       o.customer_phone.includes(idOrNumber)
     );

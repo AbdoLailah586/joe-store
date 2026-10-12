@@ -18,7 +18,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
     warranty: {
       title_ar: 'سياسة الضمان والاستبدال المعتمدة - متجر جو ستور',
       title_en: 'Official Warranty & Replacement Policy - JOE Store',
-      icon: <ShieldCheck className="w-8 h-8 text-amber-400" />,
+      icon: <ShieldCheck className="w-8 h-8 text-amber-700" />,
       text_ar: `
 📌 *ضمان متجر جو ستور (المنصورة):*
 
@@ -51,7 +51,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
     privacy: {
       title_ar: 'سياسة الخصوصية وأمان البيانات - جو ستور',
       title_en: 'Privacy & Data Protection Policy - JOE Store',
-      icon: <Lock className="w-8 h-8 text-emerald-400" />,
+      icon: <Lock className="w-8 h-8 text-emerald-700" />,
       text_ar: `
 🔒 *خصوصيتك وأمان بياناتك أولويتنا:*
 
@@ -77,7 +77,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
     terms: {
       title_ar: 'الشروط والأحكام - متجر جو ستور',
       title_en: 'Terms & Conditions - JOE Store',
-      icon: <FileText className="w-8 h-8 text-blue-400" />,
+      icon: <FileText className="w-8 h-8 text-blue-700" />,
       text_ar: `
 📋 *الشروط والأحكام العامة للطلب:*
 
@@ -103,7 +103,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
     shipping: {
       title_ar: 'سياسة الشحن ومواعيد التوصيل - جو ستور',
       title_en: 'Shipping & Delivery Policy - JOE Store',
-      icon: <Truck className="w-8 h-8 text-purple-400" />,
+      icon: <Truck className="w-8 h-8 text-purple-700" />,
       text_ar: `
 🚚 *مواعيد ورسوم الشحن والتوصيل:*
 
@@ -135,38 +135,38 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-      <div 
+      <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl bg-[#0F1626] border border-amber-500/40 rounded-3xl shadow-2xl p-6 sm:p-8 text-slate-100 font-cairo space-y-5 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl bg-white border border-amber-500/40 rounded-3xl shadow-2xl p-6 sm:p-8 text-slate-900 font-cairo space-y-5 animate-in fade-in zoom-in-95 duration-200"
       >
         <button
-          onClick={onClose}
-          className="absolute top-5 left-5 p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
+          aria-label="إغلاق" onClick={onClose}
+          className="absolute top-5 left-5 p-1.5 rounded-xl bg-slate-100 hover:bg-slate-100 text-slate-600 hover:text-slate-900"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-          <div className="p-3 rounded-2xl bg-slate-900 border border-white/10 flex-shrink-0">
+        <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
+          <div className="p-3 rounded-2xl bg-slate-100 border border-slate-200 flex-shrink-0">
             {content.icon}
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white leading-snug">
+            <h2 className="text-lg font-bold text-slate-900 leading-snug">
               {language === 'ar' ? content.title_ar : content.title_en}
             </h2>
-            <p className="text-xs text-amber-400 font-semibold mt-0.5">
+            <p className="text-xs text-amber-700 font-semibold mt-0.5">
               متجر جو ستور (JOE Store) - المنصورة
             </p>
           </div>
         </div>
 
-        <div className="text-xs text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto whitespace-pre-wrap pr-1 space-y-2">
+        <div className="text-xs text-slate-600 leading-relaxed max-h-[60vh] overflow-y-auto whitespace-pre-wrap pr-1 space-y-2">
           {language === 'ar' ? content.text_ar : content.text_en}
         </div>
 
-        <div className="pt-4 border-t border-white/10 flex justify-end">
+        <div className="pt-4 border-t border-slate-200 flex justify-end">
           <button
-            onClick={onClose}
+            aria-label="إغلاق" onClick={onClose}
             className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-glow-gold transition-all"
           >
             إغلاق

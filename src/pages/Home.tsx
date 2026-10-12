@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Sparkles, 
-  Flame, 
-  ShieldCheck, 
-  BatteryMedium, 
-  Truck, 
-  CheckCircle, 
-  ArrowLeft, 
-  ArrowRight, 
-  Smartphone, 
-  ChevronLeft, 
-  ChevronRight, 
+import {
+  Sparkles,
+  Flame,
+  ShieldCheck,
+  BatteryMedium,
+  Truck,
+  CheckCircle,
+  ArrowLeft,
+  ArrowRight,
+  Smartphone,
+  ChevronLeft,
+  ChevronRight,
   MessageCircle,
   TrendingUp
 } from 'lucide-react';
@@ -87,13 +87,15 @@ export const Home: React.FC = () => {
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isSliderPaused, setIsSliderPaused] = useState(false);
 
   useEffect(() => {
+    if (isSliderPaused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [slides.length, isSliderPaused]);
 
   // Filter specific product sets
   const certifiedPreOwned = products.filter(p => p.condition === 'mint' || (p.battery_health && p.battery_health < 100));
@@ -111,11 +113,13 @@ export const Home: React.FC = () => {
   return (
     <div className="space-y-16 pb-12">
       {/* 1. Hero Dynamic Slider Section */}
-      <section className="relative px-4 pt-4">
-        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden bg-gradient-to-br from-slate-100 via-white to-slate-200 dark:bg-slate-900 border border-slate-200 dark:border-amber-500/30 relative min-h-[440px] sm:min-h-[500px] flex items-center shadow-xl dark:shadow-2xl hero-slider-container">
+      <section className="relative px-4 pt-4" onMouseEnter={() => setIsSliderPaused(true)} onMouseLeave={() => setIsSliderPaused(false)} onFocusCapture={() => setIsSliderPaused(true)} onBlurCapture={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setIsSliderPaused(false); }}>
+        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden bg-gradient-to-br from-slate-100 via-white to-slate-200  border border-slate-200  relative min-h-[520px] sm:min-h-[500px] flex items-center shadow-xl  hero-slider-container">
           {slides.map((slide, idx) => (
             <div
               key={slide.id}
+              aria-hidden={idx !== currentSlide}
+              style={{ display: idx === currentSlide ? 'flex' : 'none' }}
               className={`absolute inset-0 transition-opacity duration-1000 flex flex-col md:flex-row items-center justify-between p-6 sm:p-12 gap-8 ${
                 currentSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
               }`}
@@ -125,44 +129,44 @@ export const Home: React.FC = () => {
                 <img
                   src={slide.image}
                   alt={slide.title_ar}
-                  className="w-full h-full object-cover object-center opacity-30 dark:opacity-100 dark:brightness-35 filter blur-xs"
+                  className="w-full h-full object-cover object-center opacity-30   filter blur-xs"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/40 dark:from-[#080C14] dark:via-[#080C14]/90 dark:to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/40   " />
               </div>
 
               {/* Text Side */}
               <div className={`max-w-xl space-y-4 ${isRTL ? 'text-right' : 'text-left'}`}>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 dark:border-amber-500/40 text-xs font-bold font-cairo shadow-sm backdrop-blur-md">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15  text-amber-700  border border-amber-500/30  text-xs font-bold font-cairo shadow-sm backdrop-blur-md">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-700 " />
                   <span>{slide.badge}</span>
                 </div>
 
-                <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white font-cairo tracking-tight leading-tight">
+                <h1 className="text-3xl sm:text-5xl font-black text-slate-900  font-cairo tracking-tight leading-tight">
                   {language === 'ar' ? slide.title_ar : slide.title_en}
                 </h1>
 
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-cairo">
+                <p className="text-xs sm:text-sm text-slate-600  leading-relaxed font-cairo">
                   {language === 'ar' ? slide.subtitle_ar : slide.subtitle_en}
                 </p>
 
                 {/* Price and tag */}
                 <div className="flex items-center gap-4 pt-2">
                   <div>
-                    <span className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 font-outfit">
+                    <span className="text-2xl sm:text-3xl font-black text-amber-700  font-outfit">
                       {slide.price} {language === 'ar' ? 'ج.م' : 'EGP'}
                     </span>
-                    <span className="block text-xs text-slate-400 line-through font-outfit">
+                    <span className="block text-xs text-slate-600 line-through font-outfit">
                       {slide.oldPrice} {language === 'ar' ? 'ج.م' : 'EGP'}
                     </span>
                   </div>
 
-                  <span className="px-3 py-1 rounded-xl bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 dark:border-emerald-500/40 text-xs font-bold font-cairo">
+                  <span className="px-3 py-1 rounded-xl bg-emerald-500/15  text-emerald-700  border border-emerald-500/30  text-xs font-bold font-cairo">
                     {slide.tag}
                   </span>
                 </div>
 
                 {/* Hero CTAs */}
-                <div className="flex items-center gap-3 pt-4">
+                <div className="flex flex-wrap items-center gap-3 pt-4">
                   <button
                     onClick={() => {
                       setSelectedCategory(slide.cat);
@@ -179,7 +183,7 @@ export const Home: React.FC = () => {
                       setSelectedCategory('smartphones');
                       navigate('catalog');
                     }}
-                    className="px-5 py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 dark:bg-slate-900/80 dark:hover:bg-slate-800 dark:text-white dark:border-white/10 backdrop-blur-sm transition-all font-bold text-xs sm:text-sm shadow-sm"
+                    className="px-5 py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300     backdrop-blur-sm transition-all font-bold text-xs sm:text-sm shadow-sm"
                   >
                     {t('shopPreowned')}
                   </button>
@@ -187,14 +191,14 @@ export const Home: React.FC = () => {
               </div>
 
               {/* Floating Device Showcase Frame */}
-              <div className="hidden md:flex relative flex-shrink-0 w-72 h-80 rounded-2xl overflow-hidden border border-slate-200 dark:border-amber-500/30 shadow-xl dark:shadow-2xl shadow-amber-500/10 group bg-slate-50 dark:bg-slate-900">
+              <div className="hidden md:flex relative flex-shrink-0 w-72 h-80 rounded-2xl overflow-hidden border border-slate-200  shadow-xl  shadow-amber-500/10 group bg-slate-50 ">
                 <img
                   src={slide.image}
                   alt=""
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-                  <span className="text-xs font-bold text-amber-300 font-cairo">
+                  <span className="text-xs font-bold text-on-image font-cairo">
                     {language === 'ar' ? 'مفحوص ومضمون من متجر جو ستور بالمنصورة ✨' : 'Tested & Certified by JOE Store ✨'}
                   </span>
                 </div>
@@ -205,13 +209,15 @@ export const Home: React.FC = () => {
           {/* Carousel Arrows */}
           <button
             onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full bg-white/90 dark:bg-black/60 hover:bg-amber-500 hover:text-black dark:hover:bg-amber-500 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10 shadow-lg backdrop-blur-md transition-all"
+            aria-label={language === 'ar' ? 'العرض السابق' : 'Previous offer'}
+            className="absolute left-4 bottom-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-amber-500 hover:text-black text-slate-800 border border-slate-200 shadow-lg backdrop-blur-md transition-all"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full bg-white/90 dark:bg-black/60 hover:bg-amber-500 hover:text-black dark:hover:bg-amber-500 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10 shadow-lg backdrop-blur-md transition-all"
+            aria-label={language === 'ar' ? 'العرض التالي' : 'Next offer'}
+            className="absolute right-4 bottom-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-amber-500 hover:text-black text-slate-800 border border-slate-200 shadow-lg backdrop-blur-md transition-all"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -221,9 +227,11 @@ export const Home: React.FC = () => {
             {slides.map((_, i) => (
               <button
                 key={i}
+                aria-label={language === 'ar' ? `العرض ${i + 1}` : `Offer ${i + 1}`}
+                aria-current={currentSlide === i}
                 onClick={() => setCurrentSlide(i)}
                 className={`h-2 rounded-full transition-all ${
-                  currentSlide === i ? 'w-8 bg-amber-500 dark:bg-amber-400' : 'w-2 bg-slate-300 dark:bg-white/30'
+                  currentSlide === i ? 'w-8 bg-amber-500 ' : 'w-2 bg-slate-300 '
                 }`}
               />
             ))}
@@ -234,57 +242,57 @@ export const Home: React.FC = () => {
       {/* 2. Highlights Strip */}
       <section className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#0F1626] border border-slate-200 dark:border-white/5 hover:border-amber-500/30 transition-all flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
+          <div className="p-4 rounded-2xl bg-white  border border-slate-200  hover:border-amber-500/30 transition-all flex items-center gap-3 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-700  flex items-center justify-center flex-shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-slate-800 dark:text-white font-cairo">
+              <h4 className="text-xs font-bold text-slate-800  font-cairo">
                 {language === 'ar' ? 'ضمان استبدال وصيانة' : 'Official Warranty'}
               </h4>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-cairo">
+              <p className="text-[10px] text-slate-500  font-cairo">
                 {language === 'ar' ? 'ضمان معتمد رسمي على جميع الأجهزة' : 'Certified exchange warranty on devices'}
               </p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#0F1626] border border-slate-200 dark:border-white/5 hover:border-emerald-500/30 transition-all flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
+          <div className="p-4 rounded-2xl bg-white  border border-slate-200  hover:border-emerald-500/30 transition-all flex items-center gap-3 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-700  flex items-center justify-center flex-shrink-0">
               <BatteryMedium className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-slate-800 dark:text-white font-cairo">
+              <h4 className="text-xs font-bold text-slate-800  font-cairo">
                 {language === 'ar' ? 'بطاريات أصلية معلنة' : 'Certified Battery Health'}
               </h4>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-cairo">
+              <p className="text-[10px] text-slate-500  font-cairo">
                 {language === 'ar' ? 'نسبة بطارية دقيقة 85% - 97% للأجهزة' : 'Accurate 85%-97% original battery'}
               </p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#0F1626] border border-slate-200 dark:border-white/5 hover:border-blue-500/30 transition-all flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
+          <div className="p-4 rounded-2xl bg-white  border border-slate-200  hover:border-blue-500/30 transition-all flex items-center gap-3 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600  flex items-center justify-center flex-shrink-0">
               <Truck className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-slate-800 dark:text-white font-cairo">
+              <h4 className="text-xs font-bold text-slate-800  font-cairo">
                 {language === 'ar' ? 'توصيل سريع وفوري' : 'Same-Day Delivery'}
               </h4>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-cairo">
+              <p className="text-[10px] text-slate-500  font-cairo">
                 {language === 'ar' ? 'توصيل في نفس اليوم بالمنصورة ومصر' : 'Instant in Mansoura & Egypt'}
               </p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#0F1626] border border-slate-200 dark:border-white/5 hover:border-purple-500/30 transition-all flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center flex-shrink-0">
+          <div className="p-4 rounded-2xl bg-white  border border-slate-200  hover:border-purple-500/30 transition-all flex items-center gap-3 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600  flex items-center justify-center flex-shrink-0">
               <MessageCircle className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-slate-800 dark:text-white font-cairo">
+              <h4 className="text-xs font-bold text-slate-800  font-cairo">
                 {language === 'ar' ? 'إشعار واتساب للطلب' : 'WhatsApp Receipt'}
               </h4>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-cairo">
+              <p className="text-[10px] text-slate-500  font-cairo">
                 {language === 'ar' ? 'تحديثات فورية لحالة الشحنة لهاتفك' : 'Instant invoice & tracking on WhatsApp'}
               </p>
             </div>
@@ -297,16 +305,16 @@ export const Home: React.FC = () => {
         <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30 relative overflow-hidden shadow-lg">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/40 text-xs font-bold font-cairo mb-2">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-700  border border-amber-500/40 text-xs font-bold font-cairo mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-amber-700 animate-pulse" />
                 <span>
-                  {recommendations.hasHistory 
-                    ? (language === 'ar' ? 'مخصص لك بناءً على نشاطك وبحثك' : 'Tailored For You Based On Activity') 
+                  {recommendations.hasHistory
+                    ? (language === 'ar' ? 'مخصص لك بناءً على نشاطك وبحثك' : 'Tailored For You Based On Activity')
                     : (language === 'ar' ? 'التريند الأكثر طلباً في المنصورة' : 'Trending Now in Mansoura')
                   }
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-cairo">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900  font-cairo">
                 {recommendations.hasHistory
                   ? (language === 'ar' ? 'ترشيحات ذكية اختيرت لأجلك ✨' : 'Smart Picks Chosen For You ✨')
                   : (language === 'ar' ? 'أقوى العروض الرائجة في المتجر اليوم 🔥' : 'Trending Hot Deals in Store Today 🔥')
@@ -314,11 +322,11 @@ export const Home: React.FC = () => {
               </h2>
               {recommendations.searchTags.length > 0 && (
                 <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-cairo">
+                  <span className="text-[11px] text-slate-500  font-cairo">
                     {language === 'ar' ? 'بناءً على اهتمامك بـ:' : 'Based on your interest in:'}
                   </span>
                   {recommendations.searchTags.map((tag, i) => (
-                    <span key={i} className="text-[11px] px-2.5 py-0.5 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30">
+                    <span key={i} className="text-[11px] px-2.5 py-0.5 rounded-lg bg-amber-500/15 text-amber-700  font-bold border border-amber-500/30">
                       "{tag}"
                     </span>
                   ))}
@@ -328,7 +336,7 @@ export const Home: React.FC = () => {
 
             <button
               onClick={() => { setSelectedCategory('all'); navigate('catalog'); }}
-              className="px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 font-bold text-xs font-cairo border border-amber-500/30 transition-all flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-700  font-bold text-xs font-cairo border border-amber-500/30 transition-all flex items-center gap-1.5"
             >
               <span>{t('viewAll')}</span>
               {isRTL ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
@@ -336,8 +344,8 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {(recommendations.recommendedProducts.length > 0 
-              ? recommendations.recommendedProducts.slice(0, 4) 
+            {(recommendations.recommendedProducts.length > 0
+              ? recommendations.recommendedProducts.slice(0, 4)
               : products.slice(0, 4)
             ).map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -350,15 +358,15 @@ export const Home: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-cairo flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900  font-cairo flex items-center gap-2">
               <span>{t('browseCategories')}</span>
               <span className="w-2 h-2 rounded-full bg-amber-400"></span>
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-cairo">{t('browseCategoriesSub')}</p>
+            <p className="text-xs text-slate-500  font-cairo">{t('browseCategoriesSub')}</p>
           </div>
           <button
             onClick={() => { setSelectedCategory('all'); navigate('catalog'); }}
-            className="text-xs font-bold text-amber-500 hover:text-amber-400 font-cairo flex items-center gap-1"
+            className="text-xs font-bold text-amber-700 hover:text-amber-700 font-cairo flex items-center gap-1"
           >
             <span>{t('viewAll')}</span>
             {isRTL ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
@@ -373,15 +381,15 @@ export const Home: React.FC = () => {
                 setSelectedCategory(cat.key);
                 navigate('catalog');
               }}
-              className="group p-4 rounded-2xl bg-white dark:bg-[#0F1626] border border-slate-200 dark:border-white/10 hover:border-amber-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/80 transition-all duration-300 cursor-pointer text-center flex flex-col items-center justify-between shadow-sm hover:shadow-glow-gold hover:-translate-y-1"
+              className="group p-4 rounded-2xl bg-white  border border-slate-200  hover:border-amber-500/50 hover:bg-slate-50  transition-all duration-300 cursor-pointer text-center flex flex-col items-center justify-between shadow-sm hover:shadow-glow-gold hover:-translate-y-1"
             >
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/10 to-amber-500/20 border border-amber-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform mb-3 shadow-inner">
                 {cat.icon}
               </div>
-              <h3 className="font-bold text-xs text-slate-800 dark:text-slate-100 font-cairo group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">
+              <h3 className="font-bold text-xs text-slate-800  font-cairo group-hover:text-amber-700  transition-colors">
                 {language === 'ar' ? cat.title_ar : cat.title_en}
               </h3>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-outfit mt-1">
+              <span className="text-[10px] text-slate-500  font-outfit mt-1">
                 {products.filter(product => product.category === cat.key).length} {language === 'ar' ? 'منتج' : 'products'}
               </span>
             </div>
@@ -391,19 +399,19 @@ export const Home: React.FC = () => {
 
       {/* 4. Certified Pre-Owned Highlight Section */}
       <section className="max-w-7xl mx-auto px-4">
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#0C121F] via-[#101827] to-[#0C121F] border border-amber-500/30 relative overflow-hidden shadow-2xl dark-banner-container">
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-white via-white to-white border border-amber-500/30 relative overflow-hidden shadow-2xl dark-banner-container">
           <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 blur-3xl -z-0 pointer-events-none" />
 
           <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold font-cairo">
-                <BatteryMedium className="w-4 h-4 text-emerald-400" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-700 border border-emerald-500/40 text-xs font-bold font-cairo">
+                <BatteryMedium className="w-4 h-4 text-emerald-700" />
                 <span>{language === 'ar' ? 'أجهزة آيفون كسر زيرو (بطاريات معلنة 85% لـ 97%)' : 'Pre-Owned iPhones (85%-97% Original Battery)'}</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-white font-cairo">
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo">
                 {t('certifiedPreownedTitle')}
               </h2>
-              <p className="text-xs text-slate-400 max-w-xl font-cairo">
+              <p className="text-xs text-slate-600 max-w-xl font-cairo">
                 {t('certifiedPreownedSub')}
               </p>
             </div>
@@ -432,17 +440,17 @@ export const Home: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
+            <div className="p-2.5 rounded-2xl bg-rose-500/20 text-rose-700 border border-rose-500/30">
               <Flame className="w-6 h-6 animate-pulse" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-cairo flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900  font-cairo flex items-center gap-2">
                 <span>{language === 'ar' ? 'عروض وخصومات اليوم ⚡' : 'Flash Deals & Offers ⚡'}</span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-rose-500 text-white font-bold font-outfit">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-rose-600 text-on-brand font-bold font-outfit">
                   {language === 'ar' ? 'خصومات حصرية' : 'Exclusive'}
                 </span>
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-cairo">
+              <p className="text-xs text-slate-500  font-cairo">
                 {language === 'ar' ? 'قطع محدودة بأسعار خاصة لفترة محدودة' : 'Limited inventory at promotional prices'}
               </p>
             </div>
@@ -450,7 +458,7 @@ export const Home: React.FC = () => {
 
           <button
             onClick={() => navigate('catalog')}
-            className="text-xs font-bold text-amber-500 hover:text-amber-400 font-cairo flex items-center gap-1"
+            className="text-xs font-bold text-amber-700 hover:text-amber-700 font-cairo flex items-center gap-1"
           >
             <span>{language === 'ar' ? 'مشاهدة كل العروض' : 'View All Deals'}</span>
             {isRTL ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
@@ -466,24 +474,24 @@ export const Home: React.FC = () => {
 
       {/* 6. Physical Store Location in Mansoura */}
       <section className="max-w-7xl mx-auto px-4">
-        <div className="rounded-3xl bg-slate-900 border border-amber-500/20 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl dark-banner-container">
+        <div className="rounded-3xl bg-slate-100 border border-amber-500/20 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl dark-banner-container">
           <div className={`space-y-3 max-w-xl ${isRTL ? 'text-right' : 'text-left'}`}>
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-wider font-cairo">
+            <span className="text-xs font-bold text-amber-700 uppercase tracking-wider font-cairo">
               📍 {language === 'ar' ? 'تشرفنا زيارتكم في المحل بالمنصورة' : 'Visit our Flagship Store in Mansoura'}
             </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-white font-cairo">
+            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo">
               {language === 'ar' ? settings.store_name_ar : settings.store_name_en}
             </h3>
-            <p className="text-xs text-slate-300 leading-relaxed font-cairo">
-              {language === 'ar' 
+            <p className="text-xs text-slate-600 leading-relaxed font-cairo">
+              {language === 'ar'
                 ? `${settings.store_address_ar} استمتع بتجربة فحص ومعاينة حية لجميع أجهزة الآيفون كسر زيرو وتشكيلة شواحن أنكر وسماعات إيربودز مع فريقنا المتخصص.`
                 : `${settings.store_address_en} Experience hands-on testing of certified pre-owned iPhones, genuine Anker chargers, and AirPods with our tech specialists.`}
             </p>
-            <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-400">
-              <span className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl border border-white/5">
+            <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-600">
+              <span className="flex items-center gap-1.5 bg-white/90 px-3 py-1.5 rounded-xl border border-slate-200">
                 ⏰ {language === 'ar' ? settings.working_hours_ar : settings.working_hours_en}
               </span>
-              <span className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl border border-white/5 font-outfit">
+              <span className="flex items-center gap-1.5 bg-white/90 px-3 py-1.5 rounded-xl border border-slate-200 font-outfit">
                 📞 {settings.store_phone}
               </span>
             </div>

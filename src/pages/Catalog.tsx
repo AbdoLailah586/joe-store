@@ -1,13 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  Filter, 
-  SlidersHorizontal, 
-  X, 
-  RotateCcw, 
-  Search, 
-  BatteryMedium, 
-  ShieldCheck, 
-  Tag, 
+import {
+  Filter,
+  SlidersHorizontal,
+  X,
+  RotateCcw,
+  Search,
+  BatteryMedium,
+  ShieldCheck,
+  Tag,
   Smartphone,
   ChevronDown
 } from 'lucide-react';
@@ -17,12 +17,12 @@ import { ProductCard } from '../components/ProductCard';
 import { CategoryKey, ProductCondition } from '../types';
 
 export const Catalog: React.FC = () => {
-  const { 
-    products, 
-    selectedCategory, 
-    setSelectedCategory, 
-    searchQuery, 
-    setSearchQuery 
+  const {
+    products,
+    selectedCategory,
+    setSelectedCategory,
+    searchQuery,
+    setSearchQuery
   } = useStore();
 
   const { t, language, formatPrice } = useLanguage();
@@ -116,15 +116,15 @@ export const Catalog: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
       {/* Header and Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white font-cairo flex items-center gap-2">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo flex items-center gap-2">
             <span>{t('catalog')}</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 font-bold border border-amber-500/30">
               {filteredProducts.length} منتج
             </span>
           </h1>
-          <p className="text-xs text-slate-400 font-cairo">
+          <p className="text-xs text-slate-600 font-cairo">
             تصفح أحدث الهواتف الذكية، أجهزة كسر زيرو، الشواحن والسماعات الأصلية
           </p>
         </div>
@@ -134,25 +134,25 @@ export const Catalog: React.FC = () => {
           {/* Mobile Filter Toggle */}
           <button
             onClick={() => setIsMobileFiltersOpen(true)}
-            className="md:hidden flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-white/10 text-xs font-bold text-slate-200"
+            className="md:hidden flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800"
           >
-            <Filter className="w-4 h-4 text-amber-400" />
+            <Filter className="w-4 h-4 text-amber-700" />
             <span>الفلاتر</span>
           </button>
 
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-2 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs">
-            <span className="text-slate-400 font-cairo">{t('sortBy')}:</span>
+          <div className="flex items-center gap-2 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+            <span className="text-slate-600 font-cairo">{t('sortBy')}:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-transparent text-white font-bold font-cairo focus:outline-none cursor-pointer"
+              className="bg-transparent text-slate-900 font-bold font-cairo focus:outline-none cursor-pointer"
             >
-              <option value="featured" className="bg-slate-900">{t('sortFeatured')}</option>
-              <option value="price_asc" className="bg-slate-900">{t('sortPriceAsc')}</option>
-              <option value="price_desc" className="bg-slate-900">{t('sortPriceDesc')}</option>
-              <option value="rating" className="bg-slate-900">{t('sortRating')}</option>
-              <option value="newest" className="bg-slate-900">{language === 'ar' ? 'الأحدث إضافة' : 'Newest'}</option>
+              <option value="featured" className="bg-slate-100">{t('sortFeatured')}</option>
+              <option value="price_asc" className="bg-slate-100">{t('sortPriceAsc')}</option>
+              <option value="price_desc" className="bg-slate-100">{t('sortPriceDesc')}</option>
+              <option value="rating" className="bg-slate-100">{t('sortRating')}</option>
+              <option value="newest" className="bg-slate-100">{language === 'ar' ? 'الأحدث إضافة' : 'Newest'}</option>
             </select>
           </div>
         </div>
@@ -161,15 +161,15 @@ export const Catalog: React.FC = () => {
       {/* Main Layout: Sidebar Filters + Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
         {/* Desktop Sidebar Filters */}
-        <aside className="hidden md:block col-span-1 bg-[#0F1626] border border-white/10 rounded-2xl p-5 space-y-6 sticky top-28">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <h3 className="font-bold text-sm text-white flex items-center gap-2 font-cairo">
-              <SlidersHorizontal className="w-4 h-4 text-amber-400" />
+        <aside className="hidden md:block col-span-1 bg-white border border-slate-200 rounded-2xl p-5 space-y-6 sticky top-28">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+            <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2 font-cairo">
+              <SlidersHorizontal className="w-4 h-4 text-amber-700" />
               <span>{t('filters')}</span>
             </h3>
             <button
               onClick={handleResetFilters}
-              className="text-[11px] text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold"
+              className="text-[11px] text-amber-700 hover:text-amber-700 flex items-center gap-1 font-semibold"
             >
               <RotateCcw className="w-3 h-3" />
               <span>{t('clearFilters')}</span>
@@ -178,7 +178,7 @@ export const Catalog: React.FC = () => {
 
           {/* Category Filter */}
           <div>
-            <h4 className="text-xs font-bold text-slate-300 mb-2 font-cairo">
+            <h4 className="text-xs font-bold text-slate-600 mb-2 font-cairo">
               {language === 'ar' ? 'الأقسام' : 'Categories'}
             </h4>
             <div className="space-y-1">
@@ -187,9 +187,9 @@ export const Catalog: React.FC = () => {
                   key={cat.key}
                   onClick={() => setSelectedCategory(cat.key)}
                   className={`w-full text-right px-3 py-1.5 rounded-lg text-xs transition-colors flex items-center justify-between ${
-                    selectedCategory === cat.key 
-                      ? 'bg-amber-500 text-black font-bold' 
-                      : 'text-slate-300 hover:bg-white/5'
+                    selectedCategory === cat.key
+                      ? 'bg-amber-500 text-black font-bold'
+                      : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <span>{cat.label}</span>
@@ -199,29 +199,29 @@ export const Catalog: React.FC = () => {
           </div>
 
           {/* Condition Filter */}
-          <div className="pt-3 border-t border-white/5">
-            <h4 className="text-xs font-bold text-slate-300 mb-2 font-cairo">
+          <div className="pt-3 border-t border-slate-200">
+            <h4 className="text-xs font-bold text-slate-600 mb-2 font-cairo">
               {t('filterCondition')}
             </h4>
             <div className="flex flex-col gap-1.5 text-xs">
               <button
                 onClick={() => setSelectedCondition('all')}
-                className={`text-right px-3 py-1.5 rounded-lg ${selectedCondition === 'all' ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                className={`text-right px-3 py-1.5 rounded-lg ${selectedCondition === 'all' ? 'bg-amber-500/20 text-amber-700 font-bold border border-amber-500/30' : 'text-slate-600 hover:text-slate-900'}`}
               >
                 {language === 'ar' ? 'الكل (جديد ومستعمل)' : 'All (New & Pre-Owned)'}
               </button>
               <button
                 onClick={() => setSelectedCondition('mint')}
-                className={`text-right px-3 py-1.5 rounded-lg flex items-center justify-between ${selectedCondition === 'mint' ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                className={`text-right px-3 py-1.5 rounded-lg flex items-center justify-between ${selectedCondition === 'mint' ? 'bg-amber-500/20 text-amber-700 font-bold border border-amber-500/30' : 'text-slate-600 hover:text-slate-900'}`}
               >
                 <span>{t('mint')}</span>
-                <span className="text-[10px] bg-amber-500/10 text-amber-400 px-1.5 py-0.2 rounded font-bold">
+                <span className="text-[10px] bg-amber-500/10 text-amber-700 px-1.5 py-0.2 rounded font-bold">
                   {language === 'ar' ? 'الأكثر طلباً' : 'Popular'}
                 </span>
               </button>
               <button
                 onClick={() => setSelectedCondition('brand_new')}
-                className={`text-right px-3 py-1.5 rounded-lg ${selectedCondition === 'brand_new' ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                className={`text-right px-3 py-1.5 rounded-lg ${selectedCondition === 'brand_new' ? 'bg-amber-500/20 text-amber-700 font-bold border border-amber-500/30' : 'text-slate-600 hover:text-slate-900'}`}
               >
                 {t('brandNew')}
               </button>
@@ -229,13 +229,13 @@ export const Catalog: React.FC = () => {
           </div>
 
           {/* Battery Health Slider (Featured from user's video) */}
-          <div className="pt-3 border-t border-white/5">
+          <div className="pt-3 border-t border-slate-200">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-bold text-slate-300 font-cairo flex items-center gap-1.5">
-                <BatteryMedium className="w-4 h-4 text-emerald-400" />
+              <h4 className="text-xs font-bold text-slate-600 font-cairo flex items-center gap-1.5">
+                <BatteryMedium className="w-4 h-4 text-emerald-700" />
                 <span>{language === 'ar' ? 'الحد الأدنى للبطارية:' : 'Min Battery Health:'}</span>
               </h4>
-              <span className="text-xs font-bold text-emerald-400 font-outfit">
+              <span className="text-xs font-bold text-emerald-700 font-outfit">
                 {minBatteryHealth > 0 ? `${minBatteryHealth}%+` : (language === 'ar' ? 'الكل' : 'All')}
               </span>
             </div>
@@ -246,7 +246,7 @@ export const Catalog: React.FC = () => {
               step="5"
               value={minBatteryHealth}
               onChange={(e) => setMinBatteryHealth(Number(e.target.value))}
-              className="w-full accent-amber-500 bg-slate-800 rounded-lg cursor-pointer"
+              className="w-full accent-amber-500 bg-slate-100 rounded-lg cursor-pointer"
             />
             <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-outfit">
               <span>{language === 'ar' ? 'أي نسبة' : 'Any'}</span>
@@ -257,12 +257,12 @@ export const Catalog: React.FC = () => {
           </div>
 
           {/* Max Price Slider */}
-          <div className="pt-3 border-t border-white/5">
+          <div className="pt-3 border-t border-slate-200">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-bold text-slate-300 font-cairo">
+              <h4 className="text-xs font-bold text-slate-600 font-cairo">
                 {language === 'ar' ? 'الحد الأقصى للسعر:' : 'Max Price:'}
               </h4>
-              <span className="text-xs font-bold text-amber-400 font-outfit">
+              <span className="text-xs font-bold text-amber-700 font-outfit">
                 {formatPrice(Math.min(maxPrice, priceCeiling))}
               </span>
             </div>
@@ -273,13 +273,13 @@ export const Catalog: React.FC = () => {
               step="500"
               value={Math.min(maxPrice, priceCeiling)}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full accent-amber-500 bg-slate-800 rounded-lg cursor-pointer"
+              className="w-full accent-amber-500 bg-slate-100 rounded-lg cursor-pointer"
             />
           </div>
 
           {/* Storage Filter */}
-          <div className="pt-3 border-t border-white/5">
-            <h4 className="text-xs font-bold text-slate-300 mb-2 font-cairo">
+          <div className="pt-3 border-t border-slate-200">
+            <h4 className="text-xs font-bold text-slate-600 mb-2 font-cairo">
               {t('storage')}
             </h4>
             <div className="flex flex-wrap gap-1.5">
@@ -290,7 +290,7 @@ export const Catalog: React.FC = () => {
                   className={`px-2.5 py-1 rounded-lg text-xs font-bold font-outfit border transition-all ${
                     selectedStorage === st
                       ? 'bg-amber-500 text-black border-amber-400'
-                      : 'bg-slate-900 text-slate-400 border-white/10 hover:border-white/20'
+                      : 'bg-slate-100 text-slate-600 border-slate-200 hover:border-slate-200'
                   }`}
                 >
                   {st === 'all' ? (language === 'ar' ? 'الكل' : 'All') : st}
@@ -300,8 +300,8 @@ export const Catalog: React.FC = () => {
           </div>
 
           {/* Brand Filter */}
-          <div className="pt-3 border-t border-white/5">
-            <h4 className="text-xs font-bold text-slate-300 mb-2 font-cairo">
+          <div className="pt-3 border-t border-slate-200">
+            <h4 className="text-xs font-bold text-slate-600 mb-2 font-cairo">
               {t('filterBrand')}
             </h4>
             <div className="flex flex-wrap gap-1.5">
@@ -312,7 +312,7 @@ export const Catalog: React.FC = () => {
                   className={`px-2.5 py-1 rounded-lg text-xs font-semibold font-outfit border transition-all ${
                     selectedBrand === b
                       ? 'bg-amber-500 text-black border-amber-400 font-bold'
-                      : 'bg-slate-900 text-slate-400 border-white/10 hover:border-white/20'
+                      : 'bg-slate-100 text-slate-600 border-slate-200 hover:border-slate-200'
                   }`}
                 >
                   {b === 'all' ? (language === 'ar' ? 'الكل' : 'All') : b}
@@ -326,35 +326,35 @@ export const Catalog: React.FC = () => {
         <main className="col-span-1 md:col-span-3 space-y-4">
           {/* Active filter pills */}
           {(selectedCategory !== 'all' || selectedBrand !== 'all' || selectedCondition !== 'all' || minBatteryHealth > 0 || searchQuery.trim()) && (
-            <div className="flex flex-wrap items-center gap-2 p-3 bg-slate-900/60 rounded-xl border border-white/5 text-xs">
-              <span className="text-slate-400 font-semibold">{language === 'ar' ? 'فلاتر مفعلة:' : 'Active Filters:'}</span>
+            <div className="flex flex-wrap items-center gap-2 p-3 bg-slate-100/60 rounded-xl border border-slate-200 text-xs">
+              <span className="text-slate-600 font-semibold">{language === 'ar' ? 'فلاتر مفعلة:' : 'Active Filters:'}</span>
               {selectedCategory !== 'all' && (
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 flex items-center gap-1">
                   <span>{selectedCategory}</span>
                   <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedCategory('all')} />
                 </span>
               )}
               {selectedCondition !== 'all' && (
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 flex items-center gap-1">
                   <span>{selectedCondition === 'mint' ? (language === 'ar' ? 'كسر زيرو' : 'Mint') : (language === 'ar' ? 'جديد' : 'Brand New')}</span>
                   <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedCondition('all')} />
                 </span>
               )}
               {minBatteryHealth > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 flex items-center gap-1">
                   <span>{language === 'ar' ? `بطارية ${minBatteryHealth}%+` : `Battery ${minBatteryHealth}%+`}</span>
                   <X className="w-3 h-3 cursor-pointer" onClick={() => setMinBatteryHealth(0)} />
                 </span>
               )}
               {searchQuery.trim() && (
-                <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-700 flex items-center gap-1">
                   <span>"{searchQuery}"</span>
                   <X className="w-3 h-3 cursor-pointer" onClick={() => setSearchQuery('')} />
                 </span>
               )}
               <button
                 onClick={handleResetFilters}
-                className="text-slate-400 hover:text-white underline text-[11px] mr-auto"
+                className="text-slate-600 hover:text-slate-900 underline text-[11px] mr-auto"
               >
                 {language === 'ar' ? 'مسح الكل' : 'Clear All'}
               </button>
@@ -363,16 +363,16 @@ export const Catalog: React.FC = () => {
 
           {/* Products Grid */}
           {filteredProducts.length === 0 ? (
-            <div className="p-12 text-center rounded-3xl bg-[#0F1626] border border-white/10 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-3xl mx-auto">
+            <div className="p-12 text-center rounded-3xl bg-white border border-slate-200 space-y-4">
+              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-3xl mx-auto">
                 🔍
               </div>
-              <h3 className="text-base font-bold text-white font-cairo">
+              <h3 className="text-base font-bold text-slate-900 font-cairo">
                 {language === 'ar' ? 'لا توجد منتجات تطابق الفلاتر المحددة' : 'No products match the selected filters'}
               </h3>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto font-cairo">
-                {language === 'ar' 
-                  ? 'جرب تغيير نطاق السعر أو إزالة نسبة البطارية المحددة أو إعادة تعيين الفلاتر.' 
+              <p className="text-xs text-slate-600 max-w-sm mx-auto font-cairo">
+                {language === 'ar'
+                  ? 'جرب تغيير نطاق السعر أو إزالة نسبة البطارية المحددة أو إعادة تعيين الفلاتر.'
                   : 'Try changing price range, battery filter, or resetting all filters.'}
               </p>
               <button
@@ -391,10 +391,10 @@ export const Catalog: React.FC = () => {
               </div>
 
               {visibleCount < filteredProducts.length && (
-                <div className="flex flex-col items-center justify-center gap-3 pt-6 pb-4 border-t border-white/5">
-                  <p className="text-xs text-slate-400 font-cairo">
-                    {isAr 
-                      ? `تم عرض ${Math.min(visibleCount, filteredProducts.length)} من أصل ${filteredProducts.length.toLocaleString('ar-EG')} منتج` 
+                <div className="flex flex-col items-center justify-center gap-3 pt-6 pb-4 border-t border-slate-200">
+                  <p className="text-xs text-slate-600 font-cairo">
+                    {isAr
+                      ? `تم عرض ${Math.min(visibleCount, filteredProducts.length)} من أصل ${filteredProducts.length.toLocaleString('ar-EG')} منتج`
                       : `Showing ${Math.min(visibleCount, filteredProducts.length)} of ${filteredProducts.length.toLocaleString()} products`}
                   </p>
                   <button
@@ -414,16 +414,16 @@ export const Catalog: React.FC = () => {
       {/* Mobile Filters Slide-in Modal */}
       {isMobileFiltersOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex">
-          <div className={`w-4/5 max-w-xs bg-[#0F1626] h-full p-5 overflow-y-auto ${isAr ? 'border-l' : 'border-r'} border-amber-500/30 flex flex-col justify-between`}>
+          <div className={`w-4/5 max-w-xs bg-white h-full p-5 overflow-y-auto ${isAr ? 'border-l' : 'border-r'} border-amber-500/30 flex flex-col justify-between`}>
             <div className="space-y-5">
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-amber-400" />
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-amber-700" />
                   <span>{isAr ? 'الفلاتر والخيارات' : 'Filters & Options'}</span>
                 </h3>
                 <button
                   onClick={() => setIsMobileFiltersOpen(false)}
-                  className="p-1.5 rounded-lg bg-white/5 text-slate-300"
+                  className="p-1.5 rounded-lg bg-slate-100 text-slate-600"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -431,7 +431,7 @@ export const Catalog: React.FC = () => {
 
               {/* Categories */}
               <div>
-                <h4 className="text-xs font-bold text-slate-300 mb-2">{isAr ? 'الأقسام' : 'Categories'}</h4>
+                <h4 className="text-xs font-bold text-slate-600 mb-2">{isAr ? 'الأقسام' : 'Categories'}</h4>
                 <div className="space-y-1">
                   {categoriesList.map(cat => (
                     <button
@@ -441,7 +441,7 @@ export const Catalog: React.FC = () => {
                         setIsMobileFiltersOpen(false);
                       }}
                       className={`w-full ${isAr ? 'text-right' : 'text-left'} px-3 py-1.5 rounded-lg text-xs ${
-                        selectedCategory === cat.key ? 'bg-amber-500 text-black font-bold' : 'text-slate-300'
+                        selectedCategory === cat.key ? 'bg-amber-500 text-black font-bold' : 'text-slate-600'
                       }`}
                     >
                       {cat.label}
@@ -451,18 +451,18 @@ export const Catalog: React.FC = () => {
               </div>
 
               {/* Condition */}
-              <div className="pt-3 border-t border-white/10">
-                <h4 className="text-xs font-bold text-slate-300 mb-2">{isAr ? 'الحالة' : 'Condition'}</h4>
+              <div className="pt-3 border-t border-slate-200">
+                <h4 className="text-xs font-bold text-slate-600 mb-2">{isAr ? 'الحالة' : 'Condition'}</h4>
                 <div className="flex flex-col gap-1 text-xs">
-                  <button onClick={() => setSelectedCondition('all')} className={`${isAr ? 'text-right' : 'text-left'} py-1 text-slate-300`}>{isAr ? 'الكل' : 'All'}</button>
-                  <button onClick={() => setSelectedCondition('mint')} className={`${isAr ? 'text-right' : 'text-left'} py-1 text-amber-400 font-bold`}>{t('mint')}</button>
-                  <button onClick={() => setSelectedCondition('brand_new')} className={`${isAr ? 'text-right' : 'text-left'} py-1 text-emerald-400`}>{t('brandNew')}</button>
+                  <button onClick={() => setSelectedCondition('all')} className={`${isAr ? 'text-right' : 'text-left'} py-1 text-slate-600`}>{isAr ? 'الكل' : 'All'}</button>
+                  <button onClick={() => setSelectedCondition('mint')} className={`${isAr ? 'text-right' : 'text-left'} py-1 text-amber-700 font-bold`}>{t('mint')}</button>
+                  <button onClick={() => setSelectedCondition('brand_new')} className={`${isAr ? 'text-right' : 'text-left'} py-1 text-emerald-700`}>{t('brandNew')}</button>
                 </div>
               </div>
 
               {/* Battery slider */}
-              <div className="pt-3 border-t border-white/10">
-                <h4 className="text-xs font-bold text-slate-300 mb-1">
+              <div className="pt-3 border-t border-slate-200">
+                <h4 className="text-xs font-bold text-slate-600 mb-1">
                   {isAr ? `الحد الأدنى للبطارية: ${minBatteryHealth}%` : `Min Battery Health: ${minBatteryHealth}%`}
                 </h4>
                 <input
@@ -472,12 +472,12 @@ export const Catalog: React.FC = () => {
                   step="5"
                   value={minBatteryHealth}
                   onChange={(e) => setMinBatteryHealth(Number(e.target.value))}
-                  className="w-full accent-amber-500 bg-slate-800 rounded-lg"
+                  className="w-full accent-amber-500 bg-slate-100 rounded-lg"
                 />
               </div>
             </div>
 
-            <div className="pt-4 border-t border-white/10 space-y-2">
+            <div className="pt-4 border-t border-slate-200 space-y-2">
               <button
                 onClick={() => setIsMobileFiltersOpen(false)}
                 className="w-full py-2.5 rounded-xl bg-amber-500 text-black font-bold text-xs"
@@ -486,7 +486,7 @@ export const Catalog: React.FC = () => {
               </button>
               <button
                 onClick={handleResetFilters}
-                className="w-full py-2 rounded-xl bg-white/5 text-slate-300 text-xs font-semibold"
+                className="w-full py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-semibold"
               >
                 {isAr ? 'مسح الفلاتر' : 'Reset Filters'}
               </button>

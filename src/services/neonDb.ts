@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import { neon } from '@neondatabase/serverless';
+import { decodeDeliveryNotes, encodeDeliveryNotes, formatDeliveryAddress } from '../utils/deliveryAddress';
 import { Product, Order, CategoryKey, OrderStatus, PaymentMethod, PaymentStatus } from '../types';
 
 // Read connection string strictly from environment variables
@@ -96,18 +97,20 @@ function mapRowToProduct(row: any): Product {
 }
 
 // Convert PostgreSQL DB row to frontend Order type
-function mapRowToOrder(r: any): Order {
+export function mapRowToOrder(r: any): Order {
+  const delivery = decodeDeliveryNotes(r.notes);
   return {
+    ...delivery,
     id: r.id,
     order_number: r.order_number || r.id,
     customer_name: r.customer_name || 'عميل جو ستور',
     customer_phone: r.customer_phone || '01554826209',
-    customer_whatsapp: r.customer_phone || '201554826209',
+    customer_whatsapp: delivery.customer_whatsapp || r.customer_phone || '',
     customer_email: r.customer_email || undefined,
     governorate: r.governorate || 'الدقهلية - المنصورة',
-    city: r.governorate || 'المنصورة',
-    address_details: r.address || 'المنصورة',
-    notes: r.notes || undefined,
+    city: delivery.city || r.city || '',
+    address_details: delivery.address_details || r.address || '',
+    notes: delivery.notes,
     items: Array.isArray(r.items) ? r.items : [],
     subtotal: Number(r.subtotal || 0),
     shipping_fee: Number(r.shipping_fee || 0),
@@ -466,8 +469,8 @@ export const neonDb = {
           ${order.customer_phone || '01554826209'},
           ${order.customer_email || null},
           ${order.governorate || 'الدقهلية - المنصورة'},
-          ${order.address_details || 'المنصورة'},
-          ${order.notes || null},
+          ${formatDeliveryAddress(order)},
+          ${encodeDeliveryNotes(order)},
           ${JSON.stringify(order.items)}::jsonb,
           ${order.subtotal},
           ${order.shipping_fee},

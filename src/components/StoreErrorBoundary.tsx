@@ -17,9 +17,9 @@ export class StoreErrorBoundary extends React.Component<
   render() {
     if (this.state.failed) {
       return (
-        <main dir="rtl" className="min-h-screen flex items-center justify-center bg-[#080C14] text-slate-100 px-6 font-cairo">
+        <main dir="rtl" className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-900 px-6 font-cairo">
           <div role="alert" className="max-w-md text-center space-y-5">
-            <h1 className="text-2xl font-bold text-amber-400">تعذّر فتح المتجر</h1>
+            <h1 className="text-2xl font-bold text-amber-700">تعذّر فتح المتجر</h1>
             <p>حصل خطأ أثناء تحميل الصفحة. جرّب إعادة تحميل المتجر.</p>
             <button
               type="button"

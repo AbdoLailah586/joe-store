@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  X, 
-  Lock, 
-  Mail, 
-  User as UserIcon, 
-  Phone, 
-  CheckCircle, 
-  ShieldCheck, 
-  ArrowRight, 
+import {
+  X,
+  Lock,
+  Mail,
+  User as UserIcon,
+  Phone,
+  CheckCircle,
+  ShieldCheck,
+  ArrowRight,
   ArrowLeft,
   KeyRound,
   RotateCcw,
@@ -27,15 +27,15 @@ declare global {
 }
 
 export const AuthModal: React.FC = () => {
-  const { 
-    isAuthModalOpen, 
-    closeAuthModal, 
-    authMessage, 
-    loginWithGoogle, 
-    loginWithEmail, 
+  const {
+    isAuthModalOpen,
+    closeAuthModal,
+    authMessage,
+    loginWithGoogle,
+    loginWithEmail,
     sendOtp,
     verifyOtpAndRegister,
-    redirectAfterLogin 
+    redirectAfterLogin
   } = useAuth();
 
   const { navigate } = useStore();
@@ -43,7 +43,7 @@ export const AuthModal: React.FC = () => {
 
   // Mode: 'login' | 'register' | 'otp_verify'
   const [mode, setMode] = useState<'login' | 'register' | 'otp_verify'>('login');
-  
+
   // Registration & Login inputs
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -63,8 +63,8 @@ export const AuthModal: React.FC = () => {
   const [googleRetry, setGoogleRetry] = useState(0);
 
   // Google Sign-In Client ID
-  const googleClientId = 
-    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_CLIENT_ID) || 
+  const googleClientId =
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_CLIENT_ID) ||
     '294509556603-op9cbf1s15b9nk1hgpnb8sfugfvqeer8.apps.googleusercontent.com';
 
   const googleBtnContainerRef = useRef<HTMLDivElement>(null);
@@ -119,7 +119,7 @@ export const AuthModal: React.FC = () => {
 
     try {
       await loginWithGoogle({ credential: response.credential });
-      
+
       confetti({
         particleCount: 50,
         spread: 60,
@@ -272,14 +272,14 @@ export const AuthModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-      <div 
+      <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md bg-[#0F1626] border border-amber-500/40 rounded-3xl shadow-2xl p-6 sm:p-8 text-slate-100 font-cairo space-y-5 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-md bg-white border border-amber-500/40 rounded-3xl shadow-2xl p-6 sm:p-8 text-slate-900 font-cairo space-y-5 animate-in fade-in zoom-in-95 duration-200"
       >
         {/* Close Button */}
         <button
           onClick={closeAuthModal}
-          className="absolute top-5 left-5 p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+          className="absolute top-5 left-5 p-1.5 rounded-xl bg-slate-100 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors"
           title="إغلاق"
         >
           <X className="w-5 h-5" />
@@ -292,19 +292,19 @@ export const AuthModal: React.FC = () => {
           <>
             {/* Header */}
             <div className="text-center space-y-2">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center justify-center mx-auto shadow-inner">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-700 border border-amber-500/30 flex items-center justify-center mx-auto shadow-inner">
                 <Lock className="w-7 h-7" />
               </div>
-              <h2 className="text-xl font-black text-white">
+              <h2 className="text-xl font-black text-slate-900">
                 {mode === 'login' ? 'تسجيل الدخول إلى جو ستور' : 'إنشاء حساب جديد وتوثيقه'}
               </h2>
-              <p className="text-xs text-slate-400">
-                {mode === 'login' 
-                  ? 'مرحباً بعودتك! سجل دخولك لمتابعة طلباتك وشهادات الضمان.' 
+              <p className="text-xs text-slate-600">
+                {mode === 'login'
+                  ? 'مرحباً بعودتك! سجل دخولك لمتابعة طلباتك وشهادات الضمان.'
                   : 'أنشئ حسابك واستمتع بتجربة تسوق حصرية وضمان معتمد.'}
               </p>
               {authMessage && (
-                <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold leading-relaxed">
+                <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-700 text-xs font-semibold leading-relaxed">
                   {authMessage}
                 </div>
               )}
@@ -313,19 +313,19 @@ export const AuthModal: React.FC = () => {
             {/* 1. Google One-Click Button */}
             <div className="space-y-2">
               <div ref={googleBtnContainerRef} className={`flex justify-center w-full min-h-[44px] ${loading ? 'pointer-events-none opacity-60' : ''}`} />
-              {googleStatus === 'loading' && <p role="status" className="text-center text-xs text-slate-400">جاري تجهيز تسجيل الدخول باستخدام Google…</p>}
+              {googleStatus === 'loading' && <p role="status" className="text-center text-xs text-slate-600">جاري تجهيز تسجيل الدخول باستخدام Google…</p>}
               {googleStatus === 'error' && (
                 <div className="text-center space-y-2">
-                  <p role="alert" className="text-xs text-rose-300">{googleError}</p>
-                  <button type="button" onClick={() => setGoogleRetry(value => value + 1)} className="text-xs font-bold text-amber-400 underline">إعادة تحميل تسجيل Google</button>
+                  <p role="alert" className="text-xs text-rose-700">{googleError}</p>
+                  <button type="button" onClick={() => setGoogleRetry(value => value + 1)} className="text-xs font-bold text-amber-700 underline">إعادة تحميل تسجيل Google</button>
                 </div>
               )}
             </div>
 
             {/* Divider */}
             <div className="relative flex items-center justify-center">
-              <div className="border-t border-white/10 w-full" />
-              <span className="bg-[#0F1626] px-3 text-[11px] text-slate-500 uppercase tracking-wider font-semibold">
+              <div className="border-t border-slate-200 w-full" />
+              <span className="bg-white px-3 text-[11px] text-slate-500 uppercase tracking-wider font-semibold">
                 أو بالبريد الإلكتروني
               </span>
             </div>
@@ -335,7 +335,7 @@ export const AuthModal: React.FC = () => {
               {mode === 'register' && (
                 <>
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">الاسم الكامل *</label>
+                    <label className="block text-slate-600 font-semibold mb-1">الاسم الكامل *</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -343,14 +343,14 @@ export const AuthModal: React.FC = () => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="مثال: أحمد عبد الرحمن"
-                        className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                        className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 placeholder-slate-500 focus:outline-none focus:border-amber-400"
                       />
                       <UserIcon className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">رقم الهاتف (الواتساب) *</label>
+                    <label className="block text-slate-600 font-semibold mb-1">رقم الهاتف (الواتساب) *</label>
                     <div className="relative">
                       <input
                         type="tel"
@@ -358,7 +358,7 @@ export const AuthModal: React.FC = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="010XXXXXXXX"
-                        className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-white font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                        className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
                       />
                       <Phone className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                     </div>
@@ -367,7 +367,7 @@ export const AuthModal: React.FC = () => {
               )}
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-600 font-semibold mb-1">
                   البريد الإلكتروني (Gmail / Email) *
                 </label>
                 <div className="relative">
@@ -377,20 +377,20 @@ export const AuthModal: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@gmail.com"
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-white font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
                   />
                   <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                 </div>
                 {mode === 'register' && (
-                  <p className="text-[10px] text-amber-300/80 mt-1 flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <p className="text-[10px] text-amber-700/80 mt-1 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
                     <span>سيتم إرسال كود تأكيد مكون من 6 أرقام إلى هذا البريد.</span>
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">كلمة المرور *</label>
+                <label className="block text-slate-600 font-semibold mb-1">كلمة المرور *</label>
                 <div className="relative">
                   <input
                     type="password"
@@ -398,14 +398,14 @@ export const AuthModal: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-white font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
                   />
                   <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                 </div>
               </div>
 
               {errorMsg && (
-                <p className="text-xs text-rose-400 font-semibold bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20">
+                <p className="text-xs text-rose-700 font-semibold bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20">
                   {errorMsg}
                 </p>
               )}
@@ -426,7 +426,7 @@ export const AuthModal: React.FC = () => {
             </form>
 
             {/* Toggle Mode */}
-            <div className="text-center pt-2 text-xs text-slate-400">
+            <div className="text-center pt-2 text-xs text-slate-600">
               {mode === 'login' ? (
                 <span>
                   ليس لديك حساب بعد؟{' '}
@@ -436,7 +436,7 @@ export const AuthModal: React.FC = () => {
                       setMode('register');
                       setErrorMsg('');
                     }}
-                    className="text-amber-400 font-bold hover:underline"
+                    className="text-amber-700 font-bold hover:underline"
                   >
                     إنشاء حساب جديد
                   </button>
@@ -450,7 +450,7 @@ export const AuthModal: React.FC = () => {
                       setMode('login');
                       setErrorMsg('');
                     }}
-                    className="text-amber-400 font-bold hover:underline"
+                    className="text-amber-700 font-bold hover:underline"
                   >
                     تسجيل الدخول
                   </button>
@@ -465,22 +465,22 @@ export const AuthModal: React.FC = () => {
           <div className="space-y-5 animate-in fade-in duration-300">
             {/* Header */}
             <div className="text-center space-y-2">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center mx-auto shadow-inner">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-700 border border-amber-500/40 flex items-center justify-center mx-auto shadow-inner">
                 <KeyRound className="w-7 h-7" />
               </div>
-              <h2 className="text-xl font-black text-white">
+              <h2 className="text-xl font-black text-slate-900">
                 تأكيد بريدك الإلكتروني
               </h2>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 أرسلنا كود تحقق مكون من 6 أرقام إلى:
               </p>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-amber-500/30 text-amber-300 text-xs font-mono font-bold">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-amber-500/30 text-amber-700 text-xs font-mono font-bold">
                 <Mail className="w-3.5 h-3.5" />
                 <span>{email}</span>
                 <button
                   type="button"
                   onClick={() => setMode('register')}
-                  className="text-[10px] text-slate-400 hover:text-white underline mr-1"
+                  className="text-[10px] text-slate-600 hover:text-slate-900 underline mr-1"
                 >
                   تعديل
                 </button>
@@ -489,15 +489,15 @@ export const AuthModal: React.FC = () => {
 
             {/* Status Feedback */}
             {successMsg && (
-              <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 text-xs flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-700 flex-shrink-0" />
                 <span>{successMsg}</span>
               </div>
             )}
 
             {errorMsg && (
-              <div className="p-3 rounded-2xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+              <div className="p-3 rounded-2xl bg-red-500/15 border border-red-500/30 text-red-700 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-700 flex-shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -516,7 +516,7 @@ export const AuthModal: React.FC = () => {
                     onChange={(e) => handleOtpChange(idx, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                     onPaste={handleOtpPaste}
-                    className="w-11 h-13 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-black font-outfit text-amber-400 bg-slate-900 border-2 border-white/10 rounded-2xl focus:border-amber-400 focus:bg-slate-950 focus:outline-none transition-all shadow-inner"
+                    className="w-11 h-13 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-black font-outfit text-amber-700 bg-slate-100 border-2 border-slate-200 rounded-2xl focus:border-amber-400 focus:bg-slate-100 focus:outline-none transition-all shadow-inner"
                   />
                 ))}
               </div>
@@ -532,11 +532,11 @@ export const AuthModal: React.FC = () => {
               </button>
 
               {/* Resend Cooldown */}
-              <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+              <div className="flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setMode('register')}
-                  className="hover:text-white flex items-center gap-1"
+                  className="hover:text-slate-900 flex items-center gap-1"
                 >
                   <ArrowRight className="w-3.5 h-3.5" />
                   <span>العودة للخلف</span>
@@ -547,13 +547,13 @@ export const AuthModal: React.FC = () => {
                   disabled={resendCooldown > 0 || loading}
                   onClick={handleResendOtp}
                   className={`flex items-center gap-1.5 font-bold ${
-                    resendCooldown > 0 ? 'text-slate-500 cursor-not-allowed' : 'text-amber-400 hover:underline'
+                    resendCooldown > 0 ? 'text-slate-500 cursor-not-allowed' : 'text-amber-700 hover:underline'
                   }`}
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>
-                    {resendCooldown > 0 
-                      ? `إعادة الإرسال بعد (${resendCooldown} ث)` 
+                    {resendCooldown > 0
+                      ? `إعادة الإرسال بعد (${resendCooldown} ث)`
                       : 'إعادة إرسال الكود'}
                   </span>
                 </button>

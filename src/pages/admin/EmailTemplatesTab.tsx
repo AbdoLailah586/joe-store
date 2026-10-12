@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { 
-  Mail, 
-  Send, 
-  Save, 
-  Smartphone, 
-  Monitor, 
-  RotateCcw, 
-  Sparkles, 
-  Phone, 
-  MapPin, 
-  ShieldCheck, 
-  CheckCircle, 
+import {
+  Mail,
+  Send,
+  Save,
+  Smartphone,
+  Monitor,
+  RotateCcw,
+  Sparkles,
+  Phone,
+  MapPin,
+  ShieldCheck,
+  CheckCircle,
   AlertCircle,
   Palette,
   ExternalLink
@@ -121,8 +121,8 @@ export const EmailTemplatesTab: React.FC = () => {
       if (data.success) {
         setTestResult({
           success: true,
-          msg: data.emailId 
-            ? `تم إرسال الإيميل التجريبي الحقيقي بنجاح إلى ${testEmail}! تفقد صندوق الوارد (Inbox).` 
+          msg: data.emailId
+            ? `تم إرسال الإيميل التجريبي الحقيقي بنجاح إلى ${testEmail}! تفقد صندوق الوارد (Inbox).`
             : `تم توليد الإيميل التجريبي بالكود: ${data.simulatedCode || '123456'}`
         });
       } else {
@@ -138,19 +138,19 @@ export const EmailTemplatesTab: React.FC = () => {
   return (
     <div className="space-y-6 font-cairo">
       {/* Top Header */}
-      <div className="p-6 rounded-3xl bg-[#0F1626] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-3xl bg-white border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+          <div className="p-3 rounded-2xl bg-amber-500/20 text-amber-700 border border-amber-500/30">
             <Mail className="w-7 h-7" />
           </div>
           <div>
-            <h2 className="text-xl font-black text-white flex items-center gap-2">
+            <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
               <span>تخصيص قوالب الإيميل ورسائل الأكواد</span>
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs border border-amber-500/30 font-mono">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 text-xs border border-amber-500/30 font-mono">
                 Email Template Studio
               </span>
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-600">
               تحكم كامل في نصوص، أرقام التواصل، العناوين، وشكل رسائل التوثيق المرسلة للزبائن عبر Resend.
             </p>
           </div>
@@ -160,7 +160,7 @@ export const EmailTemplatesTab: React.FC = () => {
           <button
             type="button"
             onClick={handleResetDefaults}
-            className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-100 text-slate-600 text-xs font-bold transition-all flex items-center gap-1.5"
             title="استرجاع القيم الافتراضية"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -180,126 +180,126 @@ export const EmailTemplatesTab: React.FC = () => {
 
       {/* Main Grid: Left Controls (5 cols) & Right Live Preview (7 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
+
         {/* ============================================================== */}
         {/* LEFT COLUMN: EDITING FORM (5 Cols)                             */}
         {/* ============================================================== */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="p-5 rounded-3xl bg-[#0F1626] border border-white/10 space-y-4">
-            <h3 className="font-bold text-sm text-white flex items-center gap-2 border-b border-white/5 pb-3">
-              <Sparkles className="w-4 h-4 text-amber-400" />
+          <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-4">
+            <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-3">
+              <Sparkles className="w-4 h-4 text-amber-700" />
               <span>محتويات ونصوص رسالة التأكيد</span>
             </h3>
 
             {/* Header Title */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-slate-600 mb-1">
                 اسم وترويسة المتجر في الإيميل
               </label>
               <input
                 type="text"
                 value={headerTitle}
                 onChange={(e) => setHeaderTitle(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-400"
                 placeholder="JOE Store | متجر جو ستور"
               />
             </div>
 
             {/* Header Subtitle */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-slate-600 mb-1">
                 الوصف الفرعي أسفل الشعار
               </label>
               <input
                 type="text"
                 value={headerSubtitle}
                 onChange={(e) => setHeaderSubtitle(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-400"
                 placeholder="وجهتك الموثوقة للهواتف والإكسسوارات الأصلية - المنصورة"
               />
             </div>
 
             {/* Subject Line */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
-                عنوان الرسالة (Subject Line) <span className="text-[10px] text-amber-400 font-mono">&#123;code&#125;</span>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">
+                عنوان الرسالة (Subject Line) <span className="text-[10px] text-amber-700 font-mono">&#123;code&#125;</span>
               </label>
               <input
                 type="text"
                 value={subjectTemplate}
                 onChange={(e) => setSubjectTemplate(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 font-outfit"
+                className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-400 font-outfit"
                 placeholder="رمز تأكيد حسابك في متجر جو ستور ⚡ (كود: {code})"
               />
             </div>
 
             {/* Welcome Message */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-slate-600 mb-1">
                 الرسالة الترحيبية للعميل
               </label>
               <textarea
                 rows={3}
                 value={welcomeMsg}
                 onChange={(e) => setWelcomeMsg(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 leading-relaxed"
+                className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-400 leading-relaxed"
                 placeholder="سعداء بانضمامك إلى عائلة جو ستور..."
               />
             </div>
 
             {/* Support Phone Number */}
             <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1.5">
-              <label className="block text-xs font-bold text-amber-300 flex items-center gap-1.5">
-                <Phone className="w-3.5 h-3.5 text-amber-400" />
+              <label className="block text-xs font-bold text-amber-700 flex items-center gap-1.5">
+                <Phone className="w-3.5 h-3.5 text-amber-700" />
                 <span>رقم الهاتف الرسمي للتواصل والدعم *</span>
               </label>
               <input
                 type="text"
                 value={supportPhone}
                 onChange={(e) => setSupportPhone(e.target.value)}
-                className="w-full bg-slate-950 border border-amber-500/40 rounded-xl px-3 py-2 text-xs text-white font-outfit font-bold focus:outline-none focus:border-amber-300 text-left"
+                className="w-full bg-slate-100 border border-amber-500/40 rounded-xl px-3 py-2 text-xs text-slate-900 font-outfit font-bold focus:outline-none focus:border-amber-300 text-left"
                 placeholder="01554826209"
                 dir="ltr"
               />
-              <p className="text-[10px] text-slate-400">
+              <p className="text-[10px] text-slate-600">
                 هذا هو الرقم الفعلي الذي سيظهر لجميع العملاء في أسفل الإيميل للتواصل مع المتجر.
               </p>
             </div>
 
             {/* Store Address */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-amber-400" />
+              <label className="block text-xs font-semibold text-slate-600 mb-1 flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5 text-amber-700" />
                 <span>عنوان المتجر الفعلي (في تذييل الرسالة)</span>
               </label>
               <input
                 type="text"
                 value={storeAddress}
                 onChange={(e) => setStoreAddress(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-400"
                 placeholder="المنصورة - شارع الإمام محمد عبده - ناصية آمون"
               />
             </div>
 
             {/* Security Note */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+              <label className="block text-xs font-semibold text-slate-600 mb-1 flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
                 <span>ملاحظة الأمان وتنبيه صلاحية الكود</span>
               </label>
               <input
                 type="text"
                 value={securityNote}
                 onChange={(e) => setSecurityNote(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-400"
                 placeholder="هذا الرمز صالح للاستخدام خلال 10 دقائق فقط..."
               />
             </div>
 
             {/* Accent Color Picker */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-2 flex items-center gap-1.5">
-                <Palette className="w-3.5 h-3.5 text-amber-400" />
+              <label className="block text-xs font-semibold text-slate-600 mb-2 flex items-center gap-1.5">
+                <Palette className="w-3.5 h-3.5 text-amber-700" />
                 <span>لون التمييز والأزرار في الإيميل</span>
               </label>
               <div className="flex items-center gap-3">
@@ -314,14 +314,14 @@ export const EmailTemplatesTab: React.FC = () => {
                     type="button"
                     onClick={() => setAccentColor(c.hex)}
                     className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all ${
-                      accentColor === c.hex 
-                        ? 'border-white bg-white/10 shadow-lg' 
-                        : 'border-white/10 bg-slate-900 text-slate-400'
+                      accentColor === c.hex
+                        ? 'border-slate-200 bg-slate-100 shadow-lg'
+                        : 'border-slate-200 bg-slate-100 text-slate-600'
                     }`}
                   >
-                    <span 
-                      className="w-3.5 h-3.5 rounded-full" 
-                      style={{ backgroundColor: c.hex }} 
+                    <span
+                      className="w-3.5 h-3.5 rounded-full"
+                      style={{ backgroundColor: c.hex }}
                     />
                     <span className="text-[11px]">{c.name}</span>
                   </button>
@@ -331,8 +331,8 @@ export const EmailTemplatesTab: React.FC = () => {
           </div>
 
           {/* Test Email Dispatch Card */}
-          <div className="p-5 rounded-3xl bg-[#0F1626] border border-emerald-500/30 space-y-3">
-            <h4 className="font-bold text-xs text-emerald-400 flex items-center gap-1.5">
+          <div className="p-5 rounded-3xl bg-white border border-emerald-500/30 space-y-3">
+            <h4 className="font-bold text-xs text-emerald-700 flex items-center gap-1.5">
               <Send className="w-3.5 h-3.5" />
               <span>إرسال إيميل تجريبي حي لمعاينته في بريدك</span>
             </h4>
@@ -342,14 +342,14 @@ export const EmailTemplatesTab: React.FC = () => {
                 value={testEmail}
                 onChange={(e) => setTestEmail(e.target.value)}
                 placeholder="name@gmail.com"
-                className="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white font-outfit focus:outline-none focus:border-emerald-400"
+                className="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-outfit focus:outline-none focus:border-emerald-400"
                 dir="ltr"
               />
               <button
                 type="button"
                 disabled={isSendingTest}
                 onClick={handleSendTestEmail}
-                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs transition-all flex items-center gap-1.5 disabled:opacity-50"
+                className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-400 text-black font-extrabold text-xs transition-all flex items-center gap-1.5 disabled:opacity-50"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>{isSendingTest ? 'جاري الإرسال...' : 'إرسال تجربة'}</span>
@@ -358,7 +358,7 @@ export const EmailTemplatesTab: React.FC = () => {
 
             {testResult && (
               <div className={`p-2.5 rounded-xl text-xs flex items-center gap-2 ${
-                testResult.success ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-300' : 'bg-rose-500/15 border border-rose-500/30 text-rose-300'
+                testResult.success ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-700' : 'bg-rose-500/15 border border-rose-500/30 text-rose-700'
               }`}>
                 {testResult.success ? <CheckCircle className="w-4 h-4 flex-shrink-0" /> : <AlertCircle className="w-4 h-4 flex-shrink-0" />}
                 <span>{testResult.msg}</span>
@@ -372,17 +372,17 @@ export const EmailTemplatesTab: React.FC = () => {
         {/* ============================================================== */}
         <div className="lg:col-span-7 space-y-4">
           {/* Preview Device Switcher */}
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-[#0F1626] border border-white/10">
-            <div className="flex items-center gap-2 text-xs text-slate-300 font-bold">
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-white border border-slate-200">
+            <div className="flex items-center gap-2 text-xs text-slate-600 font-bold">
               <span>المعاينة الحية للبريد (Real-time Email Preview):</span>
             </div>
 
-            <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-white/5">
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
               <button
                 type="button"
                 onClick={() => setPreviewDevice('desktop')}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  previewDevice === 'desktop' ? 'bg-amber-500 text-black' : 'text-slate-400 hover:text-white'
+                  previewDevice === 'desktop' ? 'bg-amber-500 text-black' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Monitor className="w-3.5 h-3.5" />
@@ -393,7 +393,7 @@ export const EmailTemplatesTab: React.FC = () => {
                 type="button"
                 onClick={() => setPreviewDevice('mobile')}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  previewDevice === 'mobile' ? 'bg-amber-500 text-black' : 'text-slate-400 hover:text-white'
+                  previewDevice === 'mobile' ? 'bg-amber-500 text-black' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Smartphone className="w-3.5 h-3.5" />
@@ -403,14 +403,14 @@ export const EmailTemplatesTab: React.FC = () => {
           </div>
 
           {/* Simulated Email Client Container */}
-          <div className="rounded-3xl bg-[#131b2e] border border-white/10 shadow-2xl overflow-hidden">
+          <div className="rounded-3xl bg-white border border-slate-200 shadow-2xl overflow-hidden">
             {/* Fake Email Client Bar */}
-            <div className="bg-[#0b101d] px-4 py-3 border-b border-white/10 flex items-center justify-between text-xs text-slate-400">
+            <div className="bg-white px-4 py-3 border-b border-slate-200 flex items-center justify-between text-xs text-slate-600">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-rose-500 inline-block" />
                 <span className="w-3 h-3 rounded-full bg-amber-500 inline-block" />
-                <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-                <span className="font-outfit text-slate-300 font-semibold mr-2">Gmail Inbox</span>
+                <span className="w-3 h-3 rounded-full bg-emerald-700 inline-block" />
+                <span className="font-outfit text-slate-600 font-semibold mr-2">Gmail Inbox</span>
               </div>
               <div className="text-[11px] text-slate-500 font-mono">
                 From: JOE Store &lt;onboarding@resend.dev&gt;
@@ -418,10 +418,10 @@ export const EmailTemplatesTab: React.FC = () => {
             </div>
 
             {/* Email Subject Line Bar */}
-            <div className="bg-[#0e1526] px-5 py-3 border-b border-white/5 flex items-center justify-between">
+            <div className="bg-white px-5 py-3 border-b border-slate-200 flex items-center justify-between">
               <div>
                 <span className="text-[10px] text-slate-500 block">الموضوع (Subject):</span>
-                <strong className="text-white text-xs sm:text-sm font-bold">
+                <strong className="text-slate-900 text-xs sm:text-sm font-bold">
                   {subjectTemplate.replace('{code}', previewOtp)}
                 </strong>
               </div>
@@ -429,57 +429,57 @@ export const EmailTemplatesTab: React.FC = () => {
             </div>
 
             {/* Email Content Body Frame */}
-            <div className="p-4 sm:p-8 bg-[#080C14] flex justify-center min-h-[460px] overflow-x-auto">
-              <div 
+            <div className="p-4 sm:p-8 bg-slate-50 flex justify-center min-h-[460px] overflow-x-auto">
+              <div
                 className={`w-full transition-all duration-300 ${
                   previewDevice === 'mobile' ? 'max-w-[360px]' : 'max-w-[520px]'
                 }`}
               >
                 {/* Real HTML Template Simulation */}
-                <div className="rounded-3xl bg-[#0F1626] border border-amber-500/30 overflow-hidden shadow-2xl">
+                <div className="rounded-3xl bg-white border border-amber-500/30 overflow-hidden shadow-2xl">
                   {/* Top Branding Header */}
-                  <div 
-                    className="p-6 text-center border-b border-white/5"
+                  <div
+                    className="p-6 text-center border-b border-slate-200"
                     style={{
                       background: `linear-gradient(180deg, ${accentColor}18 0%, rgba(15, 22, 38, 0) 100%)`
                     }}
                   >
-                    <h1 
+                    <h1
                       className="text-2xl font-black tracking-wide"
                       style={{ color: accentColor }}
                     >
                       {headerTitle}
                     </h1>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-xs text-slate-600 mt-1">
                       {headerSubtitle}
                     </p>
                   </div>
 
                   {/* Body Box */}
                   <div className="p-6 space-y-4 text-center">
-                    <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 space-y-3">
-                      <h3 className="text-sm font-bold text-white">
+                    <div className="p-5 rounded-2xl bg-white/[0.03] border border-slate-200 space-y-3">
+                      <h3 className="text-sm font-bold text-slate-900">
                         مرحباً أحمد عبد الرحمن 👋
                       </h3>
-                      <p className="text-xs text-slate-300 leading-relaxed">
+                      <p className="text-xs text-slate-600 leading-relaxed">
                         {welcomeMsg}
                       </p>
 
                       {/* Code Box */}
-                      <div 
+                      <div
                         className="py-4 px-6 rounded-2xl border-2 border-dashed mx-auto my-3"
                         style={{
                           backgroundColor: `${accentColor}12`,
                           borderColor: accentColor
                         }}
                       >
-                        <span 
+                        <span
                           className="block text-[10px] font-bold uppercase tracking-wider mb-1"
                           style={{ color: accentColor }}
                         >
                           رمز التحقق المعتمد (OTP)
                         </span>
-                        <div 
+                        <div
                           className="text-3xl sm:text-4xl font-black font-outfit tracking-[10px]"
                           style={{ color: accentColor }}
                         >
@@ -487,20 +487,20 @@ export const EmailTemplatesTab: React.FC = () => {
                         </div>
                       </div>
 
-                      <p className="text-[11px] text-slate-400 leading-normal">
+                      <p className="text-[11px] text-slate-600 leading-normal">
                         ⏱️ {securityNote}
                       </p>
                     </div>
                   </div>
 
                   {/* Footer Box */}
-                  <div className="p-5 bg-black/30 border-t border-white/5 text-center text-[11px] text-slate-400 space-y-1">
-                    <p className="text-slate-300 flex items-center justify-center gap-1">
-                      <MapPin className="w-3 h-3 text-amber-400" />
+                  <div className="p-5 bg-slate-100 border-t border-slate-200 text-center text-[11px] text-slate-600 space-y-1">
+                    <p className="text-slate-600 flex items-center justify-center gap-1">
+                      <MapPin className="w-3 h-3 text-amber-700" />
                       <span>{storeAddress}</span>
                     </p>
-                    <p className="text-slate-300 flex items-center justify-center gap-1 font-outfit">
-                      <Phone className="w-3 h-3 text-emerald-400" />
+                    <p className="text-slate-600 flex items-center justify-center gap-1 font-outfit">
+                      <Phone className="w-3 h-3 text-emerald-700" />
                       <span>خدمة العملاء والدعم: <strong style={{ color: accentColor }}>{supportPhone}</strong></span>
                     </p>
                     <p className="text-[10px] text-slate-500 pt-1">

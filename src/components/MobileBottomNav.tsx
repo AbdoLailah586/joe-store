@@ -10,13 +10,13 @@ export const MobileBottomNav: React.FC = () => {
   const { isAuthenticated, openAuthModal } = useAuth();
 
   return (
-    <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-[#080C14]/95 backdrop-blur-lg border-t border-slate-200 dark:border-white/10 px-2 py-1.5 shadow-2xl">
+    <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95  backdrop-blur-lg border-t border-slate-200  px-2 py-1.5 shadow-2xl">
       <div className="flex items-center justify-around">
         {/* Home */}
         <button
           onClick={() => navigate('home')}
           className={`flex flex-col items-center gap-1 p-1.5 rounded-xl transition-colors ${
-            currentTab === 'home' ? 'text-amber-500 dark:text-amber-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            currentTab === 'home' ? 'text-amber-700  font-bold' : 'text-slate-500  hover:text-slate-800 '
           }`}
         >
           <Home className="w-5 h-5" />
@@ -27,7 +27,7 @@ export const MobileBottomNav: React.FC = () => {
         <button
           onClick={() => navigate('catalog')}
           className={`flex flex-col items-center gap-1 p-1.5 rounded-xl transition-colors ${
-            currentTab === 'catalog' ? 'text-amber-500 dark:text-amber-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            currentTab === 'catalog' ? 'text-amber-700  font-bold' : 'text-slate-500  hover:text-slate-800 '
           }`}
         >
           <Grid className="w-5 h-5" />
@@ -38,7 +38,7 @@ export const MobileBottomNav: React.FC = () => {
         <button
           onClick={() => navigate('track-order')}
           className={`flex flex-col items-center gap-1 p-1.5 rounded-xl transition-colors ${
-            currentTab === 'track-order' ? 'text-amber-500 dark:text-amber-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            currentTab === 'track-order' ? 'text-amber-700  font-bold' : 'text-slate-500  hover:text-slate-800 '
           }`}
         >
           <Truck className="w-5 h-5" />
@@ -55,7 +55,7 @@ export const MobileBottomNav: React.FC = () => {
             }
           }}
           className={`flex flex-col items-center gap-1 p-1.5 rounded-xl transition-colors ${
-            currentTab === 'profile' ? 'text-amber-500 dark:text-amber-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            currentTab === 'profile' ? 'text-amber-700  font-bold' : 'text-slate-500  hover:text-slate-800 '
           }`}
         >
           <User className="w-5 h-5" />
@@ -65,7 +65,7 @@ export const MobileBottomNav: React.FC = () => {
         {/* Cart */}
         <button
           onClick={() => setIsCartOpen(true)}
-          className="relative flex flex-col items-center gap-1 p-1.5 rounded-xl text-amber-500 dark:text-amber-400 font-bold"
+          className="relative flex flex-col items-center gap-1 p-1.5 rounded-xl text-amber-700  font-bold"
         >
           <ShoppingBag className="w-5 h-5" />
           {cartCount > 0 && (

@@ -19,9 +19,10 @@ function compile(relative, mocks, transform = value => value) {
     jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true
   } }).outputText;
   const module = { exports: {} };
-  new Function('require', 'module', 'exports', code)(id => mocks[id] || require(id), module, module.exports);
+  new Function('require', 'module', 'exports', code)(id => mocks[id] || (id.endsWith('/deliveryAddress') ? deliveryHelpers : require(id)), module, module.exports);
   return module.exports;
 }
+const deliveryHelpers = compile('src/utils/deliveryAddress.ts', {});
 const { neonDb } = compile('src/services/neonDb.ts', { '@neondatabase/serverless': { neon: () => sql } },
   source => source.replace(/const DB_URL\s*=[\s\S]*?const sql = neon\(DB_URL\);/, 'const sql = neon("mock://catalog");'));
 const row = (id = 'prod-pos-0', details = {}) => ({ id, name_ar: 'صنف', name_en: 'Item', category: 'audio',

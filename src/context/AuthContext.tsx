@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { neonDb } from '../services/neonDb';
+import type { DeliveryAddressFields } from '../types';
 import { readStoredJson, readStoredArray, writeStoredJson, removeStorage, isStoredUser } from '../utils/browserStorage';
 
-export interface UserAddress {
+export interface UserAddress extends DeliveryAddressFields {
   id: string;
   title: string; // 'المنزل', 'العمل', etc.
   governorate: string;
@@ -51,8 +52,8 @@ interface AuthContextType {
   changePassword: (oldPass: string, newPass: string) => Promise<{ success: boolean; error?: string }>;
   updateEmail: (newEmail: string) => Promise<{ success: boolean; error?: string }>;
   deleteAccount: () => Promise<{ success: boolean; error?: string }>;
-  addAddress: (address: Omit<UserAddress, 'id'>) => void;
-  deleteAddress: (id: string) => void;
+  addAddress: (address: Omit<UserAddress, 'id'>) => Promise<{ success: boolean; error?: string }>;
+  deleteAddress: (id: string) => Promise<{ success: boolean; error?: string }>;
   redirectAfterLogin: string | null;
 }
 
@@ -224,17 +225,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (isAccountAdmin(updatedUser)) {
         updatedUser.role = 'admin';
       }
-      setUser(updatedUser);
-      writeStoredJson('joe_store_user', updatedUser);
-
       // Sync to Neon DB
-      await neonDb.updateUserProfile(user.id, {
+        const saved = await neonDb.updateUserProfile(user.id, {
         name: data.name,
         phone: data.phone,
         email: data.email,
         avatar: data.avatar,
         addresses: data.addresses || updatedUser.addresses
       });
+        if (!saved.success) return { success: false, error: saved.error || 'تعذّر حفظ البيانات.' };
+        const persistedUser = saved.user ? { ...updatedUser, ...saved.user } : updatedUser;
+        setUser(persistedUser);
+        writeStoredJson('joe_store_user', persistedUser);
       return { success: true };
     } catch (err: any) {
       console.error('updateProfile error:', err);
@@ -285,20 +287,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const addAddress = (addr: Omit<UserAddress, 'id'>) => {
-    if (!user) return;
+  const addAddress = async (addr: Omit<UserAddress, 'id'>) => {
+    if (!user) return { success: false, error: 'تسجيل الدخول مطلوب لحفظ العنوان.' };
     const newAddress: UserAddress = {
       ...addr,
       id: `addr-${Date.now()}`
     };
     const updated = [...user.addresses, newAddress];
-    updateProfile({ addresses: updated });
+    return await updateProfile({ addresses: updated });
   };
 
-  const deleteAddress = (id: string) => {
-    if (!user) return;
+  const deleteAddress = async (id: string) => {
+    if (!user) return { success: false, error: 'تسجيل الدخول مطلوب.' };
     const updated = user.addresses.filter(a => a.id !== id);
-    updateProfile({ addresses: updated });
+    return await updateProfile({ addresses: updated });
   };
 
   return (

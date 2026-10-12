@@ -109,7 +109,21 @@ export type OrderStatus =
   | 'delivered'
   | 'cancelled';
 
-export interface Order {
+export interface DeliveryAddressFields {
+  address_type?: 'home' | 'work' | 'other';
+  district?: string;
+  street?: string;
+  building_no?: string;
+  floor_no?: string;
+  apartment_no?: string;
+  landmark?: string;
+  postal_code?: string;
+  delivery_instructions?: string;
+  extra_details?: string;
+  google_maps_url?: string;
+}
+
+export interface Order extends DeliveryAddressFields {
   id: string;
   order_number: string;
   customer_name: string;
