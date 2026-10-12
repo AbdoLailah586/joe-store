@@ -1,4 +1,4 @@
-import { formatDeliveryAddress } from '../utils/deliveryAddress';
+import { formatDeliveryAddress, normalizeDigits, normalizePhone, isEgyptianPhone } from '../utils/deliveryAddress';
 import React, { useState } from 'react';
 import {
   Search,
@@ -23,14 +23,16 @@ export const OrderTracking: React.FC = () => {
   const { t, language, formatPrice } = useLanguage();
 
   const [searchVal, setSearchVal] = useState(currentOrder?.order_number || '');
-  const [searchedOrder, setSearchedOrder] = useState<Order | null>(currentOrder || (orders[0] || null));
+  const [searchedOrder, setSearchedOrder] = useState<Order | null>(currentOrder || null);
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchVal.trim()) return;
 
-    const found = getOrderById(searchVal);
+    const query = normalizeDigits(searchVal).trim().replace(/^#/, '');
+    const found = getOrderById(query) || getOrderById(query.toUpperCase()) ||
+      (isEgyptianPhone(query) ? getOrderById(normalizePhone(query)) : undefined);
     setSearchedOrder(found || null);
     setHasSearched(true);
   };

@@ -158,3 +158,16 @@ test('admin authorization guard is a top-level return after every React hook', (
   }
   checkHooks(component.body);
 });
+
+
+test('opening order tracking does not reveal the first database order before a search', () => {
+  const { OrderTracking } = compile('src/pages/OrderTracking.tsx', {
+    'lucide-react': new Proxy({}, { get: (_, key) => key === '__esModule' ? true : () => React.createElement('svg') }),
+    '../context/StoreContext': { useStore: () => ({ orders: [{ id: 'PRIVATE-42', order_number: 'PRIVATE-42', customer_name: 'Private Customer' }], currentOrder: null, getOrderById: () => undefined, settings: {}, navigate() {} }) },
+    '../context/LanguageContext': { useLanguage: () => ({ language: 'ar', t: x => x, formatPrice: String }) },
+    '../utils/whatsappService': { generateWhatsAppWebLink: () => '#' }
+  });
+  const html = renderToString(React.createElement(OrderTracking));
+  assert.doesNotMatch(html, /PRIVATE-42|Private Customer/);
+  assert.match(html, /رقم الطلب أو رقم الهاتف/);
+});

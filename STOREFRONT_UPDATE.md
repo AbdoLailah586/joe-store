@@ -12,4 +12,6 @@ The existing orders table has no structured delivery column. `encodeDeliveryNote
 
 The unconnected card-entry form and its unsupported payment assurances were removed. Cash on delivery and existing transfer options remain; uploading transfer evidence does not mark an order paid before merchant review.
 
-Validation: production build and 36 tests, including address round-trips, legacy records, alternate contact numbers, map URL validation, and failed order/profile saves. Browser checks cover desktop/mobile layouts, sticky navigation, product details, checkout address entry and preview, and readable dialogs. No live order or payment was submitted for testing.
+Validation: production build and 37 tests, including address round-trips, legacy records, alternate contact numbers, map URL validation, and failed order/profile saves. Browser checks cover desktop/mobile layouts, sticky navigation, product details, checkout address entry and preview, and readable dialogs. No live order or payment was submitted for testing.
+
+Order tracking no longer defaults to the first order in the database. It shows a current checkout-session order or waits for a search. Search accepts Arabic phone digits, Egyptian international prefixes and order numbers with a leading #.
