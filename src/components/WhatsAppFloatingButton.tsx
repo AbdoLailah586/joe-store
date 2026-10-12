@@ -30,7 +30,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
       {isOpen && (
         <div className="mb-3 w-80 sm:w-96 max-w-[calc(100vw-2rem)] max-h-[70vh] overflow-y-auto bg-white border border-emerald-500/40 rounded-3xl shadow-2xl text-slate-900 flex flex-col animate-in fade-in slide-in-from-bottom-5 duration-300">
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-emerald-600 to-teal-700 flex items-center justify-between text-on-brand">
+          <div className="p-4 bg-gradient-to-r from-emerald-700 to-teal-800 flex items-center justify-between text-on-brand">
             <div className="flex items-center gap-3">
               <div className="relative">
                 <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl">
@@ -50,7 +50,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
             <button
               aria-label="إغلاق محادثة واتساب"
               onClick={() => setIsOpen(false)}
-              className="p-1 rounded-full hover:bg-slate-100 text-slate-900 hover:text-slate-900"
+              className="p-1 rounded-full hover:bg-white/10 text-on-brand"
             >
               <X className="w-5 h-5" />
             </button>
