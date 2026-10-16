@@ -41,6 +41,7 @@ export type AppTab =
 interface StoreContextType {
   products: Product[];
   isCatalogLoading: boolean;
+  isCatalogReadyForReports: boolean;
   addProduct: (product: Partial<Product>) => void;
   bulkAddProducts: (newProducts: Partial<Product>[]) => void;
   updateProduct: (id: string, updated: Partial<Product>) => void;
@@ -232,7 +233,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       sessionId,
       items: cart,
       subtotal
-    }).catch(console.warn).finally(() => setIsCatalogLoading(false));
+    }).catch(console.warn);
   }, [cart, sessionId]);
 
   // Wishlist State
@@ -280,7 +281,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         });
         setCatalogLoaded(true);
       }
-    }).catch(console.warn);
+    }).catch(console.warn).finally(() => setIsCatalogLoading(false));
 
     // 2. Fetch live orders from Neon
     neonDb.getOrders().then(dbOrders => {
@@ -853,6 +854,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       value={{
         products,
         isCatalogLoading,
+        isCatalogReadyForReports: catalogLoaded,
         addProduct,
         bulkAddProducts,
         updateProduct,

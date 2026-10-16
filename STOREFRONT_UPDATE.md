@@ -15,3 +15,15 @@ The unconnected card-entry form and its unsupported payment assurances were remo
 Validation: production build and 37 tests, including address round-trips, legacy records, alternate contact numbers, map URL validation, and failed order/profile saves. Browser checks cover desktop/mobile layouts, sticky navigation, product details, checkout address entry and preview, and readable dialogs. No live order or payment was submitted for testing.
 
 Order tracking no longer defaults to the first order in the database. It shows a current checkout-session order or waits for a search. Search accepts Arabic phone digits, Egyptian international prefixes and order numbers with a leading #.
+
+## Inventory reports — 16 October 2026
+
+The administrator's Inventory and Reports tab combines stock comparisons (including exact zero, negative balances and inclusive ranges), category, brand, visibility, condition, price bounds, price/cost completeness, catalog verification and image classification. Search includes original imported names/codes, model, SKU and current names. Numeric inputs accept Arabic and Persian digits. Invalid bounds prevent export.
+
+Statistics and per-category totals use every matching product, independently of the table's 50-row display limit. Recorded negative balances remain visible/exported; available units and valuations use positive quantities only. Unknown or non-positive cost/selling prices are excluded from the relevant valuation with excluded-unit counts. Selling-price valuation is explicitly not realized revenue/profit. Unmarked metadata/images remain unknown; missing image links are not an image URL availability check.
+
+Excel exports selected columns for all matches plus a summary with Cairo export time, active filters, valuation methodology, coverage and category totals. CSV exports only selected detail columns with UTF-8 BOM, escaping and protection against text being interpreted as spreadsheet formulas. XLSX retains textual SKUs and literal string cells. Up to 20 named filter/column templates are saved locally through storage-safe helpers; reusing a name replaces that template. Products are not copied into report-template storage.
+
+Report downloads wait for a complete database catalog. Catalog loading completion now follows the catalog request instead of unrelated cart synchronization. A failed catalog fetch keeps the local fallback visible with a warning and disables report downloads. Existing admin access checks remain in effect. No schema migration or inventory mutation is part of generating reports.
+
+Validation: 47 passing tests and production build. New coverage includes boundaries, combined filters, missing/estimated metadata, valuation reconciliation, Arabic numeric input, workbook round-trip with 125 rows, CSV escaping, template validation and catalog readiness. Browser checks exercised combined filters, zero-stock reports, invalid bounds, template save/reapply and a downloaded XLSX whose rows and totals were independently checked against the selected test data.

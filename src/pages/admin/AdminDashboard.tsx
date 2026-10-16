@@ -366,10 +366,10 @@ export const AdminDashboard: React.FC = () => {
             }`}
           >
             <Layers className="w-3.5 h-3.5 text-amber-700" />
-            <span>المخزون والظهور</span>
-            {lowStockCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-amber-500/30 text-amber-700 border border-amber-500/40 text-[10px] font-bold font-outfit" title="تنبيهات نواقص المخزن">
-                {lowStockCount}
+            <span>المخزون والتقارير</span>
+            {products.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-amber-500/30 text-amber-700 border border-amber-500/40 text-[10px] font-bold font-outfit" title="إجمالي أصناف المخزون">
+                {products.length}
               </span>
             )}
           </button>
