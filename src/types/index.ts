@@ -67,6 +67,8 @@ export interface Product {
   original_price?: number;
   discount_percentage?: number;
   stock: number;
+  recorded_stock?: number;
+  recorded_images?: string[];
   in_stock: boolean;
   images: string[];
   description_ar: string;

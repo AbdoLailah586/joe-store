@@ -109,7 +109,7 @@ test('report readiness waits for the full catalog, independently of cart synchro
   const { StoreProvider } = compile('src/context/StoreContext.tsx', {
     react, '../data/seedProducts': { initialProducts: [] }, '../utils/browserStorage': storage,
     '../utils/whatsappService': { defaultSettings: {}, getWhatsAppLogs: () => [] },
-    '../services/neonDb': { neonDb: { syncActiveCart: async () => {}, getAllProducts: () => catalog, getOrders: async () => [], getActiveCarts: async () => [] } },
+    '../services/neonDb': { neonDb: { syncActiveCart: async () => {}, getAllProducts: () => catalog, getOrders: async () => [], getActiveCarts: async () => [], updateProduct: async () => true } },
   });
   const context = StoreProvider({ children: null }).props.value;
   assert.equal(context.isCatalogReadyForReports, false);
@@ -123,5 +123,9 @@ test('report readiness waits for the full catalog, independently of cart synchro
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(loading.value, false);
   assert.ok(states.some(s => s.writes.includes(true)));
+  context.updateProduct('a', { stock: 7, images: [] });
+  const edited = states.find(s => Array.isArray(s.value) && s.value[0]?.id === 'a').value[0];
+  assert.equal(edited.recorded_stock, 7);
+  assert.deepEqual(edited.recorded_images, []);
   delete globalThis.window;
 });

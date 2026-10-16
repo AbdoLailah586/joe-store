@@ -15,7 +15,7 @@ import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Product } from '../../types';
 import { InventoryReportsPanel } from './InventoryReportsPanel';
-import { categoryLabels, defaultInventoryFilters, filterInventory, validateInventoryFilters, detailsLabel, imageLabel } from '../../utils/inventoryReports';
+import { categoryLabels, defaultInventoryFilters, filterInventory, validateInventoryFilters, detailsLabel, imageLabel, recordedStock, recordedImages } from '../../utils/inventoryReports';
 
 interface InventoryTabProps {
   onOpenAddProduct: () => void;
@@ -91,7 +91,9 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
               {filteredProducts.slice(0, visibleCount).map((p) => {
                 const isPre = p.condition === 'mint' || p.condition === 'used_good';
                 const isHidden = p.is_active === false;
-                const isLow = (p.stock ?? 0) <= 0;
+                const stock = recordedStock(p);
+                const isLow = stock !== null && stock <= 0;
+                const image = recordedImages(p).find(url => url.trim());
 
                 return (
                   <tr
@@ -103,8 +105,8 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                     {/* Product & SKU */}
                     <td className="py-3 pr-2">
                       <div className="flex items-center gap-3">
-                        {p.images?.find(url => url.trim()) ? <img
-                          src={p.images.find(url => url.trim())}
+                        {image ? <img
+                          src={image}
                           alt=""
                           className="w-10 h-10 rounded-xl object-cover border border-slate-200 flex-shrink-0"
                         /> : <span className="w-10 h-10 rounded-xl bg-slate-100 text-[9px] text-slate-500 flex items-center justify-center flex-shrink-0">بلا صورة</span>}
@@ -162,13 +164,13 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                           />
                         ) : (
                           <span
-                            onClick={() => { setEditingStockId(p.id); setTempStock(p.stock || 0); }}
+                            onClick={() => { setEditingStockId(p.id); setTempStock(stock ?? 0); }}
                             className={`min-w-8 text-center font-outfit font-black cursor-pointer hover:underline ${
                               isLow ? 'text-rose-700 font-extrabold' : 'text-slate-900'
                             }`}
                             title="انقر لتعديل الرقم يدوياً"
                           >
-                            {p.stock}
+                            {stock ?? 'غير مسجل'}
                           </span>
                         )}
 
@@ -182,7 +184,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                       </div>
                       {isLow && (
                         <span className="block text-[9px] text-rose-700 font-bold mt-1">
-                          {p.stock < 0 ? 'رصيد سالب يحتاج مراجعة' : 'نفد المخزون'}
+                          {stock! < 0 ? 'رصيد سالب يحتاج مراجعة' : 'نفد المخزون'}
                         </span>
                       )}
                     </td>

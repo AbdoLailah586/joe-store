@@ -33,11 +33,12 @@ export function parseReportNumber(value: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 const numeric = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
-export const recordedStock = (p: Product): number | null => numeric(p.stock) ? p.stock : null;
+export const recordedStock = (p: Product): number | null => numeric(p.recorded_stock) ? p.recorded_stock : numeric(p.stock) ? p.stock : null;
 export const availableUnits = (p: Product) => Math.max(0, recordedStock(p) ?? 0);
 export const hasSellingPrice = (p: Product) => numeric(p.price) && p.price > 0;
 export const hasCostPrice = (p: Product) => numeric(p.cost_price) && p.cost_price > 0;
-export const hasImage = (p: Product) => (p.images || []).some(url => typeof url === 'string' && !!url.trim());
+export const recordedImages = (p: Product) => p.recorded_images ?? p.images ?? [];
+export const hasImage = (p: Product) => recordedImages(p).some(url => typeof url === 'string' && !!url.trim());
 export const needsReview = (p: Product) => p.catalog_status !== 'verified' || p.image_is_illustrative === true || !hasImage(p);
 export const detailsLabel = (p: Product) => p.catalog_status === 'verified' ? 'موثقة' : p.catalog_status === 'estimated' ? 'تقديرية' : 'غير محددة';
 export const imageLabel = (p: Product) => !hasImage(p) ? 'بدون رابط صورة' : p.image_is_illustrative === true ? 'توضيحية' : p.image_is_illustrative === false ? 'غير معلّمة كتوضيحية' : 'غير محددة';
@@ -145,7 +146,7 @@ export const reportColumns: { key: string; label: string; width: number; value: 
   { key: 'sourceName', label: 'الاسم الأصلي في الإكسل', width: 40, value: p => p.source_name || '' },
   { key: 'sourceRow', label: 'صف الإكسل الأصلي', width: 22, value: p => p.source_row ?? '' },
   { key: 'sourceCode', label: 'كود الصنف الأصلي', width: 24, value: p => p.source_item_code || '' },
-  { key: 'imageUrls', label: 'روابط الصور', width: 50, value: p => (p.images || []).join('\n') },
+  { key: 'imageUrls', label: 'روابط الصور', width: 50, value: p => recordedImages(p).join('\n') },
   { key: 'description', label: 'الوصف', width: 60, value: p => p.description_ar || '' },
   { key: 'specs', label: 'المواصفات', width: 60, value: p => JSON.stringify(p.specs || {}) },
   { key: 'sources', label: 'مصادر المعلومات', width: 50, value: p => (p.data_sources || []).map(s => s.url).join('\n') },

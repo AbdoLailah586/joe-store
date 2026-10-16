@@ -75,6 +75,8 @@ function mapRowToProduct(row: any): Product {
       ? Math.round(((Number(row.old_price) - Number(row.price)) / Number(row.old_price)) * 100) 
       : undefined,
     stock: Math.max(0, row.stock_quantity ?? 0),
+    recorded_stock: row.stock_quantity == null ? undefined : Number(row.stock_quantity),
+    recorded_images: Array.isArray(row.images) ? row.images.filter(url => typeof url === 'string' && url.trim()) : [],
     in_stock: (row.stock_quantity ?? 0) > 0 && Number(row.price) > 0 && (row.is_active ?? true),
     is_active: row.is_active ?? true,
     images: Array.isArray(row.images) && row.images.length > 0 ? row.images : ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],

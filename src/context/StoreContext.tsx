@@ -504,16 +504,19 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const updateProduct = (id: string, updated: Partial<Product>) => {
+    const changes = { ...updated,
+      ...(typeof updated.stock === 'number' ? { recorded_stock: updated.stock } : {}),
+      ...(Array.isArray(updated.images) ? { recorded_images: updated.images.filter(url => typeof url === 'string' && url.trim()) } : {}) };
     productCacheDirty.current = true;
     locallyEditedIds.current.add(id);
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updated } : p));
+    setProducts(prev => prev.map(p => p.id === id ? { ...p, ...changes } : p));
     neonDb.updateProduct(id, {
       price: updated.price,
       old_price: updated.original_price,
       stock_quantity: updated.stock,
       is_active: updated.is_active,
       is_featured: updated.is_featured,
-      product: updated
+      product: changes
     }).catch(console.warn);
   };
 
@@ -657,7 +660,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const orderedItem = orderData.items.find(item => item.product.id === p.id);
       if (orderedItem) {
         const nextStock = Math.max(0, p.stock - orderedItem.quantity);
-        return { ...p, stock: nextStock, in_stock: nextStock > 0 };
+        return { ...p, stock: nextStock, recorded_stock: nextStock, in_stock: nextStock > 0 };
       }
       return p;
     }));
@@ -715,7 +718,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const item = target.items.find(i => i.product.id === p.id);
         if (item) {
           const newStock = p.stock + item.quantity;
-          return { ...p, stock: newStock, in_stock: newStock > 0 };
+          return { ...p, stock: newStock, recorded_stock: newStock, in_stock: newStock > 0 };
         }
         return p;
       }));

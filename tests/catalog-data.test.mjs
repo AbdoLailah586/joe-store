@@ -72,6 +72,22 @@ test('saved color and storage edits override legacy columns on reload', async ()
   assert.equal(products[0].available_colors[0].name_en, 'Blue');
 });
 
+test('inventory reports retain database negatives and missing images behind public fallbacks', async () => {
+  queryHandler = async query => query.includes('COUNT(*)') ? [{ total: 1 }]
+    : [{ ...row(), stock_quantity: -2, images: [] }];
+  const { products } = await neonDb.getProducts();
+  const p = products[0];
+  assert.equal(p.stock, 0);
+  assert.equal(p.recorded_stock, -2);
+  assert.equal(p.in_stock, false);
+  assert.deepEqual(p.recorded_images, []);
+  const reports = compile('src/utils/inventoryReports.ts', {});
+  assert.equal(reports.recordedStock(p), -2);
+  assert.equal(reports.hasImage(p), false);
+  assert.equal(reports.filterInventory(products, { ...reports.defaultInventoryFilters, stockOp: 'eq', stockValue: '0' }).length, 0);
+  assert.equal(reports.filterInventory(products, { ...reports.defaultInventoryFilters, stockOp: 'lt', stockValue: '0' }).length, 1);
+});
+
 test('all-product loading fetches every page with deterministic ordering and visibility policy', async () => {
   const rows = Array.from({ length: 601 }, (_, index) => row(`prod-${index}`));
   const offsets = [];
