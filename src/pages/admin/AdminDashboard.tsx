@@ -1,5 +1,8 @@
 import { formatDeliveryAddress } from '../../utils/deliveryAddress';
-import React, { useState } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { AdminShell, AdminSection, initialAdminSection } from './AdminShell';
+const AdminTools = lazy(() => import('./AdminTools').then(m => ({ default: m.AdminTools })));
+const ScreenFinder = lazy(() => import('./ScreenFinder').then(m => ({ default: m.ScreenFinder })));
 import {
   LayoutDashboard,
   Package,
@@ -74,7 +77,14 @@ export const AdminDashboard: React.FC = () => {
 
   const { t, language, formatPrice } = useLanguage();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'inventory' | 'orders' | 'crm' | 'emails' | 'whatsapp' | 'users' | 'settings'>('overview');
+  const [activeTab, setSection] = useState<AdminSection>(initialAdminSection);
+  const setActiveTab = (section: AdminSection) => {
+    setSection(section);
+    window.history.pushState({}, '', `/admin?section=${section}`);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+  useEffect(() => { const restore = () => setSection(initialAdminSection()); window.addEventListener('popstate', restore); return () => window.removeEventListener('popstate', restore); }, []);
+
 
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
@@ -246,7 +256,7 @@ export const AdminDashboard: React.FC = () => {
   };
 
   // Quick stats
-  const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+  const totalRevenue = orders.filter(o => o.order_status === 'delivered').reduce((sum, o) => sum + o.total, 0);
   const pendingOrders = orders.filter(o => o.order_status === 'pending');
   const deliveredOrders = orders.filter(o => o.order_status === 'delivered');
   const lowStockCount = products.filter(p => (p.stock ?? 0) < 3).length;
@@ -331,129 +341,11 @@ export const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8 font-cairo">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 font-bold text-xs border border-amber-500/30">
-              Enterprise Admin Hub
-            </span>
-            <span className="text-xs text-slate-600">نظام إدارة متجر جو ستور المتقدم</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
-            {t('adminTitle')}
-          </h1>
-        </div>
-
-        {/* Quick Nav Tabs */}
-        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white border border-slate-200 overflow-x-auto text-xs">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'overview' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <LayoutDashboard className="w-3.5 h-3.5" />
-            <span>{t('overviewTab')}</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('products')}
-            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'products' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Package className="w-3.5 h-3.5" />
-            <span>{t('productsTab')}</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('inventory')}
-            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'inventory' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5 text-amber-700" />
-            <span>المخزون والتقارير</span>
-            {products.length > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-amber-500/30 text-amber-700 border border-amber-500/40 text-[10px] font-bold font-outfit" title="إجمالي أصناف المخزون">
-                {products.length}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('orders')}
-            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'orders' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>{t('ordersTab')}</span>
-            {pendingOrders.length > 0 && (
-              <span className="w-4 h-4 rounded-full bg-rose-600 text-on-brand text-[10px] flex items-center justify-center font-outfit">
-                {pendingOrders.length}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('crm')}
-            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'crm' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5 text-cyan-400" />
-            <span>ذكاء العملاء والسلات</span>
-            {abandonedCartsCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-rose-600 text-on-brand text-[10px] font-bold font-outfit animate-pulse" title="سلات متروكة تحتاج تواصل">
-                {abandonedCartsCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('emails')}
-            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'emails' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Mail className="w-3.5 h-3.5 text-purple-700" />
-            <span>تخصيص الإيميل</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('whatsapp')}
-            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'whatsapp' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <MessageCircle className="w-3.5 h-3.5 text-emerald-700" />
-            <span>{t('whatsappTab')}</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'users' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5 text-amber-700" />
-            <span>المستخدمين والرتب</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('settings')}
-            className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'settings' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Settings className="w-3.5 h-3.5" />
-            <span>{t('settingsTab')}</span>
-          </button>
-        </div>
-      </div>
+    <AdminShell active={activeTab} onChange={setActiveTab} onVisit={() => navigate('home')} name={user?.name}><div className="space-y-6 font-cairo min-w-0">
+      <Suspense fallback={<p role="status" className="p-8 text-slate-600">جارٍ فتح الأداة…</p>}>
+        {activeTab === 'screens' && <ScreenFinder />}
+        {['tools', 'analytics', 'quality', 'stocktake', 'reorder', 'pricing', 'labels'].includes(activeTab) && <AdminTools key={activeTab} mode={activeTab} onEdit={handleOpenEditProduct} onSection={setActiveTab} />}
+      </Suspense>
 
       {/* TAB 1: OVERVIEW */}
       {activeTab === 'overview' && (
@@ -462,13 +354,13 @@ export const AdminDashboard: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-2">
               <div className="flex items-center justify-between text-xs text-slate-600">
-                <span>إجمالي الإيرادات</span>
+                <span>قيمة الطلبات المسلّمة</span>
                 <DollarSign className="w-4 h-4 text-amber-700" />
               </div>
               <strong className="text-2xl font-black text-amber-700 font-outfit block">
                 {formatPrice(totalRevenue)}
               </strong>
-              <p className="text-[10px] text-emerald-700">مبيعات متجر جو ستور</p>
+              <p className="text-[10px] text-emerald-700">يشمل الشحن؛ لا يشمل الملغى</p>
             </div>
 
             <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-2">
@@ -500,7 +392,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
               <strong className="text-sm font-bold text-emerald-700 block flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>جاهز للإرسال الآلي</span>
+                <span>{settings.whatsapp_automation_url ? 'رابط الإرسال مضاف' : 'يحتاج إعداد رابط الإرسال'}</span>
               </strong>
               <p className="text-[10px] text-slate-600">{whatsappLogs.length} إشعار تم إرساله</p>
             </div>
@@ -1831,6 +1723,6 @@ export const AdminDashboard: React.FC = () => {
         isOpen={isExcelModalOpen}
         onClose={() => setIsExcelModalOpen(false)}
       />
-    </div>
+    </div></AdminShell>
   );
 };

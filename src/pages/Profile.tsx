@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   User as UserIcon,
   MapPin,
@@ -33,6 +33,7 @@ import { buildAddressDetails, formatDeliveryAddress, normalizeDigits, isGoogleMa
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { egyptianGovernorates } from '../data/governorates';
+import { orderBelongsToAccount } from '../utils/storeExpansion';
 
 const PRESET_AVATARS = [
   'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80',
@@ -57,9 +58,14 @@ export const Profile: React.FC = () => {
   } = useAuth();
 
   const { orders, navigate } = useStore();
-  const { t, formatPrice } = useLanguage();
+  const { t, formatPrice, language, setLanguage } = useLanguage();
 
-  const [activeTab, setActiveTab] = useState<'orders' | 'addresses' | 'warranties' | 'personal' | 'security' | 'danger'>('orders');
+  type ProfileTab = 'orders' | 'addresses' | 'warranties' | 'personal' | 'security' | 'danger' | 'preferences' | 'payments';
+  const readTab = (): ProfileTab => { const key = typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('tab'); return ['orders','addresses','warranties','personal','security','danger','preferences','payments'].includes(key || '') ? key as ProfileTab : 'orders'; };
+  const [activeTab, setTab] = useState<ProfileTab>(readTab);
+  const setActiveTab = (key: ProfileTab) => { setTab(key); window.history.pushState({}, '', `/profile?tab=${key}`); };
+  useEffect(() => { const restore = () => setTab(readTab()); window.addEventListener('popstate', restore); window.addEventListener('joe:navigate', restore); return () => { window.removeEventListener('popstate', restore); window.removeEventListener('joe:navigate', restore); }; }, []);
+
 
   // Notification Toast
   const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
@@ -120,11 +126,7 @@ export const Profile: React.FC = () => {
   }
 
   // Filter orders made by this user
-  const userOrders = orders.filter(o =>
-    (user.phone && o.customer_phone.includes(user.phone)) ||
-    (user.email && o.customer_email?.toLowerCase() === user.email.toLowerCase()) ||
-    o.customer_name === user.name
-  );
+  const userOrders = orders.filter(o => orderBelongsToAccount(o, user));
 
   // 1. Handle Save Personal Profile
   const handleSavePersonalInfo = async (e: React.FormEvent) => {
@@ -360,68 +362,17 @@ export const Profile: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto text-xs font-bold">
-        <button
-          onClick={() => setActiveTab('orders')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'orders' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          <ShoppingBag className="w-4 h-4" />
-          <span>طلباتي السابقة ({userOrders.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('addresses')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'addresses' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          <MapPin className="w-4 h-4" />
-          <span>عناوين التوصيل ({user.addresses.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('warranties')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'warranties' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          <ShieldCheck className="w-4 h-4" />
-          <span>شهادات الضمان</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('personal')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'personal' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          <Edit className="w-4 h-4" />
-          <span>البيانات والملف الشخصي</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('security')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'security' ? 'bg-amber-500 text-black shadow-glow-gold' : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          <Lock className="w-4 h-4" />
-          <span>الأمان وكلمة المرور</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('danger')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'danger' ? 'bg-rose-500/20 text-rose-700 border border-rose-500/30' : 'text-rose-700/70 hover:text-rose-700'
-          }`}
-        >
-          <Trash2 className="w-4 h-4" />
-          <span>حذف الحساب</span>
-        </button>
-      </div>
+      <div className="grid lg:grid-cols-[230px_minmax(0,1fr)] gap-6 items-start">
+        <aside className="bg-white rounded-2xl border border-slate-200 p-3 lg:sticky" style={{ top: 'calc(var(--store-header-height, 160px) + 16px)' }}>
+          <h2 className="font-bold px-3 py-2 text-sm">حسابي</h2>
+          <nav aria-label="إعدادات الحساب" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-1">{([
+            ['personal','الملف الشخصي',UserIcon], ['addresses','العناوين',MapPin], ['preferences','اللغة والتفضيلات',Sparkles], ['security','الأمان',Lock], ['danger','إدارة الحساب',AlertTriangle], ['orders','سجل المشتريات',ShoppingBag], ['payments','مدفوعاتي',FileText], ['warranties','الضمانات',ShieldCheck]
+          ] as const).map(([key,title,Icon]) => <button key={key} onClick={() => setActiveTab(key)} aria-current={activeTab === key ? 'page' : undefined} className={`flex items-center gap-3 p-3 rounded-xl text-sm text-start ${activeTab === key ? 'bg-amber-50 text-amber-900 font-bold' : 'text-slate-600 hover:bg-slate-50'}`}><Icon className="w-4 h-4 shrink-0" />{title}</button>)}</nav>
+          <button onClick={() => navigate('wishlist',undefined,{category:'all',search:''})} className="block px-3 py-3 text-sm text-slate-700">المفضلة</button><button onClick={() => navigate('recent',undefined,{category:'all',search:''})} className="block px-3 py-3 text-sm text-slate-700">شاهدتها مؤخرًا</button><button onClick={() => navigate('finder')} className="block px-3 py-3 text-sm text-slate-700">اختياراتي ومساعد الشراء</button>
+        </aside>
+        <div className="min-w-0 space-y-5">
+          {activeTab === 'preferences' && <section className="p-6 rounded-2xl bg-white border border-slate-200 space-y-5"><h2 className="text-lg font-bold">اللغة وتفضيلات التسوق</h2><label className="block text-sm">لغة العرض<select className="block mt-2 w-full border border-slate-300 rounded-xl p-3 bg-white" value={language} onChange={e => setLanguage(e.target.value as any)}><option value="ar">العربية</option><option value="en">English</option></select></label><p className="text-sm text-slate-600">اللغة والمفضلة وسجل المشاهدة محفوظة في هذا المتصفح. تقدر تضبط ميزانيتك واهتماماتك في مساعد الشراء.</p><button onClick={() => navigate('finder')} className="px-4 py-3 rounded-xl bg-amber-500 text-black font-bold">ضبط اختياراتي</button></section>}
+          {activeTab === 'payments' && <section className="space-y-3"><div className="p-5 rounded-2xl bg-white border border-slate-200"><h2 className="text-lg font-bold">سجل المدفوعات</h2><p className="mt-2 text-sm text-slate-600">حالة الدفع المسجلة لكل طلب؛ التحويل يحتاج مراجعة المحل قبل اعتباره مؤكدًا.</p></div>{userOrders.length ? userOrders.map(o => <div key={o.id} className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-wrap gap-4 justify-between text-sm"><strong>#{o.order_number}</strong><span>{o.payment_method === 'cod' ? 'عند الاستلام' : o.payment_method === 'instapay' ? 'InstaPay' : o.payment_method === 'vodafone_cash' ? 'فودافون كاش' : 'طريقة أخرى'}</span><span>{o.payment_status === 'verified' ? 'مؤكد من المحل' : o.payment_status === 'paid' ? 'مسجل كمدفوع' : 'غير مدفوع'}</span><strong>{formatPrice(o.total)}</strong></div>) : <p className="p-6 bg-white rounded-2xl border border-slate-200 text-slate-600">لا توجد مدفوعات مرتبطة بطلباتك حتى الآن.</p>}</section>}
 
       {/* TAB 1: ORDERS */}
       {activeTab === 'orders' && (
@@ -916,6 +867,8 @@ export const Profile: React.FC = () => {
           </div>
         </div>
       )}
+        </div>
+      </div>
     </div>
   );
 };

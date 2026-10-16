@@ -138,7 +138,7 @@ const icons = new Proxy({}, { get: () => props => React.createElement('svg', { c
 const noop = () => {};
 const placeholderModules = Object.fromEntries([
   '../../components/ExcelImportModal', '../../utils/excelParser', '../../utils/whatsappService',
-  './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab'
+  './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab', './AdminShell'
 ].map(id => [id, new Proxy({}, { get: () => noop })]));
 const { AdminDashboard } = compile('src/pages/admin/AdminDashboard.tsx', {
   ...placeholderModules, 'lucide-react': icons,

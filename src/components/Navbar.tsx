@@ -24,6 +24,7 @@ import {
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { AccountMenu } from './AccountMenu';
 import { JoeStoreLogo } from './JoeStoreLogo';
 import { CategoryKey } from '../types';
 
@@ -283,40 +284,11 @@ export const Navbar: React.FC = () => {
 
         {/* Right Header Controls (Account, Cart, Wishlist) */}
         <div className="flex items-center gap-1.5 sm:gap-2.5">
-          {/* User Account / Profile / Sign-in */}
-          {isAuthenticated && user ? (
-            <button
-              onClick={() => navigate('profile')}
-              className={`hidden sm:flex items-center gap-1.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl border transition-all ${
-                currentTab === 'profile'
-                  ? 'bg-amber-500 text-black border-amber-400 font-bold shadow-glow-gold'
-                  : 'bg-slate-100 hover:bg-slate-200   text-slate-700  border-slate-200 '
-              }`}
-              title={language === 'ar' ? 'الملف الشخصي والطلبات' : 'My Profile & Orders'}
-            >
-              <img
-                src={user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80'}
-                alt=""
-                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-amber-400"
-              />
-              <span className="hidden md:inline text-xs font-bold max-w-[80px] truncate">
-                {user.name.split(' ')[0]}
-              </span>
-            </button>
-          ) : (
-            <button
-              onClick={() => openAuthModal()}
-              className="hidden sm:flex items-center gap-1 p-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200   text-slate-700  hover:text-amber-700  border border-slate-200  transition-all text-xs font-bold"
-              title={language === 'ar' ? 'تسجيل الدخول / حسابي' : 'Sign In / My Account'}
-            >
-              <UserIcon className="w-4 h-4 text-amber-700 " />
-              <span className="hidden md:inline">{t('signIn')}</span>
-            </button>
-          )}
+          <AccountMenu />
 
           {/* Wishlist */}
           <button
-            onClick={() => navigate('catalog')}
+            onClick={() => navigate('wishlist', undefined, { category: 'all', search: '' })}
             className="relative p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200   text-slate-700  hover:text-rose-700 transition-all"
             title={t('wishlist')}
           >
@@ -423,9 +395,10 @@ export const Navbar: React.FC = () => {
             </button>
           ))}
 
+          {[['brands', 'الماركات', 'Brands'], ['finder', 'اختار المناسب لك', 'Buying assistant'], ['bundles', 'جمّع باقتك', 'Build your set'], ['help', 'المساعدة', 'Help']].map(([key, ar, en]) => <button key={key} onClick={() => navigate(key as any)} className="px-3 py-2 text-sm text-slate-700 whitespace-nowrap hover:text-amber-800">{language === 'ar' ? ar : en}</button>)}
           {/* Daily Deals Pill */}
           <button
-            onClick={() => navigate('catalog')}
+            onClick={() => navigate('deals', undefined, { category: 'all', search: '' })}
             className="ms-auto flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/20 text-rose-700  border border-rose-500/30 hover:bg-rose-500/30 transition-all font-bold flex-shrink-0"
           >
             <Flame className="w-3.5 h-3.5 text-rose-700 " />

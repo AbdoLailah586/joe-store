@@ -18,6 +18,7 @@ import { OrderTracking } from './pages/OrderTracking';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { Profile } from './pages/Profile';
 import { AuthModal } from './components/AuthModal';
+import { ShoppingPages } from './pages/ShoppingPages';
 
 export const App: React.FC = () => {
   const { currentTab } = useStore();
@@ -26,12 +27,16 @@ export const App: React.FC = () => {
   return (
     <div className={`min-h-screen flex flex-col bg-slate-50  text-slate-900  font-cairo antialiased selection:bg-amber-500 selection:text-black overflow-x-clip max-w-full w-full ${isRTL ? 'rtl' : 'ltr'}`}>
       {/* 1. Main Navigation Bar */}
-      <Navbar />
+      {currentTab !== 'admin' && <Navbar />}
 
       {/* 2. Main Page Views */}
       <main className="flex-1">
         {currentTab === 'home' && <Home />}
         {currentTab === 'catalog' && <Catalog />}
+        {currentTab === 'wishlist' && <Catalog mode="wishlist" />}
+        {currentTab === 'deals' && <Catalog mode="deals" />}
+        {currentTab === 'recent' && <Catalog mode="recent" />}
+        {(['brands', 'finder', 'help', 'contact', 'bundles'] as const).map(mode => currentTab === mode && <ShoppingPages key={mode} mode={mode} />)}
         {currentTab === 'product' && <ProductDetails />}
         {currentTab === 'cart' && <Catalog />}
         {currentTab === 'checkout' && <Checkout />}
@@ -47,13 +52,13 @@ export const App: React.FC = () => {
       <AuthModal />
 
       {/* 4. WhatsApp Floating Assistant Button */}
-      <WhatsAppFloatingButton />
+      {currentTab !== 'admin' && <WhatsAppFloatingButton />}
 
       {/* 5. Mobile Bottom Dock */}
-      <MobileBottomNav />
+      {currentTab !== 'admin' && <MobileBottomNav />}
 
       {/* 6. Enterprise Footer */}
-      <Footer />
+      {currentTab !== 'admin' && <Footer />}
     </div>
   );
 };

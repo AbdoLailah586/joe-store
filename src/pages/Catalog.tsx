@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   Filter,
   SlidersHorizontal,
@@ -15,10 +15,16 @@ import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ProductCard } from '../components/ProductCard';
 import { CategoryKey, ProductCondition } from '../types';
+import { Pagination } from '../components/Pagination';
+import { pageSlice } from '../utils/storeExpansion';
+import { readStoredArray } from '../utils/browserStorage';
 
-export const Catalog: React.FC = () => {
+export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'recent' }> = ({ mode = 'catalog' }) => {
   const {
     products,
+    wishlist,
+    isCatalogLoading,
+    isCatalogReadyForReports,
     selectedCategory,
     setSelectedCategory,
     searchQuery,
@@ -28,16 +34,25 @@ export const Catalog: React.FC = () => {
   const { t, language, formatPrice } = useLanguage();
   const isAr = language === 'ar';
 
+  const initialQuery = useRef(new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search));
+  const catalogTitle = useRef<HTMLHeadingElement>(null);
+  const restored = useRef(false);
+  const [restoreVersion, setRestoreVersion] = useState(0);
+  const [availableOnly, setAvailableOnly] = useState(initialQuery.current.get('stock') === 'available');
+  const [page, setPage] = useState(Number(initialQuery.current.get('page')) || 1);
+  const [pageSize, setPageSize] = useState([24, 36, 48].includes(Number(initialQuery.current.get('size'))) ? Number(initialQuery.current.get('size')) : 36);
+  const recentIds = readStoredArray('joe_recent_products', (value): value is string => typeof value === 'string');
+
   // Filter States
-  const [selectedBrand, setSelectedBrand] = useState<string>('all');
-  const [selectedCondition, setSelectedCondition] = useState<string>('all');
-  const [minBatteryHealth, setMinBatteryHealth] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(Number.POSITIVE_INFINITY);
+  const [selectedBrand, setSelectedBrand] = useState<string>(initialQuery.current.get('brand') || 'all');
+  const [selectedCondition, setSelectedCondition] = useState<string>(initialQuery.current.get('condition') || 'all');
+  const [minBatteryHealth, setMinBatteryHealth] = useState<number>(Math.max(0, Math.min(100, Number(initialQuery.current.get('battery')) || 0)));
+  const [maxPrice, setMaxPrice] = useState<number>(initialQuery.current.get('max') ? Math.max(0, Number(initialQuery.current.get('max')) || 0) : Number.POSITIVE_INFINITY);
   const priceCeiling = useMemo(() => Math.max(65000, ...products.map(product => product.price)), [products]);
-  const [selectedStorage, setSelectedStorage] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'featured' | 'price_asc' | 'price_desc' | 'rating' | 'newest'>('featured');
+  const [selectedStorage, setSelectedStorage] = useState<string>(initialQuery.current.get('storage') || 'all');
+  const [sortBy, setSortBy] = useState<'featured' | 'price_asc' | 'price_desc' | 'rating' | 'newest'>(() => (['featured', 'price_asc', 'price_desc', 'rating', 'newest'].includes(initialQuery.current.get('sort') || '') ? initialQuery.current.get('sort') : 'featured') as any);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState<number>(36);
+
 
   // Extract unique brands and storages
   const brands = useMemo(() => {
@@ -68,12 +83,17 @@ export const Catalog: React.FC = () => {
     setMaxPrice(priceCeiling);
     setSelectedStorage('all');
     setSearchQuery('');
+    setAvailableOnly(false);
   };
 
   // Filtered & Sorted Products
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       if (p.is_active === false) return false;
+      if (mode === 'wishlist' && !wishlist.includes(p.id)) return false;
+      if (mode === 'deals' && !(p.price > 0 && ((p.original_price || 0) > p.price || p.is_flash_sale))) return false;
+      if (mode === 'recent' && !recentIds.includes(p.id)) return false;
+      if (availableOnly && !(p.in_stock && p.stock > 0 && p.price > 0)) return false;
       // Category
       if (selectedCategory !== 'all' && p.category !== selectedCategory) return false;
       // Brand
@@ -102,30 +122,59 @@ export const Catalog: React.FC = () => {
       if (sortBy === 'newest') return (b.created_at || '').localeCompare(a.created_at || '');
       return (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0);
     });
-  }, [products, selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy]);
+  }, [products, selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, mode, wishlist, recentIds.join()]);
 
-  // Reset visible count when filters change
+  const filterKey = JSON.stringify([selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, pageSize, mode]);
+  const previousFilters = useRef(filterKey);
+  const slice = pageSlice(filteredProducts, page, pageSize);
   useEffect(() => {
-    setVisibleCount(36);
-  }, [selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy]);
-
-  const displayedProducts = useMemo(() => {
-    return filteredProducts.slice(0, visibleCount);
-  }, [filteredProducts, visibleCount]);
+    if (restored.current) { restored.current = false; previousFilters.current = filterKey; return; }
+    if (previousFilters.current !== filterKey) { previousFilters.current = filterKey; setPage(1); }
+  }, [filterKey, restoreVersion]);
+  useEffect(() => {
+    const restore = () => {
+      const q = new URLSearchParams(window.location.search); restored.current = true; setRestoreVersion(v => v + 1);
+      setPage(Number(q.get('page')) || 1); setPageSize([24, 36, 48].includes(Number(q.get('size'))) ? Number(q.get('size')) : 36);
+      setSelectedBrand(q.get('brand') || 'all'); setSelectedCondition(q.get('condition') || 'all');
+      setMinBatteryHealth(Number(q.get('battery')) || 0); setMaxPrice(q.get('max') ? Number(q.get('max')) : Infinity);
+      setSelectedStorage(q.get('storage') || 'all'); setSortBy((q.get('sort') || 'featured') as any); setAvailableOnly(q.get('stock') === 'available');
+    };
+    window.addEventListener('popstate', restore); return () => window.removeEventListener('popstate', restore);
+  }, []);
+  useEffect(() => {
+    if (isCatalogLoading || !isCatalogReadyForReports) return;
+    const q = new URLSearchParams();
+    if (selectedCategory !== 'all') q.set('category', selectedCategory);
+    if (searchQuery.trim()) q.set('q', searchQuery);
+    if (selectedBrand !== 'all') q.set('brand', selectedBrand);
+    if (selectedCondition !== 'all') q.set('condition', selectedCondition);
+    if (minBatteryHealth) q.set('battery', String(minBatteryHealth));
+    if (Number.isFinite(maxPrice) && maxPrice < priceCeiling) q.set('max', String(maxPrice));
+    if (selectedStorage !== 'all') q.set('storage', selectedStorage);
+    if (sortBy !== 'featured') q.set('sort', sortBy);
+    if (availableOnly) q.set('stock', 'available');
+    if (slice.page > 1) q.set('page', String(slice.page));
+    if (pageSize !== 36) q.set('size', String(pageSize));
+    window.history.replaceState(window.history.state, '', `/${mode === 'catalog' ? 'catalog' : mode}${q.size ? '?' + q.toString() : ''}`);
+  }, [filterKey, slice.page, isCatalogLoading, isCatalogReadyForReports]);
+  const changePage = (next: number) => { const q = new URLSearchParams(window.location.search); if (next > 1) q.set('page', String(next)); else q.delete('page'); window.history.pushState({}, '', `${window.location.pathname}${q.size ? '?' + q.toString() : ''}`); setPage(next); catalogTitle.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  const displayedProducts = slice.rows;
+  const title = mode === 'wishlist' ? (isAr ? 'المفضلة' : 'Wishlist') : mode === 'deals' ? (isAr ? 'العروض الحالية' : 'Current deals') : mode === 'recent' ? (isAr ? 'شاهدتها مؤخرًا' : 'Recently viewed') : t('catalog');
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+      {!isCatalogLoading && !isCatalogReadyForReports && <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">تعذر تحديث الكتالوج الحالي. المعروض نسخة محلية مؤقتة؛ حدّث الصفحة بعد التأكد من الاتصال للحصول على أحدث المنتجات والأسعار.</p>}
       {/* Header and Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo flex items-center gap-2">
-            <span>{t('catalog')}</span>
+          <h1 ref={catalogTitle} style={{ scrollMarginTop: 'calc(var(--store-header-height, 160px) + 20px)' }} className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo flex items-center gap-2">
+            <span>{title}</span>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 font-bold border border-amber-500/30">
               {filteredProducts.length} منتج
             </span>
           </h1>
           <p className="text-xs text-slate-600 font-cairo">
-            تصفح أحدث الهواتف الذكية، أجهزة كسر زيرو، الشواحن والسماعات الأصلية
+            {isCatalogLoading ? 'جارٍ تحميل المنتجات…' : `عرض ${slice.from}–${slice.to} من ${filteredProducts.length} • صفحة ${slice.page} من ${slice.pages}`}
           </p>
         </div>
 
@@ -158,6 +207,10 @@ export const Catalog: React.FC = () => {
         </div>
       </div>
 
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-sm">
+        <label className="flex items-center gap-2"><input type="checkbox" checked={availableOnly} onChange={e => setAvailableOnly(e.target.checked)} className="accent-amber-600" />{isAr ? 'المتاح للشراء فقط' : 'Available to buy only'}</label>
+        <label className="flex items-center gap-2">{isAr ? 'منتجات في الصفحة' : 'Per page'}<select className="border border-slate-300 rounded-lg p-2 bg-white" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>{[24,36,48].map(n => <option key={n}>{n}</option>)}</select></label>
+      </div>
       {/* Main Layout: Sidebar Filters + Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
         {/* Desktop Sidebar Filters */}
@@ -390,22 +443,8 @@ export const Catalog: React.FC = () => {
                 ))}
               </div>
 
-              {visibleCount < filteredProducts.length && (
-                <div className="flex flex-col items-center justify-center gap-3 pt-6 pb-4 border-t border-slate-200">
-                  <p className="text-xs text-slate-600 font-cairo">
-                    {isAr
-                      ? `تم عرض ${Math.min(visibleCount, filteredProducts.length)} من أصل ${filteredProducts.length.toLocaleString('ar-EG')} منتج`
-                      : `Showing ${Math.min(visibleCount, filteredProducts.length)} of ${filteredProducts.length.toLocaleString()} products`}
-                  </p>
-                  <button
-                    onClick={() => setVisibleCount(prev => prev + 36)}
-                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black text-sm shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 active:scale-95 cursor-pointer font-cairo"
-                  >
-                    <span>{isAr ? 'عرض المزيد من المنتجات (+36)' : 'Load More Products (+36)'}</span>
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
+              <Pagination page={slice.page} pages={slice.pages} onChange={changePage} language={language} />
+
             </div>
           )}
         </main>

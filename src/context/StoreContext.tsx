@@ -36,7 +36,9 @@ export type AppTab =
   | 'order-success'
   | 'track-order'
   | 'profile'
-  | 'admin';
+  | 'admin'
+  | 'wishlist' | 'deals' | 'recent' | 'brands' | 'finder' | 'help' | 'contact' | 'bundles';
+export type DiscoveryTab = 'wishlist' | 'deals' | 'recent' | 'brands' | 'finder' | 'help' | 'contact' | 'bundles';
 
 interface StoreContextType {
   products: Product[];
@@ -82,7 +84,7 @@ interface StoreContextType {
 
   // Navigation & Search
   currentTab: AppTab;
-  navigate: (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string }) => void;
+  navigate: (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string }) => void;
   selectedProductId: string | null;
   quickViewProduct: Product | null;
   setQuickViewProduct: (prod: Product | null) => void;
@@ -121,6 +123,10 @@ export const parseRouteFromLocation = (): ParsedRoute => {
       tab: 'product',
       productId: decodeURIComponent(productMatch[1])
     };
+  }
+
+  if (['/wishlist', '/deals', '/recent', '/brands', '/finder', '/help', '/contact', '/bundles'].includes(pathname)) {
+    return { tab: pathname.slice(1) as AppTab, category: (searchParams.get('category') || 'all') as CategoryKey, search: searchParams.get('q') || '' };
   }
 
   // 2. /catalog or /products or /shop
@@ -349,6 +355,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>(initialRoute.category || 'all');
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
 
+  useEffect(() => {
+    if (currentTab !== 'product' || !selectedProductId || isCatalogLoading || !products.some(p => p.id === selectedProductId && p.is_active !== false)) return;
+    const ids = readStoredArray('joe_recent_products', (v): v is string => typeof v === 'string');
+    writeStoredJson('joe_recent_products', [selectedProductId, ...ids.filter(id => id !== selectedProductId)].slice(0, 24));
+  }, [currentTab, selectedProductId, isCatalogLoading]);
+
   // Sync state when user clicks Browser Back/Forward buttons
   useEffect(() => {
     const handlePopState = () => {
@@ -372,7 +384,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const navigate = (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string }) => {
+  const navigate = (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string }) => {
     setCurrentTab(tab);
     let targetProductId = selectedProductId;
     if (productId) {
@@ -389,14 +401,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     let targetPath = '/';
     if (tab === 'product' && (productId || targetProductId)) {
       targetPath = `/product/${encodeURIComponent(productId || targetProductId || '')}`;
-    } else if (tab === 'catalog') {
+    } else if (tab === 'catalog' || tab === 'wishlist' || tab === 'deals' || tab === 'recent') {
       const cat = options?.category || selectedCategory;
       const q = options?.search !== undefined ? options.search : searchQuery;
       const params = new URLSearchParams();
       if (cat && cat !== 'all') params.set('category', cat);
       if (q) params.set('q', q);
       const queryStr = params.toString();
-      targetPath = queryStr ? `/catalog?${queryStr}` : '/catalog';
+      targetPath = queryStr ? `/${tab}?${queryStr}` : `/${tab}`;
     } else if (tab === 'checkout') {
       targetPath = '/checkout';
     } else if (tab === 'order-success') {
@@ -404,9 +416,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } else if (tab === 'track-order') {
       targetPath = '/track-order';
     } else if (tab === 'profile') {
-      targetPath = '/profile';
+      targetPath = options?.section ? `/profile?tab=${encodeURIComponent(options.section)}` : '/profile';
     } else if (tab === 'admin') {
       targetPath = '/admin';
+    } else if (['brands', 'finder', 'help', 'contact', 'bundles'].includes(tab)) {
+      targetPath = `/${tab}`;
     } else if (tab === 'cart') {
       targetPath = '/catalog';
       setIsCartOpen(true);
@@ -423,6 +437,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           window.history.pushState({ tab, productId: targetProductId }, '', targetPath);
         }
       }
+      if (typeof window.dispatchEvent === 'function') window.dispatchEvent(new Event('joe:navigate'));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };

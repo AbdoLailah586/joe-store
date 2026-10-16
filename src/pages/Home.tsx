@@ -239,6 +239,8 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
+      <section className="max-w-7xl mx-auto px-4"><div className="flex justify-between items-center mb-4"><h2 className="text-xl font-black">{language === 'ar' ? 'تسوّق بطريقتك' : 'Shop your way'}</h2><button onClick={() => navigate('catalog',undefined,{category:'all',search:''})} className="text-sm text-amber-800 font-bold">{language === 'ar' ? 'كل المنتجات ←' : 'All products →'}</button></div><div className="grid grid-cols-2 lg:grid-cols-4 gap-3">{[['brands','الماركات','اختار شركتك المفضلة','Brands','Find your brand'],['finder','مساعد الشراء','حدد النوع والميزانية','Buying assistant','Choose type & budget'],['bundles','جمّع باقتك','كل احتياجاتك في سلة واحدة','Build your set','Your picks, one basket'],['recent','شاهدتها مؤخرًا','ارجع لاختياراتك بسهولة','Recently viewed','Find your earlier picks']].map(([key,ar,desc,en,enDesc])=><button key={key} onClick={()=>navigate(key as any,undefined,{category:'all',search:''})} className="bg-white rounded-2xl border border-slate-200 p-5 text-start hover:border-amber-400"><span className="text-amber-700 text-xs font-bold block mb-3">JOE Store</span><strong className="block text-base">{language === 'ar' ? ar : en}</strong><span className="text-xs text-slate-500 block mt-2">{language === 'ar' ? desc : enDesc}</span></button>)}</div></section>
+
       {/* 2. Highlights Strip */}
       <section className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
