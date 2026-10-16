@@ -70,7 +70,7 @@ export const UsersTab: React.FC = () => {
 
     setUpdatingRoleId(targetUser.id);
     try {
-      const res = await neonDb.updateUserRole(targetUser.id, newRole);
+      const res = await neonDb.updateUserRole(targetUser.id, newRole, currentAdmin ? { id: currentAdmin.id, name: currentAdmin.name } : undefined);
       if (res.success) {
         setUsers(prev => prev.map(u => u.id === targetUser.id ? { ...u, role: newRole } : u));
         setAlert({
@@ -105,7 +105,7 @@ export const UsersTab: React.FC = () => {
     }
 
     try {
-      const res = await neonDb.deleteUser(targetUser.id);
+      const res = await neonDb.deleteUser(targetUser.id, currentAdmin ? { id: currentAdmin.id, name: currentAdmin.name } : undefined);
       if (res.success) {
         setUsers(prev => prev.filter(u => u.id !== targetUser.id));
         setAlert({ type: 'success', msg: `تم حذف حساب ${targetUser.name || targetUser.email} نهائياً.` });

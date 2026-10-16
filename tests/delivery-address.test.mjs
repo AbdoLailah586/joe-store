@@ -65,7 +65,8 @@ test('a failed order save keeps the cart and avoids success state changes', asyn
   globalThis.window = { location: { pathname: '/', search: '' } };
   const { StoreProvider } = compile('src/context/StoreContext.tsx', {
     react, '../data/seedProducts': { initialProducts: [product] }, '../utils/browserStorage': storage,
-    '../utils/whatsappService': whatsapp, '../services/neonDb': { neonDb: { createOrder: async () => { events.push('persist'); return false; } } }
+    '../utils/whatsappService': whatsapp, '../services/neonDb': { neonDb: { createOrder: async () => { events.push('persist'); return false; } } },
+    './AuthContext': { useAuth: () => ({ user: null }) }
   });
   const context = StoreProvider({ children: null }).props.value;
   await assert.rejects(context.createOrder({ items: [{ product, quantity: 1 }], city: 'المنصورة' }), /سلتك محفوظة/);

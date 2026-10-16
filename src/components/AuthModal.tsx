@@ -55,6 +55,10 @@ export const AuthModal: React.FC = () => {
   const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [resendCooldown, setResendCooldown] = useState(0);
 
+  // Staff 2FA (TOTP) — only appears after the server rejects a login with TOTP_REQUIRED/TOTP_INVALID.
+  const [totpCode, setTotpCode] = useState('');
+  const [totpRequired, setTotpRequired] = useState(false);
+
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -142,7 +146,7 @@ export const AuthModal: React.FC = () => {
 
     try {
       if (mode === 'login') {
-        const ok = await loginWithEmail(email, password);
+        const ok = await loginWithEmail(email, password, totpRequired ? totpCode : undefined);
         if (ok) {
           if (redirectAfterLogin) navigate(redirectAfterLogin as any);
         }
@@ -164,7 +168,12 @@ export const AuthModal: React.FC = () => {
         }
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'حدث خطأ أثناء المعالجة.');
+      if (err.code === 'TOTP_REQUIRED' || err.code === 'TOTP_INVALID') {
+        setTotpRequired(true);
+        setErrorMsg(err.message || 'أدخلي كود المصادقة الثنائية.');
+      } else {
+        setErrorMsg(err.message || 'حدث خطأ أثناء المعالجة.');
+      }
     } finally {
       setLoading(false);
     }
@@ -403,6 +412,22 @@ export const AuthModal: React.FC = () => {
                   <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                 </div>
               </div>
+
+              {mode === 'login' && totpRequired && (
+                <div>
+                  <label className="block text-slate-600 font-semibold mb-1">كود المصادقة الثنائية (2FA)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    autoFocus
+                    maxLength={6}
+                    value={totpCode}
+                    onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    placeholder="123456"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-center tracking-[0.3em] text-slate-900 font-outfit placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              )}
 
               {errorMsg && (
                 <p className="text-xs text-rose-700 font-semibold bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20">

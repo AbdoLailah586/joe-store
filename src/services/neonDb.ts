@@ -132,6 +132,35 @@ export function mapRowToOrder(r: any): Order {
   };
 }
 
+// ==========================================
+// AUDIT LOG — a plain, append-only-by-convention record of sensitive admin actions.
+// Same client-side trust level as the rest of this file: a real operational history,
+// not a tamper-proof guarantee.
+// ==========================================
+async function logAudit(entry: {
+  actorId?: string; actorName?: string; action: string; entity: string; entityId?: string;
+  before?: any; after?: any; reason?: string;
+}): Promise<void> {
+  try {
+    await sql`
+      INSERT INTO audit_log (id, actor_id, actor_name, action, entity, entity_id, before_data, after_data, reason)
+      VALUES (
+        ${`audit-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`},
+        ${entry.actorId || null},
+        ${entry.actorName || null},
+        ${entry.action},
+        ${entry.entity},
+        ${entry.entityId || null},
+        ${entry.before !== undefined ? JSON.stringify(entry.before) : null}::jsonb,
+        ${entry.after !== undefined ? JSON.stringify(entry.after) : null}::jsonb,
+        ${entry.reason || null}
+      );
+    `;
+  } catch (error) {
+    console.warn('⚠️ Could not write audit log entry:', error);
+  }
+}
+
 export const neonDb = {
   async getAllProducts(params?: { includeHidden?: boolean }): Promise<Product[]> {
     const pageSize = 300;
@@ -235,8 +264,12 @@ export const neonDb = {
     is_active: boolean;
     is_featured: boolean;
     product: Partial<Product>;
-  }>): Promise<boolean> {
+  }>, actor?: { id: string; name: string }): Promise<boolean> {
     try {
+      const priceChanging = updates.price !== undefined || updates.product?.cost_price !== undefined;
+      const before = priceChanging
+        ? (await sql`SELECT price, cost_price FROM products WHERE id = ${productId};`)[0]
+        : null;
       const setParts: string[] = ['updated_at = NOW()'];
       const params: any[] = [productId];
       let pIdx = 2;
@@ -293,6 +326,13 @@ export const neonDb = {
 
       const q = `UPDATE products SET ${setParts.join(', ')} WHERE id = $1;`;
       await sql.query(q, params);
+      if (priceChanging && before) {
+        await logAudit({
+          actorId: actor?.id, actorName: actor?.name, action: 'PRODUCT_PRICE_CHANGED', entity: 'product', entityId: productId,
+          before: { price: before.price, cost_price: before.cost_price },
+          after: { price: updates.price ?? before.price, cost_price: updates.product?.cost_price ?? before.cost_price }
+        });
+      }
       return true;
     } catch (error) {
       console.error('❌ neonDb.updateProduct error:', error);
@@ -510,7 +550,7 @@ export const neonDb = {
   /**
    * 9. Cancel Order and Auto-Restock Inventory
    */
-  async cancelOrder(orderId: string, reason: string, cancelledBy: 'customer_whatsapp' | 'admin'): Promise<boolean> {
+  async cancelOrder(orderId: string, reason: string, cancelledBy: 'customer_whatsapp' | 'admin', actor?: { id: string; name: string }): Promise<boolean> {
     try {
       const rows = await sql`SELECT items, status FROM orders WHERE id = ${orderId} OR order_number = ${orderId};`;
       if (!rows || rows.length === 0) return false;
@@ -519,8 +559,8 @@ export const neonDb = {
       if (order.status === 'cancelled') return true;
 
       await sql`
-        UPDATE orders 
-        SET 
+        UPDATE orders
+        SET
           status = 'cancelled',
           cancellation_reason = ${reason},
           cancelled_by = ${cancelledBy},
@@ -528,6 +568,9 @@ export const neonDb = {
           updated_at = NOW()
         WHERE id = ${orderId} OR order_number = ${orderId};
       `;
+      if (cancelledBy === 'admin') {
+        await logAudit({ actorId: actor?.id, actorName: actor?.name, action: 'ORDER_CANCELLED', entity: 'order', entityId: orderId, reason });
+      }
 
       // Restock items back to inventory
       const items = Array.isArray(order.items) ? order.items : [];
@@ -715,7 +758,7 @@ export const neonDb = {
     try {
       const cleanEmail = email.trim().toLowerCase();
       const rows = await sql`
-        SELECT id, name, email, phone, avatar, role, provider, email_verified, addresses, created_at, password_hash
+        SELECT id, name, email, phone, avatar, role, provider, email_verified, addresses, created_at, password_hash, totp_enabled
         FROM users
         WHERE email = ${cleanEmail}
         LIMIT 1;
@@ -742,12 +785,76 @@ export const neonDb = {
           provider: user.provider,
           email_verified: user.email_verified,
           addresses: Array.isArray(user.addresses) ? user.addresses : [],
-          created_at: user.created_at
+          created_at: user.created_at,
+          totp_enabled: Boolean(user.totp_enabled)
         }
       };
     } catch (err: any) {
       console.error('❌ neonDb.authenticateUser error:', err);
       return { success: false, error: err.message || 'حدث خطأ أثناء تسجيل الدخول.' };
+    }
+  },
+
+  // ==========================================
+  // TWO-FACTOR AUTHENTICATION (TOTP) — see lib/totp.js and the api/totp-* functions.
+  // Best-effort: protects against casual session/password-reuse risk, same trust
+  // level as the rest of this client-side-database app. Not a claim of protection
+  // against someone who has extracted VITE_DATABASE_URL and queries Neon directly.
+  // ==========================================
+
+  async verifyTotpLogin(email: string, code?: string): Promise<{ success: boolean; error?: string; code?: string }> {
+    try {
+      const res = await fetch('/api/totp-verify-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code })
+      });
+      return await res.json();
+    } catch (err: any) {
+      console.error('❌ neonDb.verifyTotpLogin error:', err);
+      return { success: false, error: 'تعذر الاتصال بخدمة المصادقة الثنائية.' };
+    }
+  },
+
+  async setupTotp(userId: string): Promise<{ success: boolean; secret?: string; otpauthUrl?: string; error?: string }> {
+    try {
+      const res = await fetch('/api/totp-setup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      });
+      return await res.json();
+    } catch (err: any) {
+      console.error('❌ neonDb.setupTotp error:', err);
+      return { success: false, error: 'تعذر تجهيز المصادقة الثنائية.' };
+    }
+  },
+
+  async confirmTotp(userId: string, code: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const res = await fetch('/api/totp-confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, code })
+      });
+      return await res.json();
+    } catch (err: any) {
+      console.error('❌ neonDb.confirmTotp error:', err);
+      return { success: false, error: 'تعذر تفعيل المصادقة الثنائية.' };
+    }
+  },
+
+  async disableTotp(userId: string, password: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const res = await fetch('/api/totp-disable', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, password })
+      });
+      return await res.json();
+    } catch (err: any) {
+      console.error('❌ neonDb.disableTotp error:', err);
+      return { success: false, error: 'تعذر تعطيل المصادقة الثنائية.' };
     }
   },
 
@@ -790,8 +897,9 @@ export const neonDb = {
     }
   },
 
-  async updateUserRole(userId: string, newRole: 'admin' | 'customer'): Promise<{ success: boolean; error?: string }> {
+  async updateUserRole(userId: string, newRole: 'admin' | 'customer', actor?: { id: string; name: string }): Promise<{ success: boolean; error?: string }> {
     try {
+      const before = (await sql`SELECT role FROM users WHERE id = ${userId};`)[0];
       const rows = await sql`
         UPDATE users
         SET role = ${newRole}, updated_at = NOW()
@@ -799,6 +907,7 @@ export const neonDb = {
         RETURNING id, role;
       `;
       if (rows?.[0]?.id !== userId || rows[0].role !== newRole) return { success: false, error: 'لم يتم حفظ الصلاحية. حدّث قائمة المستخدمين وأعد المحاولة.' };
+      await logAudit({ actorId: actor?.id, actorName: actor?.name, action: 'USER_ROLE_CHANGED', entity: 'user', entityId: userId, before: { role: before?.role }, after: { role: newRole } });
       return { success: true };
     } catch (err: any) {
       console.error('❌ neonDb.updateUserRole error:', err);
@@ -806,13 +915,24 @@ export const neonDb = {
     }
   },
 
-  async deleteUser(userId: string): Promise<{ success: boolean; error?: string }> {
+  async deleteUser(userId: string, actor?: { id: string; name: string }): Promise<{ success: boolean; error?: string }> {
     try {
       await sql`DELETE FROM users WHERE id = ${userId};`;
+      await logAudit({ actorId: actor?.id, actorName: actor?.name, action: 'USER_DELETED', entity: 'user', entityId: userId });
       return { success: true };
     } catch (err: any) {
       console.error('❌ neonDb.deleteUser error:', err);
       return { success: false, error: err.message };
+    }
+  },
+
+  async getAuditLog(limit = 100): Promise<any[]> {
+    try {
+      const rows = await sql`SELECT * FROM audit_log ORDER BY created_at DESC LIMIT ${limit};`;
+      return rows || [];
+    } catch (err) {
+      console.error('❌ neonDb.getAuditLog error:', err);
+      return [];
     }
   },
 
@@ -858,6 +978,339 @@ export const neonDb = {
     } catch (err: any) {
       console.error('❌ neonDb.changePassword error:', err);
       return { success: false, error: err.message };
+    }
+  },
+
+  // ==========================================
+  // FULFILLMENT & PACKING BENCH
+  // ==========================================
+
+  async getPickingList(): Promise<Order[]> {
+    try {
+      const rows = await sql`
+        SELECT * FROM orders WHERE status IN ('confirmed', 'processing') AND packed_at IS NULL
+        ORDER BY created_at ASC LIMIT 100;
+      `;
+      return (rows as any[]).map(mapRowToOrder);
+    } catch (error) {
+      console.error('❌ neonDb.getPickingList error:', error);
+      return [];
+    }
+  },
+
+  // Moves status, persists the real courier (the Order type already declared this
+  // field; the column never existed before this change) and enforces the Payment
+  // Hold Gate: a non-COD order whose payment isn't confirmed cannot ship without an
+  // explicit, reasoned manager override.
+  async updateOrderStatus(
+    orderId: string,
+    status: OrderStatus,
+    options?: { courierName?: string; packedBy?: string; override?: boolean; overrideReason?: string; actor?: { id: string; name: string } }
+  ): Promise<{ success: boolean; error?: string; code?: string }> {
+    try {
+      if (status === 'shipped') {
+        const rows = await sql`SELECT payment_method, payment_status FROM orders WHERE id = ${orderId} OR order_number = ${orderId};`;
+        const order = rows[0];
+        if (order && order.payment_method !== 'cod' && !['paid', 'verified'].includes(order.payment_status)) {
+          if (!options?.override || !options?.overrideReason?.trim()) {
+            return {
+              success: false,
+              code: 'PAYMENT_HOLD',
+              error: 'هذا الطلب يتطلب دفعًا مسبقًا (بطاقة أو تحويل) ولم يُعتمد ماليًا بالكامل بعد.'
+            };
+          }
+          await logAudit({
+            actorId: options.actor?.id, actorName: options.actor?.name, action: 'PAYMENT_HOLD_OVERRIDDEN',
+            entity: 'order', entityId: orderId, reason: options.overrideReason
+          });
+        }
+      }
+
+      await sql`
+        UPDATE orders SET
+          status = ${status},
+          courier_name = COALESCE(${options?.courierName || null}, courier_name),
+          packed_at = CASE WHEN ${options?.packedBy ? true : false} THEN NOW() ELSE packed_at END,
+          packed_by = COALESCE(${options?.packedBy || null}, packed_by),
+          updated_at = NOW()
+        WHERE id = ${orderId} OR order_number = ${orderId};
+      `;
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.updateOrderStatus error:', err);
+      return { success: false, error: err.message || 'تعذر حفظ حالة الطلب.' };
+    }
+  },
+
+  // Compares scanned SKUs/IDs against the order's own item snapshot (no barcode
+  // hardware integration — a text/scanner-wedge input is enough for this scale).
+  async confirmPacking(
+    orderId: string,
+    scannedCodes: string[],
+    options?: { courierName?: string; override?: boolean; reason?: string; actor?: { id: string; name: string } }
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      const rows = await sql`SELECT items, status FROM orders WHERE id = ${orderId} OR order_number = ${orderId};`;
+      if (!rows.length) return { success: false, error: 'الطلب غير موجود.' };
+      const items = Array.isArray(rows[0].items) ? rows[0].items : [];
+      const expected = items.map((item: any) => String(item.product?.sku || item.product?.id || '').toUpperCase()).filter(Boolean).sort();
+      const scanned = [...new Set(scannedCodes.map(code => code.trim().toUpperCase()))].sort();
+      const matches = expected.length === scanned.length && expected.every((value, index) => value === scanned[index]);
+      if (!matches && !(options?.override && options?.reason?.trim())) {
+        return { success: false, error: 'الأصناف الممسوحة لا تطابق بنود الطلب. أعيدي المسح أو استخدمي تجاوز المدير مع ذكر السبب.' };
+      }
+      if (!matches) {
+        await logAudit({
+          actorId: options?.actor?.id, actorName: options?.actor?.name, action: 'PACKING_OVERRIDDEN',
+          entity: 'order', entityId: orderId, reason: options?.reason
+        });
+      }
+      const nextStatus = rows[0].status === 'confirmed' ? 'processing' : rows[0].status;
+      await this.updateOrderStatus(orderId, nextStatus, {
+        courierName: options?.courierName,
+        packedBy: options?.actor?.name || options?.actor?.id || 'admin',
+        actor: options?.actor
+      });
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.confirmPacking error:', err);
+      return { success: false, error: err.message || 'تعذر تأكيد التعبئة.' };
+    }
+  },
+
+  async getDeliveryBoard(): Promise<Order[]> {
+    try {
+      const rows = await sql`
+        SELECT * FROM orders WHERE status IN ('processing', 'shipped', 'out_for_delivery')
+        ORDER BY courier_name NULLS FIRST, packed_at ASC NULLS LAST LIMIT 200;
+      `;
+      return (rows as any[]).map(mapRowToOrder);
+    } catch (error) {
+      console.error('❌ neonDb.getDeliveryBoard error:', error);
+      return [];
+    }
+  },
+
+  // ==========================================
+  // LOSS & REFUSAL PREVENTION
+  // ==========================================
+
+  async recordDeliveryRefusal(
+    orderId: string,
+    reason: string,
+    courierName: string | undefined,
+    actor?: { id: string; name: string }
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      const rows = await sql`SELECT customer_phone FROM orders WHERE id = ${orderId} OR order_number = ${orderId};`;
+      if (!rows.length) return { success: false, error: 'الطلب غير موجود.' };
+      await sql`
+        INSERT INTO delivery_refusals (id, order_id, customer_phone, reason, courier_name, created_by)
+        VALUES (${`refusal-${Date.now()}`}, ${orderId}, ${rows[0].customer_phone}, ${reason}, ${courierName || null}, ${actor?.id || null});
+      `;
+      await logAudit({ actorId: actor?.id, actorName: actor?.name, action: 'DELIVERY_REFUSED', entity: 'order', entityId: orderId, reason });
+      await this.cancelOrder(orderId, `رفض استلام: ${reason}`, 'admin', actor);
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.recordDeliveryRefusal error:', err);
+      return { success: false, error: err.message || 'تعذر تسجيل الرفض.' };
+    }
+  },
+
+  async getRefusalHistory(phone: string): Promise<any[]> {
+    try {
+      const rows = await sql`
+        SELECT * FROM delivery_refusals WHERE customer_phone = ${phone} AND created_at > NOW() - INTERVAL '90 days'
+        ORDER BY created_at DESC;
+      `;
+      return rows || [];
+    } catch (error) {
+      console.error('❌ neonDb.getRefusalHistory error:', error);
+      return [];
+    }
+  },
+
+  async getAllRefusals(limit = 100): Promise<any[]> {
+    try {
+      const rows = await sql`SELECT * FROM delivery_refusals ORDER BY created_at DESC LIMIT ${limit};`;
+      return rows || [];
+    } catch (error) {
+      console.error('❌ neonDb.getAllRefusals error:', error);
+      return [];
+    }
+  },
+
+  // ==========================================
+  // INVENTORY — manual supplier price quotes
+  // ==========================================
+
+  async addSupplierQuote(productId: string, supplierName: string, price: number, actor?: { id: string }): Promise<boolean> {
+    try {
+      await sql`
+        INSERT INTO supplier_quotes (id, product_id, supplier_name, quoted_price, created_by)
+        VALUES (${`quote-${Date.now()}`}, ${productId}, ${supplierName}, ${price}, ${actor?.id || null});
+      `;
+      return true;
+    } catch (error) {
+      console.error('❌ neonDb.addSupplierQuote error:', error);
+      return false;
+    }
+  },
+
+  async getSupplierQuotes(productId: string): Promise<any[]> {
+    try {
+      const rows = await sql`SELECT * FROM supplier_quotes WHERE product_id = ${productId} ORDER BY quoted_price ASC;`;
+      return rows || [];
+    } catch (error) {
+      console.error('❌ neonDb.getSupplierQuotes error:', error);
+      return [];
+    }
+  },
+
+  // ==========================================
+  // CUSTOMER SUPPORT WORKFLOW — one running thread per phone number
+  // ==========================================
+
+  async findOrCreateSupportTicket(phone: string, name?: string, subject?: string, orderId?: string): Promise<any> {
+    const existing = await sql`
+      SELECT * FROM support_tickets WHERE customer_phone = ${phone} AND status IN ('open', 'pending', 'escalated')
+      ORDER BY created_at DESC LIMIT 1;
+    `;
+    if (existing.length) return existing[0];
+    const id = `ticket-${Date.now()}`;
+    const rows = await sql`
+      INSERT INTO support_tickets (id, customer_phone, customer_name, order_id, subject)
+      VALUES (${id}, ${phone}, ${name || null}, ${orderId || null}, ${subject || 'استفسار عميل'})
+      RETURNING *;
+    `;
+    return rows[0];
+  },
+
+  async createSupportTicket(phone: string, message: string, name?: string, subject?: string, orderId?: string): Promise<{ success: boolean; ticket?: any; error?: string }> {
+    try {
+      const ticket = await this.findOrCreateSupportTicket(phone, name, subject, orderId);
+      if (message.trim()) {
+        await sql`INSERT INTO support_messages (id, ticket_id, sender_type, sender_id, body) VALUES (${`msg-${Date.now()}`}, ${ticket.id}, 'customer', null, ${message.trim()});`;
+        await sql`UPDATE support_tickets SET status = CASE WHEN status = 'escalated' THEN status ELSE 'pending' END, updated_at = NOW() WHERE id = ${ticket.id};`;
+      }
+      return { success: true, ticket };
+    } catch (err: any) {
+      console.error('❌ neonDb.createSupportTicket error:', err);
+      return { success: false, error: err.message || 'تعذر فتح المحادثة.' };
+    }
+  },
+
+  async listSupportTickets(status?: string): Promise<any[]> {
+    try {
+      const rows = status
+        ? await sql`SELECT * FROM support_tickets WHERE status = ${status} ORDER BY updated_at DESC LIMIT 100;`
+        : await sql`SELECT * FROM support_tickets ORDER BY updated_at DESC LIMIT 100;`;
+      return rows || [];
+    } catch (error) {
+      console.error('❌ neonDb.listSupportTickets error:', error);
+      return [];
+    }
+  },
+
+  async getSupportTicket(ticketId: string): Promise<{ ticket: any; messages: any[] } | null> {
+    try {
+      const tickets = await sql`SELECT * FROM support_tickets WHERE id = ${ticketId};`;
+      if (!tickets.length) return null;
+      const messages = await sql`SELECT * FROM support_messages WHERE ticket_id = ${ticketId} ORDER BY created_at;`;
+      return { ticket: tickets[0], messages };
+    } catch (error) {
+      console.error('❌ neonDb.getSupportTicket error:', error);
+      return null;
+    }
+  },
+
+  // First staff reply auto-claims the ticket — no separate "claim" button to forget.
+  async replySupportTicket(ticketId: string, senderType: 'staff' | 'customer', body: string, actor?: { id: string; name: string }): Promise<{ success: boolean; error?: string }> {
+    try {
+      if (!body.trim()) return { success: false, error: 'نص الرسالة مطلوب.' };
+      await sql`INSERT INTO support_messages (id, ticket_id, sender_type, sender_id, body) VALUES (${`msg-${Date.now()}`}, ${ticketId}, ${senderType}, ${actor?.id || null}, ${body.trim()});`;
+      if (senderType === 'staff') {
+        const current = (await sql`SELECT assigned_to FROM support_tickets WHERE id = ${ticketId};`)[0];
+        await sql`
+          UPDATE support_tickets SET assigned_to = COALESCE(assigned_to, ${actor?.name || actor?.id || null}),
+            status = CASE WHEN status = 'pending' THEN 'open' ELSE status END, updated_at = NOW()
+          WHERE id = ${ticketId};
+        `;
+        if (!current?.assigned_to) await logAudit({ actorId: actor?.id, actorName: actor?.name, action: 'TICKET_CLAIMED', entity: 'support_ticket', entityId: ticketId });
+      } else {
+        await sql`UPDATE support_tickets SET status = 'pending', updated_at = NOW() WHERE id = ${ticketId};`;
+      }
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.replySupportTicket error:', err);
+      return { success: false, error: err.message || 'تعذر إرسال الرد.' };
+    }
+  },
+
+  async escalateSupportTicket(ticketId: string, reason: string, actor?: { id: string; name: string }): Promise<{ success: boolean; error?: string }> {
+    if (!reason.trim()) return { success: false, error: 'سبب التصعيد مطلوب.' };
+    try {
+      await sql`UPDATE support_tickets SET status = 'escalated', escalation_reason = ${reason}, updated_at = NOW() WHERE id = ${ticketId};`;
+      await logAudit({ actorId: actor?.id, actorName: actor?.name, action: 'TICKET_ESCALATED', entity: 'support_ticket', entityId: ticketId, reason });
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.escalateSupportTicket error:', err);
+      return { success: false, error: err.message };
+    }
+  },
+
+  async closeSupportTicket(ticketId: string, actor?: { id: string; name: string }): Promise<{ success: boolean; error?: string }> {
+    try {
+      await sql`UPDATE support_tickets SET status = 'closed', closed_at = NOW(), updated_at = NOW() WHERE id = ${ticketId};`;
+      await logAudit({ actorId: actor?.id, actorName: actor?.name, action: 'TICKET_CLOSED', entity: 'support_ticket', entityId: ticketId });
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.closeSupportTicket error:', err);
+      return { success: false, error: err.message };
+    }
+  },
+
+  async rateSupportTicket(ticketId: string, rating: number, comment?: string): Promise<{ success: boolean; error?: string }> {
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) return { success: false, error: 'التقييم يجب أن يكون من 1 إلى 5.' };
+    try {
+      const rows = await sql`
+        UPDATE support_tickets SET csat_rating = ${rating}, csat_comment = ${comment || null}
+        WHERE id = ${ticketId} AND status = 'closed' AND csat_rating IS NULL RETURNING id;
+      `;
+      if (!rows.length) return { success: false, error: 'لا يمكن تقييم هذه المحادثة الآن.' };
+      return { success: true };
+    } catch (err: any) {
+      console.error('❌ neonDb.rateSupportTicket error:', err);
+      return { success: false, error: err.message };
+    }
+  },
+
+  // ==========================================
+  // WISHLIST GAP — write-only interest signal, NOT a synced wishlist state. The
+  // browser-local wishlist (StoreContext.tsx) is completely unchanged by this.
+  // ==========================================
+
+  async logWishlistEvent(customerId: string, productId: string): Promise<void> {
+    try {
+      await sql`INSERT INTO wishlist_events (id, customer_id, product_id) VALUES (${`wish-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`}, ${customerId}, ${productId});`;
+    } catch (error) {
+      console.warn('⚠️ Could not log wishlist event:', error);
+    }
+  },
+
+  async getWishlistGap(limit = 5): Promise<{ product_id: string; name_ar: string; interest_count: number }[]> {
+    try {
+      const rows = await sql`
+        SELECT w.product_id, p.name_ar, COUNT(*)::int AS interest_count
+        FROM wishlist_events w JOIN products p ON p.id = w.product_id
+        WHERE p.stock_quantity <= 0 AND w.created_at > NOW() - INTERVAL '60 days'
+        GROUP BY w.product_id, p.name_ar
+        ORDER BY interest_count DESC LIMIT ${limit};
+      `;
+      return rows as any[];
+    } catch (error) {
+      console.error('❌ neonDb.getWishlistGap error:', error);
+      return [];
     }
   }
 };

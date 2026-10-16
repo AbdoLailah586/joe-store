@@ -53,6 +53,11 @@ import { InventoryTab } from './InventoryTab';
 import { CustomerCrmTab } from './CustomerCrmTab';
 import { EmailTemplatesTab } from './EmailTemplatesTab';
 import { UsersTab } from './UsersTab';
+import { neonDb } from '../../services/neonDb';
+import { SecurityPanel } from './SecurityPanel';
+import { FulfillmentPanel } from './FulfillmentPanel';
+import { SupplierQuotesPanel } from './SupplierQuotesPanel';
+import { SupportPanel } from './SupportPanel';
 
 export const AdminDashboard: React.FC = () => {
   const { user, isAdmin, openAuthModal, refreshAccess, isAccessRefreshing, accessRefreshError } = useAuth();
@@ -262,6 +267,14 @@ export const AdminDashboard: React.FC = () => {
   const lowStockCount = products.filter(p => (p.stock ?? 0) < 3).length;
   const abandonedCartsCount = activeCarts.filter(c => c.is_abandoned).length;
 
+  // Actionable-items-first KPIs (admin dashboard guide pillar 6)
+  const pendingDispatchOrders = orders.filter(o => ['confirmed', 'processing'].includes(o.order_status) && (Date.now() - new Date(o.created_at).getTime()) > 24 * 60 * 60 * 1000);
+  const unpaidConfirmationOrders = orders.filter(o => o.payment_method !== 'cod' && o.payment_status === 'unpaid' && !['cancelled', 'delivered'].includes(o.order_status));
+  const outOfStockProducts = products.filter(p => (p.stock ?? 0) <= 0);
+  const averageOrderValue = deliveredOrders.length ? totalRevenue / deliveredOrders.length : 0;
+  const [wishlistGap, setWishlistGap] = useState<{ product_id: string; name_ar: string; interest_count: number }[]>([]);
+  useEffect(() => { neonDb.getWishlistGap().then(setWishlistGap).catch(() => {}); }, []);
+
   // Filtered orders list
   const filteredOrders = orders.filter(o => {
     if (orderStatusFilter !== 'all' && o.order_status !== orderStatusFilter) return false;
@@ -347,9 +360,38 @@ export const AdminDashboard: React.FC = () => {
         {['tools', 'analytics', 'quality', 'stocktake', 'reorder', 'pricing', 'labels'].includes(activeTab) && <AdminTools key={activeTab} mode={activeTab} onEdit={handleOpenEditProduct} onSection={setActiveTab} />}
       </Suspense>
 
+      {activeTab === 'fulfillment' && <FulfillmentPanel />}
+      {activeTab === 'suppliers' && <SupplierQuotesPanel />}
+      {activeTab === 'support' && <SupportPanel />}
+      {activeTab === 'security' && <SecurityPanel />}
+
       {/* TAB 1: OVERVIEW */}
       {activeTab === 'overview' && (
         <div className="space-y-8">
+          {/* Actionable Items — surfaced first, per the admin dashboard guide */}
+          <div>
+            <h3 className="font-bold text-sm text-slate-900 mb-3">المهام القابلة للتنفيذ الفوري</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className={`p-5 rounded-3xl border space-y-2 ${pendingDispatchOrders.length ? 'bg-amber-50 border-amber-300' : 'bg-white border-slate-200'}`}>
+                <span className="text-xs text-slate-600 block">طلبات متأخرة عن الشحن (+24 ساعة)</span>
+                <strong className="text-2xl font-black text-amber-700 font-outfit block">{pendingDispatchOrders.length}</strong>
+              </div>
+              <div className={`p-5 rounded-3xl border space-y-2 ${unpaidConfirmationOrders.length ? 'bg-rose-50 border-rose-300' : 'bg-white border-slate-200'}`}>
+                <span className="text-xs text-slate-600 block">طلبات دفع مسبق بانتظار الاعتماد المالي</span>
+                <strong className="text-2xl font-black text-rose-700 font-outfit block">{unpaidConfirmationOrders.length}</strong>
+              </div>
+              <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-2">
+                <span className="text-xs text-slate-600 block">متوسط قيمة الطلب (AOV)</span>
+                <strong className="text-2xl font-black text-amber-700 font-outfit block">{formatPrice(averageOrderValue)}</strong>
+              </div>
+            </div>
+            {!!outOfStockProducts.length && <p className="text-xs text-slate-500 mt-2">{outOfStockProducts.length} صنف نافد من المخزون الآن.</p>}
+            {!!wishlistGap.length && <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-4">
+              <h4 className="text-xs text-slate-600 mb-2">الأكثر رغبة وغير متوفر بالمخزون (Wishlist)</h4>
+              <ul className="text-xs space-y-1">{wishlistGap.map(row => <li key={row.product_id} className="flex justify-between"><span>{row.name_ar}</span><span className="text-amber-700 font-bold">{row.interest_count}</span></li>)}</ul>
+            </div>}
+          </div>
+
           {/* KPI Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-2">
@@ -772,11 +814,18 @@ export const AdminDashboard: React.FC = () => {
                       {/* Ship order */}
                       {ord.order_status !== 'shipped' && ord.order_status !== 'delivered' && (
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             const courier = prompt('اسم شركة الشحن أو المندوب:', 'مندوب جو ستور السريع');
                             const tracking = prompt('رقم بوليصة الشحن (اختياري):', '');
-                            if (courier !== null) {
-                              updateOrderStatus(ord.id, 'shipped', courier, tracking || undefined);
+                            if (courier === null) return;
+                            const result = await updateOrderStatus(ord.id, 'shipped', courier, tracking || undefined);
+                            if (!result.success && result.code === 'PAYMENT_HOLD') {
+                              const overrideReason = prompt(`${result.error}\nاكتبي سبب تجاوز هذا التحذير لإتمام الشحن، أو اتركيه فارغًا للإلغاء:`);
+                              if (overrideReason?.trim()) {
+                                await updateOrderStatus(ord.id, 'shipped', courier, tracking || undefined, { override: true, overrideReason });
+                              }
+                            } else if (!result.success) {
+                              alert(result.error || 'تعذر تحديث حالة الطلب.');
                             }
                           }}
                           className="px-3 py-1.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 text-blue-700 border border-blue-500/30 text-xs font-bold transition-all"

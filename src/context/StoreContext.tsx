@@ -9,6 +9,7 @@ import {
   WhatsAppNotification
 } from '../types';
 import { initialProducts } from '../data/seedProducts';
+import { useAuth } from './AuthContext';
 import {
   defaultSettings,
   sendWhatsAppMessage,
@@ -72,7 +73,7 @@ interface StoreContextType {
   currentOrder: Order | null;
   createOrder: (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at' | 'whatsapp_notification_sent'>) => Promise<Order>;
   cancelOrder: (orderId: string, reason: string, cancelledBy?: 'customer_whatsapp' | 'admin') => Promise<boolean>;
-  updateOrderStatus: (orderId: string, newStatus: OrderStatus, courier?: string, trackingNo?: string) => Promise<void>;
+  updateOrderStatus: (orderId: string, newStatus: OrderStatus, courier?: string, trackingNo?: string, override?: { override: boolean; overrideReason: string }) => Promise<{ success: boolean; error?: string; code?: string }>;
   updatePaymentStatus: (orderId: string, status: 'unpaid' | 'paid' | 'verified') => Promise<void>;
   getOrderById: (orderIdOrNumber: string) => Order | undefined;
 
@@ -161,6 +162,7 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 };
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user: currentUser } = useAuth();
   const CURRENT_VERSION = 'v5_researched_excel_catalog';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
@@ -532,7 +534,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       is_active: updated.is_active,
       is_featured: updated.is_featured,
       product: changes
-    }).catch(console.warn);
+    }, currentUser ? { id: currentUser.id, name: currentUser.name } : undefined).catch(console.warn);
   };
 
   const toggleProductVisibility = async (id: string, isActive: boolean): Promise<boolean> => {
@@ -633,9 +635,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Wishlist
   const toggleWishlist = (productId: string) => {
+    const adding = !wishlist.includes(productId);
     setWishlist(prev =>
       prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
     );
+    // Interest signal only (pillar 6 "wishlist gap") — never a synced wishlist state.
+    // The wishlist itself stays browser-local for guests and customers alike.
+    if (adding && currentUser) neonDb.logWishlistEvent(currentUser.id, productId);
   };
 
   const isInWishlist = (productId: string) => wishlist.includes(productId);
@@ -716,7 +722,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     reason: string,
     cancelledBy: 'customer_whatsapp' | 'admin' = 'admin'
   ): Promise<boolean> => {
-    const success = await neonDb.cancelOrder(orderId, reason, cancelledBy);
+    const success = await neonDb.cancelOrder(orderId, reason, cancelledBy, currentUser ? { id: currentUser.id, name: currentUser.name } : undefined);
     setOrders(prev => prev.map(o => (o.id === orderId || o.order_number === orderId) ? {
       ...o,
       order_status: 'cancelled',
@@ -745,8 +751,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     orderId: string,
     newStatus: OrderStatus,
     courier?: string,
-    trackingNo?: string
-  ) => {
+    trackingNo?: string,
+    override?: { override: boolean; overrideReason: string }
+  ): Promise<{ success: boolean; error?: string; code?: string }> => {
+    const persisted = await neonDb.updateOrderStatus(orderId, newStatus, {
+      courierName: courier,
+      override: override?.override,
+      overrideReason: override?.overrideReason,
+      actor: currentUser ? { id: currentUser.id, name: currentUser.name } : undefined
+    });
+    if (!persisted.success) return persisted;
+
     let targetOrder: Order | undefined;
 
     setOrders(prev => prev.map(o => {
@@ -795,6 +810,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         refreshWhatsAppLogs();
       }
     }
+    return { success: true };
   };
 
   const updatePaymentStatus = async (orderId: string, status: 'unpaid' | 'paid' | 'verified') => {

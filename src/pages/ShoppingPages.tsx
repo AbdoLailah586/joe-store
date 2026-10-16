@@ -7,13 +7,38 @@ import { readStoredJson, writeStoredJson } from '../utils/browserStorage';
 import { canPurchaseProduct } from '../utils/amazonEnricher';
 import { matchesFinder, pageSlice } from '../utils/storeExpansion';
 import { Pagination } from '../components/Pagination';
+import { useAuth } from '../context/AuthContext';
+import { neonDb } from '../services/neonDb';
 const field = 'rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm w-full text-slate-900';
 type Preferences = { category: string; budget: string; brand: string };
 const defaults: Preferences = { category: 'all', budget: '', brand: 'all' };
 export function ShoppingPages({ mode }: { mode: 'brands' | 'finder' | 'help' | 'contact' | 'bundles' }) {
   const { products, settings, navigate, addToCart, cart, setIsCartOpen, isCatalogLoading, isCatalogReadyForReports } = useStore();
   const { formatPrice } = useLanguage();
+  const { user } = useAuth();
   const [query, setQuery] = useState(''), [notice, setNotice] = useState(''), [page, setPage] = useState(1);
+  const [ticketPhone, setTicketPhone] = useState(user?.phone || ''), [ticketMessage, setTicketMessage] = useState('');
+  const [ticketThread, setTicketThread] = useState<{ ticket: any; messages: any[] } | null>(null);
+  const [ticketBusy, setTicketBusy] = useState(false), [ticketError, setTicketError] = useState(''), [ticketReply, setTicketReply] = useState('');
+  const openTicket = async () => {
+    if (!ticketPhone.trim() || !ticketMessage.trim()) { setTicketError('اكتب رقم هاتفك ونص رسالتك.'); return; }
+    setTicketBusy(true); setTicketError('');
+    try {
+      const result = await neonDb.createSupportTicket(ticketPhone.trim(), ticketMessage.trim(), user?.name, undefined);
+      if (!result.success || !result.ticket) { setTicketError(result.error || 'تعذر فتح المحادثة.'); return; }
+      const thread = await neonDb.getSupportTicket(result.ticket.id);
+      setTicketThread(thread); setTicketMessage('');
+    } finally { setTicketBusy(false); }
+  };
+  const sendTicketReply = async () => {
+    if (!ticketThread || !ticketReply.trim()) return;
+    setTicketBusy(true);
+    try {
+      await neonDb.replySupportTicket(ticketThread.ticket.id, 'customer', ticketReply.trim());
+      setTicketThread(await neonDb.getSupportTicket(ticketThread.ticket.id));
+      setTicketReply('');
+    } finally { setTicketBusy(false); }
+  };
   const [preferences, setPreferences] = useState<Preferences>(() => readStoredJson('joe_shopping_preferences', defaults, (v): v is Preferences => !!v && typeof v === 'object' && ['category','budget','brand'].every(k => typeof (v as any)[k] === 'string')));
   const [chosen, setChosen] = useState<string[]>([]);
   const active = useMemo(() => products.filter(p => p.is_active !== false), [products]);
@@ -55,7 +80,29 @@ export function ShoppingPages({ mode }: { mode: 'brands' | 'finder' | 'help' | '
       <Pagination page={slice.page} pages={slice.pages} onChange={setPage} />
     </>}
     {mode === 'help' && <><div className="flex flex-wrap gap-3">{[['track-order','تتبع طلبي'],['profile','حسابي وطلباتي'],['contact','التواصل مع المحل']].map(([key,label])=><button key={key} onClick={()=>navigate(key as any)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-bold">{label}</button>)}</div><div className="max-w-3xl space-y-3">{faqs.map(([q,a])=><details key={q} className="bg-white border border-slate-200 rounded-2xl p-5"><summary className="cursor-pointer font-bold">{q}</summary><p className="mt-3 text-sm text-slate-600 leading-7">{a}</p></details>)}</div></>}
-    {mode === 'contact' && <div className="grid md:grid-cols-2 gap-5"><section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4"><h2 className="font-bold text-lg">{settings.store_name_ar}</h2><p className="text-slate-600">{settings.store_address_ar}</p><p className="text-sm">المواعيد: {settings.working_hours_ar}</p><a className="block text-amber-800 font-bold" href={`tel:${settings.store_phone}`}>{settings.store_phone}</a><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.store_address_ar)}`} target="_blank" rel="noreferrer" className="inline-block rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold">فتح العنوان على الخريطة</a></section><section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4"><h2 className="font-bold text-lg">استفسار عن منتج أو طلب</h2><p className="text-sm text-slate-600">جهّز اسم الموديل أو كود الصنف أو رقم الطلب عشان نقدر نساعدك أسرع.</p><a className="inline-block rounded-xl bg-emerald-700 text-white text-on-brand px-4 py-3 font-bold text-sm" href={`https://wa.me/${settings.store_whatsapp.replace(/[^0-9]/g,'')}`} target="_blank" rel="noreferrer">فتح واتساب المحل</a><button onClick={()=>navigate('track-order')} className="block text-amber-800 font-bold text-sm">تتبع طلب مسجل ←</button></section></div>}
+    {mode === 'contact' && <div className="grid md:grid-cols-2 gap-5"><section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4"><h2 className="font-bold text-lg">{settings.store_name_ar}</h2><p className="text-slate-600">{settings.store_address_ar}</p><p className="text-sm">المواعيد: {settings.working_hours_ar}</p><a className="block text-amber-800 font-bold" href={`tel:${settings.store_phone}`}>{settings.store_phone}</a><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.store_address_ar)}`} target="_blank" rel="noreferrer" className="inline-block rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold">فتح العنوان على الخريطة</a></section><section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4"><h2 className="font-bold text-lg">استفسار عن منتج أو طلب</h2><p className="text-sm text-slate-600">جهّز اسم الموديل أو كود الصنف أو رقم الطلب عشان نقدر نساعدك أسرع.</p><a className="inline-block rounded-xl bg-emerald-700 text-white text-on-brand px-4 py-3 font-bold text-sm" href={`https://wa.me/${settings.store_whatsapp.replace(/[^0-9]/g,'')}`} target="_blank" rel="noreferrer">فتح واتساب المحل</a><button onClick={()=>navigate('track-order')} className="block text-amber-800 font-bold text-sm">تتبع طلب مسجل ←</button></section>
+      <section className="md:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
+        <h2 className="font-bold text-lg">فتح محادثة مع المحل</h2>
+        {!ticketThread ? <div className="space-y-3 max-w-xl">
+          <p className="text-sm text-slate-600">بديل عن واتساب: افتحي محادثة هنا وسيردّ عليكِ فريق المحل، وتقدري تكملي نفس المحادثة في أي وقت.</p>
+          <input className={field} value={ticketPhone} onChange={e => setTicketPhone(e.target.value)} placeholder="رقم هاتفك" />
+          <textarea className={`${field} min-h-[90px]`} value={ticketMessage} onChange={e => setTicketMessage(e.target.value)} placeholder="اكتبي استفسارك هنا…" />
+          {ticketError && <p role="alert" className="text-rose-700 text-sm">{ticketError}</p>}
+          <button disabled={ticketBusy} onClick={openTicket} className="rounded-xl bg-amber-500 hover:bg-amber-400 text-black px-5 py-3 font-bold text-sm disabled:opacity-50">إرسال وفتح المحادثة</button>
+        </div> : <div className="max-w-xl space-y-3">
+          <p className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-3">تم إرسال رسالتك. سيردّ عليكِ فريق المحل هنا قريبًا.</p>
+          <div className="space-y-2 max-h-72 overflow-auto border-y border-slate-100 py-2">
+            {ticketThread.messages.map(entry => <div key={entry.id} className={`text-xs rounded-xl p-2.5 max-w-[85%] ${entry.sender_type === 'staff' ? 'bg-amber-50 mr-auto' : 'bg-slate-100 ml-auto text-right'}`}>
+              <p>{entry.body}</p><span className="text-[10px] text-slate-500 block mt-1">{new Date(entry.created_at).toLocaleString('ar-EG')}</span>
+            </div>)}
+          </div>
+          {ticketThread.ticket.status !== 'closed' ? <div className="flex gap-2">
+            <input className={`${field} flex-1`} value={ticketReply} onChange={e => setTicketReply(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendTicketReply()} placeholder="اكتبي ردًا…" />
+            <button disabled={ticketBusy} onClick={sendTicketReply} className="rounded-xl bg-amber-500 hover:bg-amber-400 text-black px-5 font-bold text-sm">إرسال</button>
+          </div> : <p className="text-sm text-slate-500">تم إغلاق هذه المحادثة من فريق المحل.</p>}
+        </div>}
+      </section>
+    </div>}
     {notice && <p role="status" className="rounded-xl p-4 bg-amber-50 text-amber-900 text-sm">{notice}</p>}
   </div>;
 }

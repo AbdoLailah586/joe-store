@@ -110,6 +110,7 @@ test('report readiness waits for the full catalog, independently of cart synchro
     react, '../data/seedProducts': { initialProducts: [] }, '../utils/browserStorage': storage,
     '../utils/whatsappService': { defaultSettings: {}, getWhatsAppLogs: () => [] },
     '../services/neonDb': { neonDb: { syncActiveCart: async () => {}, getAllProducts: () => catalog, getOrders: async () => [], getActiveCarts: async () => [], updateProduct: async () => true } },
+    './AuthContext': { useAuth: () => ({ user: null }) },
   });
   const context = StoreProvider({ children: null }).props.value;
   assert.equal(context.isCatalogReadyForReports, false);

@@ -46,7 +46,7 @@ interface AuthContextType {
   openAuthModal: (msg?: string, redirectAfterLogin?: string) => void;
   closeAuthModal: () => void;
   loginWithGoogle: (data: { credential: string }) => Promise<void>;
-  loginWithEmail: (email: string, pass: string) => Promise<boolean>;
+  loginWithEmail: (email: string, pass: string, totpCode?: string) => Promise<boolean>;
   sendOtp: (email: string, name?: string) => Promise<{ success: boolean; delivered?: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; otpCode?: string; resendNotice?: string; error?: string }>;
   verifyOtpAndRegister: (data: { email: string; code: string; name: string; phone: string; password?: string }) => Promise<{ success: boolean; error?: string }>;
   registerWithEmail: (name: string, email: string, pass: string, phone: string) => Promise<boolean>;
@@ -168,7 +168,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // 2. Login with Email + Password (checks Neon DB)
-  const loginWithEmail = async (email: string, pass: string): Promise<boolean> => {
+  const loginWithEmail = async (email: string, pass: string, totpCode?: string): Promise<boolean> => {
     const cleanEmail = email.trim().toLowerCase();
     // Check if admin master credentials
     if (cleanEmail === 'admin@joestore.com' || cleanEmail === 'abdolailah586@gmail.com' || cleanEmail === 'admin') {
@@ -191,6 +191,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const dbRes = await neonDb.authenticateUser(cleanEmail, pass);
       if (dbRes.success && dbRes.user) {
+        if (dbRes.user.totp_enabled) {
+          const totpRes = await neonDb.verifyTotpLogin(cleanEmail, totpCode);
+          if (!totpRes.success) {
+            const totpError: any = new Error(totpRes.error || 'كود المصادقة الثنائية غير صحيح.');
+            totpError.code = totpRes.code;
+            throw totpError;
+          }
+        }
         const authedUser: User = {
           ...dbRes.user,
           role: isAccountAdmin(dbRes.user) ? 'admin' : (dbRes.user.role || 'customer')
@@ -199,7 +207,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         closeAuthModal();
         return true;
       }
-    } catch (e) {
+    } catch (e: any) {
+      // A TOTP failure means the password was correct but 2FA wasn't — never fall
+      // through to the local-storage fallback below, which has no 2FA check at all.
+      if (e?.code === 'TOTP_REQUIRED' || e?.code === 'TOTP_INVALID') throw e;
       console.warn('Neon DB login check failed, checking fallback');
     }
 

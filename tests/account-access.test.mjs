@@ -98,16 +98,22 @@ test('roles refresh on restore, focus, reconnect and visible intervals; listener
   } finally { if (oldWindow === undefined) delete globalThis.window; else globalThis.window = oldWindow; if (oldDocument === undefined) delete globalThis.document; else globalThis.document = oldDocument; }
 });
 test('role updates confirm the actual saved row; access lookup reads only the current account role', async () => {
-  let returned = [], captured;
-  const sql = async (strings, ...params) => { captured = { query: strings.join('?'), params }; return returned; };
+  // updateUserRole now also reads a "before" snapshot and writes an audit_log entry
+  // around the UPDATE, so the mock keeps every call instead of just the last one.
+  let returned = [], history = [];
+  const sql = async (strings, ...params) => { history.push({ query: strings.join('?'), params }); return returned; };
   const { neonDb } = compile('src/services/neonDb.ts', { '@neondatabase/serverless': { neon: () => sql }, '../utils/deliveryAddress': {} }, source => source.replace(/const DB_URL\s*=[\s\S]*?const sql = neon\(DB_URL\);/, 'const sql = neon("mock://roles");'));
   assert.equal((await neonDb.updateUserRole('target', 'admin')).success, false);
   returned = [{ id: 'target', role: 'admin' }];
+  history = [];
   assert.equal((await neonDb.updateUserRole('target', 'admin')).success, true);
-  assert.match(captured.query, /RETURNING id, role/);
+  const updateCall = history.find(call => /RETURNING id, role/.test(call.query));
+  assert.ok(updateCall, 'expected an UPDATE ... RETURNING id, role call');
+  history = [];
   const access = await neonDb.getUserAccess('target');
   assert.deepEqual(access, { success: true, exists: true, role: 'admin' });
-  assert.match(captured.query, /SELECT id, role FROM users WHERE id =/);
-  assert.deepEqual(captured.params, ['target']);
-  assert.doesNotMatch(captured.query, /password|addresses|phone/);
+  const accessCall = history.find(call => /SELECT id, role FROM users WHERE id =/.test(call.query));
+  assert.ok(accessCall, 'expected a SELECT id, role lookup');
+  assert.deepEqual(accessCall.params, ['target']);
+  assert.doesNotMatch(accessCall.query, /password|addresses|phone/);
 });

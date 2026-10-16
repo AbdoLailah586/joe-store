@@ -137,8 +137,9 @@ test('full updates retain zero columns and JSONB metadata while replacing public
 const icons = new Proxy({}, { get: () => props => React.createElement('svg', { className: props.className }) });
 const noop = () => {};
 const placeholderModules = Object.fromEntries([
-  '../../components/ExcelImportModal', '../../utils/excelParser', '../../utils/whatsappService',
-  './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab', './AdminShell'
+  '../../components/ExcelImportModal', '../../utils/excelParser', '../../utils/whatsappService', '../../services/neonDb',
+  './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab', './AdminShell',
+  './SecurityPanel', './FulfillmentPanel', './SupportPanel', './SupplierQuotesPanel'
 ].map(id => [id, new Proxy({}, { get: () => noop })]));
 const { AdminDashboard } = compile('src/pages/admin/AdminDashboard.tsx', {
   ...placeholderModules, 'lucide-react': icons,
