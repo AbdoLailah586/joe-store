@@ -55,7 +55,7 @@ export const Navbar: React.FC = () => {
   };
 
   const { t, language, toggleLanguage, formatPrice, isRTL } = useLanguage();
-  const { user, isAuthenticated, isAdmin, openAuthModal } = useAuth();
+  const { user, isAuthenticated, canAccessAdmin: isAdmin, openAuthModal } = useAuth();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);

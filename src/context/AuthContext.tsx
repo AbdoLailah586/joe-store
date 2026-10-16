@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { neonDb } from '../services/neonDb';
 import type { DeliveryAddressFields } from '../types';
 import { readStoredJson, readStoredArray, writeStoredJson, removeStorage, isStoredUser } from '../utils/browserStorage';
+import { canAccessSection as hasSection, permittedSections } from '../../lib/access.js';
 
 export interface UserAddress extends DeliveryAddressFields {
   id: string;
@@ -19,6 +20,7 @@ export interface User {
   phone: string;
   avatar?: string;
   role: 'customer' | 'admin';
+  admin_permissions?: string[];
   provider: 'google' | 'email';
   email_verified?: boolean;
   addresses: UserAddress[];
@@ -29,8 +31,6 @@ export interface User {
 export function isAccountAdmin(u?: Partial<User> | null): boolean {
   if (!u) return false;
   if (u.role === 'admin') return true;
-  const email = (u.email || '').toLowerCase().trim();
-  if (email === 'abdolailah586@gmail.com' || email === 'admin@joestore.com') return true;
   return false;
 }
 
@@ -38,6 +38,10 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  canAccessAdmin: boolean;
+  canAccessSection: (section: string) => boolean;
+  adminSections: string[];
+  sessionReady: boolean;
   refreshAccess: () => Promise<boolean>;
   isAccessRefreshing: boolean;
   accessRefreshError: string;
@@ -47,6 +51,8 @@ interface AuthContextType {
   closeAuthModal: () => void;
   loginWithGoogle: (data: { credential: string }) => Promise<void>;
   loginWithEmail: (email: string, pass: string, totpCode?: string) => Promise<boolean>;
+  pendingSecondFactor: boolean;
+  completeSecondFactor: (code: string) => Promise<void>;
   sendOtp: (email: string, name?: string) => Promise<{ success: boolean; delivered?: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; otpCode?: string; resendNotice?: string; error?: string }>;
   verifyOtpAndRegister: (data: { email: string; code: string; name: string; phone: string; password?: string }) => Promise<{ success: boolean; error?: string }>;
   registerWithEmail: (name: string, email: string, pass: string, phone: string) => Promise<boolean>;
@@ -63,13 +69,19 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [pendingSecondFactor,setPendingSecondFactor]=useState(false);
+  const acceptSignIn=(res:any)=>{
+    if(res.requiresTotp){setUser(null);setPendingSecondFactor(true);return false}
+    if(!res.success||!res.user)throw new Error(res.error||'تعذر تسجيل الدخول.');
+    activeUserId.current=res.user.id;setSessionReady(true);setUser(res.user);setPendingSecondFactor(false);closeAuthModal();return true;
+  };
+  const completeSecondFactor=async(code:string)=>{const res=await neonDb.verifyTotpLogin('',code);acceptSignIn(res)};
   const [user, setUser] = useState<User | null>(() => {
     const saved = readStoredJson<User | null>('joe_store_user', null, isStoredUser);
-    if (saved && isAccountAdmin(saved)) {
-      return { ...saved, role: 'admin' };
-    }
-    return saved;
+    // A browser cache is a display hint, never proof of administrative access.
+    return saved ? { ...saved, role: 'customer', admin_permissions: [] } : null;
   });
+  const [sessionReady, setSessionReady] = useState(false);
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
@@ -91,18 +103,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const request = neonDb.getUserAccess(userId).then(result => {
       if (activeUserId.current !== userId) return false;
       if (!result.success) {
+        setUser(previous => previous?.id === userId ? { ...previous, role: 'customer', admin_permissions: [] } : previous);
         setAccessRefreshError(result.error || 'تعذر تحديث صلاحيات الحساب. أعد المحاولة.');
         return false;
       }
       if (!result.exists) {
-        setUser(previous => previous?.id === userId ? { ...previous, role: 'customer' } : previous);
-        setAccessRefreshError('لم يتم العثور على الحساب المسجل. سجّل الدخول مجددًا بالحساب الصحيح.');
+        setUser(previous => previous?.id === userId ? { ...previous, role: 'customer', admin_permissions: [] } : previous);
+        setAccessRefreshError('سجّل الدخول مرة أخرى لتوثيق الجلسة وتحديث صلاحيات حسابك.');
         return false;
       }
       const role = result.role === 'admin' ? 'admin' : 'customer';
-      setUser(previous => previous?.id === userId && previous.role !== role ? { ...previous, role } : previous);
+      setUser(previous => previous?.id === userId ? { ...previous, role, admin_permissions: result.admin_permissions || [] } : previous);
       return true;
     }).catch(() => {
+      setUser(previous => previous?.id === userId ? { ...previous, role: 'customer', admin_permissions: [] } : previous);
       if (activeUserId.current === userId) setAccessRefreshError('تعذر تحديث صلاحيات الحساب. تأكد من الاتصال وأعد المحاولة.');
       return false;
     }).finally(() => {
@@ -111,6 +125,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
     accessRequest.current = { userId, promise: request };
     return request;
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const idAtStart = activeUserId.current;
+    neonDb.getSession().then(result => {
+      if (!cancelled && activeUserId.current === idAtStart) {
+        setUser(result.user || null);
+      }
+    }).catch(() => { if (!cancelled) setAccessRefreshError('تعذر توثيق الجلسة. سجّل الدخول وأعد المحاولة.'); })
+      .finally(() => { if (!cancelled) setSessionReady(true); });
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -155,87 +181,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Compute strict Admin status
   const isAdmin = isAccountAdmin(user);
+  const adminSections = permittedSections(user);
+  const canAccessAdmin = adminSections.length > 0;
+  const canAccessSection = (section: string) => hasSection(user, section);
 
   // A Google login only succeeds after the server accepts the signed credential.
   const loginWithGoogle = async (data: { credential: string }) => {
     if (!data?.credential) throw new Error('لم تكتمل موافقة Google. أعيدي المحاولة.');
     const res = await neonDb.persistGoogleUser(data);
+    if(res.requiresTotp){acceptSignIn(res);return}
     if (!res.success || !res.user) {
       throw new Error(res.error || 'تعذّر تسجيل الدخول بحساب Google.');
     }
+    activeUserId.current = res.user.id; setSessionReady(true);
     setUser({ ...res.user, role: res.user.role || 'customer' });
     closeAuthModal();
   };
 
-  // 2. Login with Email + Password (checks Neon DB)
+  // Passwords are checked on the server; browser records never authenticate a user.
   const loginWithEmail = async (email: string, pass: string, totpCode?: string): Promise<boolean> => {
-    const cleanEmail = email.trim().toLowerCase();
-    // Check if admin master credentials
-    if (cleanEmail === 'admin@joestore.com' || cleanEmail === 'abdolailah586@gmail.com' || cleanEmail === 'admin') {
-      const adminUser: User = {
-        id: 'usr-admin-owner',
-        name: 'عبدالله ليلة (المدير العام)',
-        email: cleanEmail === 'admin' ? 'admin@joestore.com' : cleanEmail,
-        phone: '01554826209',
-        role: 'admin',
-        provider: 'email',
-        email_verified: true,
-        addresses: [],
-        created_at: new Date().toISOString()
-      };
-      setUser(adminUser);
-      closeAuthModal();
-      return true;
-    }
-
-    try {
-      const dbRes = await neonDb.authenticateUser(cleanEmail, pass);
-      if (dbRes.success && dbRes.user) {
-        if (dbRes.user.totp_enabled) {
-          const totpRes = await neonDb.verifyTotpLogin(cleanEmail, totpCode);
-          if (!totpRes.success) {
-            const totpError: any = new Error(totpRes.error || 'كود المصادقة الثنائية غير صحيح.');
-            totpError.code = totpRes.code;
-            throw totpError;
-          }
-        }
-        const authedUser: User = {
-          ...dbRes.user,
-          role: isAccountAdmin(dbRes.user) ? 'admin' : (dbRes.user.role || 'customer')
-        };
-        setUser(authedUser);
-        closeAuthModal();
-        return true;
-      }
-    } catch (e: any) {
-      // A TOTP failure means the password was correct but 2FA wasn't — never fall
-      // through to the local-storage fallback below, which has no 2FA check at all.
-      if (e?.code === 'TOTP_REQUIRED' || e?.code === 'TOTP_INVALID') throw e;
-      console.warn('Neon DB login check failed, checking fallback');
-    }
-
-    // Local fallback check
-    const registeredUsers = readStoredArray('joe_registered_users', isStoredUser);
-    const found = registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
-
-    if (found && (!found.password || found.password === pass)) {
-      const fallbackUser: User = {
-        id: found.id,
-        name: found.name,
-        email: found.email,
-        phone: found.phone,
-        role: isAccountAdmin(found) ? 'admin' : (found.role || 'customer'),
-        provider: 'email',
-        email_verified: true,
-        addresses: found.addresses || [],
-        created_at: found.created_at
-      };
-      setUser(fallbackUser);
-      closeAuthModal();
-      return true;
-    }
-
-    throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
+    const result = await neonDb.authenticateUser(email.trim().toLowerCase(), pass);
+    if(result.requiresTotp){acceptSignIn(result);return false}
+    if (!result.success || !result.user) throw new Error(result.error || 'البريد الإلكتروني أو كلمة المرور غير صحيحة.');
+    activeUserId.current = result.user.id; setUser(result.user); setSessionReady(true); closeAuthModal(); return true;
   };
 
   // 3. Send 6-Digit OTP Email via Resend
@@ -247,12 +215,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const verifyOtpAndRegister = async (data: { email: string; code: string; name: string; phone: string; password?: string }) => {
     try {
       const res = await neonDb.verifyOtpAndCreateUser(data);
+      if(res.requiresTotp){acceptSignIn(res);return {success:true}}
       if (res.success && res.user) {
         const registeredUser: User = {
           ...res.user,
           role: isAccountAdmin(res.user) ? 'admin' : (res.user.role || 'customer')
         };
-        setUser(registeredUser);
+        activeUserId.current = registeredUser.id; setSessionReady(true); setUser(registeredUser);
         closeAuthModal();
         return { success: true };
       }
@@ -262,33 +231,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Fallback direct register
-  const registerWithEmail = async (name: string, email: string, pass: string, phone: string): Promise<boolean> => {
-    const isOwner = email.trim().toLowerCase() === 'abdolailah586@gmail.com' || email.trim().toLowerCase() === 'admin@joestore.com';
-    const newUser: User = {
-      id: `usr-${Date.now()}`,
-      name,
-      email,
-      phone,
-      role: isOwner ? 'admin' : 'customer',
-      provider: 'email',
-      email_verified: true,
-      addresses: [],
-      created_at: new Date().toISOString()
-    };
-
-    const registeredUsers = readStoredArray('joe_registered_users', isStoredUser);
-    registeredUsers.push({ ...newUser, password: pass });
-    writeStoredJson('joe_registered_users', registeredUsers);
-
-    setUser(newUser);
-    closeAuthModal();
-    return true;
+  const registerWithEmail = async (_name: string, _email: string, _pass: string, _phone: string): Promise<boolean> => {
+    throw new Error('إنشاء الحساب يتطلب تأكيد البريد بالكود أولًا.');
   };
 
   const logout = () => {
+    setPendingSecondFactor(false);
     activeUserId.current = undefined;
     setUser(null);
+    void neonDb.logoutSession().catch(() => {});
   };
 
   // Profile Update (Name, Phone, Avatar, Addresses, Bio)
@@ -329,24 +280,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Update Email
-  const updateEmail = async (newEmail: string): Promise<{ success: boolean; error?: string }> => {
-    if (!user) return { success: false, error: 'غير مسجل دخول' };
-    const clean = newEmail.trim().toLowerCase();
-    if (!clean.includes('@')) return { success: false, error: 'البريد الإلكتروني غير صالح.' };
-    try {
-      const updated = { ...user, email: clean };
-      if (isAccountAdmin(updated)) {
-        updated.role = 'admin';
-      }
-      setUser(updated);
-      writeStoredJson('joe_store_user', updated);
-      await neonDb.updateUserProfile(user.id, { email: clean });
-      return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err.message || 'فشل تعديل البريد الإلكتروني.' };
-    }
-  };
+  const updateEmail = async (_newEmail: string): Promise<{ success: boolean; error?: string }> => ({ success: false, error: 'تغيير البريد يتطلب تسجيل دخول موثق بالبريد الجديد. تواصل مع الإدارة لنقل بيانات حسابك.' });
 
   // Delete Account
   const deleteAccount = async (): Promise<{ success: boolean; error?: string }> => {
@@ -381,8 +315,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         user,
+        pendingSecondFactor,
+        completeSecondFactor,
         isAuthenticated: !!user,
         isAdmin,
+        canAccessAdmin,
+        canAccessSection,
+        adminSections,
+        sessionReady,
         refreshAccess,
         isAccessRefreshing,
         accessRefreshError,

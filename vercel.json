@@ -1,13 +1,13 @@
 {
   "rewrites": [
     {
-      "source": "/((?!api/|assets/|product-images/|screen-finder-images/).*)",
+      "source": "/((?!api/|assets/|product-images/|screen-finder-images/|cover-images/).*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "source": "/((?!api/|assets/|product-images/|screen-finder-images/).*)",
+      "source": "/((?!api/|assets/|product-images/|screen-finder-images/|cover-images/).*)",
       "headers": [
         {
           "key": "Cache-Control",

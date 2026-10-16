@@ -19,11 +19,11 @@ function compile(relative, mocks, transform = value => value) {
     jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true
   } }).outputText;
   const module = { exports: {} };
-  new Function('require', 'module', 'exports', code)(id => mocks[id] || (id.endsWith('/deliveryAddress') ? deliveryHelpers : require(id)), module, module.exports);
+  new Function('require', 'module', 'exports', code)(id => mocks[id] || (id.endsWith('/deliveryAddress') || id.endsWith('/deliveryAddress.js') ? deliveryHelpers : id.endsWith('/services/neonDb') ? {neonDb:{}} : require(id)), module, module.exports);
   return module.exports;
 }
 const deliveryHelpers = compile('src/utils/deliveryAddress.ts', {});
-const { neonDb } = compile('src/services/neonDb.ts', { '@neondatabase/serverless': { neon: () => sql } },
+const { neonDb } = compile('server/store.ts', { './orderWrites.js': {}, '@neondatabase/serverless': { neon: () => sql } },
   source => source.replace(/const DB_URL\s*=[\s\S]*?const sql = neon\(DB_URL\);/, 'const sql = neon("mock://catalog");'));
 const row = (id = 'prod-pos-0', details = {}) => ({ id, name_ar: 'صنف', name_en: 'Item', category: 'audio',
   brand: 'Brand', price: '0', cost_price: '0', stock_quantity: 0, old_price: null,
@@ -143,7 +143,7 @@ const placeholderModules = Object.fromEntries([
 ].map(id => [id, new Proxy({}, { get: () => noop })]));
 const { AdminDashboard } = compile('src/pages/admin/AdminDashboard.tsx', {
   ...placeholderModules, 'lucide-react': icons,
-  '../../context/AuthContext': { useAuth: () => ({ user: null, isAdmin: false, openAuthModal: noop }) },
+  '../../context/AuthContext': { useAuth: () => ({ user: null, isAdmin: false, canAccessAdmin:false, adminSections:[], sessionReady:true, openAuthModal: noop }) },
   '../../context/LanguageContext': { useLanguage: () => ({ language: 'ar', t: value => value, formatPrice: value => String(value) }) },
   '../../context/StoreContext': { useStore: () => ({ products: [], orders: [], activeCarts: [], whatsappLogs: [], settings: {}, navigate: noop }) }
 });
@@ -165,7 +165,7 @@ test('admin authorization guard is a top-level return after every React hook', (
   }
   find(ast);
   const guard = component.body.statements.find(statement => ts.isIfStatement(statement)
-    && statement.expression.getText(ast) === '!isAdmin');
+    && statement.expression.getText(ast) === '!canAccessAdmin');
   assert.ok(guard, 'Admin guard must be directly in the component body, not in a filter callback.');
   function checkHooks(node) {
     if (ts.isCallExpression(node) && /^use(?:State|Effect|Memo|Ref|Store|Auth|Language)$/.test(node.expression.getText(ast))) {
@@ -186,5 +186,5 @@ test('opening order tracking does not reveal the first database order before a s
   });
   const html = renderToString(React.createElement(OrderTracking));
   assert.doesNotMatch(html, /PRIVATE-42|Private Customer/);
-  assert.match(html, /رقم الطلب أو رقم الهاتف/);
+  assert.match(html, /رقم الطلب ورقم الهاتف/);
 });

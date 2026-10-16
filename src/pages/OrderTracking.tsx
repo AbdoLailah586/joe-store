@@ -17,6 +17,7 @@ import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Order, OrderStatus } from '../types';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
+import { neonDb } from '../services/neonDb';
 
 export const OrderTracking: React.FC = () => {
   const { orders, getOrderById, currentOrder, settings, navigate } = useStore();
@@ -25,16 +26,18 @@ export const OrderTracking: React.FC = () => {
   const [searchVal, setSearchVal] = useState(currentOrder?.order_number || '');
   const [searchedOrder, setSearchedOrder] = useState<Order | null>(currentOrder || null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false), [error, setError] = useState('');
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchVal.trim()) return;
 
     const query = normalizeDigits(searchVal).trim().replace(/^#/, '');
-    const found = getOrderById(query) || getOrderById(query.toUpperCase()) ||
-      (isEgyptianPhone(query) ? getOrderById(normalizePhone(query)) : undefined);
-    setSearchedOrder(found || null);
-    setHasSearched(true);
+    setLoading(true);setError('');
+    try { setSearchedOrder(await neonDb.trackOrder(query,phone)); setHasSearched(true); }
+    catch (e:any) { setSearchedOrder(null); setError(e.message||'تعذر البحث عن الطلب.'); }
+    finally { setLoading(false); }
   };
 
   const steps: { key: OrderStatus; title: string; desc: string; icon: string }[] = [
@@ -69,25 +72,28 @@ export const OrderTracking: React.FC = () => {
           تتبع حالة شحنتك المباشرة
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">
-          أدخل رقم الطلب (مثال: JOE-84291) أو رقم هاتفك لمعرفة مكان الشحنة وحالتها اللحظية.
+          أدخل رقم الطلب ورقم الهاتف المسجل معه لمعرفة حالة الشحنة.
         </p>
 
-        <form onSubmit={handleSearch} className="max-w-md mx-auto flex items-center rounded-2xl bg-white border border-amber-500/30 overflow-hidden shadow-xl p-1">
+        <form onSubmit={handleSearch} className="max-w-md mx-auto flex flex-wrap items-center rounded-2xl bg-white border border-amber-500/30 overflow-hidden shadow-xl p-1">
           <input
             type="text"
             value={searchVal}
             onChange={(e) => setSearchVal(e.target.value)}
-            placeholder="رقم الطلب أو رقم الهاتف..."
+            aria-label="رقم الطلب" placeholder="رقم الطلب: JOE-84291" required
             className="w-full bg-transparent px-4 py-2.5 text-xs text-slate-900 placeholder-slate-500 focus:outline-none font-cairo"
           />
+          <input aria-label="رقم هاتف الطلب" required inputMode="tel" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="رقم الهاتف المسجل في الطلب" className="w-full border-t border-slate-200 px-4 py-3 text-sm bg-white text-slate-900"/>
           <button
             type="submit"
+            disabled={loading}
             className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs flex items-center gap-1.5 shadow-glow-gold transition-all"
           >
             <Search className="w-3.5 h-3.5" />
-            <span>بحث</span>
+            <span>{loading?'جارٍ البحث…':'بحث'}</span>
           </button>
         </form>
+        {error&&<p role="alert" className="text-sm text-rose-700">{error}</p>}
       </div>
 
       {/* Order Results */}

@@ -28,7 +28,7 @@ function mockSql() {
 }
 
 function loadNeonDb(sql) {
-  return compile('src/services/neonDb.ts', { '@neondatabase/serverless': { neon: () => sql }, '../utils/deliveryAddress': {} },
+  return compile('server/store.ts', { '@neondatabase/serverless': { neon: () => sql }, '../src/utils/deliveryAddress.js': {}, './orderWrites.js': {} },
     source => source.replace(/const DB_URL\s*=[\s\S]*?const sql = neon\(DB_URL\);/, 'const sql = neon("mock://dashboard-guide");'));
 }
 

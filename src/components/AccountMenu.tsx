@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 export function AccountMenu() {
-  const { user, isAdmin, logout, openAuthModal } = useAuth();
+  const { user, canAccessAdmin: isAdmin, logout, openAuthModal } = useAuth();
   const { navigate } = useStore();
   const { language } = useLanguage();
   const ar = language === 'ar';

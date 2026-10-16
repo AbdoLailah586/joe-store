@@ -9,7 +9,6 @@ import {
   WhatsAppNotification
 } from '../types';
 import { initialProducts } from '../data/seedProducts';
-import { useAuth } from './AuthContext';
 import {
   defaultSettings,
   sendWhatsAppMessage,
@@ -23,6 +22,7 @@ import {
   buildReviewRequestMessage
 } from '../utils/whatsappService';
 import { neonDb, ActiveCartRecord } from '../services/neonDb';
+import { useAuth } from './AuthContext';
 import {
   readStorage, writeStorage, removeStorage, writeStoredJson, readStoredArray, readStoredSettings,
   isStoredProduct, isStoredCartItem, isStoredOrder
@@ -73,7 +73,7 @@ interface StoreContextType {
   currentOrder: Order | null;
   createOrder: (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at' | 'whatsapp_notification_sent'>) => Promise<Order>;
   cancelOrder: (orderId: string, reason: string, cancelledBy?: 'customer_whatsapp' | 'admin') => Promise<boolean>;
-  updateOrderStatus: (orderId: string, newStatus: OrderStatus, courier?: string, trackingNo?: string, override?: { override: boolean; overrideReason: string }) => Promise<{ success: boolean; error?: string; code?: string }>;
+  updateOrderStatus: (orderId: string, newStatus: OrderStatus, courier?: string, trackingNo?: string, override?: { override: boolean; overrideReason: string }) => Promise<{success:boolean; error?:string; code?:string}>;
   updatePaymentStatus: (orderId: string, status: 'unpaid' | 'paid' | 'verified') => Promise<void>;
   getOrderById: (orderIdOrNumber: string) => Order | undefined;
 
@@ -162,7 +162,8 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 };
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user: currentUser } = useAuth();
+  const { user: account, sessionReady, adminSections: accountSections = [] } = useAuth();
+  const accountAccessKey = `${account?.id || ''}:${account?.role || ''}:${accountSections.join(',')}`;
   const CURRENT_VERSION = 'v5_researched_excel_catalog';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
@@ -253,10 +254,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [wishlist]);
 
   // Orders State
-  const [orders, setOrders] = useState<Order[]>(() => readStoredArray('joe_store_orders', isStoredOrder));
+  const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    writeStoredJson('joe_store_orders', orders);
+    removeStorage('joe_store_orders');
   }, [orders]);
 
   // Active & Abandoned Carts State for Admin CRM
@@ -273,9 +274,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Initial load from Neon PostgreSQL (with graceful fallback to local cache)
   useEffect(() => {
+    if (sessionReady === false) return;
+    let cancelled = false;
+    setIsCatalogLoading(true); setCatalogLoaded(false); setOrders([]); setActiveCarts([]);
     // 1. Fetch live products from Neon
     neonDb.getAllProducts({ includeHidden: true }).then(dbProds => {
-      if (dbProds && dbProds.length > 0) {
+      if (!cancelled && dbProds && dbProds.length > 0) {
         setProducts(previous => {
           const previousById = new Map(previous.map(product => [product.id, product]));
           const dbIds = new Set(dbProds.map(product => product.id));
@@ -289,18 +293,19 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         });
         setCatalogLoaded(true);
       }
-    }).catch(console.warn).finally(() => setIsCatalogLoading(false));
+    }).catch(console.warn).finally(() => { if (!cancelled) setIsCatalogLoading(false); });
 
     // 2. Fetch live orders from Neon
     neonDb.getOrders().then(dbOrders => {
-      if (dbOrders && dbOrders.length > 0) {
+      if (!cancelled && dbOrders) {
         setOrders(dbOrders);
       }
     }).catch(console.warn);
 
     // 3. Load active carts for CRM
-    refreshActiveCarts();
-  }, []);
+    if (accountSections.includes('crm')) refreshActiveCarts();
+    return () => { cancelled = true; };
+  }, [sessionReady, accountAccessKey]);
 
   // Old carts contain product snapshots. Reconcile only after the complete live
   // catalog arrives so a temporary seed/fetch failure cannot erase valid items.
@@ -446,6 +451,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Product Operations
   const addProduct = (newProd: Partial<Product>) => {
+    if (!accountSections.includes('products')) return;
     const fullProd: Product = {
       id: newProd.id || `prod-${Date.now()}`,
       sku: newProd.sku || `JOE-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -483,6 +489,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const bulkAddProducts = (newProducts: Partial<Product>[]) => {
+    if (!accountSections.includes('products')) return;
     const fullProducts: Product[] = newProducts.map((p, idx) => ({
       id: p.id || `prod-bulk-${Date.now()}-${idx}`,
       sku: p.sku || `JOE-BULK-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -521,6 +528,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const updateProduct = (id: string, updated: Partial<Product>) => {
+    if (!accountSections.includes('products')) return;
     const changes = { ...updated,
       ...(typeof updated.stock === 'number' ? { recorded_stock: updated.stock } : {}),
       ...(Array.isArray(updated.images) ? { recorded_images: updated.images.filter(url => typeof url === 'string' && url.trim()) } : {}) };
@@ -534,7 +542,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       is_active: updated.is_active,
       is_featured: updated.is_featured,
       product: changes
-    }, currentUser ? { id: currentUser.id, name: currentUser.name } : undefined).catch(console.warn);
+    }).catch(console.warn);
   };
 
   const toggleProductVisibility = async (id: string, isActive: boolean): Promise<boolean> => {
@@ -558,12 +566,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const deleteProduct = (id: string) => {
+    if (!accountSections.includes('products')) return;
     productCacheDirty.current = true;
     locallyDeletedIds.current.add(id);
     setProducts(prev => prev.filter(p => p.id !== id));
   };
 
   const duplicateProduct = (id: string) => {
+    if (!accountSections.includes('products')) return;
     const target = products.find(p => p.id === id);
     if (!target) return;
     const clone: Product = {
@@ -635,13 +645,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Wishlist
   const toggleWishlist = (productId: string) => {
-    const adding = !wishlist.includes(productId);
+    if (!wishlist.includes(productId) && account) void neonDb.logWishlistEvent(account.id, productId).catch(console.warn);
     setWishlist(prev =>
       prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
     );
-    // Interest signal only (pillar 6 "wishlist gap") — never a synced wishlist state.
-    // The wishlist itself stays browser-local for guests and customers alike.
-    if (adding && currentUser) neonDb.logWishlistEvent(currentUser.id, productId);
   };
 
   const isInWishlist = (productId: string) => wishlist.includes(productId);
@@ -722,7 +729,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     reason: string,
     cancelledBy: 'customer_whatsapp' | 'admin' = 'admin'
   ): Promise<boolean> => {
-    const success = await neonDb.cancelOrder(orderId, reason, cancelledBy, currentUser ? { id: currentUser.id, name: currentUser.name } : undefined);
+    const success = await neonDb.cancelOrder(orderId, reason, cancelledBy);
+    if (!success) return false;
     setOrders(prev => prev.map(o => (o.id === orderId || o.order_number === orderId) ? {
       ...o,
       order_status: 'cancelled',
@@ -753,15 +761,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     courier?: string,
     trackingNo?: string,
     override?: { override: boolean; overrideReason: string }
-  ): Promise<{ success: boolean; error?: string; code?: string }> => {
-    const persisted = await neonDb.updateOrderStatus(orderId, newStatus, {
-      courierName: courier,
-      override: override?.override,
-      overrideReason: override?.overrideReason,
-      actor: currentUser ? { id: currentUser.id, name: currentUser.name } : undefined
-    });
-    if (!persisted.success) return persisted;
-
+  ) => {
+    if (!accountSections.includes('orders')) throw new Error('هذا الإجراء يحتاج صلاحية الطلبات.');
+    const persisted = await neonDb.updateOrderStatus(orderId,newStatus,{courierName:courier,override:override?.override,overrideReason:override?.overrideReason});
+    if(!persisted.success) return persisted;
     let targetOrder: Order | undefined;
 
     setOrders(prev => prev.map(o => {
@@ -810,10 +813,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         refreshWhatsAppLogs();
       }
     }
-    return { success: true };
+    return {success:true};
   };
 
   const updatePaymentStatus = async (orderId: string, status: 'unpaid' | 'paid' | 'verified') => {
+    if (!accountSections.includes('orders')) throw new Error('هذا الإجراء يحتاج صلاحية الطلبات.');
+    await neonDb.updateOrderState(orderId, { payment_status: status });
     let targetOrder: Order | undefined;
 
     setOrders(prev => prev.map(o => {

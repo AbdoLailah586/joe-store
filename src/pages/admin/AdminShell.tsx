@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Package, Layers, ShoppingBag, Users, Mail, Settings, Smartphone, Calculator, ClipboardList, TrendingUp, Tags, ShieldCheck, Wrench, ArrowUpRight, MessageCircle, Truck, Headset, Lock, Moon, Sun, Boxes } from 'lucide-react';
+import { LayoutDashboard, Package, Layers, ShoppingBag, Users, Mail, Settings, Smartphone, Calculator, ClipboardList, TrendingUp, Tags, ShieldCheck, Wrench, ArrowUpRight, MessageCircle, Truck, Headset, Lock, Moon, Sun, Boxes, Shapes } from 'lucide-react';
 export const adminSections = [
   ['overview', 'نظرة عامة', LayoutDashboard, 'الإدارة'], ['analytics', 'تحليلات المبيعات', TrendingUp, 'الإدارة'],
   ['products', 'المنتجات', Package, 'الكتالوج والمخزون'], ['inventory', 'المخزون والتقارير', Layers, 'الكتالوج والمخزون'],
@@ -9,7 +9,7 @@ export const adminSections = [
   ['fulfillment', 'التجهيز والشحن', Truck, 'العملاء والتواصل'], ['support', 'الدعم الفني', Headset, 'العملاء والتواصل'],
   ['crm', 'العملاء والسلات', Users, 'العملاء والتواصل'], ['users', 'المستخدمون والصلاحيات', ShieldCheck, 'العملاء والتواصل'],
   ['emails', 'رسائل البريد', Mail, 'العملاء والتواصل'], ['whatsapp', 'إعدادات واتساب', MessageCircle, 'العملاء والتواصل'],
-  ['screens', 'فاحص الاسكرينات', Smartphone, 'أدوات المحل'], ['pricing', 'حاسبة التسعير والربح', Calculator, 'أدوات المحل'],
+  ['screens', 'فاحص الاسكرينات', Smartphone, 'أدوات المحل'], ['covers', 'دليل الكفرات', Shapes, 'أدوات المحل'], ['pricing', 'حاسبة التسعير والربح', Calculator, 'أدوات المحل'],
   ['labels', 'بطاقات الأسعار والطباعة', Tags, 'أدوات المحل'], ['tools', 'مركز الأدوات', Wrench, 'أدوات المحل'],
   ['security', 'الأمان وسجل المراجعة', Lock, 'الإعدادات'], ['settings', 'المظهر وإعدادات المتجر', Settings, 'الإعدادات'],
 ] as const;
@@ -19,7 +19,7 @@ export function initialAdminSection(): AdminSection {
   return adminSections.some(([key]) => key === value) ? value as AdminSection : 'overview';
 }
 const DARK_KEY = 'joe_admin_dark_v1';
-export function AdminShell({ active, onChange, onVisit, name, children }: { active: string; onChange: (key: AdminSection) => void; onVisit: () => void; name?: string; children: React.ReactNode }) {
+export function AdminShell({ active, onChange, onVisit, name, children, allowed }: { active: string; onChange: (key: AdminSection) => void; onVisit: () => void; name?: string; children: React.ReactNode; allowed?: string[] }) {
   const [search, setSearch] = useState('');
   const [dark, setDark] = useState(() => { try { return localStorage.getItem(DARK_KEY) === '1'; } catch { return false; } });
   const toggleDark = () => {
@@ -29,7 +29,8 @@ export function AdminShell({ active, onChange, onVisit, name, children }: { acti
       return next;
     });
   };
-  const sections = adminSections.filter(s => `${s[1]} ${s[3]}`.includes(search.trim()));
+  const visible = adminSections.filter(s => !allowed || allowed.includes(s[0]));
+  const sections = visible.filter(s => `${s[1]} ${s[3]}`.includes(search.trim()));
   // Admin-only "dark mode" for long shifts: a scoped filter-invert, not a storewide
   // theme — the customer storefront's own light-mode fix (StoreContext.tsx) is
   // untouched. Icons/photos are counter-inverted so they still read naturally.
@@ -49,7 +50,7 @@ export function AdminShell({ active, onChange, onVisit, name, children }: { acti
       <div className={dark ? 'admin-dark-scope' : ''}>
         <div className="max-w-[1700px] mx-auto lg:grid lg:grid-cols-[230px_minmax(0,1fr)] items-start">
           <aside className="lg:sticky lg:top-[82px] lg:max-h-[calc(100vh-82px)] lg:overflow-y-auto bg-white border-b lg:border-b-0 lg:border-e border-slate-200 p-4">
-            <label className="lg:hidden text-sm font-bold block">أقسام لوحة الإدارة<select className="mt-2 w-full border border-slate-300 p-3 rounded-xl bg-white" value={active} onChange={e => onChange(e.target.value as AdminSection)}>{adminSections.map(([key, title]) => <option value={key} key={key}>{title}</option>)}</select></label>
+            <label className="lg:hidden text-sm font-bold block">أقسام لوحة الإدارة<select className="mt-2 w-full border border-slate-300 p-3 rounded-xl bg-white" value={active} onChange={e => onChange(e.target.value as AdminSection)}>{visible.map(([key, title]) => <option value={key} key={key}>{title}</option>)}</select></label>
             <input aria-label="بحث في أدوات الإدارة" placeholder="ابحث عن أداة…" className="hidden lg:block w-full rounded-xl border border-slate-200 p-2.5 text-sm mb-5 bg-slate-50" value={search} onChange={e=>setSearch(e.target.value)} />
             <nav aria-label="أقسام لوحة الإدارة" className="hidden lg:block space-y-5">{[...new Set(sections.map(s => s[3]))].map(group => <section key={group}><h2 className="text-[11px] font-bold text-slate-500 mb-2 px-3">{group}</h2><div className="space-y-1">{sections.filter(s => s[3] === group).map(([key, title, Icon]) => <button key={key} aria-current={active === key ? 'page' : undefined} onClick={() => onChange(key)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-start ${active === key ? 'bg-amber-100 text-amber-900 font-bold' : 'text-slate-600 hover:bg-slate-50'}`}><Icon className="w-4 h-4 shrink-0" />{title}</button>)}</div></section>)}</nav>
           </aside>

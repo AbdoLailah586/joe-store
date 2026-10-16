@@ -33,6 +33,8 @@ export const AuthModal: React.FC = () => {
     authMessage,
     loginWithGoogle,
     loginWithEmail,
+    pendingSecondFactor,
+    completeSecondFactor,
     sendOtp,
     verifyOtpAndRegister,
     redirectAfterLogin
@@ -279,6 +281,7 @@ export const AuthModal: React.FC = () => {
     }
   };
 
+  if(pendingSecondFactor) return <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"><form className="bg-white text-slate-900 rounded-3xl p-7 space-y-5 w-full max-w-md" onSubmit={async e=>{e.preventDefault();setLoading(true);setErrorMsg('');try{await completeSecondFactor(totpCode);if(redirectAfterLogin)navigate(redirectAfterLogin as any)}catch(err:any){setErrorMsg(err.message||'تعذر التحقق.')}finally{setLoading(false)}}}><h2 className="text-xl font-black">كود المصادقة الثنائية</h2><p className="text-sm text-slate-600">أدخل كود تطبيق المصادقة لإكمال تسجيل الدخول.</p><input aria-label="كود المصادقة الثنائية" className="w-full border rounded-xl p-3 text-center text-xl tracking-widest" inputMode="numeric" autoComplete="one-time-code" autoFocus maxLength={6} value={totpCode} onChange={e=>setTotpCode(e.target.value.replace(/\D/g,'').slice(0,6))}/>{errorMsg&&<p role="alert" className="text-rose-700 text-sm">{errorMsg}</p>}<button disabled={loading||totpCode.length!==6} className="w-full bg-amber-500 font-bold rounded-xl p-3 disabled:opacity-50">{loading?'جارٍ التحقق…':'تأكيد الدخول'}</button><button type="button" onClick={closeAuthModal} className="w-full text-sm text-slate-600">إغلاق</button></form></div>;
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
       <div

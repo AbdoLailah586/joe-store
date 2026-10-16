@@ -35,6 +35,7 @@ function loadSource(relative) {
     if (id.endsWith('/data/seedProducts')) return { initialProducts: [seedProduct] };
     if (!id.startsWith('.')) return require(id);
     const base = path.resolve(path.dirname(filename), id);
+    if (id.endsWith('.js')) return require(base);
     const resolved = ['.ts', '.tsx'].map(extension => base + extension).find(fs.existsSync);
     return loadSource(path.relative(project, resolved));
   };
@@ -147,7 +148,7 @@ test('a damaged entry does not discard valid cart items, account or store settin
     assert.equal(result.store.cartCount, 2);
     assert.equal(result.store.cartSubtotal, 1000);
     assert.deepEqual(result.store.wishlist, ['test-product']);
-    assert.deepEqual(result.auth.user, user);
+    assert.deepEqual(result.auth.user, { ...user, admin_permissions: [] });
     assert.equal(result.store.settings.store_phone, '01234567890');
     assert.equal(result.store.settings.theme_mode, 'light');
   });

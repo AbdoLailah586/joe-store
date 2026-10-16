@@ -1,5 +1,8 @@
 import { neon } from '@neondatabase/serverless';
+import { currentUser, sameOrigin } from '../lib/session.js';
+import { canAccessSection } from '../lib/access.js';
 import nodemailer from 'nodemailer';
+import { randomInt } from 'node:crypto';
 
 const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
 
@@ -34,6 +37,8 @@ export default async function handler(req, res) {
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { email, name = 'عميلنا العزيز', customTemplate } = body || {};
+    if (!sameOrigin(req)) return res.status(403).json({success:false,error:'الطلب يجب أن يأتي من المتجر نفسه.'});
+    if (customTemplate && !canAccessSection(await currentUser(req),'emails')) return res.status(403).json({success:false,error:'تجربة القوالب تحتاج صلاحية رسائل البريد.'});
 
     if (!email || !email.includes('@')) {
       return res.status(400).json({ success: false, error: 'يرجى إدخال بريد إلكتروني صالح.' });
@@ -42,7 +47,7 @@ export default async function handler(req, res) {
     const cleanEmail = email.trim().toLowerCase();
 
     // 1. Generate secure 6-digit numeric OTP
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpCode = randomInt(100000, 1000000).toString();
 
     // 2. Save in Neon PostgreSQL with 10 minutes expiry
     let templateConfig = customTemplate || {};
@@ -56,6 +61,8 @@ export default async function handler(req, res) {
 
     try {
       const sql = neon(DB_URL);
+      const recent = await sql`SELECT COUNT(*)::int AS count FROM email_verifications WHERE email=${cleanEmail} AND created_at>NOW()-INTERVAL '1 hour'`;
+      if (recent[0]?.count >= 5) return res.status(429).json({success:false,error:'تم طلب أكواد كثيرة لهذا البريد. انتظر قليلًا قبل المحاولة مجددًا.'});
       await sql`
         INSERT INTO email_verifications (email, code, expires_at)
         VALUES (${cleanEmail}, ${otpCode}, NOW() + INTERVAL '10 minutes')

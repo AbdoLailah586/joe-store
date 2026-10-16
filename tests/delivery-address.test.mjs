@@ -8,12 +8,12 @@ function compile(file, mocks = {}, transform = x => x) {
   const source = transform(fs.readFileSync(new URL('../' + file, import.meta.url), 'utf8'));
   const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText;
   const module = { exports: {} };
-  new Function('require', 'module', 'exports', code)(id => mocks[id] || require(id), module, module.exports);
+  new Function('require', 'module', 'exports', code)(id => mocks[id] || (id.endsWith('/access.js') ? require(new URL('../lib/access.js', import.meta.url).pathname.replace(/^\/(?:([A-Za-z]:))/, '$1')) : id === './AuthContext' ? { useAuth: () => ({user:null,sessionReady:true,adminSections:[]}) } : require(id)), module, module.exports);
   return module.exports;
 }
 const address = compile('src/utils/deliveryAddress.ts');
-const { mapRowToOrder } = compile('src/services/neonDb.ts', {
-  '@neondatabase/serverless': { neon: () => () => {} }, '../utils/deliveryAddress': address
+const { mapRowToOrder } = compile('server/store.ts', {
+  './orderWrites.js': {}, '@neondatabase/serverless': { neon: () => () => {} }, '../src/utils/deliveryAddress.js': address
 }, s => s.replace(/const DB_URL\s*=[\s\S]*?const sql = neon\(DB_URL\);/, 'const sql = neon("mock://delivery");'));
 
 test('delivery details, correct city and separate contact numbers survive database reload', () => {

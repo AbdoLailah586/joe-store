@@ -11,6 +11,7 @@ import {
   Copy,
   Smartphone
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Product } from '../../types';
@@ -30,6 +31,8 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
 }) => {
   const { products, isCatalogLoading, isCatalogReadyForReports, toggleProductVisibility, updateProduct, deleteProduct, duplicateProduct } = useStore();
   const { formatPrice } = useLanguage();
+  const { canAccessSection } = useAuth();
+  const canEdit = canAccessSection('products');
 
   const [filters, setFilters] = useState({ ...defaultInventoryFilters });
   const [visibleCount, setVisibleCount] = useState(50);
@@ -41,11 +44,13 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
   useEffect(() => setVisibleCount(50), [filters]);
 
   const handleStockChange = (p: Product, delta: number) => {
+    if (!canEdit) return;
     const nextStock = Math.max(0, (p.stock || 0) + delta);
     updateProduct(p.id, { stock: nextStock, in_stock: nextStock > 0 });
   };
 
   const handleSaveStockInput = (p: Product) => {
+    if (!canEdit) return;
     const nextStock = Math.max(0, tempStock);
     updateProduct(p.id, { stock: nextStock, in_stock: nextStock > 0 });
     setEditingStockId(null);
@@ -54,9 +59,10 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       <InventoryReportsPanel products={products} rows={filteredProducts} filters={filters} onChange={setFilters} errors={errors} loading={isCatalogLoading} ready={isCatalogReadyForReports} />
+      {!canEdit && <p className="text-sm text-slate-600 p-3 rounded-xl bg-slate-100">صلاحيتك تتيح عرض المخزون والتقارير. تعديل الكميات والأصناف يحتاج سماحًا بصفحة المنتجات.</p>}
       <div className="flex flex-wrap gap-2">
-        <button onClick={onOpenExcelModal} className="px-4 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-sm font-bold flex items-center gap-2"><FileSpreadsheet className="w-4 h-4" />رفع إكسل جماعي</button>
-        <button onClick={onOpenAddProduct} className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-sm font-bold flex items-center gap-2"><Plus className="w-4 h-4" />إضافة صنف جديد</button>
+        <button disabled={!canEdit} onClick={onOpenExcelModal} className="px-4 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-sm font-bold flex items-center gap-2"><FileSpreadsheet className="w-4 h-4" />رفع إكسل جماعي</button>
+        <button disabled={!canEdit} onClick={onOpenAddProduct} className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-sm font-bold flex items-center gap-2"><Plus className="w-4 h-4" />إضافة صنف جديد</button>
       </div>
 
       {/* 3. High Density Stock Table */}
@@ -145,7 +151,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                     <td className="py-3 px-3 text-center">
                       <div className="inline-flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200">
                         <button
-                          onClick={() => handleStockChange(p, -1)}
+                          disabled={!canEdit} onClick={() => handleStockChange(p, -1)}
                           className="w-6 h-6 rounded-lg bg-slate-100 hover:bg-rose-500/20 hover:text-rose-700 text-slate-600 flex items-center justify-center transition-colors"
                           title="إنقاص قطعة"
                         >
@@ -164,7 +170,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                           />
                         ) : (
                           <span
-                            onClick={() => { setEditingStockId(p.id); setTempStock(stock ?? 0); }}
+                            onClick={() => { if (!canEdit) return; setEditingStockId(p.id); setTempStock(stock ?? 0); }}
                             className={`min-w-8 text-center font-outfit font-black cursor-pointer hover:underline ${
                               isLow ? 'text-rose-700 font-extrabold' : 'text-slate-900'
                             }`}
@@ -175,7 +181,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                         )}
 
                         <button
-                          onClick={() => handleStockChange(p, 1)}
+                          disabled={!canEdit} onClick={() => handleStockChange(p, 1)}
                           className="w-6 h-6 rounded-lg bg-slate-100 hover:bg-emerald-500/20 hover:text-emerald-700 text-slate-600 flex items-center justify-center transition-colors"
                           title="زيادة قطعة"
                         >
@@ -192,7 +198,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                     {/* Visibility Switch (Show / Hide in store) */}
                     <td className="py-3 px-3 text-center">
                       <button
-                        onClick={() => toggleProductVisibility(p.id, isHidden)}
+                        disabled={!canEdit} onClick={() => toggleProductVisibility(p.id, isHidden)}
                         className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 mx-auto ${
                           !isHidden
                             ? 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 border border-emerald-500/40 shadow-sm'
@@ -232,7 +238,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                     <td className="py-3 pl-2 text-center">
                       <div className="flex items-center justify-center gap-1.5">
                         <button
-                          onClick={() => onOpenEditProduct(p)}
+                          disabled={!canEdit} onClick={() => onOpenEditProduct(p)}
                           className="p-1.5 rounded-lg bg-slate-100 hover:bg-blue-500/20 text-slate-600 hover:text-blue-700 transition-colors"
                           title="تعديل التفاصيل"
                         >
@@ -240,7 +246,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                         </button>
 
                         <button
-                          onClick={() => duplicateProduct(p.id)}
+                          disabled={!canEdit} onClick={() => duplicateProduct(p.id)}
                           className="p-1.5 rounded-lg bg-slate-100 hover:bg-amber-500/20 text-slate-600 hover:text-amber-700 transition-colors"
                           title="تكرار الصنف"
                         >
@@ -254,6 +260,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                             }
                           }}
                           className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/25 text-rose-700 transition-colors"
+                          disabled={!canEdit}
                           title="حذف"
                         >
                           <Trash2 className="w-3.5 h-3.5" />

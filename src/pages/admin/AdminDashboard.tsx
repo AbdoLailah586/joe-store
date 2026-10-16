@@ -3,6 +3,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { AdminShell, AdminSection, initialAdminSection } from './AdminShell';
 const AdminTools = lazy(() => import('./AdminTools').then(m => ({ default: m.AdminTools })));
 const ScreenFinder = lazy(() => import('./ScreenFinder').then(m => ({ default: m.ScreenFinder })));
+const CoverFinder = lazy(() => import('./CoverFinder').then(m => ({ default: m.CoverFinder })));
 import {
   LayoutDashboard,
   Package,
@@ -60,7 +61,7 @@ import { SupplierQuotesPanel } from './SupplierQuotesPanel';
 import { SupportPanel } from './SupportPanel';
 
 export const AdminDashboard: React.FC = () => {
-  const { user, isAdmin, openAuthModal, refreshAccess, isAccessRefreshing, accessRefreshError } = useAuth();
+  const { user, isAdmin, canAccessAdmin, canAccessSection, adminSections: allowedSections, sessionReady, openAuthModal, refreshAccess, isAccessRefreshing, accessRefreshError } = useAuth();
   const {
     products,
     addProduct,
@@ -84,11 +85,13 @@ export const AdminDashboard: React.FC = () => {
 
   const [activeTab, setSection] = useState<AdminSection>(initialAdminSection);
   const setActiveTab = (section: AdminSection) => {
+    if (!canAccessSection(section)) return;
     setSection(section);
     window.history.pushState({}, '', `/admin?section=${section}`);
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
   useEffect(() => { const restore = () => setSection(initialAdminSection()); window.addEventListener('popstate', restore); return () => window.removeEventListener('popstate', restore); }, []);
+  useEffect(() => { if (sessionReady && canAccessAdmin && !new URLSearchParams(window.location.search).has('section') && !canAccessSection(activeTab)) setSection(allowedSections[0] as AdminSection); }, [sessionReady, canAccessAdmin, allowedSections.join(',')]);
 
 
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
@@ -205,6 +208,7 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const handleOpenEditProduct = (prod: Product) => {
+    if (!canAccessSection('products')) return;
     setEditingProduct(prod);
     setProdForm(prod);
     setSpecsInput(JSON.stringify(prod.specs || {}, null, 2));
@@ -291,8 +295,9 @@ export const AdminDashboard: React.FC = () => {
     return true;
   });
 
-  // Strict Admin Guard: Block non-admins from viewing or interacting with admin panel
-  if (!isAdmin) {
+  // Require a verified session and check the selected section before mounting its UI.
+  if (sessionReady === false) return <p role="status" className="p-10 text-center">جارٍ التحقق من جلسة الدخول والصلاحيات…</p>;
+  if (!canAccessAdmin) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 font-cairo">
         <div className="max-w-md w-full p-8 rounded-3xl bg-white border border-rose-500/40 text-center space-y-6 shadow-2xl relative overflow-hidden">
@@ -306,7 +311,7 @@ export const AdminDashboard: React.FC = () => {
             </span>
             <h2 className="text-xl font-black text-slate-900">لوحة تحكم الإدارة للإداريين فقط</h2>
             <p className="text-xs text-slate-600 leading-relaxed">
-              عذراً، لا تمتلك صلاحية الوصول لهذه اللوحة. الدخول مقتصر على حساب المالك العام (<span className="text-amber-700 font-outfit font-bold">abdolailah586@gmail.com</span>) والحسابات التي تمت ترقيتها كمسؤولين (Admins).
+              الدخول متاح للمدير الكامل والمستخدمين المسموح لهم بأقسام محددة. لو حسابك مسجل من نسخة سابقة، سجّل الدخول مرة أخرى لتوثيق الجلسة.
             </p>
           </div>
 
@@ -353,10 +358,13 @@ export const AdminDashboard: React.FC = () => {
     );
   }
 
+  if (!canAccessSection(activeTab)) return <AdminShell active={activeTab} allowed={allowedSections} onChange={setActiveTab} onVisit={() => navigate('home')} name={user?.name}><div role="alert" className="rounded-2xl border border-rose-200 bg-white p-8 space-y-4"><h2 className="font-black text-xl">ليس لديك صلاحية لهذا القسم</h2><p className="text-slate-600">اختار أحد الأقسام المسموحة من القائمة، أو اطلب من المدير تعديل صلاحيات حسابك.</p><button className="px-4 py-3 bg-amber-500 rounded-xl font-bold" onClick={() => setActiveTab(allowedSections[0] as AdminSection)}>فتح أول قسم مسموح</button></div></AdminShell>;
+
   return (
-    <AdminShell active={activeTab} onChange={setActiveTab} onVisit={() => navigate('home')} name={user?.name}><div className="space-y-6 font-cairo min-w-0">
+    <AdminShell active={activeTab} allowed={allowedSections} onChange={setActiveTab} onVisit={() => navigate('home')} name={user?.name}><div className="space-y-6 font-cairo min-w-0">
       <Suspense fallback={<p role="status" className="p-8 text-slate-600">جارٍ فتح الأداة…</p>}>
         {activeTab === 'screens' && <ScreenFinder />}
+        {activeTab === 'covers' && <CoverFinder />}
         {['tools', 'analytics', 'quality', 'stocktake', 'reorder', 'pricing', 'labels'].includes(activeTab) && <AdminTools key={activeTab} mode={activeTab} onEdit={handleOpenEditProduct} onSection={setActiveTab} />}
       </Suspense>
 

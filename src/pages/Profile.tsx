@@ -48,6 +48,7 @@ export const Profile: React.FC = () => {
   const {
     user,
     isAdmin,
+    canAccessAdmin,
     logout,
     updateProfile,
     changePassword,
@@ -272,15 +273,15 @@ export const Profile: React.FC = () => {
       )}
 
       {/* Admin Special Notification Banner */}
-      {isAdmin && (
+      {canAccessAdmin && (
         <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent border border-amber-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-glow-gold">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-700">
               <Crown className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-black text-amber-700 text-xs sm:text-sm">أهلاً بك يا مدير النظام! (Admin Privileges Active)</h3>
-              <p className="text-[11px] text-slate-600">حسابك يمتلك صلاحية الوصول الكاملة للتحكم في المتجر والمخزون والطلبات.</p>
+              <h3 className="font-black text-amber-700 text-xs sm:text-sm">{isAdmin ? 'حساب مدير كامل' : 'لديك أقسام مسموحة في لوحة الإدارة'}</h3>
+              <p className="text-[11px] text-slate-600">{isAdmin ? 'يمكنك إدارة المتجر وتحديد صلاحيات المستخدمين.' : 'افتح لوحة الإدارة للوصول للأقسام التي حددها لك المدير.'}</p>
             </div>
           </div>
           <button

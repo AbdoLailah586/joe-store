@@ -5,10 +5,7 @@ import { resolve } from 'path';
 import sendOtpHandler from './api/send-otp.js';
 import verifyOtpHandler from './api/verify-otp.js';
 import googleAuthHandler from './api/google-auth.js';
-import totpSetupHandler from './api/totp-setup.js';
-import totpConfirmHandler from './api/totp-confirm.js';
-import totpDisableHandler from './api/totp-disable.js';
-import totpVerifyLoginHandler from './api/totp-verify-login.js';
+import storeHandler from './api/store';
 
 // Ensure .env is populated into process.env in Vite Dev Server
 const envPath = resolve(process.cwd(), '.env');
@@ -76,14 +73,8 @@ function devApiPlugin(): Plugin {
               await verifyOtpHandler(req, mockRes);
             } else if (url === '/api/google-auth') {
               await googleAuthHandler(req, mockRes);
-            } else if (url === '/api/totp-setup') {
-              await totpSetupHandler(req, mockRes);
-            } else if (url === '/api/totp-confirm') {
-              await totpConfirmHandler(req, mockRes);
-            } else if (url === '/api/totp-disable') {
-              await totpDisableHandler(req, mockRes);
-            } else if (url === '/api/totp-verify-login') {
-              await totpVerifyLoginHandler(req, mockRes);
+            } else if (url === '/api/store') {
+              await storeHandler(req, mockRes);
             } else {
               next();
             }

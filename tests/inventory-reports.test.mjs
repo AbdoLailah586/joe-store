@@ -10,7 +10,7 @@ function compile(file, mocks = {}) {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
   }).outputText;
   const module = { exports: {} };
-  new Function('require', 'module', 'exports', code)(id => mocks[id] || require(id), module, module.exports);
+  new Function('require', 'module', 'exports', code)(id => mocks[id] || (id.endsWith('/access.js') ? require(new URL('../lib/access.js', import.meta.url).pathname.replace(/^\/(?:([A-Za-z]:))/, '$1')) : id === './AuthContext' ? { useAuth: () => ({user:null,sessionReady:true,adminSections:[]}) } : require(id)), module, module.exports);
   return module.exports;
 }
 const report = compile('src/utils/inventoryReports.ts');
@@ -107,10 +107,10 @@ test('report readiness waits for the full catalog, independently of cart synchro
   globalThis.window = { location: { pathname: '/admin', search: '' } };
   const storage = { readStorage: () => null, readStoredArray: () => [], readStoredSettings: () => ({}), writeStorage() {}, writeStoredJson: () => true, removeStorage() {} };
   const { StoreProvider } = compile('src/context/StoreContext.tsx', {
+    './AuthContext': { useAuth: () => ({user:{id:'test-admin',role:'admin'},sessionReady:true,adminSections:['products','inventory']}) },
     react, '../data/seedProducts': { initialProducts: [] }, '../utils/browserStorage': storage,
     '../utils/whatsappService': { defaultSettings: {}, getWhatsAppLogs: () => [] },
     '../services/neonDb': { neonDb: { syncActiveCart: async () => {}, getAllProducts: () => catalog, getOrders: async () => [], getActiveCarts: async () => [], updateProduct: async () => true } },
-    './AuthContext': { useAuth: () => ({ user: null }) },
   });
   const context = StoreProvider({ children: null }).props.value;
   assert.equal(context.isCatalogReadyForReports, false);

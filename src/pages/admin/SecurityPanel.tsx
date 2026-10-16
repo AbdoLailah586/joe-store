@@ -62,12 +62,12 @@ export const SecurityPanel: React.FC = () => {
 
     <div className={box}>
       <h3 className="font-bold text-slate-900 flex items-center gap-2 mb-1"><KeyRound className="w-4 h-4 text-amber-700" /> المصادقة الثنائية (2FA) لحسابك</h3>
-      <p className="text-xs text-slate-600 mb-4">تُطلب عند تسجيل الدخول بحسابك بعد كلمة المرور.</p>
+      <p className="text-xs text-slate-600 mb-4">تُطلب بعد تأكيد الدخول بكلمة المرور أو Google أو كود البريد.</p>
       {message && <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-3 flex items-center gap-2"><CheckCircle className="w-4 h-4" />{message}</p>}
       {error && <p role="alert" className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl p-3 mb-3 flex items-center gap-2"><AlertCircle className="w-4 h-4" />{error}</p>}
       {!setup ? <div className="flex flex-wrap items-center gap-3">
         <button className={button} disabled={busy} onClick={beginSetup}>تفعيل / إعادة تجهيز 2FA</button>
-        <input type="password" className={`${field} max-w-xs`} placeholder="كلمة المرور لإلغاء التفعيل" value={password} onChange={e => setPassword(e.target.value)} />
+        <input type="text" inputMode="numeric" maxLength={6} className={`${field} max-w-xs`} placeholder="كود تطبيق المصادقة لإلغاء التفعيل" value={password} onChange={e => setPassword(e.target.value)} />
         <button className={button} disabled={busy || !password} onClick={disable}>تعطيل 2FA</button>
       </div> : <div className="space-y-3">
         <p className="text-xs text-slate-700">افتحي تطبيق المصادقة (Google Authenticator أو ما شابه) وأدخلي هذا المفتاح يدويًا:</p>

@@ -9,7 +9,7 @@ function compile(file, mocks = {}, transform = x => x) {
     compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
   }).outputText;
   const module = { exports: {} };
-  new Function('require', 'module', 'exports', code)(id => mocks[id] || require(id), module, module.exports);
+  new Function('require', 'module', 'exports', code)(id => mocks[id] || (id.endsWith('/access.js') ? require(new URL('../lib/access.js', import.meta.url).pathname.replace(/^\/(?:([A-Za-z]:))/, '$1')) : id === './AuthContext' ? { useAuth: () => ({user:null,sessionReady:true,adminSections:[]}) } : require(id)), module, module.exports);
   return module.exports;
 }
 const sample = { id: 'promoted-user', role: 'customer', email: 'user@example.invalid', name: 'User', provider: 'google', addresses: [{ id: 'keep-address' }], phone: '01000000000' };
@@ -22,7 +22,7 @@ function mount(cached, database) {
     useRef(current) { const i = ri++; return refs[i] || (refs[i] = { current }); }, useEffect: (fn, deps) => effects.push({ fn, deps }),
   };
   const storage = { readStoredJson: () => cached, readStoredArray: () => [], writeStoredJson() {}, removeStorage() {}, isStoredUser: () => true };
-  const { AuthProvider } = compile('src/context/AuthContext.tsx', { react, '../services/neonDb': { neonDb: database }, '../utils/browserStorage': storage });
+  const { AuthProvider } = compile('src/context/AuthContext.tsx', { react, '../services/neonDb': { neonDb: { logoutSession: async () => {}, ...database } }, '../utils/browserStorage': storage });
   const render = () => { si = 0; ri = 0; return AuthProvider({ children: null }).props.value; };
   return { render, effects };
 }
@@ -46,7 +46,7 @@ test('a cached customer receives their saved admin role without signing in again
 });
 test('demotion is applied to an existing signed-in session as well', async () => {
   const { render } = mount({ ...sample, role: 'admin' }, { getUserAccess: async () => ({ success: true, exists: true, role: 'customer' }) });
-  const initial = render(); assert.equal(initial.isAdmin, true);
+  const initial = render(); assert.equal(initial.isAdmin, false); // Cached role does not authenticate a session.
   await initial.refreshAccess();
   assert.equal(render().isAdmin, false);
 });
@@ -97,23 +97,14 @@ test('roles refresh on restore, focus, reconnect and visible intervals; listener
     cleanup(); assert.equal(win.count('focus'), 0); assert.equal(win.count('online'), 0); assert.equal(doc.count('visibilitychange'), 0); assert.equal(cleared, true);
   } finally { if (oldWindow === undefined) delete globalThis.window; else globalThis.window = oldWindow; if (oldDocument === undefined) delete globalThis.document; else globalThis.document = oldDocument; }
 });
-test('role updates confirm the actual saved row; access lookup reads only the current account role', async () => {
-  // updateUserRole now also reads a "before" snapshot and writes an audit_log entry
-  // around the UPDATE, so the mock keeps every call instead of just the last one.
-  let returned = [], history = [];
-  const sql = async (strings, ...params) => { history.push({ query: strings.join('?'), params }); return returned; };
-  const { neonDb } = compile('src/services/neonDb.ts', { '@neondatabase/serverless': { neon: () => sql }, '../utils/deliveryAddress': {} }, source => source.replace(/const DB_URL\s*=[\s\S]*?const sql = neon\(DB_URL\);/, 'const sql = neon("mock://roles");'));
-  assert.equal((await neonDb.updateUserRole('target', 'admin')).success, false);
-  returned = [{ id: 'target', role: 'admin' }];
-  history = [];
-  assert.equal((await neonDb.updateUserRole('target', 'admin')).success, true);
-  const updateCall = history.find(call => /RETURNING id, role/.test(call.query));
-  assert.ok(updateCall, 'expected an UPDATE ... RETURNING id, role call');
-  history = [];
-  const access = await neonDb.getUserAccess('target');
-  assert.deepEqual(access, { success: true, exists: true, role: 'admin' });
-  const accessCall = history.find(call => /SELECT id, role FROM users WHERE id =/.test(call.query));
-  assert.ok(accessCall, 'expected a SELECT id, role lookup');
-  assert.deepEqual(accessCall.params, ['target']);
-  assert.doesNotMatch(accessCall.query, /password|addresses|phone/);
+test('client access actions use the server session boundary rather than querying roles directly', async () => {
+  const prior=globalThis.fetch;const calls=[];
+  globalThis.fetch=async (url,options)=>{calls.push({url,options});return {ok:true,json:async()=>({result:{success:true,exists:true,role:'customer',admin_permissions:['covers']}})}};
+  try {
+    const {neonDb}=compile('src/services/neonDb.ts', {'../utils/deliveryAddress':{}});
+    const result=await neonDb.getUserAccess('current');assert.deepEqual(result.admin_permissions,['covers']);
+    await neonDb.updateUserAccess('target',{role:'customer',permissions:['covers']});
+    assert.equal(calls[0].url,'/api/store');assert.equal(calls[0].options.credentials,'same-origin');
+    assert.deepEqual(JSON.parse(calls[1].options.body),{method:'updateUserAccess',args:['target',{role:'customer',permissions:['covers']}]});
+  } finally {globalThis.fetch=prior;}
 });
