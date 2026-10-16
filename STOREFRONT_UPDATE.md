@@ -29,3 +29,11 @@ Report downloads wait for a complete database catalog. Catalog loading completio
 Reports use separate `recorded_stock` and `recorded_images` fields from the database mapper so storefront quantity clamping and fallback pictures cannot turn negative balances into zero-stock results or hide missing image links. Local product edits and order stock changes keep these report fields synchronized.
 
 Validation: 48 passing tests and production build. New coverage includes boundaries, combined filters, missing/estimated metadata, valuation reconciliation, Arabic numeric input, workbook round-trip with 125 rows, CSV escaping, template validation, catalog readiness and raw database values behind storefront fallbacks. Browser checks exercised combined filters, zero-stock reports, invalid bounds, template save/reapply and a downloaded XLSX whose rows and totals were independently checked against the selected test data.
+
+## Existing session role refresh — 16 October 2026
+
+An account already saved as an administrator in the database could remain a customer in an open browser: AuthContext restored its old local user object and never refreshed role changes. The existing identity provider is retained. Account access now reads the current role by the signed-in account's stable ID on restoration, focus, reconnect and visibility return, and every minute while visible. Concurrent refreshes share a request; replies for a previous account or a signed-out session cannot replace the current user. Only the role is merged, preserving profile fields and addresses. The restricted admin screen offers manual permission refresh with loading/error feedback.
+
+User role updates verify the returned database row before reporting success. Role buttons are disabled during an update; the result explains how another open session receives the changed role. No additional promotion or demotion was performed during diagnosis: a targeted read confirmed the reported account already has role `admin`.
+
+Validation: production build and 55 tests, including promotion of a cached customer, demotion, offline failure, request deduplication, account switching/logout races, lifecycle events/cleanup and confirmation of the saved role row. This corrects propagation in the existing legacy authentication; it does not deploy the separate unfinished POS identity/backend migration.

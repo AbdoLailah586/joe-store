@@ -52,7 +52,7 @@ import { EmailTemplatesTab } from './EmailTemplatesTab';
 import { UsersTab } from './UsersTab';
 
 export const AdminDashboard: React.FC = () => {
-  const { user, isAdmin, openAuthModal } = useAuth();
+  const { user, isAdmin, openAuthModal, refreshAccess, isAccessRefreshing, accessRefreshError } = useAuth();
   const {
     products,
     addProduct,
@@ -303,6 +303,15 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-2.5 pt-2">
+            {user && <>
+              <button onClick={() => { void refreshAccess(); }} disabled={isAccessRefreshing}
+                className="w-full py-3 rounded-xl bg-white border border-amber-400 text-amber-800 font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2">
+                <RefreshCw className={`w-4 h-4 ${isAccessRefreshing ? 'animate-spin' : ''}`} />
+                {isAccessRefreshing ? 'جارٍ تحديث الصلاحيات…' : 'تحديث صلاحيات حسابي'}
+              </button>
+              <p className="text-xs text-slate-600">لو اتضافت لك صلاحية مسؤول وأنت مسجل دخول، اضغط تحديث الصلاحيات.</p>
+              {accessRefreshError && <p role="alert" className="text-xs text-rose-700">{accessRefreshError}</p>}
+            </>}
             <button
               onClick={() => openAuthModal('يرجى تسجيل الدخول بحساب الإدارة المصرح له', 'admin')}
               className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-glow-gold transition-all"

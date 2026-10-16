@@ -780,13 +780,25 @@ export const neonDb = {
     }
   },
 
+  async getUserAccess(userId: string): Promise<{ success: boolean; exists?: boolean; role?: 'admin' | 'customer'; error?: string }> {
+    try {
+      const rows = await sql`SELECT id, role FROM users WHERE id = ${userId} LIMIT 1;`;
+      if (!rows?.length) return { success: true, exists: false };
+      return { success: true, exists: true, role: rows[0].role === 'admin' ? 'admin' : 'customer' };
+    } catch {
+      return { success: false, error: 'تعذر تحديث صلاحيات الحساب. تأكد من الاتصال وأعد المحاولة.' };
+    }
+  },
+
   async updateUserRole(userId: string, newRole: 'admin' | 'customer'): Promise<{ success: boolean; error?: string }> {
     try {
-      await sql`
+      const rows = await sql`
         UPDATE users
         SET role = ${newRole}, updated_at = NOW()
-        WHERE id = ${userId};
+        WHERE id = ${userId}
+        RETURNING id, role;
       `;
+      if (rows?.[0]?.id !== userId || rows[0].role !== newRole) return { success: false, error: 'لم يتم حفظ الصلاحية. حدّث قائمة المستخدمين وأعد المحاولة.' };
       return { success: true };
     } catch (err: any) {
       console.error('❌ neonDb.updateUserRole error:', err);

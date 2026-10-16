@@ -22,13 +22,14 @@ import { neonDb } from '../../services/neonDb';
 import { isAccountAdmin, useAuth } from '../../context/AuthContext';
 
 export const UsersTab: React.FC = () => {
-  const { user: currentAdmin } = useAuth();
+  const { user: currentAdmin, refreshAccess } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'customer'>('all');
   const [alert, setAlert] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
   const [selectedUserAddresses, setSelectedUserAddresses] = useState<any[] | null>(null);
+  const [updatingRoleId, setUpdatingRoleId] = useState<string | null>(null);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -53,6 +54,7 @@ export const UsersTab: React.FC = () => {
   }, []);
 
   const handleToggleRole = async (targetUser: any) => {
+    if (updatingRoleId) return;
     const isTargetOwner = targetUser.email?.toLowerCase() === 'abdolailah586@gmail.com';
     if (isTargetOwner) {
       setAlert({ type: 'error', msg: 'لا يمكن تعديل صلاحيات الحساب الرئيسي للمالك (abdolailah586@gmail.com).' });
@@ -66,19 +68,23 @@ export const UsersTab: React.FC = () => {
       return;
     }
 
+    setUpdatingRoleId(targetUser.id);
     try {
       const res = await neonDb.updateUserRole(targetUser.id, newRole);
       if (res.success) {
         setUsers(prev => prev.map(u => u.id === targetUser.id ? { ...u, role: newRole } : u));
         setAlert({
           type: 'success',
-          msg: `تم بنجاح تغيير رتبة (${targetUser.name || targetUser.email}) إلى ${newRole === 'admin' ? 'مسؤول 👑' : 'عميل عادي'}.`
+          msg: `تم حفظ رتبة (${targetUser.name || targetUser.email}) كـ${newRole === 'admin' ? 'مسؤول' : 'عميل عادي'}. صلاحياته تتحدث عند فتح الموقع أو الرجوع إليه، أو خلال دقيقة وهو فاتحه.`
         });
+        if (targetUser.id === currentAdmin?.id) await refreshAccess();
       } else {
         setAlert({ type: 'error', msg: res.error || 'فشل تحديث رتبة المستخدم.' });
       }
     } catch (err: any) {
       setAlert({ type: 'error', msg: err.message || 'حدث خطأ أثناء تعديل الصلاحية.' });
+    } finally {
+      setUpdatingRoleId(null);
     }
   };
 
@@ -129,6 +135,9 @@ export const UsersTab: React.FC = () => {
 
   return (
     <div className="space-y-6 font-cairo">
+      <p className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700 leading-relaxed">
+        بعد حفظ الرتبة، تتحدث صلاحية المستخدم عند فتح الموقع أو الرجوع إليه، أو خلال دقيقة وهو فاتحه. لو نسخته قديمة، يحدّث الصفحة مرة واحدة. ويمكنه الضغط على «تحديث صلاحيات حسابي» في صفحة الإدارة.
+      </p>
       {/* Alert Banner */}
       {alert && (
         <div className={`p-4 rounded-2xl flex items-center justify-between text-xs font-bold ${
@@ -341,7 +350,7 @@ export const UsersTab: React.FC = () => {
                           {/* Role Toggle Button */}
                           <button
                             onClick={() => handleToggleRole(u)}
-                            disabled={isOwner}
+                            disabled={isOwner || !!updatingRoleId}
                             className={`px-3 py-1 rounded-xl text-[11px] font-bold flex items-center gap-1 transition-all ${
                               isOwner
                                 ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-500'

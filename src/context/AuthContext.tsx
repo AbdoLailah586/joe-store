@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { neonDb } from '../services/neonDb';
 import type { DeliveryAddressFields } from '../types';
 import { readStoredJson, readStoredArray, writeStoredJson, removeStorage, isStoredUser } from '../utils/browserStorage';
@@ -38,6 +38,9 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  refreshAccess: () => Promise<boolean>;
+  isAccessRefreshing: boolean;
+  accessRefreshError: string;
   isAuthModalOpen: boolean;
   authMessage: string;
   openAuthModal: (msg?: string, redirectAfterLogin?: string) => void;
@@ -71,6 +74,65 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
   const [redirectAfterLogin, setRedirectAfterLogin] = useState<string | null>(null);
+  const [isAccessRefreshing, setIsAccessRefreshing] = useState(false);
+  const [accessRefreshError, setAccessRefreshError] = useState('');
+  const activeUserId = useRef(user?.id);
+  activeUserId.current = user?.id;
+  const accessRequest = useRef<{ userId: string; promise: Promise<boolean> } | null>(null);
+
+  // Cached account data can predate an administrator's promotion or demotion.
+  // Read the current role by stable account ID and merge only that field.
+  const refreshAccess = useCallback((): Promise<boolean> => {
+    const userId = activeUserId.current;
+    if (!userId) return Promise.resolve(false);
+    if (accessRequest.current?.userId === userId) return accessRequest.current.promise;
+    setIsAccessRefreshing(true);
+    setAccessRefreshError('');
+    const request = neonDb.getUserAccess(userId).then(result => {
+      if (activeUserId.current !== userId) return false;
+      if (!result.success) {
+        setAccessRefreshError(result.error || 'تعذر تحديث صلاحيات الحساب. أعد المحاولة.');
+        return false;
+      }
+      if (!result.exists) {
+        setUser(previous => previous?.id === userId ? { ...previous, role: 'customer' } : previous);
+        setAccessRefreshError('لم يتم العثور على الحساب المسجل. سجّل الدخول مجددًا بالحساب الصحيح.');
+        return false;
+      }
+      const role = result.role === 'admin' ? 'admin' : 'customer';
+      setUser(previous => previous?.id === userId && previous.role !== role ? { ...previous, role } : previous);
+      return true;
+    }).catch(() => {
+      if (activeUserId.current === userId) setAccessRefreshError('تعذر تحديث صلاحيات الحساب. تأكد من الاتصال وأعد المحاولة.');
+      return false;
+    }).finally(() => {
+      if (activeUserId.current === userId) setIsAccessRefreshing(false);
+      if (accessRequest.current?.promise === request) accessRequest.current = null;
+    });
+    accessRequest.current = { userId, promise: request };
+    return request;
+  }, []);
+
+  useEffect(() => {
+    if (!user?.id || typeof window === 'undefined') {
+      setIsAccessRefreshing(false);
+      setAccessRefreshError('');
+      return;
+    }
+    const refresh = () => { void refreshAccess(); };
+    const onVisible = () => { if (document.visibilityState !== 'hidden') refresh(); };
+    refresh();
+    window.addEventListener('focus', refresh);
+    window.addEventListener('online', refresh);
+    document.addEventListener('visibilitychange', onVisible);
+    const interval = window.setInterval(onVisible, 60_000);
+    return () => {
+      window.removeEventListener('focus', refresh);
+      window.removeEventListener('online', refresh);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.clearInterval(interval);
+    };
+  }, [user?.id, refreshAccess]);
 
   useEffect(() => {
     if (user) {
@@ -214,6 +276,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    activeUserId.current = undefined;
     setUser(null);
   };
 
@@ -309,6 +372,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         isAuthenticated: !!user,
         isAdmin,
+        refreshAccess,
+        isAccessRefreshing,
+        accessRefreshError,
         isAuthModalOpen,
         authMessage,
         openAuthModal,

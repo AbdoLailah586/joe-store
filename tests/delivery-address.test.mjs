@@ -90,7 +90,7 @@ test('older saved governorate labels resolve without moving the address to anoth
 test('saving an address reports a database failure without adding it to cached identity', async () => {
   const mutations = [];
   const user = { id: 'test-user', role: 'customer', email: 'test@example.invalid', addresses: [] };
-  const react = { createContext: () => ({ Provider: () => null }), useEffect() {}, useState(initial) {
+  const react = { createContext: () => ({ Provider: () => null }), useEffect() {}, useRef: current => ({ current }), useCallback: fn => fn, useState(initial) {
     return [typeof initial === 'function' ? initial() : initial, () => mutations.push('state')];
   } };
   const { AuthProvider } = compile('src/context/AuthContext.tsx', {
