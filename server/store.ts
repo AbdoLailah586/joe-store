@@ -4,8 +4,12 @@ import { neon } from '@neondatabase/serverless';
 import { decodeDeliveryNotes, encodeDeliveryNotes, formatDeliveryAddress } from '../src/utils/deliveryAddress.js';
 import type { Product, Order, CategoryKey, OrderStatus, PaymentMethod, PaymentStatus } from '../src/types.js';
 // Read connection string strictly from environment variables
-const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
-const sql = neon(DB_URL);
+// Dev configuration loads .env after imports. Resolve the server connection when
+// a query runs, so localhost and deployed functions use the same private setting.
+const queryClient = () => neon(process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '');
+const sql: any = Object.assign((strings: any, ...values: any[]) => queryClient()(strings, ...values), {
+    query: (...args: any[]) => (queryClient().query as any)(...args)
+});
 export interface ActiveCartRecord {
     session_id: string;
     customer_name?: string;

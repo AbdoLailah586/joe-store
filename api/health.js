@@ -1,9 +1,9 @@
 import { neon } from '@neondatabase/serverless';
 import nodemailer from 'nodemailer';
 
-const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
 
 export default async function handler(req, res) {
+  const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');

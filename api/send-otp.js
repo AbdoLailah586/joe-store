@@ -4,7 +4,6 @@ import { canAccessSection } from '../lib/access.js';
 import nodemailer from 'nodemailer';
 import { randomInt } from 'node:crypto';
 
-const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
 
 // Provider Credentials
 const SMTP_USER = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : '';
@@ -21,6 +20,7 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const FROM_EMAIL = process.env.VITE_EMAIL_FROM || process.env.RESEND_FROM || 'JOE Store <onboarding@resend.dev>';
 
 export default async function handler(req, res) {
+  const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
