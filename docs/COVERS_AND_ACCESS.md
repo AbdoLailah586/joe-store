@@ -2,7 +2,7 @@
 
 ## Covers reference
 
-`/admin?section=covers` contains all 113 photographs supplied in the user's `covers` folder, indexed with 79 model labels. Photographs were reviewed visually; local Windows OCR assisted indexing. Four references retain explicit review flags: the unbranded Note 10 label, two partially worn Realme labels and one partially erased Samsung label. Model labels describe the compatible phone, not the case manufacturer. Stock and prices were not inferred from photographs.
+`/admin?section=covers` contains all 113 photographs supplied in the user's `covers` folder, indexed with 80 model labels. Photographs were reviewed visually; local Windows OCR assisted indexing. Four references retain explicit review flags: the unbranded Note 10 label, two partially worn Realme labels and one partially erased Samsung label. Model labels describe the compatible phone, not the case manufacturer. Stock and prices were not inferred from photographs.
 
 The page supports Arabic/English search and Arabic digits, phone-brand and design filters, review and favourite filters, numbered pages, CSV export and original photo viewing. Source photographs in the supplied folder are unchanged. The website uses full-frame WebP versions up to 1920px plus 640px thumbnails for cards; labels remain visible. High-resolution views load on opening. Model/design/colour/shelf/note corrections are stored in `cover_catalog_overrides` and shared across authorized accounts. Favourites remain per browser/account.
 
