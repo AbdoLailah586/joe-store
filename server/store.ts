@@ -811,6 +811,58 @@ async getSupplierQuotes(productId: string): Promise<any[]> {
       return [];
     }
   },
+async addCoverEntry(
+    data: { brand: string; model: string; style?: string; color?: string; location?: string; notes?: string },
+    actor?: { id: string }
+  ): Promise<{ success: boolean; entry?: any; error?: string }> {
+    try {
+      const id = `cover-new-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+      const rows = await sql`
+        INSERT INTO cover_catalog_additions (id, brand, model, style, color, location, notes, created_by)
+        VALUES (${id}, ${data.brand}, ${data.model}, ${data.style || ''}, ${data.color || ''}, ${data.location || ''}, ${data.notes || ''}, ${actor?.id || null})
+        RETURNING *;
+      `;
+      return { success: true, entry: rows[0] };
+    } catch (error) {
+      console.error('❌ neonDb.addCoverEntry error:', error);
+      return { success: false, error: 'تعذر حفظ الكفر الجديد. حاول مرة أخرى.' };
+    }
+  },
+async getCoverAdditions(): Promise<any[]> {
+    try {
+      const rows = await sql`SELECT * FROM cover_catalog_additions ORDER BY created_at DESC;`;
+      return rows || [];
+    } catch (error) {
+      console.error('❌ neonDb.getCoverAdditions error:', error);
+      return [];
+    }
+  },
+async addScreenEntry(
+    data: { boxCode: string; screenTitle: string; category?: string; shelfLocation?: string; notes?: string; models: { brand: string; brandAr?: string; name: string }[] },
+    actor?: { id: string }
+  ): Promise<{ success: boolean; entry?: any; error?: string }> {
+    try {
+      const id = `screen-new-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+      const rows = await sql`
+        INSERT INTO screen_catalog_additions (id, box_code, screen_title, category, shelf_location, notes, models, created_by)
+        VALUES (${id}, ${data.boxCode}, ${data.screenTitle}, ${data.category || 'og_clear'}, ${data.shelfLocation || ''}, ${data.notes || ''}, ${JSON.stringify(data.models)}::jsonb, ${actor?.id || null})
+        RETURNING *;
+      `;
+      return { success: true, entry: rows[0] };
+    } catch (error) {
+      console.error('❌ neonDb.addScreenEntry error:', error);
+      return { success: false, error: 'تعذر حفظ الباكتة الجديدة. حاول مرة أخرى.' };
+    }
+  },
+async getScreenAdditions(): Promise<any[]> {
+    try {
+      const rows = await sql`SELECT * FROM screen_catalog_additions ORDER BY created_at DESC;`;
+      return rows || [];
+    } catch (error) {
+      console.error('❌ neonDb.getScreenAdditions error:', error);
+      return [];
+    }
+  },
 async findOrCreateSupportTicket(phone: string, name?: string, subject?: string, orderId?: string): Promise<any> {
     const existing = await sql`
       SELECT * FROM support_tickets WHERE customer_phone = ${phone} AND status IN ('open', 'pending', 'escalated')

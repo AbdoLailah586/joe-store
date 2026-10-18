@@ -1,0 +1,24 @@
+BEGIN;
+CREATE TABLE IF NOT EXISTS cover_catalog_additions (
+  id VARCHAR(100) PRIMARY KEY,
+  brand VARCHAR(200) NOT NULL,
+  model VARCHAR(200) NOT NULL,
+  style VARCHAR(200) NOT NULL DEFAULT '',
+  color VARCHAR(200) NOT NULL DEFAULT '',
+  location VARCHAR(200) NOT NULL DEFAULT '',
+  notes TEXT NOT NULL DEFAULT '',
+  created_by VARCHAR(100) REFERENCES users(id) ON DELETE SET NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS screen_catalog_additions (
+  id VARCHAR(100) PRIMARY KEY,
+  box_code VARCHAR(100) NOT NULL,
+  screen_title VARCHAR(200) NOT NULL,
+  category VARCHAR(50) NOT NULL DEFAULT 'og_clear',
+  shelf_location VARCHAR(200) NOT NULL DEFAULT '',
+  notes TEXT NOT NULL DEFAULT '',
+  models JSONB NOT NULL DEFAULT '[]'::jsonb,
+  created_by VARCHAR(100) REFERENCES users(id) ON DELETE SET NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+COMMIT;

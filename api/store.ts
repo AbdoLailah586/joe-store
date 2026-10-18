@@ -13,7 +13,8 @@ const orderSections=['overview','analytics','orders','crm'];
 const policies: Record<string,string[]> = {
   toggleProductVisibility:['products'],updateProduct:['products'],bulkInsertProducts:['products'],
   getAllUsers:['users'],getActiveCarts:['crm'],updateOrderState:['orders'],
-  getCoverOverrides:['covers'],saveCoverOverride:['covers'],
+  getCoverOverrides:['covers'],saveCoverOverride:['covers'],addCoverEntry:['covers'],getCoverAdditions:['covers'],
+  addScreenEntry:['screens'],getScreenAdditions:['screens'],
   getAuditLog:['security'],getPickingList:['fulfillment'],getDeliveryBoard:['fulfillment'],
   updateOrderStatus:['orders','fulfillment'],confirmPacking:['fulfillment'],recordDeliveryRefusal:['fulfillment'],
   getRefusalHistory:['fulfillment'],getAllRefusals:['fulfillment'],addSupplierQuote:['suppliers'],getSupplierQuotes:['suppliers'],
@@ -226,6 +227,20 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     if(method==='addSupplierQuote') {
       if(!Number.isFinite(args[2])||args[2]<=0||!String(args[1]||'').trim())throw fail(400,'راجع اسم المورد والسعر.');
       args[3]=actor;
+    }
+    if(method==='addCoverEntry') {
+      const data=args[0]||{};
+      if(!String(data.brand||'').trim()||!String(data.model||'').trim()) throw fail(400,'اكتب ماركة الموبايل والموديل على الأقل.');
+      args[0]={brand:String(data.brand).trim().slice(0,200),model:String(data.model).trim().slice(0,200),style:String(data.style||'').trim().slice(0,200),color:String(data.color||'').trim().slice(0,200),location:String(data.location||'').trim().slice(0,200),notes:String(data.notes||'').trim().slice(0,2000)};
+      args[1]=actor;
+    }
+    if(method==='addScreenEntry') {
+      const data=args[0]||{};
+      const models=(Array.isArray(data.models)?data.models:[]).filter((m:any)=>m&&String(m.name||'').trim()).slice(0,50)
+        .map((m:any)=>({brand:String(m.brand||'').trim().slice(0,100),brandAr:String(m.brandAr||m.brand||'').trim().slice(0,100),name:String(m.name||'').trim().slice(0,150)}));
+      if(!String(data.boxCode||'').trim()||!String(data.screenTitle||'').trim()||!models.length) throw fail(400,'اكتب كود الباكتة والعنوان وموديل توافق واحد على الأقل.');
+      args[0]={boxCode:String(data.boxCode).trim().slice(0,100),screenTitle:String(data.screenTitle).trim().slice(0,200),category:String(data.category||'og_clear').slice(0,50),shelfLocation:String(data.shelfLocation||'').trim().slice(0,200),notes:String(data.notes||'').trim().slice(0,2000),models};
+      args[1]=actor;
     }
     if(method==='escalateSupportTicket')args[2]=actor;
     if(method==='closeSupportTicket')args[1]=actor;

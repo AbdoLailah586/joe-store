@@ -40,6 +40,19 @@ test('covers require their own grant and save only known correction fields',asyn
  assert.deepEqual(JSON.parse(writes[0][1]),{model:'Galaxy A26',location:'Shelf 2'});
  assert.equal(writes[0][2],limited.id);
 });
+test('new catalog entries require their section grant, validate required fields, and attach the verified actor',async()=>{
+ await assert.rejects(execute({},res,{method:'addCoverEntry',args:[{brand:'Samsung',model:'A55'}]},{user:null,sql:denySql}),e=>e.status===403);
+ await assert.rejects(execute({},res,{method:'addScreenEntry',args:[{boxCode:'K1',screenTitle:'t',models:[{name:'A55'}]}]},{user:null,sql:denySql}),e=>e.status===403);
+ const stubStore={addCoverEntry:async()=>({success:true}),addScreenEntry:async()=>({success:true})};
+ await assert.rejects(execute({},res,{method:'addCoverEntry',args:[{brand:'  ',model:'A55'}]},{user:limited,sql:denySql,store:stubStore}),e=>e.status===400);
+ await assert.rejects(execute({},res,{method:'addScreenEntry',args:[{boxCode:'K1',screenTitle:'t',models:[]}]},{user:limited,sql:denySql,store:stubStore}),e=>e.status===400);
+ let coverArgs,screenArgs;
+ const store={addCoverEntry:async(...a)=>{coverArgs=a;return{success:true,entry:{}}},addScreenEntry:async(...a)=>{screenArgs=a;return{success:true,entry:{}}}};
+ await execute({},res,{method:'addCoverEntry',args:[{brand:' Samsung ',model:' Galaxy A55 ',role:'admin'}]},{user:limited,sql:denySql,store});
+ assert.equal(coverArgs[0].brand,'Samsung');assert.equal(coverArgs[0].model,'Galaxy A55');assert.equal(coverArgs[0].role,undefined);assert.equal(coverArgs[1].id,limited.id);
+ await execute({},res,{method:'addScreenEntry',args:[{boxCode:' K1 ',screenTitle:' Title ',models:[{brand:'Samsung',name:' A55 '},{name:'  '}]}]},{user:limited,sql:denySql,store});
+ assert.equal(screenArgs[0].boxCode,'K1');assert.equal(screenArgs[0].models.length,1);assert.equal(screenArgs[0].models[0].name,'A55');assert.equal(screenArgs[1].id,limited.id);
+});
 test('staff actions use the verified actor and only full managers can override holds',async()=>{
  const user={...limited,admin_permissions:['fulfillment']};let options;
  const store={updateOrderStatus:async(id,status,o)=>{options=o;return{success:true}}};
