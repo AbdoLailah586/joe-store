@@ -64,6 +64,7 @@ test('a failed order save keeps the cart and avoids success state changes', asyn
   const whatsapp = { defaultSettings: {}, getWhatsAppLogs: () => [] };
   globalThis.window = { location: { pathname: '/', search: '' } };
   const { StoreProvider } = compile('src/context/StoreContext.tsx', {
+    '../services/offlineCatalog': {deviceIsOnline:()=>true,readOfflineCatalog:async()=>null,saveOfflineCatalog:async()=>false},
     react, '../data/seedProducts': { initialProducts: [product] }, '../utils/browserStorage': storage,
     '../utils/whatsappService': whatsapp, '../services/neonDb': { neonDb: { createOrder: async () => { events.push('persist'); return false; } } },
     './AuthContext': { useAuth: () => ({ user: null }) }
@@ -71,6 +72,22 @@ test('a failed order save keeps the cart and avoids success state changes', asyn
   const context = StoreProvider({ children: null }).props.value;
   await assert.rejects(context.createOrder({ items: [{ product, quantity: 1 }], city: 'المنصورة' }), /سلتك محفوظة/);
   assert.deepEqual(events, ['persist']);
+  delete globalThis.window;
+});
+
+test('offline checkout refuses before any order write, stock change or cart mutation',async()=>{
+  const events=[];
+  const react={createContext:()=>({Provider:()=>null}),useEffect(){},useRef:current=>({current}),useState(initial){return[typeof initial==='function'?initial():initial,()=>events.push('state')]}};
+  globalThis.window={location:{pathname:'/checkout',search:''}};
+  const {StoreProvider}=compile('src/context/StoreContext.tsx',{
+    react,'../services/offlineCatalog':{deviceIsOnline:()=>false},'../data/seedProducts':{initialProducts:[]},
+    '../utils/browserStorage':{readStorage:()=>null,readStoredArray:()=>[],readStoredSettings:()=>({}),writeStorage(){},writeStoredJson:()=>true},
+    '../utils/whatsappService':{defaultSettings:{},getWhatsAppLogs:()=>[]},'./AuthContext':{useAuth:()=>({user:null})},
+    '../services/neonDb':{neonDb:{createOrder:async()=>{events.push('network');return true}}}
+  });
+  const context=StoreProvider({children:null}).props.value;
+  await assert.rejects(context.createOrder({items:[]}),/لن يتم إرسال الطلب تلقائيًا/);
+  assert.equal(context.isOfflineCatalog,true);assert.equal(context.isCatalogReadyForReports,false);assert.deepEqual(events,[]);
   delete globalThis.window;
 });
 

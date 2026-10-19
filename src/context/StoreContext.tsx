@@ -23,6 +23,7 @@ import {
 } from '../utils/whatsappService';
 import { neonDb, ActiveCartRecord } from '../services/neonDb';
 import { useAuth } from './AuthContext';
+import { deviceIsOnline, readOfflineCatalog, saveOfflineCatalog } from '../services/offlineCatalog';
 import {
   readStorage, writeStorage, removeStorage, writeStoredJson, readStoredArray, readStoredSettings,
   isStoredProduct, isStoredCartItem, isStoredOrder
@@ -45,6 +46,9 @@ interface StoreContextType {
   products: Product[];
   isCatalogLoading: boolean;
   isCatalogReadyForReports: boolean;
+  isOfflineCatalog: boolean;
+  catalogSavedAt?: number;
+  refreshCatalog: () => void;
   addProduct: (product: Partial<Product>) => void;
   bulkAddProducts: (newProducts: Partial<Product>[]) => void;
   updateProduct: (id: string, updated: Partial<Product>) => void;
@@ -168,12 +172,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
+  const [isOfflineCatalog,setIsOfflineCatalog]=useState(()=>!deviceIsOnline());
+  const [catalogSavedAt,setCatalogSavedAt]=useState<number|undefined>();
+  const [connectionVersion,setConnectionVersion]=useState(0);
   const locallyEditedIds = useRef(new Set<string>());
   const locallyDeletedIds = useRef(new Set(readStoredArray('joe_store_product_deletions',
     (value): value is string => typeof value === 'string')));
   // The bundled catalog is already available offline. Cache only administrator edits,
   // leaving browser storage available for carts, account preferences and orders.
   const [products, setProducts] = useState<Product[]>(() => {
+    if (!deviceIsOnline()) return [];
     const savedVersion = readStorage('joe_store_catalog_ver');
     // Previous builds generated Excel entries with guessed stock/prices. Keep
     // their cache on disk, but use the reconciled database entries for those IDs.
@@ -237,6 +245,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     writeStoredJson('joe_store_cart', cart);
+    if (!deviceIsOnline()) return;
     const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
     neonDb.syncActiveCart({
       sessionId,
@@ -272,13 +281,30 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  // Initial load from Neon PostgreSQL (with graceful fallback to local cache)
+  useEffect(()=>{
+    const connected=()=>setConnectionVersion(value=>value+1);
+    const disconnected=()=>{setIsOfflineCatalog(true);setConnectionVersion(value=>value+1)};
+    window.addEventListener('online',connected);window.addEventListener('offline',disconnected);
+    return()=>{window.removeEventListener('online',connected);window.removeEventListener('offline',disconnected)};
+  },[]);
+  useEffect(()=>{
+    if(!isOfflineCatalog)return;
+    const retry=()=>{if(deviceIsOnline())setConnectionVersion(value=>value+1)};
+    window.addEventListener('focus',retry);return()=>window.removeEventListener('focus',retry);
+  },[isOfflineCatalog]);
+
+  // Only the complete public product projection is persisted for offline browsing.
   useEffect(() => {
     if (sessionReady === false) return;
     let cancelled = false;
     setIsCatalogLoading(true); setCatalogLoaded(false); setOrders([]); setActiveCarts([]);
+    const offlineFallback=async()=>{
+      const snapshot=await readOfflineCatalog();
+      if(!cancelled){setProducts(snapshot?.products||[]);setCatalogSavedAt(snapshot?.savedAt);setIsOfflineCatalog(true)}
+    };
     // 1. Fetch live products from Neon
-    neonDb.getAllProducts({ includeHidden: true }).then(dbProds => {
+    const catalogRequest=deviceIsOnline()?neonDb.getAllProducts({ includeHidden: true }):Promise.reject(new Error('Offline'));
+    catalogRequest.then(dbProds => {
       if (!cancelled && dbProds && dbProds.length > 0) {
         setProducts(previous => {
           const previousById = new Map(previous.map(product => [product.id, product]));
@@ -292,20 +318,22 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           ];
         });
         setCatalogLoaded(true);
+        setIsOfflineCatalog(false);
+        void saveOfflineCatalog(dbProds).then(saved=>{if(saved&&!cancelled)setCatalogSavedAt(Date.now())});
       }
-    }).catch(console.warn).finally(() => { if (!cancelled) setIsCatalogLoading(false); });
+    }).catch(offlineFallback).finally(() => { if (!cancelled) setIsCatalogLoading(false); });
 
     // 2. Fetch live orders from Neon
-    neonDb.getOrders().then(dbOrders => {
+    if(deviceIsOnline()) neonDb.getOrders().then(dbOrders => {
       if (!cancelled && dbOrders) {
         setOrders(dbOrders);
       }
     }).catch(console.warn);
 
     // 3. Load active carts for CRM
-    if (accountSections.includes('crm')) refreshActiveCarts();
+    if (deviceIsOnline() && accountSections.includes('crm')) refreshActiveCarts();
     return () => { cancelled = true; };
-  }, [sessionReady, accountAccessKey]);
+  }, [sessionReady, accountAccessKey, connectionVersion]);
 
   // Old carts contain product snapshots. Reconcile only after the complete live
   // catalog arrives so a temporary seed/fetch failure cannot erase valid items.
@@ -657,6 +685,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const createOrder = async (
     orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at' | 'whatsapp_notification_sent'>
   ): Promise<Order> => {
+    if (!deviceIsOnline() || isOfflineCatalog) throw new Error('اتصل بالإنترنت وحدّث الكتالوج قبل تأكيد الطلب. سلتك محفوظة ولن يتم إرسال الطلب تلقائيًا.');
     const checkedItems = orderData.items.map(item => {
       const current = products.find(product => product.id === item.product.id);
       if (!current || current.is_active === false || !current.in_stock || current.price <= 0
@@ -893,6 +922,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       value={{
         products,
         isCatalogLoading,
+        isOfflineCatalog,
+        catalogSavedAt,
+        refreshCatalog:()=>setConnectionVersion(value=>value+1),
         isCatalogReadyForReports: catalogLoaded,
         addProduct,
         bulkAddProducts,

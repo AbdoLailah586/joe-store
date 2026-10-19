@@ -19,15 +19,17 @@ import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { Profile } from './pages/Profile';
 import { AuthModal } from './components/AuthModal';
 import { ShoppingPages } from './pages/ShoppingPages';
+import { PwaStatus } from './components/PwaControls';
 
 export const App: React.FC = () => {
-  const { currentTab } = useStore();
+  const { currentTab, isOfflineCatalog } = useStore();
   const { isRTL } = useLanguage();
 
   return (
     <div className={`min-h-screen flex flex-col bg-slate-50  text-slate-900  font-cairo antialiased selection:bg-amber-500 selection:text-black overflow-x-clip max-w-full w-full ${isRTL ? 'rtl' : 'ltr'}`}>
       {/* 1. Main Navigation Bar */}
       {currentTab !== 'admin' && <Navbar />}
+      <PwaStatus />
 
       {/* 2. Main Page Views */}
       <main className="flex-1">
@@ -43,7 +45,7 @@ export const App: React.FC = () => {
         {currentTab === 'order-success' && <OrderSuccess />}
         {currentTab === 'track-order' && <OrderTracking />}
         {currentTab === 'profile' && <Profile />}
-        {currentTab === 'admin' && <AdminDashboard />}
+        {currentTab === 'admin' && (isOfflineCatalog ? <div className="max-w-xl mx-auto p-8 my-8 bg-white border border-slate-200 rounded-2xl text-center"><h1 className="text-xl font-black">لوحة الإدارة تحتاج اتصالًا بالإنترنت</h1><p className="mt-3 text-slate-600">اتصل بالإنترنت للتحقق من صلاحيات حسابك وعرض البيانات الحالية. يمكنك تصفح الكتالوج المحفوظ من المتجر.</p><a href="/catalog" className="inline-block mt-5 px-5 py-3 rounded-xl bg-amber-500 text-slate-950 font-bold">فتح الكتالوج</a></div> : <AdminDashboard />)}
       </main>
 
       {/* 3. Global Drawers & Modals */}

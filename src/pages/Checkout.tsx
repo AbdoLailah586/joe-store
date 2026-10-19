@@ -30,7 +30,7 @@ import { DetailedAddressFields } from '../components/DetailedAddressFields';
 import { buildAddressDetails, formatDeliveryAddress, pickDeliveryFields, normalizeDigits, normalizePhone, isEgyptianPhone, isGoogleMapsUrl } from '../utils/deliveryAddress';
 
 export const Checkout: React.FC = () => {
-  const { cart, cartSubtotal, createOrder, navigate, settings } = useStore();
+  const { cart, cartSubtotal, createOrder, navigate, settings, isOfflineCatalog } = useStore();
   const { t, language, formatPrice, isRTL } = useLanguage();
   const { user, isAuthenticated, openAuthModal, addAddress } = useAuth();
 
@@ -177,6 +177,10 @@ export const Checkout: React.FC = () => {
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+
+    if (isOfflineCatalog || navigator.onLine === false) {
+      setErrorMsg(language==='ar'?'اتصل بالإنترنت وحدّث الكتالوج قبل تأكيد الطلب. سلتك محفوظة.':'Reconnect and refresh the catalog before confirming. Your cart is saved.');return;
+    }
 
     // Strict Requirement: User MUST be signed in to place an order
     if (!isAuthenticated) {
@@ -896,7 +900,7 @@ export const Checkout: React.FC = () => {
             ) : (
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isOfflineCatalog}
                 className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black text-sm flex items-center justify-center gap-2 shadow-glow-gold transition-all active:scale-95 disabled:opacity-50 cursor-pointer font-cairo"
               >
                 {isSubmitting ? (

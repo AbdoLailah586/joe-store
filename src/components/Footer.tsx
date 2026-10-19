@@ -17,6 +17,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { JoeStoreLogo } from './JoeStoreLogo';
 import { PolicyModal, PolicyType } from './PolicyModal';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
+import { InstallAppButton, OfflineReadyLabel } from './PwaControls';
 
 export const Footer: React.FC = () => {
   const { navigate, settings, setSelectedCategory } = useStore();
@@ -34,6 +35,7 @@ export const Footer: React.FC = () => {
   return (
     <>
       <footer className="bg-slate-50 border-t border-amber-500/20 text-slate-600 font-cairo text-xs mt-16 pb-20 md:pb-6">
+        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-wrap items-center justify-between gap-4"><div><p className="font-bold text-slate-900 text-sm">{language==='ar'?'جو ستور على الموبايل والكمبيوتر':'JOE Store on mobile and desktop'}</p><p className="mt-1 leading-6">{language==='ar'?'ثبّت المتجر للوصول السريع وتصفح آخر كتالوج محفوظ أوفلاين.':'Install for quick access and offline browsing of your saved catalog.'}</p><OfflineReadyLabel/></div><InstallAppButton/></div>
         {/* Amazon-style Back to Top button */}
         <button type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}

@@ -25,6 +25,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     wishlist,
     isCatalogLoading,
     isCatalogReadyForReports,
+    isOfflineCatalog,
     selectedCategory,
     setSelectedCategory,
     searchQuery,
@@ -142,7 +143,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     window.addEventListener('popstate', restore); return () => window.removeEventListener('popstate', restore);
   }, []);
   useEffect(() => {
-    if (isCatalogLoading || !isCatalogReadyForReports) return;
+    if (isCatalogLoading || (!isCatalogReadyForReports && !isOfflineCatalog)) return;
     const q = new URLSearchParams();
     if (selectedCategory !== 'all') q.set('category', selectedCategory);
     if (searchQuery.trim()) q.set('q', searchQuery);
@@ -156,14 +157,14 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     if (slice.page > 1) q.set('page', String(slice.page));
     if (pageSize !== 36) q.set('size', String(pageSize));
     window.history.replaceState(window.history.state, '', `/${mode === 'catalog' ? 'catalog' : mode}${q.size ? '?' + q.toString() : ''}`);
-  }, [filterKey, slice.page, isCatalogLoading, isCatalogReadyForReports]);
+  }, [filterKey, slice.page, isCatalogLoading, isCatalogReadyForReports, isOfflineCatalog]);
   const changePage = (next: number) => { const q = new URLSearchParams(window.location.search); if (next > 1) q.set('page', String(next)); else q.delete('page'); window.history.pushState({}, '', `${window.location.pathname}${q.size ? '?' + q.toString() : ''}`); setPage(next); catalogTitle.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   const displayedProducts = slice.rows;
   const title = mode === 'wishlist' ? (isAr ? 'المفضلة' : 'Wishlist') : mode === 'deals' ? (isAr ? 'العروض الحالية' : 'Current deals') : mode === 'recent' ? (isAr ? 'شاهدتها مؤخرًا' : 'Recently viewed') : t('catalog');
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-      {!isCatalogLoading && !isCatalogReadyForReports && <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">تعذر تحديث الكتالوج الحالي. المعروض نسخة محلية مؤقتة؛ حدّث الصفحة بعد التأكد من الاتصال للحصول على أحدث المنتجات والأسعار.</p>}
+      {!isCatalogLoading && !isCatalogReadyForReports && !isOfflineCatalog && <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">تعذر تحديث الكتالوج الحالي. المعروض نسخة محلية مؤقتة؛ حدّث الصفحة بعد التأكد من الاتصال للحصول على أحدث المنتجات والأسعار.</p>}
       {/* Header and Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>

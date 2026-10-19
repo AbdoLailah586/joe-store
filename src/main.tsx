@@ -6,6 +6,9 @@ import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { StoreErrorBoundary } from './components/StoreErrorBoundary';
 import './index.css';
+import { initPwa } from './services/pwa';
+
+initPwa(import.meta.env.PROD);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
