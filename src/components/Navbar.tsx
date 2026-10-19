@@ -1,32 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import {
   Search,
-  ShoppingCart,
+  ShoppingBag,
   Heart,
   Menu,
   X,
-  Phone,
   MapPin,
   Languages,
-  Sun,
-  Moon,
-  ShieldCheck,
-  Flame,
-  SlidersHorizontal,
-  ChevronDown,
-  Sparkles,
   LayoutDashboard,
-  CheckCircle,
-  Smartphone,
-  User as UserIcon,
-  Palette
-} from 'lucide-react';
-import { useStore } from '../context/StoreContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useAuth } from '../context/AuthContext';
-import { AccountMenu } from './AccountMenu';
-import { JoeStoreLogo } from './JoeStoreLogo';
-import { CategoryKey } from '../types';
+  ArrowUpLeft,
+  Grid2X2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { useStore } from "../context/StoreContext";
+import { useLanguage } from "../context/LanguageContext";
+import { useAuth } from "../context/AuthContext";
+import { AccountMenu } from "./AccountMenu";
+import { JoeStoreLogo } from "./JoeStoreLogo";
+import { CategoryKey } from "../types";
+import { priceLabel } from "../utils/amazonEnricher";
 
 export const Navbar: React.FC = () => {
   const {
@@ -39,504 +32,358 @@ export const Navbar: React.FC = () => {
     searchQuery,
     setSearchQuery,
     selectedCategory,
-    setSelectedCategory,
     products,
-    settings,
-    updateSettings,
-    trackActivity
+    trackActivity,
   } = useStore();
-
-  const handleSearchSubmit = () => {
-    if (searchQuery.trim()) {
-      trackActivity('search', undefined, { query: searchQuery.trim(), category: selectedCategory });
-    }
-    setIsSearchFocused(false);
-    navigate('catalog');
-  };
-
-  const { t, language, toggleLanguage, formatPrice, isRTL } = useLanguage();
-  const { user, isAuthenticated, canAccessAdmin: isAdmin, openAuthModal } = useAuth();
-
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const { t, language, toggleLanguage, formatPrice } = useLanguage();
+  const { canAccessAdmin: isAdmin } = useAuth();
+  const ar = language === "ar";
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const menu = useRef<HTMLDialogElement>(null);
+  const categories: { key: CategoryKey; ar: string; en: string }[] = [
+    { key: "audio", ar: "سماعات وصوتيات", en: "Audio & earbuds" },
+    { key: "smartwatches", ar: "ساعات ذكية", en: "Smartwatches" },
+    { key: "chargers_cables", ar: "شواحن وكابلات", en: "Chargers & cables" },
+    { key: "powerbanks", ar: "باور بانك", en: "Power banks" },
+    { key: "cases_protection", ar: "كفرات وحماية", en: "Cases & protection" },
+    { key: "smartphones", ar: "موبايلات", en: "Phones" },
+    { key: "accessories", ar: "إكسسوارات", en: "Accessories" },
+  ];
+  const browse = (category: CategoryKey = "all") => {
+    navigate("catalog", undefined, { category, search: "" });
+    setMenuOpen(false);
+    setSearchFocused(false);
+  };
+  const search = () => {
+    if (searchQuery.trim())
+      trackActivity("search", undefined, {
+        query: searchQuery.trim(),
+        category: "all",
+      });
+    setSearchFocused(false);
+    navigate("catalog", undefined, { category: "all", search: searchQuery });
+  };
+  const results = searchQuery.trim()
+    ? products
+        .filter((p) => {
+          const text =
+            `${p.name_ar} ${p.name_en} ${p.brand} ${p.storage || ""}`.toLowerCase();
+          return (
+            p.is_active !== false &&
+            text.includes(searchQuery.trim().toLowerCase())
+          );
+        })
+        .slice(0, 5)
+    : [];
 
   useEffect(() => {
     const measure = () => {
-      if (headerRef.current) document.documentElement.style.setProperty('--store-header-height', `${headerRef.current.getBoundingClientRect().height}px`);
+      if (headerRef.current)
+        document.documentElement.style.setProperty(
+          "--store-header-height",
+          `${headerRef.current.getBoundingClientRect().height}px`,
+        );
     };
     measure();
-    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    const observer =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(measure)
+        : null;
     if (headerRef.current) observer?.observe(headerRef.current);
-    window.addEventListener('resize', measure);
-    return () => { observer?.disconnect(); window.removeEventListener('resize', measure); };
-  }, []);
-
-  // Close search suggestions on click outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setIsSearchFocused(false);
-      }
+    window.addEventListener("resize", measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  // Filter products for live search preview
-  const searchResults = searchQuery.trim() ? products.filter(p => {
-    const q = searchQuery.toLowerCase();
-    const matchText = (p.name_ar + ' ' + p.name_en + ' ' + p.brand + ' ' + (p.storage || '')).toLowerCase();
-    const matchCat = selectedCategory === 'all' || p.category === selectedCategory;
-    return matchText.includes(q) && matchCat;
-  }).slice(0, 5) : [];
-
-  const categoriesList: { key: CategoryKey; label: string; icon: string }[] = [
-    { key: 'all', label: t('allCategories'), icon: '📱' },
-    { key: 'smartphones', label: t('smartphones'), icon: '📲' },
-    { key: 'smartwatches', label: t('smartwatches'), icon: '⌚' },
-    { key: 'audio', label: t('audio'), icon: '🎧' },
-    { key: 'chargers_cables', label: t('chargers_cables'), icon: '🔌' },
-    { key: 'powerbanks', label: t('powerbanks'), icon: '🔋' },
-    { key: 'cases_protection', label: t('cases_protection'), icon: '🛡️' },
-  ];
+  useEffect(() => {
+    const close = (e: MouseEvent) => {
+      if (!searchRef.current?.contains(e.target as Node))
+        setSearchFocused(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, []);
+  useEffect(() => {
+    if (menuOpen) menu.current?.showModal();
+    else menu.current?.close();
+    if (!menuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [menuOpen]);
 
   return (
     <>
-      <header ref={headerRef} data-testid="store-header" className="sticky top-0 z-40 bg-white/95  backdrop-blur-md border-b border-slate-200  text-slate-800  shadow-md  transition-colors">
-      {/* 1. Top Utility Micro-Bar */}
-      <div className="bg-slate-100  border-b border-slate-200  py-1 px-3 sm:px-4 text-xs font-cairo text-slate-600 ">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-y-1 gap-x-2">
-          {/* Location & Announcement */}
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-            <span className="flex items-center gap-1.5 text-amber-700  font-semibold text-[11px] sm:text-xs">
-              <MapPin className="w-3.5 h-3.5 text-amber-700 flex-shrink-0" />
-              <span>
-                {language === 'ar'
-                  ? 'المنصورة – شارع الإمام محمد عبده – ناصية آمون.'
-                  : 'El Mansoura – Imam Mohamed Abdo Street – Amon Corner.'}
-              </span>
+      <header
+        ref={headerRef}
+        data-testid="store-header"
+        className="joe-navbar sticky top-0 z-40"
+      >
+        <div className="joe-utility">
+          <div className="joe-container">
+            <span>
+              <MapPin size={13} />
+              {ar
+                ? "جو ستور · المنصورة، شارع الإمام محمد عبده"
+                : "JOE Store · Mansoura, Imam Mohamed Abdo St."}
             </span>
-            <span className="hidden md:inline-block text-slate-600 ">•</span>
-            <span className="hidden md:flex items-center gap-1.5 text-slate-600  text-[11px] sm:text-xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 " />
-              <span>
-                {language === 'ar'
-                  ? 'جميع أجهزة الكسر زيرو مفحوصة 100% مع ضمان استبدال رسمي'
-                  : 'All certified pre-owned devices 100% tested with official warranty'}
-              </span>
-            </span>
-          </div>
-
-          {/* Quick Actions (Theme Preset, Language, Track Order, User Profile, Admin) */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 ms-auto flex-wrap">
-            {/* Track Order */}
-            <button
-              onClick={() => navigate('track-order')}
-              className={`hover:text-amber-700  transition-colors flex items-center gap-1 ${currentTab === 'track-order' ? 'text-amber-700  font-bold' : 'text-slate-600 '}`}
-            >
-              <span>{t('trackOrder')}</span>
-            </button>
-
-            <span className="text-slate-600 ">|</span>
-
-            {/* Language Switcher */}
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-200/80 hover:bg-slate-300   text-slate-700  hover:text-amber-700  transition-all font-outfit text-[11px] font-bold border border-slate-300 "
-              title="تغيير اللغة / Switch Language"
-            >
-              <Languages className="w-3.5 h-3.5 text-amber-700 " />
-              <span>{language === 'ar' ? 'English (EN)' : 'عربي (AR)'}</span>
-            </button>
-
-            {/* Admin Dashboard Quick Button (Authorized Admins Only) */}
-            {isAdmin && (
-              <>
-                <span className="text-slate-600 ">|</span>
-                <button
-                  onClick={() => navigate('admin')}
-                  className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all ${
-                    currentTab === 'admin'
-                      ? 'bg-amber-500 text-black shadow-glow-gold'
-                      : 'bg-amber-500/15  text-amber-700  hover:bg-amber-500/25 border border-amber-500/30'
-                  }`}
-                >
-                  <LayoutDashboard className="w-3 h-3" />
-                  <span className="hidden sm:inline">{t('adminPanel')}</span>
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Main Header Bar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
-        {/* Mobile Hamburger Button */}
-        <button
-          aria-label={language === 'ar' ? 'فتح القائمة' : 'Open menu'}
-          aria-expanded={isMobileMenuOpen}
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="lg:hidden p-1.5 sm:p-2 rounded-lg bg-slate-100 hover:bg-slate-200   text-slate-700  focus:outline-none flex-shrink-0"
-        >
-          {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6 text-amber-700" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
-        </button>
-
-        {/* Logo */}
-        <button type="button" aria-label={language === 'ar' ? 'العودة للرئيسية' : 'Back to home'}
-          onClick={() => navigate('home')}
-          className="cursor-pointer flex-shrink-0"
-        >
-          <JoeStoreLogo size="md" className="hidden sm:flex" />
-          <JoeStoreLogo size="sm" className="sm:hidden" />
-        </button>
-
-        {/* Search Bar (Amazon / Noon Style) */}
-        <div ref={searchRef} className="flex-1 max-w-2xl hidden md:block relative">
-          <div className="flex items-center rounded-xl bg-slate-100  border border-slate-300  focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all overflow-hidden shadow-inner">
-            {/* Category Selector inside search */}
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value as CategoryKey)}
-              className="bg-slate-200/80  text-slate-700  text-xs font-cairo py-2.5 px-3 border-l border-slate-300  focus:outline-none cursor-pointer hover:bg-slate-300/80 "
-            >
-              <option value="all">{t('allCategories')}</option>
-              <option value="smartphones">{t('smartphones')}</option>
-              <option value="smartwatches">{t('smartwatches')}</option>
-              <option value="audio">{t('audio')}</option>
-              <option value="chargers_cables">{t('chargers_cables')}</option>
-              <option value="powerbanks">{t('powerbanks')}</option>
-              <option value="cases_protection">{t('cases_protection')}</option>
-            </select>
-
-            {/* Input field */}
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
-              placeholder={t('searchPlaceholder')}
-              className="w-full bg-transparent px-4 py-2.5 text-sm text-slate-900  placeholder-slate-400 focus:outline-none font-cairo"
-            />
-
-            {/* Search Button */}
-            <button
-              aria-label={language === 'ar' ? 'بحث في المنتجات' : 'Search products'}
-              onClick={handleSearchSubmit}
-              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black px-5 py-2.5 font-bold transition-all flex items-center justify-center"
-            >
-              <Search className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Live Search Instant Dropdown Results */}
-          {isSearchFocused && searchResults.length > 0 && (
-            <div className="absolute top-full mt-2 w-full bg-white  border border-slate-200  rounded-xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-100  animate-in fade-in slide-in-from-top-2 duration-200">
-              <div className="p-2 bg-slate-100  text-[11px] font-bold text-amber-700  flex items-center justify-between">
-                <span>{language === 'ar' ? 'نتائج البحث الفورية' : 'Instant Results'} ({searchResults.length})</span>
-                <span className="text-slate-500  font-normal">{language === 'ar' ? 'اضغط على أي منتج لمعاينته' : 'Click to preview product'}</span>
-              </div>
-              {searchResults.map((prod) => (
-                <div
-                  key={prod.id}
-                  onClick={() => {
-                    navigate('product', prod.id);
-                    setIsSearchFocused(false);
-                  }}
-                  className="flex items-center gap-3 p-3 hover:bg-slate-100  cursor-pointer transition-colors"
-                >
-                  <img src={prod.images[0]} alt={prod.name_ar} className="w-12 h-12 object-cover rounded-lg bg-slate-100 " />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-slate-800  truncate">
-                      {language === 'ar' ? prod.name_ar : prod.name_en}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs font-bold text-amber-700  font-outfit">
-                        {formatPrice(prod.price)}
-                      </span>
-                      {prod.battery_health && (
-                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-700  font-bold">
-                          🔋 {prod.battery_health}%
-                        </span>
-                      )}
-                      <span className="text-[10px] text-slate-500 ">
-                        {prod.condition === 'mint' ? (language === 'ar' ? 'كسر زيرو' : 'Mint') : (language === 'ar' ? 'جديد' : 'Brand New')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <div
-                onClick={() => {
-                  navigate('catalog');
-                  setIsSearchFocused(false);
-                }}
-                className="p-2.5 text-center text-xs font-bold text-amber-700  hover:bg-amber-50  cursor-pointer bg-slate-50 "
-              >
-                {language === 'ar' ? 'عرض كافة النتائج في المتجر ←' : 'View all products in catalog →'}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Header Controls (Account, Cart, Wishlist) */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
-          <AccountMenu />
-
-          {/* Wishlist */}
-          <button
-            onClick={() => navigate('wishlist', undefined, { category: 'all', search: '' })}
-            className="relative p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200   text-slate-700  hover:text-rose-700 transition-all"
-            title={t('wishlist')}
-          >
-            <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${wishlist.length > 0 ? 'fill-rose-500 text-rose-700' : ''}`} />
-            {wishlist.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-rose-600 text-on-brand text-[9px] sm:text-[10px] font-bold flex items-center justify-center shadow-lg font-outfit">
-                {wishlist.length}
-              </span>
-            )}
-          </button>
-
-          {/* Cart Drawer Trigger */}
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-500/10    hover:bg-amber-500/20 border border-amber-500/30 text-amber-700  transition-all group shadow-sm active:scale-95 flex-shrink-0"
-          >
-            <div className="relative">
-              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform text-amber-700 " />
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-black text-[10px] sm:text-[11px] font-black flex items-center justify-center shadow-glow-gold font-outfit">
-                  {cartCount}
-                </span>
-              )}
-            </div>
-            <div className="hidden sm:flex flex-col text-right">
-              <span className="text-[10px] text-slate-500  uppercase tracking-wider font-cairo">{t('cart')}</span>
-              <span className="text-xs font-bold text-slate-800  font-outfit">
-                {formatPrice(cartSubtotal)}
-              </span>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* 3. Mobile Search Input Bar */}
-      <div className="md:hidden px-3 sm:px-4 pb-2.5">
-        <div className="flex items-center rounded-xl bg-slate-100  border border-slate-300  overflow-hidden shadow-inner">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
-            placeholder={t('searchPlaceholder')}
-            className="w-full bg-transparent px-3 py-2 text-xs text-slate-900  placeholder-slate-400 focus:outline-none font-cairo"
-          />
-          <button
-            aria-label={language === 'ar' ? 'بحث في المنتجات' : 'Search products'}
-              onClick={handleSearchSubmit}
-            className="bg-amber-500 text-black px-3.5 py-2 hover:bg-amber-400"
-          >
-            <Search className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* 4. Sub-Navigation (Category Quick Links Strip) */}
-      <nav className="bg-slate-100/90  border-t border-slate-200  px-3 sm:px-4 overflow-x-auto scrollbar-none">
-        <div className="max-w-7xl mx-auto flex items-center gap-1 sm:gap-2 py-2 text-xs font-semibold whitespace-nowrap">
-          {/* All Categories Dropdown trigger */}
-          <button
-            onClick={() => {
-              setSelectedCategory('all');
-              navigate('catalog');
-            }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
-              selectedCategory === 'all' && currentTab === 'catalog'
-                ? 'bg-amber-500 text-black font-bold shadow-glow-gold'
-                : 'text-slate-700  hover:text-amber-700  hover:bg-slate-200 '
-            }`}
-          >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>{t('allCategories')}</span>
-          </button>
-
-          {/* Certified Pre-owned Special Pill (Featured Video Concept) */}
-          <button
-            onClick={() => {
-              setSelectedCategory('smartphones');
-              navigate('catalog');
-            }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/15    text-amber-700  border border-amber-500/30 hover:border-amber-400 transition-all font-bold animate-pulse-subtle flex-shrink-0"
-          >
-            <Smartphone className="w-3.5 h-3.5 text-amber-700 " />
-            <span>{language === 'ar' ? 'آيفون كسر زيرو (بطاريات 85% - 97%)' : 'Certified Pre-Owned iPhones'}</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-700"></span>
-          </button>
-
-          {/* Categories */}
-          {categoriesList.filter(c => c.key !== 'all').map((cat) => (
-            <button
-              key={cat.key}
-              onClick={() => {
-                setSelectedCategory(cat.key);
-                navigate('catalog');
-              }}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all flex-shrink-0 ${
-                selectedCategory === cat.key && currentTab === 'catalog'
-                  ? 'bg-amber-500 text-black font-bold'
-                  : 'text-slate-700  hover:text-amber-700  hover:bg-slate-200 '
-              }`}
-            >
-              <span>{cat.icon}</span>
-              <span>{cat.label}</span>
-            </button>
-          ))}
-
-          {[['brands', 'الماركات', 'Brands'], ['finder', 'اختار المناسب لك', 'Buying assistant'], ['bundles', 'جمّع باقتك', 'Build your set'], ['help', 'المساعدة', 'Help']].map(([key, ar, en]) => <button key={key} onClick={() => navigate(key as any)} className="px-3 py-2 text-sm text-slate-700 whitespace-nowrap hover:text-amber-800">{language === 'ar' ? ar : en}</button>)}
-          {/* Daily Deals Pill */}
-          <button
-            onClick={() => navigate('deals', undefined, { category: 'all', search: '' })}
-            className="ms-auto flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/20 text-rose-700  border border-rose-500/30 hover:bg-rose-500/30 transition-all font-bold flex-shrink-0"
-          >
-            <Flame className="w-3.5 h-3.5 text-rose-700 " />
-            <span>{t('deals')}</span>
-          </button>
-        </div>
-      </nav>
-    </header>
-
-    {/* 5. Mobile Drawer Menu - Rendered outside header to prevent clipping */}
-    {isMobileMenuOpen && (
-      <div className="lg:hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex animate-in fade-in duration-200">
-        <div className="w-4/5 max-w-xs sm:max-w-sm bg-white  h-full p-5 overflow-y-auto border-l border-slate-200  flex flex-col justify-between shadow-2xl text-slate-800 ">
-          <div>
-            <div className="flex items-center justify-between pb-4 border-b border-slate-200 ">
-              <JoeStoreLogo size="sm" />
-              <button
-                aria-label={language === 'ar' ? 'إغلاق القائمة' : 'Close menu'}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200   text-slate-700 "
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Navigation Links */}
-            <div className="py-4 space-y-1">
-              {/* Profile / Auth Button */}
-              {isAuthenticated && user ? (
-                <button
-                  onClick={() => { navigate('profile'); setIsMobileMenuOpen(false); }}
-                  className="w-full text-right px-3 py-2.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-700  font-bold flex items-center justify-between"
-                >
-                  <span className="flex items-center gap-2">
-                    <UserIcon className="w-4 h-4 text-amber-700 " />
-                    <span>{user.name}</span>
-                  </span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-400 text-black font-extrabold">
-                    {t('profile')}
-                  </span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => { openAuthModal(); setIsMobileMenuOpen(false); }}
-                  className="w-full text-right px-3 py-2.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-700  font-bold flex items-center gap-2"
-                >
-                  <UserIcon className="w-4 h-4 text-amber-700 " />
-                  <span>{t('signIn')} / {t('signUp')}</span>
-                </button>
-              )}
-
-              <button
-                onClick={() => { navigate('home'); setIsMobileMenuOpen(false); }}
-                className="w-full text-right px-3 py-2.5 rounded-lg hover:bg-slate-100  font-bold text-slate-800 "
-              >
-                {t('home')}
+            <div>
+              <button onClick={() => navigate("track-order")}>
+                {t("trackOrder")}
               </button>
               <button
-                onClick={() => { navigate('catalog'); setIsMobileMenuOpen(false); }}
-                className="w-full text-right px-3 py-2.5 rounded-lg hover:bg-slate-100  font-bold text-slate-800 "
+                onClick={toggleLanguage}
+                aria-label={ar ? "Switch to English" : "التحويل للعربية"}
               >
-                {t('catalog')}
-              </button>
-              <button
-                onClick={() => { navigate('track-order'); setIsMobileMenuOpen(false); }}
-                className="w-full text-right px-3 py-2.5 rounded-lg hover:bg-slate-100  font-bold text-slate-800 "
-              >
-                {t('trackOrder')}
+                <Languages size={13} />
+                {ar ? "English" : "العربية"}
               </button>
               {isAdmin && (
-                <button
-                  onClick={() => { navigate('admin'); setIsMobileMenuOpen(false); }}
-                  className="w-full text-right px-3 py-2.5 rounded-lg bg-amber-500/10 text-amber-700  font-bold border border-amber-500/20"
-                >
-                  {t('adminPanel')}
+                <button onClick={() => navigate("admin")}>
+                  <LayoutDashboard size={13} />
+                  <span>{ar ? "الإدارة" : "Admin"}</span>
                 </button>
               )}
             </div>
-
-            {/* Categories Section */}
-            <div className="py-4 border-t border-slate-200 ">
-              <p className="text-xs font-bold text-amber-700  uppercase tracking-wider mb-2">
-                {language === 'ar' ? 'الأقسام الرئيسية' : 'Main Categories'}
-              </p>
-              <div className="space-y-1">
-                {categoriesList.map(cat => (
-                  <button
-                    key={cat.key}
-                    onClick={() => {
-                      setSelectedCategory(cat.key);
-                      navigate('catalog');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full text-right px-3 py-2 text-xs rounded hover:bg-slate-100  text-slate-700  flex items-center justify-between"
-                  >
-                    <span>{cat.label}</span>
-                    <span>{cat.icon}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Actions */}
-          <div className="pt-4 border-t border-slate-200  space-y-2">
-            {/* Direct TikTok Profile Link */}
-            {(() => {
-              const tiktokHref = (settings.tiktok_url && (!settings.tiktok_url.includes('@joestore') || settings.tiktok_url.includes('2026')))
-                ? settings.tiktok_url
-                : 'https://www.tiktok.com/@joestore2026';
-              return (
-                <a
-                  href={tiktokHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2 px-3 rounded-lg bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors text-xs font-bold flex items-center justify-center gap-2 shadow-sm"
-                >
-                  <span>TikTok: @joestore2026 🎵</span>
-                </a>
-              );
-            })()}
-
-            <button
-              onClick={() => { toggleLanguage(); setIsMobileMenuOpen(false); }}
-              className="w-full py-2 rounded-lg bg-slate-100 hover:bg-slate-200  text-xs font-bold flex items-center justify-center gap-2 text-amber-700 "
-            >
-              <Languages className="w-4 h-4" />
-              <span>{language === 'ar' ? 'Switch to English' : 'التحويل للغة العربية'}</span>
-            </button>
-            <div className="text-[11px] text-slate-500  text-center font-cairo">
-              {language === 'ar' ? 'جو ستور - المنصورة' : 'JOE Store - Mansoura'}
-            </div>
           </div>
         </div>
-
-        <div className="flex-1" onClick={() => setIsMobileMenuOpen(false)} />
-      </div>
-    )}
-  </>
+        <div className="joe-container joe-header-main">
+          <button
+            className="joe-mobile-menu joe-header-icon"
+            onClick={() => setMenuOpen(true)}
+            aria-label={ar ? "فتح القائمة" : "Open menu"}
+            aria-expanded={menuOpen}
+          >
+            <Menu size={22} />
+          </button>
+          <button
+            onClick={() => navigate("home")}
+            className="joe-header-logo"
+            aria-label={ar ? "العودة للرئيسية" : "Back to home"}
+          >
+            <JoeStoreLogo showSubtitle={false} size="md" />
+          </button>
+          <div ref={searchRef} className="joe-header-search">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                search();
+              }}
+              role="search"
+            >
+              <Search size={19} aria-hidden="true" />
+              <input
+                aria-label={ar ? "ابحث في المنتجات" : "Search products"}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setSearchFocused(false);
+                }}
+                placeholder={
+                  ar ? "إيه اللي بتدوّر عليه؟" : "What are you looking for?"
+                }
+              />
+              <button
+                type="submit"
+                aria-label={ar ? "بحث في المنتجات" : "Search products"}
+              >
+                {ar ? "بحث" : "Search"}
+              </button>
+            </form>
+            {searchFocused && results.length > 0 && (
+              <div className="joe-search-results">
+                <p>{ar ? "نتائج سريعة" : "Quick results"}</p>
+                {results.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      navigate("product", p.id);
+                      setSearchFocused(false);
+                    }}
+                  >
+                    <img
+                      src={p.images[0] || "/product-placeholder.svg"}
+                      alt=""
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/product-placeholder.svg";
+                      }}
+                    />
+                    <span>
+                      <strong>{ar ? p.name_ar : p.name_en}</strong>
+                      <small>{priceLabel(p, language, formatPrice)}</small>
+                    </span>
+                  </button>
+                ))}
+                <button className="joe-search-all" onClick={search}>
+                  {ar ? "عرض كل النتائج" : "See all results"}
+                  {ar ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="joe-header-controls">
+            <AccountMenu />
+            <button
+              className="joe-header-icon joe-wishlist-button"
+              aria-label={t("wishlist")}
+              onClick={() =>
+                navigate("wishlist", undefined, { category: "all", search: "" })
+              }
+            >
+              <Heart size={21} />
+              {wishlist.length > 0 && (
+                <span className="joe-count">{wishlist.length}</span>
+              )}
+            </button>
+            <button
+              className="joe-cart-button"
+              onClick={() => setIsCartOpen(true)}
+              aria-label={`${t("cart")} (${cartCount})`}
+            >
+              <span className="relative">
+                <ShoppingBag size={21} />
+                {cartCount > 0 && (
+                  <span className="joe-count">{cartCount}</span>
+                )}
+              </span>
+              <span className="joe-cart-label">
+                <small>{t("cart")}</small>
+                <strong>{formatPrice(cartSubtotal)}</strong>
+              </span>
+            </button>
+          </div>
+        </div>
+        <nav
+          className="joe-header-nav"
+          aria-label={ar ? "أقسام المتجر" : "Store navigation"}
+        >
+          <div className="joe-container">
+            <button
+              className="joe-nav-all"
+              aria-current={
+                currentTab === "catalog" && selectedCategory === "all"
+                  ? "page"
+                  : undefined
+              }
+              onClick={() => browse()}
+            >
+              <Grid2X2 size={16} />
+              {ar ? "كل المنتجات" : "All products"}
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat.key}
+                aria-current={
+                  currentTab === "catalog" && selectedCategory === cat.key
+                    ? "page"
+                    : undefined
+                }
+                onClick={() => browse(cat.key)}
+              >
+                {ar ? cat.ar : cat.en}
+              </button>
+            ))}
+            <button
+              className="joe-nav-offers"
+              onClick={() =>
+                navigate("deals", undefined, { category: "all", search: "" })
+              }
+            >
+              <span className="joe-status-dot" />
+              {ar ? "العروض" : "Offers"}
+              <ArrowUpLeft size={15} />
+            </button>
+          </div>
+        </nav>
+      </header>
+      <dialog
+        ref={menu}
+        aria-label={ar ? "قائمة المتجر" : "Store menu"}
+        className="joe-menu-dialog"
+        onCancel={() => setMenuOpen(false)}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setMenuOpen(false);
+        }}
+      >
+        <div className="joe-menu-panel">
+          <div className="joe-menu-top">
+            <JoeStoreLogo size="sm" showSubtitle={false} />
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="joe-header-icon"
+              aria-label={ar ? "إغلاق القائمة" : "Close menu"}
+            >
+              <X size={21} />
+            </button>
+          </div>
+          <h2>{ar ? "كل اللي محتاجه" : "Your everyday essentials"}</h2>
+          <button
+            onClick={() => {
+              navigate("home");
+              setMenuOpen(false);
+            }}
+          >
+            {ar ? "الرئيسية" : "Home"}
+          </button>
+          <button onClick={() => browse()}>
+            {ar ? "كل المنتجات" : "All products"}
+          </button>
+          {categories.map((cat) => (
+            <button key={cat.key} onClick={() => browse(cat.key)}>
+              {ar ? cat.ar : cat.en}
+              <ArrowUpLeft size={17} />
+            </button>
+          ))}
+          <div className="joe-menu-extra">
+            {(
+              [
+                ["brands", "الماركات", "Brands"],
+                ["finder", "مساعد الشراء", "Buying assistant"],
+                ["bundles", "جمّع باقتك", "Build your set"],
+                ["track-order", "تتبع طلبك", "Track your order"],
+                ["help", "المساعدة", "Help"],
+              ] as const
+            ).map(([tab, a, en]) => (
+              <button
+                key={tab}
+                onClick={() => {
+                  navigate(tab);
+                  setMenuOpen(false);
+                }}
+              >
+                {ar ? a : en}
+              </button>
+            ))}
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  navigate("admin");
+                  setMenuOpen(false);
+                }}
+              >
+                {ar ? "لوحة الإدارة" : "Administration"}
+              </button>
+            )}
+          </div>
+          <button
+            onClick={() => {
+              toggleLanguage();
+              setMenuOpen(false);
+            }}
+          >
+            <Languages size={17} />
+            {ar ? "English" : "العربية"}
+          </button>
+        </div>
+      </dialog>
+    </>
   );
 };

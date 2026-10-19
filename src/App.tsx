@@ -26,7 +26,7 @@ export const App: React.FC = () => {
   const { isRTL } = useLanguage();
 
   return (
-    <div className={`min-h-screen flex flex-col bg-slate-50  text-slate-900  font-cairo antialiased selection:bg-amber-500 selection:text-black overflow-x-clip max-w-full w-full ${isRTL ? 'rtl' : 'ltr'}`}>
+    <div className={`${currentTab !== 'admin' ? 'joe-storefront' : ''} min-h-screen flex flex-col bg-slate-50 text-slate-900 font-cairo antialiased selection:bg-amber-500 selection:text-black overflow-x-clip max-w-full w-full ${isRTL ? 'rtl' : 'ltr'}`}>
       {/* 1. Main Navigation Bar */}
       {currentTab !== 'admin' && <Navbar />}
       <PwaStatus />

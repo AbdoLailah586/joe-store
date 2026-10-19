@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { AnimateStorefront } from '../components/motion/AnimateStorefront';
 import {
   ShieldCheck,
   BatteryMedium,
@@ -67,6 +68,7 @@ export const ProductDetails: React.FC = () => {
   const [isZooming, setIsZooming] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const imageContainerRef = useRef<HTMLDivElement>(null);
+  const detailRoot = useRef<HTMLDivElement>(null);
 
   // Frequently Bought Together Bundle Selection state
   const [bundleSelected, setBundleSelected] = useState<{ [id: string]: boolean }>({});
@@ -149,7 +151,9 @@ export const ProductDetails: React.FC = () => {
     if (!canPurchase || quantity < 1 || quantity > product.stock) return;
     addToCart(product, quantity, selectedStorage, selectedColor);
     setAddedToast(true);
-    confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 } });
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 } });
+    }
     setTimeout(() => setAddedToast(false), 2500);
   };
 
@@ -251,7 +255,8 @@ export const ProductDetails: React.FC = () => {
   });
 
   return (
-    <div className="w-full bg-slate-50 text-slate-900 font-cairo">
+    <div ref={detailRoot} className="joe-product-page w-full bg-slate-50 text-slate-900 font-cairo">
+      <AnimateStorefront root={detailRoot} motionKey={`${product.id}-${language}`} />
       {/* 1. Amazon Top Breadcrumbs & Brand Store Strip */}
       <div className="bg-white border-b border-slate-200 py-2.5 px-4 sm:px-6 text-xs text-slate-600">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
@@ -296,7 +301,7 @@ export const ProductDetails: React.FC = () => {
         {/* ==============================================================
             MAIN AMAZON 3-COLUMN PRODUCT VIEW (Gallery | Details | Buy Box)
            ============================================================== */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="joe-product-layout grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
           {/* ------------------------------------------------------------
               COLUMN 1: Left Gallery (5 cols on lg)
@@ -328,7 +333,7 @@ export const ProductDetails: React.FC = () => {
                 onMouseLeave={() => setIsZooming(false)}
                 onMouseMove={handleMouseMove}
                 onClick={() => setLightboxOpen(true)}
-                className="aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative cursor-crosshair group select-none shadow-xl"
+                className="joe-detail-gallery aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative cursor-crosshair group select-none shadow-xl"
               >
                 <img
                   src={product.images[selectedImage] || product.images[0] || '/product-placeholder.svg'}
@@ -414,7 +419,7 @@ export const ProductDetails: React.FC = () => {
               </div>
 
               {/* Amazon Detailed Title */}
-              <h1 className="text-lg sm:text-xl font-black text-slate-900 font-cairo leading-snug">
+              <h1 key={`${product.id}-${language}`} data-split-title className="text-lg sm:text-2xl font-black text-slate-900 font-cairo leading-relaxed">
                 {language === 'ar' ? enriched.detailed_title_ar : enriched.detailed_title_en}
               </h1>
               {notice && <p role="note" className="mt-3 p-3 rounded-xl border border-amber-500/50 bg-amber-500/10 text-xs leading-relaxed text-amber-700 font-bold">{notice}</p>}
@@ -616,7 +621,7 @@ export const ProductDetails: React.FC = () => {
               COLUMN 3: Right Amazon Buy Box (2.5 cols on lg)
              ------------------------------------------------------------ */}
           <div className="lg:col-span-3 lg:sticky self-start" style={{ top: 'calc(var(--store-header-height, 150px) + 16px)' }}>
-            <div className="rounded-2xl bg-white border border-amber-500/30 p-5 space-y-4 shadow-xl relative">
+            <div className="joe-buy-box rounded-2xl bg-white border border-amber-500/30 p-5 space-y-4 shadow-xl relative">
               {/* Price inside Buy Box */}
               <div>
                 <div className="text-2xl font-black text-amber-700 font-outfit">

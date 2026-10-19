@@ -18,6 +18,7 @@ import { CategoryKey, ProductCondition } from '../types';
 import { Pagination } from '../components/Pagination';
 import { pageSlice } from '../utils/storeExpansion';
 import { readStoredArray } from '../utils/browserStorage';
+import { AnimateStorefront } from '../components/motion/AnimateStorefront';
 
 export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'recent' }> = ({ mode = 'catalog' }) => {
   const {
@@ -37,6 +38,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
 
   const initialQuery = useRef(new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search));
   const catalogTitle = useRef<HTMLHeadingElement>(null);
+  const catalogRoot = useRef<HTMLDivElement>(null);
   const restored = useRef(false);
   const [restoreVersion, setRestoreVersion] = useState(0);
   const [availableOnly, setAvailableOnly] = useState(initialQuery.current.get('stock') === 'available');
@@ -163,13 +165,15 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
   const title = mode === 'wishlist' ? (isAr ? 'المفضلة' : 'Wishlist') : mode === 'deals' ? (isAr ? 'العروض الحالية' : 'Current deals') : mode === 'recent' ? (isAr ? 'شاهدتها مؤخرًا' : 'Recently viewed') : t('catalog');
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+    <div ref={catalogRoot} className="joe-catalog joe-container space-y-6">
+      <AnimateStorefront root={catalogRoot} motionKey={`${language}-${mode}`} />
       {!isCatalogLoading && !isCatalogReadyForReports && !isOfflineCatalog && <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">تعذر تحديث الكتالوج الحالي. المعروض نسخة محلية مؤقتة؛ حدّث الصفحة بعد التأكد من الاتصال للحصول على أحدث المنتجات والأسعار.</p>}
       {/* Header and Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+      <div className="joe-catalog-intro flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200">
         <div>
+          <span className="joe-eyebrow">{isAr ? 'تفاصيل تكمل يومك / JOE COLLECTION' : 'THE JOE COLLECTION / EVERYDAY UPGRADES'}</span>
           <h1 ref={catalogTitle} style={{ scrollMarginTop: 'calc(var(--store-header-height, 160px) + 20px)' }} className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo flex items-center gap-2">
-            <span>{title}</span>
+            <span key={language} data-split-title>{title}</span>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 font-bold border border-amber-500/30">
               {filteredProducts.length} منتج
             </span>
@@ -208,7 +212,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-sm">
+      <div className="joe-catalog-toolbar flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-sm">
         <label className="flex items-center gap-2"><input type="checkbox" checked={availableOnly} onChange={e => setAvailableOnly(e.target.checked)} className="accent-amber-600" />{isAr ? 'المتاح للشراء فقط' : 'Available to buy only'}</label>
         <label className="flex items-center gap-2">{isAr ? 'منتجات في الصفحة' : 'Per page'}<select className="border border-slate-300 rounded-lg p-2 bg-white" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>{[24,36,48].map(n => <option key={n}>{n}</option>)}</select></label>
       </div>
@@ -438,7 +442,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
             </div>
           ) : (
             <div className="space-y-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="joe-catalog-products grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
                 {displayedProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

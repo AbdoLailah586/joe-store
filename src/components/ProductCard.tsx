@@ -1,224 +1,187 @@
-import React from 'react';
+import React from "react";
 import {
   Heart,
   Eye,
-  ShoppingCart,
+  ShoppingBag,
   BatteryMedium,
   ShieldCheck,
   MessageCircle,
-  Check,
   Star,
-  Sparkles
-} from 'lucide-react';
-import { Product } from '../types';
-import { useStore } from '../context/StoreContext';
-import { useLanguage } from '../context/LanguageContext';
-import { generateWhatsAppWebLink } from '../utils/whatsappService';
-import { canPurchaseProduct, productNotice, priceLabel } from '../utils/amazonEnricher';
+  ArrowUpLeft,
+  ArrowUpRight,
+} from "lucide-react";
+import { Product } from "../types";
+import { useStore } from "../context/StoreContext";
+import { useLanguage } from "../context/LanguageContext";
+import { generateWhatsAppWebLink } from "../utils/whatsappService";
+import {
+  canPurchaseProduct,
+  productNotice,
+  priceLabel,
+} from "../utils/amazonEnricher";
 
-interface ProductCardProps {
-  product: Product;
-}
-
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const {
     addToCart,
     isInWishlist,
     toggleWishlist,
     setQuickViewProduct,
     navigate,
-    settings
+    settings,
   } = useStore();
-
-  const { t, language, formatPrice } = useLanguage();
-
-  const isLiked = isInWishlist(product.id);
-  const canPurchase = canPurchaseProduct(product);
+  const { t, language, formatPrice, isRTL } = useLanguage();
+  if (product.is_active === false) return null;
+  const ar = language === "ar";
+  const name = (ar ? product.name_ar : product.name_en) || product.name_ar;
+  const liked = isInWishlist(product.id);
+  const purchasable = canPurchaseProduct(product);
   const notice = productNotice(product, language);
   const displayedPrice = priceLabel(product, language, formatPrice);
-  if (product.is_active === false) return null;
-
-  // Condition Badge styling
-  const conditionConfig = {
-    brand_new: { text: t('brandNew'), bg: 'bg-emerald-500/20 text-emerald-700 border-emerald-500/30' },
-    mint: { text: t('mint'), bg: 'bg-amber-500/20 text-amber-700 border-amber-500/30' },
-    used_good: { text: t('usedGood'), bg: 'bg-blue-500/20 text-blue-700 border-blue-500/30' }
-    ,unknown: { text: language === 'ar' ? 'الحالة تحتاج تأكيد' : 'Confirm condition', bg: 'bg-slate-100 text-slate-600' }
-  }[product.condition] || { text: product.condition, bg: 'bg-slate-100 text-slate-600' };
-
-  // Direct WhatsApp inquiry message
-  const inquiryText = `مرحباً متجر جو ستور، أود الاستفسار عن توفر: *${product.name_ar}* (السعر: ${displayedPrice})`;
-  const whatsappUrl = generateWhatsAppWebLink(settings.store_whatsapp, inquiryText);
-
+  const stock = product.stock > 0 && product.in_stock !== false;
+  const condition = {
+    brand_new: t("brandNew"),
+    mint: t("mint"),
+    used_good: t("usedGood"),
+    unknown: ar ? "الحالة تحتاج تأكيد" : "Confirm condition",
+  }[product.condition];
+  const whatsapp = generateWhatsAppWebLink(
+    settings.store_whatsapp,
+    `مرحباً جو ستور، أود الاستفسار عن: ${product.name_ar} (السعر: ${displayedPrice})`,
+  );
+  const Arrow = isRTL ? ArrowUpLeft : ArrowUpRight;
   return (
-    <div className="group relative bg-white  border border-slate-200  hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-glow-gold hover:-translate-y-1 flex flex-col justify-between">
-      {/* Top Media & Badges Container */}
-      <div className="relative aspect-square overflow-hidden bg-slate-100/80 cursor-pointer" onClick={() => navigate('product', product.id)}>
-        <img
-          src={product.images[0] || '/product-placeholder.svg'}
-          onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
-          alt={product.name_ar}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-        />
-
-        {/* Gradient Overlay for badges */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-black/40 pointer-events-none" />
-
-        {/* Top Badges (Condition + Battery + Discount) */}
-        <div className="absolute top-2.5 inset-x-2.5 flex items-center justify-between pointer-events-none">
-          <div className="flex flex-col gap-1 items-start">
-            {/* Condition Badge */}
-            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border backdrop-blur-md ${conditionConfig.bg}`}>
-              {conditionConfig.text}
+    <article className="joe-product-card">
+      <div className="joe-product-media">
+        <button
+          className="joe-product-image"
+          onClick={() => navigate("product", product.id)}
+          aria-label={ar ? `عرض ${name}` : `View ${name}`}
+        >
+          <img
+            src={product.images[0] || "/product-placeholder.svg"}
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "/product-placeholder.svg";
+            }}
+            alt={name}
+            loading="lazy"
+            width="400"
+            height="400"
+          />
+        </button>
+        <div className="joe-product-badges">
+          {product.discount_percentage > 0 ? (
+            <span className="joe-discount">
+              −{product.discount_percentage}%
             </span>
-
-            {/* Battery Health Badge (Highlighted feature from user's video) */}
-            {product.battery_health > 0 && (
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-950/80 text-emerald-700 border border-emerald-500/40 backdrop-blur-md shadow-sm">
-                <BatteryMedium className="w-3 h-3 text-emerald-700" />
-                <span>بطارية {product.battery_health}%</span>
-              </span>
-            )}
-          </div>
-
-          {/* Discount Tag */}
-          {product.discount_percentage > 0 && (
-            <span className="px-2 py-0.5 rounded-md text-[11px] font-black bg-gradient-to-r from-rose-600 to-red-700 text-on-brand shadow-md font-outfit">
-              -{product.discount_percentage}%
+          ) : (
+            condition && <span>{condition}</span>
+          )}
+          {product.battery_health > 0 && product.battery_health < 100 && (
+            <span>
+              <BatteryMedium size={12} />
+              {product.battery_health}%
             </span>
           )}
         </div>
-
-        {/* Floating Action Buttons (Wishlist & Quick View) */}
-        <div className="absolute bottom-2.5 right-2.5 flex flex-col gap-1.5 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-          {/* Wishlist Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleWishlist(product.id);
-            }}
-            className="p-2 rounded-xl bg-slate-100/90 text-slate-900 hover:text-rose-700 hover:bg-slate-100 border border-slate-200 shadow-lg backdrop-blur-sm transition-all"
-            title={t('wishlist')}
-          >
-            <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-700' : ''}`} />
-          </button>
-
-          {/* Quick View Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setQuickViewProduct(product);
-            }}
-            className="p-2 rounded-xl bg-slate-100/90 text-slate-900 hover:text-amber-700 hover:bg-slate-100 border border-slate-200 shadow-lg backdrop-blur-sm transition-all"
-            title={t('quickView')}
-          >
-            <Eye className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Storage pill if available */}
+        <button
+          className={`joe-product-like ${liked ? "is-liked" : ""}`}
+          aria-label={`${t("wishlist")}: ${name}`}
+          aria-pressed={liked}
+          onClick={() => toggleWishlist(product.id)}
+        >
+          <Heart size={18} fill={liked ? "currentColor" : "none"} />
+        </button>
+        <button
+          className="joe-quick-view"
+          onClick={() => setQuickViewProduct(product)}
+          aria-label={`${t("quickView")}: ${name}`}
+        >
+          <Eye size={15} />
+          <span>{t("quickView")}</span>
+        </button>
         {product.storage && (
-          <div className="absolute bottom-2.5 left-2.5 pointer-events-none">
-            <span className="px-2 py-0.5 rounded bg-white/95 text-slate-800 text-[10px] font-bold font-outfit border border-slate-200 backdrop-blur-sm">
-              {product.storage}
-            </span>
-          </div>
+          <span className="joe-product-storage">{product.storage}</span>
         )}
       </div>
-
-      {/* Card Content & Details */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
-        <div>
-          {/* Brand & Rating */}
-          <div className="flex items-center justify-between text-xs text-slate-600 mb-1">
-            <span className="font-semibold uppercase tracking-wider text-amber-700/80 font-outfit">
-              {product.brand}
+      <div className="joe-product-content">
+        <div className="joe-product-meta">
+          <span>{product.brand || "JOE Store"}</span>
+          {product.reviews_count > 0 && product.rating > 0 && (
+            <span className="joe-product-rating">
+              <Star size={12} fill="currentColor" />
+              {product.rating}
+              <small>({product.reviews_count})</small>
             </span>
-            {product.reviews_count > 0 && product.rating > 0 && <div className="flex items-center gap-1 text-amber-700 ">
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-700" />
-              <span className="font-bold text-xs text-slate-800  font-outfit">{product.rating}</span>
-              <span className="text-[10px] text-slate-600">({product.reviews_count})</span>
-            </div>}
-          </div>
-
-          {/* Title */}
-          <h3
-            className="text-sm font-bold text-slate-900  hover:text-amber-700  transition-colors line-clamp-2 cursor-pointer leading-snug"
-          >
-            <button type="button" onClick={() => navigate('product', product.id)} className="w-full text-start">{language === 'ar' ? product.name_ar : product.name_en}</button>
-          </h3>
-          {notice && <p className="mt-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-2 text-[10px] leading-relaxed font-semibold text-amber-700 ">{notice}</p>}
-
-          {/* Color preview dots */}
-          {product.available_colors && product.available_colors.length > 0 && (
-            <div className="flex items-center gap-1.5 mt-2">
-              <span className="text-[10px] text-slate-600">{t('color')}:</span>
-              <div className="flex items-center gap-1">
-                {product.available_colors.slice(0, 4).map((c, i) => (
-                  <span
-                    key={i}
-                    style={{ backgroundColor: c.hex }}
-                    className="w-3 h-3 rounded-full border border-slate-200 shadow-sm"
-                    title={language === 'ar' ? c.name_ar : c.name_en}
-                  />
-                ))}
-              </div>
-            </div>
           )}
-
-          {/* Warranty tag */}
-          {product.warranty_months > 0 && <div className="flex items-center gap-1 text-[11px] text-emerald-700  mt-2 font-medium">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 " />
-            <span>ضمان {product.warranty_months} {t('months')} من جو ستور</span>
-          </div>}
         </div>
-
-        {/* Pricing & Actions */}
-        <div className="pt-3 mt-3 border-t border-slate-100 ">
-          <div className="flex items-baseline justify-between gap-2 mb-3">
-            <div>
-              <span className="text-lg font-black text-amber-700  font-outfit">
-                {displayedPrice}
-              </span>
-              {product.original_price > product.price && product.price > 0 && (
-                <span className="block text-xs text-slate-500 line-through font-outfit">
-                  {formatPrice(product.original_price)}
-                </span>
-              )}
-            </div>
-
-            {/* In stock badge */}
-            <span className="text-[10px] text-emerald-700 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-              {product.stock > 0 && product.in_stock !== false ? t('inStock') : (language === 'ar' ? 'غير متوفر' : 'Out of stock')}
-            </span>
+        <h3>
+          <button onClick={() => navigate("product", product.id)}>
+            {name}
+          </button>
+        </h3>
+        {product.available_colors?.length > 0 && (
+          <div className="joe-product-colors" aria-label={t("color")}>
+            {product.available_colors.slice(0, 4).map((color, i) => (
+              <span
+                key={i}
+                style={{ backgroundColor: color.hex }}
+                title={ar ? color.name_ar : color.name_en}
+              />
+            ))}
           </div>
-
-          {/* Action Buttons */}
-          <div className="grid grid-cols-5 gap-1.5">
-            {/* Add to Cart Button (Takes 4 cols) */}
-            <button
-              onClick={() => { if (canPurchase) addToCart(product, 1); }}
-              disabled={!canPurchase}
-              className="col-span-4 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all group/btn disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <ShoppingCart className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
-              <span>{t('addToCart')}</span>
-            </button>
-
-            {/* Direct WhatsApp Chat Button (Takes 1 col) */}
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="col-span-1 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 border border-emerald-500/40 flex items-center justify-center transition-all hover:scale-105"
-              title="استفسر أو احجز عبر واتساب فوراً"
-            >
-              <MessageCircle className="w-4 h-4 fill-emerald-400" />
-            </a>
+        )}
+        {notice && <p className="joe-product-notice">{notice}</p>}
+        {product.warranty_months > 0 && (
+          <span className="joe-product-warranty">
+            <ShieldCheck size={13} />
+            {ar
+              ? `ضمان ${product.warranty_months} شهر`
+              : `${product.warranty_months} month warranty`}
+          </span>
+        )}
+        <div className="joe-product-purchase">
+          <div className="joe-product-price">
+            <strong>{displayedPrice}</strong>
+            {product.original_price > product.price && product.price > 0 && (
+              <del>{formatPrice(product.original_price)}</del>
+            )}
           </div>
+          <span className={`joe-product-stock ${stock ? "is-available" : ""}`}>
+            {stock
+              ? ar
+                ? "متوفر"
+                : "In stock"
+              : ar
+                ? "غير متوفر"
+                : "Out of stock"}
+          </span>
+        </div>
+        <div className="joe-product-actions">
+          <button
+            onClick={() => {
+              if (purchasable) addToCart(product, 1);
+            }}
+            disabled={!purchasable}
+          >
+            <ShoppingBag size={15} />
+            <span>{t("addToCart")}</span>
+            <Arrow size={15} />
+          </button>
+          <a
+            href={whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={
+              ar
+                ? `استفسر عن ${name} عبر واتساب`
+                : `Ask about ${name} on WhatsApp`
+            }
+          >
+            <MessageCircle size={18} />
+          </a>
         </div>
       </div>
-    </div>
+    </article>
   );
 };

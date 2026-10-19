@@ -17,7 +17,7 @@ export function AccountMenu() {
     document.addEventListener('mousedown', close); document.addEventListener('keydown', key);
     return () => { document.removeEventListener('mousedown', close); document.removeEventListener('keydown', key); };
   }, [open]);
-  if (!user) return <button onClick={() => openAuthModal()} className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-100 p-2 sm:px-3 text-xs font-bold"><User className="w-4 h-4" /><span className="hidden sm:inline">{ar ? 'تسجيل الدخول' : 'Sign in'}</span></button>;
+  if (!user) return <button aria-label={ar ? 'تسجيل الدخول' : 'Sign in'} onClick={() => openAuthModal()} className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-100 p-2 sm:px-3 text-xs font-bold"><User className="w-4 h-4" /><span className="hidden sm:inline">{ar ? 'تسجيل الدخول' : 'Sign in'}</span></button>;
   const go = (tab: Parameters<typeof navigate>[0], section?: string) => { setOpen(false); navigate(tab, undefined, section ? { section } : { category: 'all', search: '' }); };
   return <div className="relative" ref={root}>
     <button ref={trigger} onClick={() => setOpen(v => !v)} aria-expanded={open} aria-controls="account-options" aria-label={ar ? 'قائمة حسابي' : 'My account menu'} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-1.5 sm:px-3 text-sm"><span className="w-8 h-8 rounded-full bg-amber-100 text-amber-900 font-bold flex items-center justify-center">{user.name?.slice(0, 1) || 'J'}</span><span className="hidden md:block max-w-24 truncate">{user.name?.split(' ')[0]}</span><ChevronDown className="w-3 h-3" /></button>

@@ -1,523 +1,703 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Sparkles,
-  Flame,
-  ShieldCheck,
-  BatteryMedium,
-  Truck,
-  CheckCircle,
+  ArrowUpLeft,
+  ArrowUpRight,
   ArrowLeft,
   ArrowRight,
-  Smartphone,
+  Headphones,
+  Watch,
+  Cable,
+  BatteryCharging,
+  ShieldCheck,
+  Camera,
+  MapPin,
+  MessageCircle,
+  SlidersHorizontal,
+  Layers3,
+  History,
   ChevronLeft,
   ChevronRight,
-  MessageCircle,
-  TrendingUp
-} from 'lucide-react';
-import { useStore } from '../context/StoreContext';
-import { useLanguage } from '../context/LanguageContext';
-import { ProductCard } from '../components/ProductCard';
-import { CategoryKey, Product } from '../types';
-import { neonDb } from '../services/neonDb';
+  Truck,
+  CreditCard,
+  PackageCheck,
+} from "lucide-react";
+import { useStore } from "../context/StoreContext";
+import { useLanguage } from "../context/LanguageContext";
+import { ProductCard } from "../components/ProductCard";
+import { CategoryKey, Product } from "../types";
+import { neonDb } from "../services/neonDb";
+import { SpotlightCard } from "../components/motion/SpotlightCard";
+import { AnimateStorefront } from "../components/motion/AnimateStorefront";
+import { generateWhatsAppWebLink } from "../utils/whatsappService";
+
+const categoryCards = [
+  {
+    key: "audio",
+    ar: "صوت على مزاجك",
+    en: "Find your sound",
+    sub: "سماعات وصوتيات",
+    subEn: "Earbuds & headphones",
+    icon: Headphones,
+    color: "peach",
+  },
+  {
+    key: "smartwatches",
+    ar: "وقتك أذكى",
+    en: "A smarter day",
+    sub: "ساعات ذكية",
+    subEn: "Smartwatches",
+    icon: Watch,
+    color: "sage",
+  },
+  {
+    key: "chargers_cables",
+    ar: "خليك متوصل",
+    en: "Stay connected",
+    sub: "شواحن وكابلات",
+    subEn: "Chargers & cables",
+    icon: Cable,
+    color: "lilac",
+  },
+  {
+    key: "powerbanks",
+    ar: "طاقة تكمل يومك",
+    en: "Power your day",
+    sub: "باور بانك",
+    subEn: "Power banks",
+    icon: BatteryCharging,
+    color: "butter",
+  },
+  {
+    key: "cases_protection",
+    ar: "ستايل وحماية",
+    en: "Style & protection",
+    sub: "كفرات وإسكرينات",
+    subEn: "Cases & screen protectors",
+    icon: ShieldCheck,
+    color: "blue",
+  },
+  {
+    key: "accessories",
+    ar: "جهّز فكرتك",
+    en: "Make it happen",
+    sub: "تصوير وإكسسوارات",
+    subEn: "Camera gear & accessories",
+    icon: Camera,
+    color: "rose",
+  },
+] as const;
 
 export const Home: React.FC = () => {
-  const { products: allProducts, navigate, setSelectedCategory, settings, sessionId } = useStore();
-  const products = allProducts.filter(product => product.is_active !== false);
-  const { t, language, formatPrice, isRTL } = useLanguage();
-
-  const [recommendations, setRecommendations] = useState<{
-    hasHistory: boolean;
-    recommendedProducts: Product[];
-    searchTags: string[];
-    topCategory?: string;
-  }>({
-    hasHistory: false,
-    recommendedProducts: [],
-    searchTags: []
-  });
+  const { products: allProducts, navigate, settings, sessionId } = useStore();
+  const { language, isRTL, t } = useLanguage();
+  const ar = language === "ar";
+  const root = useRef<HTMLDivElement>(null);
+  const products = useMemo(
+    () => allProducts.filter((p) => p.is_active !== false),
+    [allProducts],
+  );
+  const [recommendations, setRecommendations] = useState<Product[]>([]);
+  const [personalized, setPersonalized] = useState(false);
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [activeCollection, setActiveCollection] = useState<CategoryKey>("all");
+  const slides = settings.hero_slides || [];
+  const campaign = slides[slideIndex % Math.max(slides.length, 1)];
+  const Arrow = isRTL ? ArrowLeft : ArrowRight;
+  const DiagonalArrow = isRTL ? ArrowUpLeft : ArrowUpRight;
+  const shop = (category: CategoryKey = "all") =>
+    navigate("catalog", undefined, { category, search: "" });
 
   useEffect(() => {
-    neonDb.getPersonalizedRecommendations(sessionId).then(res => {
-      if (res && res.recommendedProducts.length > 0) {
-        setRecommendations({ ...res, recommendedProducts: res.recommendedProducts.filter(product => product.is_active !== false) });
-      }
-    }).catch(console.warn);
+    let cancelled = false;
+    neonDb
+      .getPersonalizedRecommendations(sessionId)
+      .then((result) => {
+        if (cancelled || !result?.recommendedProducts?.length) return;
+        setRecommendations(
+          result.recommendedProducts.filter((p) => p.is_active !== false),
+        );
+        setPersonalized(!!result.hasHistory);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, [sessionId]);
 
-  const slides = settings.hero_slides && settings.hero_slides.length > 0 ? settings.hero_slides : [
-    {
-      id: 'slide-iphone-13',
-      badge: 'العرض الأقوى في المنصورة ⚡',
-      title_ar: 'آيفون 13 كسر زيرو بالضمان',
-      title_en: 'iPhone 13 Mint Condition',
-      subtitle_ar: 'بطاريات أصلية من 85% لـ 97% | ألوان أبيض، أزرق، زيتي، بينك | مفحوص 100% مع ضمان استبدال رسمي',
-      subtitle_en: 'Original Battery Health 85%-97% | White, Blue, Olive Green, Pink | 100% Tested with Warranty',
-      price: '19,800',
-      oldPrice: '23,500',
-      tag: 'بطاريات أصلية 85% - 97%',
-      image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=1200&q=80',
-      cat: 'smartphones' as CategoryKey
-    },
-    {
-      id: 'slide-iphone-15',
-      badge: 'الإصدار الرائد الجديد متبرشم 🌟',
-      title_ar: 'آيفون 15 برو ماكس تيتانيوم',
-      title_en: 'iPhone 15 Pro Max Titanium',
-      subtitle_ar: 'أقوى أداء بمعالج A17 Pro وكاميرا تقريب بصري 5x ومنفذ تايب سي فائق السرعة',
-      subtitle_en: 'Aerospace Grade Titanium with A17 Pro Chip and Ultra-fast USB-C',
-      price: '56,500',
-      oldPrice: '61,000',
-      tag: 'جديد متبرشم بضمان دولي ومحلي',
-      image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=1200&q=80',
-      cat: 'smartphones' as CategoryKey
-    },
-    {
-      id: 'slide-airpods',
-      badge: 'صوت سينمائي ونقاء استثنائي 🎧',
-      title_ar: 'إيربودز برو 2 الجديدة تايب سي',
-      title_en: 'AirPods Pro 2 USB-C',
-      subtitle_ar: 'عزل ضوضاء مضاعف، تتبع صوتي مكاني، وشحن لاسلكي MagSafe',
-      subtitle_en: 'Up to 2x more Active Noise Cancellation and Personalized Spatial Audio',
-      price: '9,400',
-      oldPrice: '11,200',
-      tag: 'متوفرة بأفضل سعر في مصر',
-      image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=1200&q=80',
-      cat: 'audio' as CategoryKey
+  const featured = useMemo(() => {
+    const base =
+      activeCollection === "all"
+        ? recommendations.length
+          ? recommendations
+          : [...products].sort(
+              (a, b) => Number(!!b.is_featured) - Number(!!a.is_featured),
+            )
+        : products.filter((p) => p.category === activeCollection);
+    if (activeCollection !== "all" || recommendations.length)
+      return base.slice(0, 4);
+    const picks: Product[] = [];
+    for (const category of [
+      "audio",
+      "chargers_cables",
+      "powerbanks",
+      "smartwatches",
+    ]) {
+      const item = base.find((p) => p.category === category);
+      if (item) picks.push(item);
     }
-  ];
-
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isSliderPaused, setIsSliderPaused] = useState(false);
-
-  useEffect(() => {
-    if (isSliderPaused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [slides.length, isSliderPaused]);
-
-  // Filter specific product sets
-  const certifiedPreOwned = products.filter(p => p.condition === 'mint' || (p.battery_health && p.battery_health < 100));
-  const flashSaleItems = products.filter(p => p.is_flash_sale || (p.discount_percentage && p.discount_percentage > 10)).slice(0, 4);
-
-  const categories = [
-    { key: 'smartphones' as CategoryKey, title_ar: 'هواتف ذكية', title_en: 'Smartphones', count: '15+ جهاز', count_en: '15+ Devices', icon: '📱' },
-    { key: 'smartwatches' as CategoryKey, title_ar: 'ساعات ذكية', title_en: 'Smartwatches', count: '8+ ساعات', count_en: '8+ Watches', icon: '⌚' },
-    { key: 'audio' as CategoryKey, title_ar: 'سماعات وصوتيات', title_en: 'Audio & Earbuds', count: '12+ سماعة', count_en: '12+ Items', icon: '🎧' },
-    { key: 'chargers_cables' as CategoryKey, title_ar: 'شواحن وكابلات', title_en: 'Chargers & Cables', count: '25+ شاحن', count_en: '25+ Items', icon: '🔌' },
-    { key: 'powerbanks' as CategoryKey, title_ar: 'بنوك طاقة (باوربانك)', title_en: 'Powerbanks', count: '10+ شاحن متنقل', count_en: '10+ Items', icon: '🔋' },
-    { key: 'cases_protection' as CategoryKey, title_ar: 'جرابات وحمايات', title_en: 'Cases & Protectors', count: '40+ جراب واسكرين', count_en: '40+ Items', icon: '🛡️' }
-  ];
+    return [
+      ...picks,
+      ...base.filter((p) => !picks.some((item) => item.id === p.id)),
+    ].slice(0, 4);
+  }, [products, recommendations, activeCollection]);
+  const offers = products
+    .filter((p) => p.is_flash_sale || p.discount_percentage > 0)
+    .slice(0, 4);
+  const phones = products
+    .filter((p) => p.category === "smartphones")
+    .slice(0, 4);
+  const brands = Array.from(
+    new Set(products.map((p) => p.brand?.trim()).filter(Boolean)),
+  )
+    .filter((b) => !/unknown|unbranded|غير|متنوع/i.test(b))
+    .slice(0, 7);
+  const whatsapp = generateWhatsAppWebLink(
+    settings.store_whatsapp,
+    ar
+      ? "مرحباً جو ستور، محتاج مساعدة في اختيار المنتج المناسب."
+      : "Hello JOE Store, can you help me choose a product?",
+  );
 
   return (
-    <div className="space-y-16 pb-12">
-      {/* 1. Hero Dynamic Slider Section */}
-      <section className="relative px-4 pt-4" onMouseEnter={() => setIsSliderPaused(true)} onMouseLeave={() => setIsSliderPaused(false)} onFocusCapture={() => setIsSliderPaused(true)} onBlurCapture={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setIsSliderPaused(false); }}>
-        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden bg-gradient-to-br from-slate-100 via-white to-slate-200  border border-slate-200  relative min-h-[520px] sm:min-h-[500px] flex items-center shadow-xl  hero-slider-container">
-          {slides.map((slide, idx) => (
-            <div
-              key={slide.id}
-              aria-hidden={idx !== currentSlide}
-              style={{ display: idx === currentSlide ? 'flex' : 'none' }}
-              className={`absolute inset-0 transition-opacity duration-1000 flex flex-col md:flex-row items-center justify-between p-6 sm:p-12 gap-8 ${
-                currentSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-              }`}
-            >
-              {/* Background Ambient Image & Gradient */}
-              <div className="absolute inset-0 -z-10">
-                <img
-                  src={slide.image}
-                  alt={slide.title_ar}
-                  className="w-full h-full object-cover object-center opacity-30   filter blur-xs"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/40   " />
-              </div>
-
-              {/* Text Side */}
-              <div className={`max-w-xl space-y-4 ${isRTL ? 'text-right' : 'text-left'}`}>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15  text-amber-700  border border-amber-500/30  text-xs font-bold font-cairo shadow-sm backdrop-blur-md">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-700 " />
-                  <span>{slide.badge}</span>
-                </div>
-
-                <h1 className="text-3xl sm:text-5xl font-black text-slate-900  font-cairo tracking-tight leading-tight">
-                  {language === 'ar' ? slide.title_ar : slide.title_en}
-                </h1>
-
-                <p className="text-xs sm:text-sm text-slate-600  leading-relaxed font-cairo">
-                  {language === 'ar' ? slide.subtitle_ar : slide.subtitle_en}
-                </p>
-
-                {/* Price and tag */}
-                <div className="flex items-center gap-4 pt-2">
-                  <div>
-                    <span className="text-2xl sm:text-3xl font-black text-amber-700  font-outfit">
-                      {slide.price} {language === 'ar' ? 'ج.م' : 'EGP'}
-                    </span>
-                    <span className="block text-xs text-slate-600 line-through font-outfit">
-                      {slide.oldPrice} {language === 'ar' ? 'ج.م' : 'EGP'}
-                    </span>
-                  </div>
-
-                  <span className="px-3 py-1 rounded-xl bg-emerald-500/15  text-emerald-700  border border-emerald-500/30  text-xs font-bold font-cairo">
-                    {slide.tag}
-                  </span>
-                </div>
-
-                {/* Hero CTAs */}
-                <div className="flex flex-wrap items-center gap-3 pt-4">
-                  <button
-                    onClick={() => {
-                      setSelectedCategory(slide.cat);
-                      navigate('catalog');
-                    }}
-                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs sm:text-sm shadow-glow-gold transition-all active:scale-95 flex items-center gap-2"
-                  >
-                    <span>{t('shopNow')}</span>
-                    {isRTL ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setSelectedCategory('smartphones');
-                      navigate('catalog');
-                    }}
-                    className="px-5 py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300     backdrop-blur-sm transition-all font-bold text-xs sm:text-sm shadow-sm"
-                  >
-                    {t('shopPreowned')}
-                  </button>
-                </div>
-              </div>
-
-              {/* Floating Device Showcase Frame */}
-              <div className="hidden md:flex relative flex-shrink-0 w-72 h-80 rounded-2xl overflow-hidden border border-slate-200  shadow-xl  shadow-amber-500/10 group bg-slate-50 ">
-                <img
-                  src={slide.image}
-                  alt=""
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-                  <span className="text-xs font-bold text-on-image font-cairo">
-                    {language === 'ar' ? 'مفحوص ومضمون من متجر جو ستور بالمنصورة ✨' : 'Tested & Certified by JOE Store ✨'}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Carousel Arrows */}
-          <button
-            onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
-            aria-label={language === 'ar' ? 'العرض السابق' : 'Previous offer'}
-            className="absolute left-4 bottom-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-amber-500 hover:text-black text-slate-800 border border-slate-200 shadow-lg backdrop-blur-md transition-all"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-            aria-label={language === 'ar' ? 'العرض التالي' : 'Next offer'}
-            className="absolute right-4 bottom-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-amber-500 hover:text-black text-slate-800 border border-slate-200 shadow-lg backdrop-blur-md transition-all"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-
-          {/* Dots Indicator */}
-          <div className="absolute bottom-4 inset-x-0 z-20 flex justify-center gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                aria-label={language === 'ar' ? `العرض ${i + 1}` : `Offer ${i + 1}`}
-                aria-current={currentSlide === i}
-                onClick={() => setCurrentSlide(i)}
-                className={`h-2 rounded-full transition-all ${
-                  currentSlide === i ? 'w-8 bg-amber-500 ' : 'w-2 bg-slate-300 '
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-4"><div className="flex justify-between items-center mb-4"><h2 className="text-xl font-black">{language === 'ar' ? 'تسوّق بطريقتك' : 'Shop your way'}</h2><button onClick={() => navigate('catalog',undefined,{category:'all',search:''})} className="text-sm text-amber-800 font-bold">{language === 'ar' ? 'كل المنتجات ←' : 'All products →'}</button></div><div className="grid grid-cols-2 lg:grid-cols-4 gap-3">{[['brands','الماركات','اختار شركتك المفضلة','Brands','Find your brand'],['finder','مساعد الشراء','حدد النوع والميزانية','Buying assistant','Choose type & budget'],['bundles','جمّع باقتك','كل احتياجاتك في سلة واحدة','Build your set','Your picks, one basket'],['recent','شاهدتها مؤخرًا','ارجع لاختياراتك بسهولة','Recently viewed','Find your earlier picks']].map(([key,ar,desc,en,enDesc])=><button key={key} onClick={()=>navigate(key as any,undefined,{category:'all',search:''})} className="bg-white rounded-2xl border border-slate-200 p-5 text-start hover:border-amber-400"><span className="text-amber-700 text-xs font-bold block mb-3">JOE Store</span><strong className="block text-base">{language === 'ar' ? ar : en}</strong><span className="text-xs text-slate-500 block mt-2">{language === 'ar' ? desc : enDesc}</span></button>)}</div></section>
-
-      {/* 2. Highlights Strip */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <div className="p-4 rounded-2xl bg-white  border border-slate-200  hover:border-amber-500/30 transition-all flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-700  flex items-center justify-center flex-shrink-0">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-slate-800  font-cairo">
-                {language === 'ar' ? 'ضمان استبدال وصيانة' : 'Official Warranty'}
-              </h4>
-              <p className="text-[10px] text-slate-500  font-cairo">
-                {language === 'ar' ? 'ضمان معتمد رسمي على جميع الأجهزة' : 'Certified exchange warranty on devices'}
-              </p>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white  border border-slate-200  hover:border-emerald-500/30 transition-all flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-700  flex items-center justify-center flex-shrink-0">
-              <BatteryMedium className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-slate-800  font-cairo">
-                {language === 'ar' ? 'بطاريات أصلية معلنة' : 'Certified Battery Health'}
-              </h4>
-              <p className="text-[10px] text-slate-500  font-cairo">
-                {language === 'ar' ? 'نسبة بطارية دقيقة 85% - 97% للأجهزة' : 'Accurate 85%-97% original battery'}
-              </p>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white  border border-slate-200  hover:border-blue-500/30 transition-all flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600  flex items-center justify-center flex-shrink-0">
-              <Truck className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-slate-800  font-cairo">
-                {language === 'ar' ? 'توصيل سريع وفوري' : 'Same-Day Delivery'}
-              </h4>
-              <p className="text-[10px] text-slate-500  font-cairo">
-                {language === 'ar' ? 'توصيل في نفس اليوم بالمنصورة ومصر' : 'Instant in Mansoura & Egypt'}
-              </p>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white  border border-slate-200  hover:border-purple-500/30 transition-all flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600  flex items-center justify-center flex-shrink-0">
-              <MessageCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-slate-800  font-cairo">
-                {language === 'ar' ? 'إشعار واتساب للطلب' : 'WhatsApp Receipt'}
-              </h4>
-              <p className="text-[10px] text-slate-500  font-cairo">
-                {language === 'ar' ? 'تحديثات فورية لحالة الشحنة لهاتفك' : 'Instant invoice & tracking on WhatsApp'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 2.5 Dynamic Personalized Recommendation Section */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30 relative overflow-hidden shadow-lg">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-700  border border-amber-500/40 text-xs font-bold font-cairo mb-2">
-                <Sparkles className="w-3.5 h-3.5 text-amber-700 animate-pulse" />
-                <span>
-                  {recommendations.hasHistory
-                    ? (language === 'ar' ? 'مخصص لك بناءً على نشاطك وبحثك' : 'Tailored For You Based On Activity')
-                    : (language === 'ar' ? 'التريند الأكثر طلباً في المنصورة' : 'Trending Now in Mansoura')
-                  }
-                </span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900  font-cairo">
-                {recommendations.hasHistory
-                  ? (language === 'ar' ? 'ترشيحات ذكية اختيرت لأجلك ✨' : 'Smart Picks Chosen For You ✨')
-                  : (language === 'ar' ? 'أقوى العروض الرائجة في المتجر اليوم 🔥' : 'Trending Hot Deals in Store Today 🔥')
-                }
-              </h2>
-              {recommendations.searchTags.length > 0 && (
-                <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                  <span className="text-[11px] text-slate-500  font-cairo">
-                    {language === 'ar' ? 'بناءً على اهتمامك بـ:' : 'Based on your interest in:'}
-                  </span>
-                  {recommendations.searchTags.map((tag, i) => (
-                    <span key={i} className="text-[11px] px-2.5 py-0.5 rounded-lg bg-amber-500/15 text-amber-700  font-bold border border-amber-500/30">
-                      "{tag}"
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
+    <div ref={root} className="joe-home">
+      <AnimateStorefront
+        root={root}
+        motionKey={`${language}-${products.length}`}
+      />
+      <section
+        className="joe-hero joe-container"
+        aria-label={ar ? "اكتشف جو ستور" : "Discover JOE Store"}
+      >
+        <div className="joe-hero-copy">
+          <span className="joe-eyebrow">
+            <span className="joe-status-dot" />
+            {ar ? "من المحل… لحد عندك" : "Your local tech store, online"}
+          </span>
+          <h1 key={language} data-split-title>
+            {ar ? (
+              <>
+                تفاصيل صغيرة.
+                <br />
+                <span>تغيّر يومك كله.</span>
+              </>
+            ) : (
+              <>
+                Little things.
+                <br />
+                <span>A whole new day.</span>
+              </>
+            )}
+          </h1>
+          <p>
+            {ar
+              ? "سماعتك، ساعتك، وشاحن ما يسيبكش. كل اللي يكمّل موبايلك وحياتك، هتلاقيه في جو ستور."
+              : "Your sound, your style, your everyday power. Discover the tech and accessories that make life a little better."}
+          </p>
+          <div className="joe-hero-actions">
             <button
-              onClick={() => { setSelectedCategory('all'); navigate('catalog'); }}
-              className="px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-700  font-bold text-xs font-cairo border border-amber-500/30 transition-all flex items-center gap-1.5"
+              onClick={() => shop()}
+              className="joe-button joe-button-primary"
             >
-              <span>{t('viewAll')}</span>
-              {isRTL ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
+              {ar ? "اكتشف التشكيلة" : "Explore the collection"}
+              <Arrow size={18} />
+            </button>
+            <button
+              onClick={() =>
+                navigate("deals", undefined, { category: "all", search: "" })
+              }
+              className="joe-text-link"
+            >
+              {ar ? "شوف العروض" : "Explore offers"}
+              <DiagonalArrow size={18} />
             </button>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {(recommendations.recommendedProducts.length > 0
-              ? recommendations.recommendedProducts.slice(0, 4)
-              : products.slice(0, 4)
-            ).map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+          <div className="joe-hero-note">
+            <MapPin size={16} />
+            <span>{ar ? "جو ستور · المنصورة" : "JOE Store · Mansoura"}</span>
+            <span className="joe-note-divider" />
+            <span>
+              {ar
+                ? "اختار أونلاين، أو نوّرنا في المحل"
+                : "Shop online or visit us in store"}
+            </span>
           </div>
+        </div>
+        <div
+          className="joe-hero-art"
+          aria-label={
+            ar ? "صور توضيحية لتشكيلة المتجر" : "Illustrative collection images"
+          }
+        >
+          <div className="joe-art-orbit" aria-hidden="true" />
+          <span className="joe-art-word" aria-hidden="true" dir="ltr">
+            EVERYDAY
+            <br />
+            UPGRADED.
+          </span>
+          <button
+            data-hero-piece
+            onClick={() => shop("audio")}
+            className="joe-showcase joe-showcase-main"
+          >
+            <span className="joe-showcase-top">
+              <span>01 / SOUND</span>
+              <DiagonalArrow size={20} />
+            </span>
+            <img
+              src="/product-images/f6427a20c128ea77c56bc426.webp"
+              alt={ar ? "تشكيلة السماعات" : "Headphone collection"}
+              fetchPriority="high"
+              width="430"
+              height="430"
+            />
+            <span className="joe-showcase-bottom">
+              <strong>{ar ? "اعزل الدوشة." : "Tune out the noise."}</strong>
+              <span>{ar ? "وعيش في المزيكا" : "Get into your music"}</span>
+            </span>
+          </button>
+          <button
+            data-hero-piece
+            onClick={() => shop("smartwatches")}
+            className="joe-showcase joe-showcase-watch"
+          >
+            <span className="joe-mini-icon">
+              <Watch size={17} />
+            </span>
+            <img
+              src="/product-images/3f4452f62308aae22858b473.webp"
+              alt={ar ? "تشكيلة الساعات الذكية" : "Smartwatch collection"}
+              width="220"
+              height="220"
+            />
+            <strong>{ar ? "على توقيتك." : "On your time."}</strong>
+          </button>
+          <div data-hero-piece className="joe-art-sticker" aria-hidden="true">
+            <span>JOE</span>
+            <span>
+              GOOD TECH.
+              <br />
+              GOOD MOOD.
+            </span>
+            <span>✳</span>
+          </div>
+          <span className="joe-art-caption">
+            {ar
+              ? "صور توضيحية للأقسام · اختار منتجك من الكتالوج"
+              : "Collection imagery · Explore individual products in the catalog"}
+          </span>
         </div>
       </section>
 
-      {/* 3. Category Showcase Grid */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
+      <div className="joe-service-strip">
+        <div className="joe-container joe-service-items">
+          {[
+            {
+              icon: PackageCheck,
+              a: "تفاصيل واضحة لكل منتج",
+              e: "Product details at a glance",
+            },
+            {
+              icon: ShieldCheck,
+              a: "ضمان حسب المنتج",
+              e: "Product-specific warranty",
+            },
+            { icon: Truck, a: "توصيل لحد عندك", e: "Delivered to your door" },
+            {
+              icon: CreditCard,
+              a: "كاش · فودافون كاش · إنستاباي",
+              e: "Cash · Vodafone Cash · InstaPay",
+            },
+          ].map(({ icon: Icon, a, e }) => (
+            <div key={e}>
+              <Icon size={19} strokeWidth={1.5} />
+              <span>{ar ? a : e}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <section className="joe-container joe-section" data-reveal>
+        <div className="joe-section-heading">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900  font-cairo flex items-center gap-2">
-              <span>{t('browseCategories')}</span>
-              <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span className="joe-eyebrow">
+              {ar ? "اختار عالمك" : "YOUR EVERYDAY ESSENTIALS"}
+            </span>
+            <h2>
+              {ar ? "إنت محتاج إيه النهارده؟" : "What’s on your list today?"}
             </h2>
-            <p className="text-xs text-slate-500  font-cairo">{t('browseCategoriesSub')}</p>
           </div>
-          <button
-            onClick={() => { setSelectedCategory('all'); navigate('catalog'); }}
-            className="text-xs font-bold text-amber-700 hover:text-amber-700 font-cairo flex items-center gap-1"
-          >
-            <span>{t('viewAll')}</span>
-            {isRTL ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
+          <button onClick={() => shop()} className="joe-text-link">
+            {ar ? "كل الأقسام" : "All categories"}
+            <Arrow size={17} />
           </button>
         </div>
+        <div className="joe-categories">
+          {categoryCards.map(
+            ({ key, ar: title, en, sub, subEn, icon: Icon, color }, index) => (
+              <SpotlightCard
+                key={key}
+                className={`joe-category joe-tone-${color}`}
+              >
+                <button onClick={() => shop(key)}>
+                  <span className="joe-category-top">
+                    <Icon size={29} strokeWidth={1.25} />
+                    <span className="joe-category-number">0{index + 1}</span>
+                  </span>
+                  <strong>{ar ? title : en}</strong>
+                  <span className="joe-category-sub">{ar ? sub : subEn}</span>
+                  <span className="joe-category-footer">
+                    <span>
+                      {products.filter((p) => p.category === key).length}{" "}
+                      {ar ? "منتج" : "products"}
+                    </span>
+                    <DiagonalArrow size={17} />
+                  </span>
+                </button>
+              </SpotlightCard>
+            ),
+          )}
+        </div>
+      </section>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          {categories.map((cat) => (
-            <div
-              key={cat.key}
-              onClick={() => {
-                setSelectedCategory(cat.key);
-                navigate('catalog');
-              }}
-              className="group p-4 rounded-2xl bg-white  border border-slate-200  hover:border-amber-500/50 hover:bg-slate-50  transition-all duration-300 cursor-pointer text-center flex flex-col items-center justify-between shadow-sm hover:shadow-glow-gold hover:-translate-y-1"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/10 to-amber-500/20 border border-amber-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform mb-3 shadow-inner">
-                {cat.icon}
+      {campaign && (
+        <section
+          className="joe-container joe-section joe-campaign-wrap"
+          data-reveal
+          aria-label={ar ? "عروض المحل" : "Store campaigns"}
+        >
+          <div className="joe-campaign">
+            <div>
+              <span className="joe-eyebrow">{campaign.badge}</span>
+              <h2>{ar ? campaign.title_ar : campaign.title_en}</h2>
+              <p>{ar ? campaign.subtitle_ar : campaign.subtitle_en}</p>
+              <div className="joe-campaign-price">
+                <strong>
+                  {campaign.price} {ar ? "ج.م" : "EGP"}
+                </strong>
+                {campaign.oldPrice && (
+                  <del>
+                    {campaign.oldPrice} {ar ? "ج.م" : "EGP"}
+                  </del>
+                )}
               </div>
-              <h3 className="font-bold text-xs text-slate-800  font-cairo group-hover:text-amber-700  transition-colors">
-                {language === 'ar' ? cat.title_ar : cat.title_en}
-              </h3>
-              <span className="text-[10px] text-slate-500  font-outfit mt-1">
-                {products.filter(product => product.category === cat.key).length} {language === 'ar' ? 'منتج' : 'products'}
-              </span>
+              <button
+                className="joe-button joe-button-primary"
+                onClick={() => shop(campaign.cat)}
+              >
+                {t("shopNow")}
+                <Arrow size={17} />
+              </button>
             </div>
+            <img
+              src={campaign.image}
+              alt={ar ? campaign.title_ar : campaign.title_en}
+              loading="lazy"
+            />
+            {slides.length > 1 && (
+              <div className="joe-campaign-controls">
+                <button
+                  aria-label={ar ? "العرض السابق" : "Previous offer"}
+                  onClick={() =>
+                    setSlideIndex(
+                      (i) => (i - 1 + slides.length) % slides.length,
+                    )
+                  }
+                >
+                  <ChevronRight size={18} />
+                </button>
+                <span>
+                  {(slideIndex % slides.length) + 1} / {slides.length}
+                </span>
+                <button
+                  aria-label={ar ? "العرض التالي" : "Next offer"}
+                  onClick={() => setSlideIndex((i) => (i + 1) % slides.length)}
+                >
+                  <ChevronLeft size={18} />
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <section className="joe-container joe-section" data-reveal>
+        <div className="joe-section-heading">
+          <div>
+            <span className="joe-eyebrow">
+              {personalized
+                ? ar
+                  ? "على ذوقك"
+                  : "JUST FOR YOU"
+                : ar
+                  ? "من تشكيلة جو ستور"
+                  : "THE JOE SELECTION"}
+            </span>
+            <h2>
+              {ar ? "اختيارات تستاهل تبص عليها." : "Worth a closer look."}
+            </h2>
+          </div>
+          <button
+            className="joe-text-link"
+            onClick={() => shop(activeCollection)}
+          >
+            {ar ? "تسوق الكل" : "Shop all"}
+            <Arrow size={17} />
+          </button>
+        </div>
+        <div
+          className="joe-collection-tabs"
+          role="group"
+          aria-label={ar ? "تصفية اختيارات المتجر" : "Filter store picks"}
+        >
+          {[
+            { key: "all", a: "اختياراتنا", e: "Our picks" },
+            { key: "audio", a: "صوتيات", e: "Audio" },
+            { key: "smartwatches", a: "ساعات", e: "Watches" },
+            { key: "chargers_cables", a: "شحن وتوصيل", e: "Charging" },
+            { key: "powerbanks", a: "باور بانك", e: "Power banks" },
+          ].map(({ key, a, e }) => (
+            <button
+              key={key}
+              aria-pressed={activeCollection === key}
+              onClick={() => setActiveCollection(key as CategoryKey)}
+            >
+              {ar ? a : e}
+            </button>
           ))}
         </div>
-      </section>
-
-      {/* 4. Certified Pre-Owned Highlight Section */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-white via-white to-white border border-amber-500/30 relative overflow-hidden shadow-2xl dark-banner-container">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 blur-3xl -z-0 pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-700 border border-emerald-500/40 text-xs font-bold font-cairo">
-                <BatteryMedium className="w-4 h-4 text-emerald-700" />
-                <span>{language === 'ar' ? 'أجهزة آيفون كسر زيرو (بطاريات معلنة 85% لـ 97%)' : 'Pre-Owned iPhones (85%-97% Original Battery)'}</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo">
-                {t('certifiedPreownedTitle')}
-              </h2>
-              <p className="text-xs text-slate-600 max-w-xl font-cairo">
-                {t('certifiedPreownedSub')}
-              </p>
-            </div>
-
-            <button
-              onClick={() => {
-                setSelectedCategory('smartphones');
-                navigate('catalog');
-              }}
-              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs font-cairo shadow-glow-gold transition-all flex items-center gap-2"
-            >
-              <span>{t('shopPreowned')}</span>
-              {isRTL ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
-            </button>
-          </div>
-
-          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {certifiedPreOwned.slice(0, 4).map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Flash Sales */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-rose-500/20 text-rose-700 border border-rose-500/30">
-              <Flame className="w-6 h-6 animate-pulse" />
-            </div>
-            <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900  font-cairo flex items-center gap-2">
-                <span>{language === 'ar' ? 'عروض وخصومات اليوم ⚡' : 'Flash Deals & Offers ⚡'}</span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-rose-600 text-on-brand font-bold font-outfit">
-                  {language === 'ar' ? 'خصومات حصرية' : 'Exclusive'}
-                </span>
-              </h2>
-              <p className="text-xs text-slate-500  font-cairo">
-                {language === 'ar' ? 'قطع محدودة بأسعار خاصة لفترة محدودة' : 'Limited inventory at promotional prices'}
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => navigate('catalog')}
-            className="text-xs font-bold text-amber-700 hover:text-amber-700 font-cairo flex items-center gap-1"
-          >
-            <span>{language === 'ar' ? 'مشاهدة كل العروض' : 'View All Deals'}</span>
-            {isRTL ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {flashSaleItems.map((product) => (
+        <div className="joe-product-grid">
+          {featured.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
+        {!featured.length && (
+          <p className="joe-empty-note">
+            {ar ? "بنجهّز لك التشكيلة…" : "Getting the collection ready…"}
+          </p>
+        )}
       </section>
 
-      {/* 6. Physical Store Location in Mansoura */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="rounded-3xl bg-slate-100 border border-amber-500/20 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl dark-banner-container">
-          <div className={`space-y-3 max-w-xl ${isRTL ? 'text-right' : 'text-left'}`}>
-            <span className="text-xs font-bold text-amber-700 uppercase tracking-wider font-cairo">
-              📍 {language === 'ar' ? 'تشرفنا زيارتكم في المحل بالمنصورة' : 'Visit our Flagship Store in Mansoura'}
+      <section
+        className="joe-container joe-section joe-discovery-grid"
+        data-reveal
+      >
+        <SpotlightCard className="joe-discovery-card joe-discovery-a">
+          <div>
+            <span className="joe-eyebrow">
+              {ar ? "اختيار أسهل" : "FIND YOUR FIT"}
             </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo">
-              {language === 'ar' ? settings.store_name_ar : settings.store_name_en}
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-cairo">
-              {language === 'ar'
-                ? `${settings.store_address_ar} استمتع بتجربة فحص ومعاينة حية لجميع أجهزة الآيفون كسر زيرو وتشكيلة شواحن أنكر وسماعات إيربودز مع فريقنا المتخصص.`
-                : `${settings.store_address_en} Experience hands-on testing of certified pre-owned iPhones, genuine Anker chargers, and AirPods with our tech specialists.`}
+            <h2>
+              {ar ? (
+                <>
+                  مش عارف تبدأ
+                  <br />
+                  منين؟
+                </>
+              ) : (
+                <>
+                  Not sure
+                  <br />
+                  where to start?
+                </>
+              )}
+            </h2>
+            <p>
+              {ar
+                ? "نوع المنتج وميزانيتك… ونقرّب لك الاختيارات."
+                : "Tell us your category and budget. We’ll narrow it down."}
             </p>
-            <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-600">
-              <span className="flex items-center gap-1.5 bg-white/90 px-3 py-1.5 rounded-xl border border-slate-200">
-                ⏰ {language === 'ar' ? settings.working_hours_ar : settings.working_hours_en}
-              </span>
-              <span className="flex items-center gap-1.5 bg-white/90 px-3 py-1.5 rounded-xl border border-slate-200 font-outfit">
-                📞 {settings.store_phone}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-            <a
-              href={`https://wa.me/${settings.store_whatsapp}?text=${encodeURIComponent(language === 'ar' ? 'مرحباً جو ستور، أود معرفة موقع المحل بالتحديد في المنصورة.' : 'Hello JOE Store, I would like to know the exact branch location in Mansoura.')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg transition-all"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>{language === 'ar' ? 'لوكيشن المحل عبر واتساب' : 'Store Location on WhatsApp'}</span>
-            </a>
             <button
-              onClick={() => navigate('catalog')}
-              className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-glow-gold transition-all"
+              onClick={() => navigate("finder")}
+              className="joe-button joe-button-dark"
             >
-              <span>{t('shopNow')}</span>
+              {ar ? "جرّب مساعد الشراء" : "Try the buying assistant"}
+              <Arrow size={17} />
             </button>
           </div>
+          <SlidersHorizontal
+            className="joe-discovery-graphic"
+            strokeWidth={0.7}
+            aria-hidden="true"
+          />
+        </SpotlightCard>
+        <SpotlightCard className="joe-discovery-card joe-discovery-b">
+          <div>
+            <span className="joe-eyebrow">
+              {ar ? "كل حاجة بتكمل التانية" : "BETTER TOGETHER"}
+            </span>
+            <h2>
+              {ar ? (
+                <>
+                  موبايلك.
+                  <br />
+                  على ذوقك.
+                </>
+              ) : (
+                <>
+                  Your phone.
+                  <br />
+                  Your way.
+                </>
+              )}
+            </h2>
+            <p>
+              {ar
+                ? "اختار القطع اللي تناسبك وجمّعها في سلة واحدة."
+                : "Put your everyday essentials together in one basket."}
+            </p>
+            <button
+              onClick={() => navigate("bundles")}
+              className="joe-text-link"
+            >
+              {ar ? "جمّع باقتك" : "Build your set"}
+              <DiagonalArrow size={19} />
+            </button>
+          </div>
+          <Layers3
+            className="joe-discovery-graphic"
+            strokeWidth={0.7}
+            aria-hidden="true"
+          />
+        </SpotlightCard>
+      </section>
+
+      {offers.length > 0 && (
+        <section className="joe-container joe-section" data-reveal>
+          <div className="joe-section-heading">
+            <div>
+              <span className="joe-eyebrow">
+                {ar ? "فرص من المتجر" : "A LITTLE EXTRA VALUE"}
+              </span>
+              <h2>
+                {ar
+                  ? "نفس اللي محتاجه. بسعر أحلى."
+                  : "Your next find. A better price."}
+              </h2>
+            </div>
+            <button
+              onClick={() =>
+                navigate("deals", undefined, { category: "all", search: "" })
+              }
+              className="joe-text-link"
+            >
+              {ar ? "كل العروض" : "All offers"}
+              <Arrow size={17} />
+            </button>
+          </div>
+          <div className="joe-product-grid">
+            {offers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
+      {brands.length > 0 && (
+        <section className="joe-brands joe-container" data-reveal>
+          <span className="joe-eyebrow">
+            {ar ? "ماركات في تشكيلتنا" : "BRANDS IN OUR COLLECTION"}
+          </span>
+          <div>
+            {brands.map((brand) => (
+              <button
+                key={brand}
+                onClick={() =>
+                  navigate("catalog", undefined, {
+                    category: "all",
+                    search: brand,
+                  })
+                }
+                className="font-outfit"
+              >
+                {brand}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+      {phones.length > 0 && (
+        <section className="joe-container joe-section" data-reveal>
+          <div className="joe-section-heading">
+            <div>
+              <span className="joe-eyebrow">
+                {ar ? "جاهز للتغيير؟" : "READY FOR AN UPGRADE?"}
+              </span>
+              <h2>{ar ? "موبايلك الجاي هنا." : "Meet your next phone."}</h2>
+            </div>
+            <button
+              className="joe-text-link"
+              onClick={() => shop("smartphones")}
+            >
+              {ar ? "كل الموبايلات" : "All phones"}
+              <Arrow size={17} />
+            </button>
+          </div>
+          <div className="joe-product-grid">
+            {phones.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
+      <section className="joe-container joe-section" data-reveal>
+        <div className="joe-visit">
+          <div className="joe-visit-mark" aria-hidden="true">
+            <MapPin size={65} strokeWidth={1} />
+            <span dir="ltr">
+              MANSOURA,
+              <br />
+              EGYPT.
+            </span>
+          </div>
+          <div>
+            <span className="joe-eyebrow">
+              {ar ? "قريبين منك" : "COME SAY HELLO"}
+            </span>
+            <h2>
+              {ar
+                ? "منوّرنا أونلاين. نوّرنا في المحل."
+                : "Great online. Even better in person."}
+            </h2>
+            <p>{ar ? settings.store_address_ar : settings.store_address_en}</p>
+            <p className="joe-visit-hours">
+              {ar ? settings.working_hours_ar : settings.working_hours_en}
+            </p>
+          </div>
+          <a
+            href={whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="joe-button joe-button-dark"
+          >
+            <MessageCircle size={18} />
+            {ar ? "كلّمنا على واتساب" : "Chat on WhatsApp"}
+          </a>
         </div>
       </section>
+      <div className="joe-container joe-last-links">
+        <button
+          onClick={() =>
+            navigate("recent", undefined, { category: "all", search: "" })
+          }
+        >
+          <History size={17} />
+          {ar ? "ارجع للي شوفته مؤخرًا" : "Your recently viewed products"}
+          <Arrow size={16} />
+        </button>
+        <button onClick={() => navigate("brands")}>
+          {ar ? "استكشف كل الماركات" : "Explore all brands"}
+          <Arrow size={16} />
+        </button>
+      </div>
     </div>
   );
 };

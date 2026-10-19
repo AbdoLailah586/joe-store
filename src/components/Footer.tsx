@@ -1,321 +1,169 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
+  ArrowUp,
+  ArrowUpLeft,
+  ArrowUpRight,
   MapPin,
   Phone,
-  Clock,
-  ShieldCheck,
-  Truck,
-  CheckCircle,
   MessageCircle,
-  Heart,
-  ExternalLink,
-  Lock,
-  FileText
-} from 'lucide-react';
-import { useStore } from '../context/StoreContext';
-import { useLanguage } from '../context/LanguageContext';
-import { JoeStoreLogo } from './JoeStoreLogo';
-import { PolicyModal, PolicyType } from './PolicyModal';
-import { generateWhatsAppWebLink } from '../utils/whatsappService';
-import { InstallAppButton, OfflineReadyLabel } from './PwaControls';
+  Clock,
+  Download,
+  ShieldCheck,
+} from "lucide-react";
+import { useStore } from "../context/StoreContext";
+import { useLanguage } from "../context/LanguageContext";
+import { JoeStoreLogo } from "./JoeStoreLogo";
+import { PolicyModal, PolicyType } from "./PolicyModal";
+import { generateWhatsAppWebLink } from "../utils/whatsappService";
+import { InstallAppButton, OfflineReadyLabel } from "./PwaControls";
+import { CategoryKey } from "../types";
 
 export const Footer: React.FC = () => {
-  const { navigate, settings, setSelectedCategory } = useStore();
-  const { t, language, isRTL } = useLanguage();
-
-  const [activePolicy, setActivePolicy] = useState<PolicyType>(null);
-
-  const whatsappInquiryUrl = generateWhatsAppWebLink(
+  const { navigate, settings } = useStore();
+  const { language, isRTL } = useLanguage();
+  const ar = language === "ar";
+  const [policy, setPolicy] = useState<PolicyType>(null);
+  const Arrow = isRTL ? ArrowUpLeft : ArrowUpRight;
+  const whatsapp = generateWhatsAppWebLink(
     settings.store_whatsapp,
-    language === 'ar'
-      ? 'مرحباً جو ستور، أود الاستفسار عن الأجهزة والعروض المتوفرة اليوم.'
-      : 'Hello JOE Store, I would like to inquire about devices and today offers.'
+    ar
+      ? "مرحباً جو ستور، أود الاستفسار عن المنتجات."
+      : "Hello JOE Store, I have a product question.",
   );
-
+  const categories: [CategoryKey, string, string][] = [
+    ["audio", "سماعات وصوتيات", "Audio & earbuds"],
+    ["smartwatches", "ساعات ذكية", "Smartwatches"],
+    ["chargers_cables", "شواحن وكابلات", "Chargers & cables"],
+    ["powerbanks", "باور بانك", "Power banks"],
+    ["cases_protection", "كفرات وحماية", "Cases & protection"],
+    ["smartphones", "موبايلات", "Phones"],
+  ];
+  const policies: [PolicyType, string, string][] = [
+    ["warranty", "الضمان والاستبدال", "Warranty & returns"],
+    ["shipping", "الشحن والتوصيل", "Shipping & delivery"],
+    ["privacy", "سياسة الخصوصية", "Privacy policy"],
+    ["terms", "الشروط والأحكام", "Terms & conditions"],
+  ];
   return (
     <>
-      <footer className="bg-slate-50 border-t border-amber-500/20 text-slate-600 font-cairo text-xs mt-16 pb-20 md:pb-6">
-        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-wrap items-center justify-between gap-4"><div><p className="font-bold text-slate-900 text-sm">{language==='ar'?'جو ستور على الموبايل والكمبيوتر':'JOE Store on mobile and desktop'}</p><p className="mt-1 leading-6">{language==='ar'?'ثبّت المتجر للوصول السريع وتصفح آخر كتالوج محفوظ أوفلاين.':'Install for quick access and offline browsing of your saved catalog.'}</p><OfflineReadyLabel/></div><InstallAppButton/></div>
-        {/* Amazon-style Back to Top button */}
-        <button type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="w-full py-3.5 bg-white hover:bg-white text-slate-600 hover:text-amber-700 text-xs font-bold text-center cursor-pointer transition-colors border-b border-slate-200 select-none flex items-center justify-center gap-2"
-        >
-          <span>الرجوع إلى أعلى الصفحة</span>
-          <span className="text-amber-700">↑</span>
-        </button>
-
-        {/* 1. Value Props Banner */}
-        <div className="border-b border-slate-200 py-8 px-4 bg-slate-100/40">
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {/* Warranty */}
-            <div
-              onClick={() => setActivePolicy('warranty')}
-              className="flex flex-col items-center space-y-2 cursor-pointer group"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-700 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h4 className="font-bold text-slate-900 text-sm group-hover:text-amber-700 transition-colors">
-                {t('warrantyPolicy')}
-              </h4>
-              <p className="text-[11px] text-slate-600 max-w-xs">
-                {t('testedCertifiedDesc')}
-              </p>
-            </div>
-
-            {/* Fast Delivery */}
-            <div
-              onClick={() => setActivePolicy('shipping')}
-              className="flex flex-col items-center space-y-2 cursor-pointer group"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
-                <Truck className="w-6 h-6" />
-              </div>
-              <h4 className="font-bold text-slate-900 text-sm group-hover:text-emerald-700 transition-colors">
-                {t('shippingPolicy')}
-              </h4>
-              <p className="text-[11px] text-slate-600 max-w-xs">
-                {t('fastDeliveryDesc')}
-              </p>
-            </div>
-
-            {/* Inspect Before Pay */}
-            <div
-              onClick={() => setActivePolicy('terms')}
-              className="flex flex-col items-center space-y-2 cursor-pointer group"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-700 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 transition-transform">
-                <CheckCircle className="w-6 h-6" />
-              </div>
-              <h4 className="font-bold text-slate-900 text-sm group-hover:text-blue-700 transition-colors">
-                {t('inspectBeforePayNotice')}
-              </h4>
-              <p className="text-[11px] text-slate-600 max-w-xs">
-                {t('inspectBeforePayDesc')}
-              </p>
-            </div>
-
-            {/* WhatsApp Notifications */}
-            <div
-              onClick={() => setActivePolicy('privacy')}
-              className="flex flex-col items-center space-y-2 cursor-pointer group"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-700 flex items-center justify-center border border-purple-500/20 group-hover:scale-110 transition-transform">
-                <MessageCircle className="w-6 h-6" />
-              </div>
-              <h4 className="font-bold text-slate-900 text-sm group-hover:text-purple-700 transition-colors">
-                {t('whatsappTrackingTitle')}
-              </h4>
-              <p className="text-[11px] text-slate-600 max-w-xs">
-                {t('whatsappTrackingDesc')}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* 2. Main Footer Content */}
-        <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand Column */}
-          <div className="space-y-4">
-            <JoeStoreLogo size="md" />
-            <p className="text-xs text-slate-600 leading-relaxed">
-              {language === 'ar'
-                ? `${settings.store_name_ar} - وجهتكم الموثوقة الأولى في المنصورة والدلتا للحصول على أحدث هواتف الآيفون الأصلية، أجهزة كسر زيرو مضمونة، وإكسسوارات الموبايل الأصلية.`
-                : `${settings.store_name_en} - Your premier destination in Mansoura for certified pre-owned iPhones, genuine accessories, smartwatches, and fast charging.`}
+      <footer className="joe-footer">
+        <div className="joe-container joe-footer-install">
+          <div>
+            <span className="joe-eyebrow">
+              <Download size={15} />
+              {ar ? "جو ستور معاك في كل وقت" : "TAKE JOE STORE WITH YOU"}
+            </span>
+            <p>
+              {ar
+                ? "ثبّت المتجر. واكتشف آخر كتالوج محفوظ حتى من غير نت."
+                : "Install the store. Browse your saved catalog, even offline."}
             </p>
-
-            {/* Social links */}
-            <div className="flex flex-wrap items-center gap-2 pt-2">
+            <OfflineReadyLabel />
+          </div>
+          <InstallAppButton />
+        </div>
+        <div className="joe-container joe-footer-main">
+          <div className="joe-footer-about">
+            <JoeStoreLogo size="lg" showSubtitle={false} />
+            <p>
+              {ar
+                ? "تفاصيل صغيرة بتعمل فرق كبير في يومك. موبايلات، صوتيات، وإكسسوارات… اختار اللي يناسبك من جو ستور."
+                : "Little things that make a big difference. Phones, audio and everyday accessories, picked your way at JOE Store."}
+            </p>
+            <div>
+              <a href={whatsapp} target="_blank" rel="noopener noreferrer">
+                <MessageCircle size={17} />
+                WhatsApp
+                <Arrow size={14} />
+              </a>
               <a
-                href={whatsappInquiryUrl}
+                href={
+                  settings.tiktok_url?.includes("2026")
+                    ? settings.tiktok_url
+                    : "https://www.tiktok.com/@joestore2026"
+                }
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 border border-emerald-500/30 transition-all flex items-center gap-2 text-xs font-bold"
               >
-                <MessageCircle className="w-4 h-4" />
-                <span>{language === 'ar' ? 'واتساب مباشر' : 'WhatsApp'}</span>
+                TikTok
+                <Arrow size={14} />
               </a>
-
-              {(() => {
-                const tiktokHref = (settings.tiktok_url && (!settings.tiktok_url.includes('@joestore') || settings.tiktok_url.includes('2026')))
-                  ? settings.tiktok_url
-                  : 'https://www.tiktok.com/@joestore2026';
-                return (
-                  <a
-                    href={tiktokHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-100 text-slate-600 hover:text-amber-700 border border-slate-200 transition-all text-xs font-bold flex items-center gap-1.5"
-                    title="حساب جو ستور الرسمي على TikTok"
-                  >
-                    <span>TikTok: @joestore2026</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                );
-              })()}
             </div>
           </div>
-
-          {/* Categories */}
-          <div className="space-y-3">
-            <h4 className="font-bold text-sm text-slate-900 font-cairo">
-              {language === 'ar' ? 'الأقسام والمنتجات' : 'Products & Catalog'}
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <button
-                  onClick={() => { setSelectedCategory('smartphones'); navigate('catalog'); }}
-                  className="hover:text-amber-700 transition-colors"
-                >
-                  {language === 'ar' ? 'آيفون كسر زيرو (بطاريات 85% - 97%)' : 'Certified Pre-Owned iPhones (85%-97%)'}
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => { setSelectedCategory('smartphones'); navigate('catalog'); }}
-                  className="hover:text-amber-700 transition-colors"
-                >
-                  {t('smartphones')}
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => { setSelectedCategory('smartwatches'); navigate('catalog'); }}
-                  className="hover:text-amber-700 transition-colors"
-                >
-                  {t('smartwatches')}
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => { setSelectedCategory('audio'); navigate('catalog'); }}
-                  className="hover:text-amber-700 transition-colors"
-                >
-                  {t('audio')}
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => { setSelectedCategory('chargers_cables'); navigate('catalog'); }}
-                  className="hover:text-amber-700 transition-colors"
-                >
-                  {t('chargers_cables')}
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => { setSelectedCategory('cases_protection'); navigate('catalog'); }}
-                  className="hover:text-amber-700 transition-colors"
-                >
-                  {t('cases_protection')}
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Policies & Official Terms */}
-          <div className="space-y-3">
-            <h4 className="font-bold text-sm text-slate-900 font-cairo">
-              {language === 'ar' ? 'السياسات والضمان' : 'Policies & Warranty'}
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <button
-                  onClick={() => setActivePolicy('warranty')}
-                  className={`hover:text-amber-700 transition-colors flex items-center gap-1.5 ${isRTL ? 'text-right' : 'text-left'}`}
-                >
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
-                  <span>{t('warrantyPolicy')}</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActivePolicy('shipping')}
-                  className={`hover:text-amber-700 transition-colors flex items-center gap-1.5 ${isRTL ? 'text-right' : 'text-left'}`}
-                >
-                  <Truck className="w-3.5 h-3.5 text-emerald-700" />
-                  <span>{t('shippingPolicy')}</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActivePolicy('privacy')}
-                  className={`hover:text-amber-700 transition-colors flex items-center gap-1.5 ${isRTL ? 'text-right' : 'text-left'}`}
-                >
-                  <Lock className="w-3.5 h-3.5 text-blue-700" />
-                  <span>{t('privacyPolicy')}</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActivePolicy('terms')}
-                  className={`hover:text-amber-700 transition-colors flex items-center gap-1.5 ${isRTL ? 'text-right' : 'text-left'}`}
-                >
-                  <FileText className="w-3.5 h-3.5 text-purple-700" />
-                  <span>{t('termsConditions')}</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigate('track-order')}
-                  className={`hover:text-amber-700 transition-colors flex items-center gap-1.5 font-bold text-amber-700 ${isRTL ? 'text-right' : 'text-left'}`}
-                >
-                  <span>{t('trackOrder')} {isRTL ? '←' : '→'}</span>
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Store Info & Mansoura Location */}
-          <div className="space-y-3">
-            <h4 className="font-bold text-sm text-slate-900 font-cairo">
-              {language === 'ar' ? 'زيارة المحل والتواصل' : 'Store Location & Hours'}
-            </h4>
-            <div className="space-y-2.5 text-xs text-slate-600">
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
-                <span>{language === 'ar' ? settings.store_address_ar : settings.store_address_en}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-amber-700 flex-shrink-0" />
-                <span className="font-outfit text-slate-900 font-bold">{settings.store_phone}</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Clock className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
-                <span>{language === 'ar' ? settings.working_hours_ar : settings.working_hours_en}</span>
-              </div>
-            </div>
-
-            {/* Quick action button */}
-            <div className="pt-2">
+          <div className="joe-footer-links">
+            <h2>{ar ? "اكتشف التشكيلة" : "Explore the collection"}</h2>
+            {categories.map(([category, a, en]) => (
               <button
-                onClick={() => navigate('track-order')}
-                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-amber-500/20 text-slate-600 hover:text-amber-700 text-xs font-bold border border-slate-200 transition-all text-center block"
+                key={category}
+                onClick={() =>
+                  navigate("catalog", undefined, { category, search: "" })
+                }
               >
-                {t('trackOrder')} ←
+                {ar ? a : en}
               </button>
-            </div>
+            ))}
+          </div>
+          <div className="joe-footer-links">
+            <h2>{ar ? "معاك في كل خطوة" : "Here to help"}</h2>
+            {policies.map(([key, a, en]) => (
+              <button key={key} onClick={() => setPolicy(key)}>
+                {ar ? a : en}
+              </button>
+            ))}
+            <button onClick={() => navigate("track-order")}>
+              {ar ? "تتبع طلبك" : "Track your order"}
+            </button>
+            <button onClick={() => navigate("help")}>
+              {ar ? "المساعدة والأسئلة" : "Help & questions"}
+            </button>
+          </div>
+          <div className="joe-footer-contact">
+            <h2>{ar ? "نوّرنا في المنصورة" : "Visit us in Mansoura"}</h2>
+            <p>
+              <MapPin size={16} />
+              {ar ? settings.store_address_ar : settings.store_address_en}
+            </p>
+            <a href={`tel:${settings.store_phone}`}>
+              <Phone size={16} />
+              <span dir="ltr">{settings.store_phone}</span>
+            </a>
+            <p>
+              <Clock size={16} />
+              {ar ? settings.working_hours_ar : settings.working_hours_en}
+            </p>
+            <span className="joe-footer-payment">
+              <ShieldCheck size={15} />
+              {ar
+                ? "كاش / فودافون كاش / إنستاباي"
+                : "Cash / Vodafone Cash / InstaPay"}
+            </span>
           </div>
         </div>
-
-        {/* 3. Bottom Credits */}
-        <div className="border-t border-slate-200 py-4 px-4 text-center text-[11px] text-slate-500">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>© {new Date().getFullYear()} {language === 'ar' ? settings.store_name_ar : settings.store_name_en}. {t('allRightsReserved')}.</p>
-            <p className="flex items-center gap-1">
-              <span>{language === 'ar' ? 'صنع بأعلى معايير الجودة لمتجر' : 'Crafted with premium excellence for'}</span>
-              <span className="font-bold text-amber-700 font-outfit">JOE Store</span>
-            </p>
-          </div>
+        <div className="joe-container joe-footer-bottom">
+          <span>
+            © {new Date().getFullYear()} JOE Store.{" "}
+            {ar ? "كل الحقوق محفوظة." : "All rights reserved."}
+          </span>
+          <span className="joe-footer-signature" dir="ltr">
+            GOOD TECH. GOOD MOOD.
+          </span>
+          <button
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+                  .matches
+                  ? "auto"
+                  : "smooth",
+              })
+            }
+          >
+            {ar ? "لفوق تاني" : "Back to top"}
+            <ArrowUp size={15} />
+          </button>
         </div>
       </footer>
-
-      {/* Policy Modal Viewer */}
-      <PolicyModal
-        policy={activePolicy}
-        onClose={() => setActivePolicy(null)}
-      />
+      <PolicyModal policy={policy} onClose={() => setPolicy(null)} />
     </>
   );
 };
