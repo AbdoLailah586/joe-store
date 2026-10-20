@@ -17,10 +17,12 @@ import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { generateWhatsAppWebLink } from '../../utils/whatsappService';
 import { neonDb } from '../../services/neonDb';
+import { MetricCard, useDetails } from '../../components/DetailsDialog';
 
 export const CustomerCrmTab: React.FC = () => {
   const { activeCarts, refreshActiveCarts, settings } = useStore();
   const { formatPrice, language } = useLanguage();
+  const { openDetails } = useDetails();
 
   const [isLoading, setIsLoading] = useState(false);
   const [filterMode, setFilterMode] = useState<'all' | 'abandoned' | 'active'>('all');
@@ -48,64 +50,10 @@ export const CustomerCrmTab: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* 1. Header Metrics Strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* Abandoned Carts Alert */}
-        <div className="p-5 rounded-3xl bg-white border border-rose-500/30 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-28 h-28 bg-rose-500/10 blur-2xl -z-0" />
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-rose-700 flex items-center gap-1.5">
-              <AlertCircle className="w-4 h-4" />
-              <span>سلات متروكة (فرص استرجاع مبيعات)</span>
-            </span>
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
-          </div>
-          <strong className="text-2xl sm:text-3xl font-black font-outfit text-slate-900 block">
-            {abandonedCartsCount} <span className="text-xs text-rose-700 font-cairo">سلة متروكة</span>
-          </strong>
-          <span className="text-xs text-slate-600 mt-1 block">
-            بقيمة إجمالية: <strong className="text-amber-700 font-outfit">{formatPrice(abandonedCartsValue)}</strong>
-          </span>
-        </div>
-
-        {/* Active Carts Now */}
-        <div className="p-5 rounded-3xl bg-white border border-emerald-500/30 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-28 h-28 bg-emerald-500/10 blur-2xl -z-0" />
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
-              <ShoppingCart className="w-4 h-4" />
-              <span>يتسوقون الآن (سلات قيد الاختيار)</span>
-            </span>
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-700 animate-pulse" />
-          </div>
-          <strong className="text-2xl sm:text-3xl font-black font-outfit text-slate-900 block">
-            {activeNowCount} <span className="text-xs text-emerald-700 font-cairo">جلسة نشطة</span>
-          </strong>
-          <span className="text-xs text-slate-600 mt-1 block">
-            عملاء يختارون منتجاتهم في الوقت الحالي
-          </span>
-        </div>
-
-        {/* CRM Action Tip */}
-        <div className="p-5 rounded-3xl bg-white border border-amber-500/30 shadow-lg flex flex-col justify-between">
-          <div>
-            <span className="text-xs font-bold text-amber-700 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4" />
-              <span>استراتيجية جو ستور لاسترجاع العملاء</span>
-            </span>
-            <p className="text-xs text-slate-600 mt-2 leading-relaxed font-cairo">
-              إرسال رسالة تذكير ودية عبر واتساب للعميل الذي ترك سلته يرفع معدل إتمام الطلبات بنسبة تتجاوز 40%!
-            </p>
-          </div>
-          <button
-            onClick={handleRefresh}
-            disabled={isLoading}
-            className="mt-3 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-100 text-slate-600 text-xs font-bold flex items-center justify-center gap-1.5 transition-all self-start"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-            <span>تحديث بيانات السلات الحية</span>
-          </button>
-        </div>
+      <div className="grid sm:grid-cols-3 gap-4">
+        <MetricCard title="السلات المتروكة" value={abandonedCartsCount} note={`بقيمة ${formatPrice(abandonedCartsValue)} — اضغط لعرض هذه السلات`} onClick={() => setFilterMode('abandoned')} />
+        <MetricCard title="جلسات تسوّق نشطة" value={activeNowCount} note="اضغط لعرض السلات غير المعلّمة كمتروكة" onClick={() => setFilterMode('active')} />
+        <MetricCard title="قيمة السلات المتروكة" value={formatPrice(abandonedCartsValue)} note="فرص بيع محتملة، وليست مبيعات مؤكدة" onClick={() => openDetails({ title: 'كيف تُحسب قيمة السلات المتروكة؟', description: 'مجموع القيم الفرعية للسلات المعلّمة كمتروكة في البيانات الحالية. لا يعني ترك السلة أن العميل اشترى أو دفع.', rows: activeCarts.filter(c => c.is_abandoned).map((c, i) => ({ id: String(i), label: c.customer_name || 'جلسة عميل', value: formatPrice(Number(c.subtotal || 0)), facts: [{ label: 'الأصناف', value: c.items?.length || 0 }] })), actions: [{ label: 'عرض السلات المتروكة', run: () => setFilterMode('abandoned') }] })} />
       </div>
 
       {/* 2. Abandoned & Active Carts Table */}

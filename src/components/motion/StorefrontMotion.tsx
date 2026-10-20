@@ -55,14 +55,17 @@ export default function StorefrontMotion({
                 },
               });
             });
-          gsap.from(root.current?.querySelectorAll("[data-hero-piece]") || [], {
-            y: 22,
-            opacity: 0,
-            stagger: 0.1,
-            duration: 0.9,
-            ease: "power3.out",
-            clearProps: "transform,opacity",
-          });
+          const heroPieces =
+            root.current?.querySelectorAll("[data-hero-piece]");
+          if (heroPieces?.length)
+            gsap.from(heroPieces, {
+              y: 22,
+              opacity: 0,
+              stagger: 0.1,
+              duration: 0.9,
+              ease: "power3.out",
+              clearProps: "transform,opacity",
+            });
         });
       });
       return () => {

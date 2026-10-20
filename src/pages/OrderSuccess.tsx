@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
+import { InfoButton } from '../components/DetailsDialog';
+import { orderDetail, productDetail } from '../utils/detailModels';
 import { generateWhatsAppWebLink, buildOrderConfirmationMessage } from '../utils/whatsappService';
 
 export const OrderSuccess: React.FC = () => {
@@ -62,7 +64,7 @@ export const OrderSuccess: React.FC = () => {
         {/* Order Number Badge */}
         <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white border border-amber-500/40 text-amber-700 shadow-md">
           <span className="text-xs text-slate-600 font-semibold">{t('orderNumber')}:</span>
-          <span className="text-base font-black font-outfit text-slate-900">#{currentOrder.order_number}</span>
+          <InfoButton className="text-base font-black font-outfit text-slate-900" details={orderDetail(currentOrder, formatPrice)}>#{currentOrder.order_number}</InfoButton>
           <button
             onClick={handleCopyOrderNumber}
             className="p-1 rounded-lg bg-slate-100 hover:bg-slate-100 text-slate-600 hover:text-slate-900"
@@ -149,7 +151,7 @@ export const OrderSuccess: React.FC = () => {
           </div>
           <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
             <span>المبلغ الإجمالي المطلوب:</span>
-            <span className="font-outfit text-amber-700 text-lg">{formatPrice(currentOrder.total)}</span>
+            <InfoButton className="font-outfit text-amber-700 text-lg" details={orderDetail(currentOrder, formatPrice)}>{formatPrice(currentOrder.total)}</InfoButton>
           </div>
         </div>
 

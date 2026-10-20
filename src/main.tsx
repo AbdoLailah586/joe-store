@@ -8,6 +8,8 @@ import { StoreErrorBoundary } from './components/StoreErrorBoundary';
 import './index.css';
 import './storefront.css';
 import { initPwa } from './services/pwa';
+import { DetailsProvider } from './components/DetailsDialog';
+import './details.css';
 
 initPwa(import.meta.env.PROD);
 
@@ -17,7 +19,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <LanguageProvider>
       <AuthProvider>
         <StoreProvider>
-          <App />
+          <DetailsProvider><App /></DetailsProvider>
         </StoreProvider>
       </AuthProvider>
     </LanguageProvider>

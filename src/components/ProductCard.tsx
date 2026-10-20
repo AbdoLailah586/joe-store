@@ -19,6 +19,7 @@ import {
   productNotice,
   priceLabel,
 } from "../utils/amazonEnricher";
+import { useProductInfo } from "./useProductInfo";
 
 export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const {
@@ -30,6 +31,7 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     settings,
   } = useStore();
   const { t, language, formatPrice, isRTL } = useLanguage();
+  const { showProductInfo, showPrice, showStock, showWarranty, showReviews } = useProductInfo(product);
   if (product.is_active === false) return null;
   const ar = language === "ar";
   const name = (ar ? product.name_ar : product.name_en) || product.name_ar;
@@ -71,17 +73,12 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         </button>
         <div className="joe-product-badges">
           {product.discount_percentage > 0 ? (
-            <span className="joe-discount">
-              −{product.discount_percentage}%
-            </span>
+            <button type="button" onClick={showPrice} className="joe-discount" aria-label={ar ? "تفاصيل الخصم" : "Discount details"}>−{product.discount_percentage}%</button>
           ) : (
-            condition && <span>{condition}</span>
+            condition && <button type="button" onClick={showProductInfo}>{condition}</button>
           )}
           {product.battery_health > 0 && product.battery_health < 100 && (
-            <span>
-              <BatteryMedium size={12} />
-              {product.battery_health}%
-            </span>
+            <button type="button" onClick={showProductInfo} aria-label={ar ? "تفاصيل حالة البطارية" : "Battery details"}><BatteryMedium size={12} />{product.battery_health}%</button>
           )}
         </div>
         <button
@@ -101,18 +98,18 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
           <span>{t("quickView")}</span>
         </button>
         {product.storage && (
-          <span className="joe-product-storage">{product.storage}</span>
+          <button type="button" onClick={showProductInfo} className="joe-product-storage">{product.storage}</button>
         )}
       </div>
       <div className="joe-product-content">
         <div className="joe-product-meta">
-          <span>{product.brand || "JOE Store"}</span>
+          <button type="button" onClick={() => navigate("catalog", undefined, { category: "all", search: product.brand || "" })}>{product.brand || "JOE Store"}</button>
           {product.reviews_count > 0 && product.rating > 0 && (
-            <span className="joe-product-rating">
+            <button type="button" onClick={showReviews} className="joe-product-rating" aria-label={ar ? "عرض التقييمات" : "View reviews"}>
               <Star size={12} fill="currentColor" />
               {product.rating}
               <small>({product.reviews_count})</small>
-            </span>
+            </button>
           )}
         </div>
         <h3>
@@ -123,7 +120,10 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         {product.available_colors?.length > 0 && (
           <div className="joe-product-colors" aria-label={t("color")}>
             {product.available_colors.slice(0, 4).map((color, i) => (
-              <span
+              <button
+                type="button"
+                onClick={showProductInfo}
+                aria-label={ar ? color.name_ar : color.name_en}
                 key={i}
                 style={{ backgroundColor: color.hex }}
                 title={ar ? color.name_ar : color.name_en}
@@ -131,23 +131,23 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             ))}
           </div>
         )}
-        {notice && <p className="joe-product-notice">{notice}</p>}
+        {notice && <button type="button" onClick={showProductInfo} className="joe-product-notice text-start">{notice}</button>}
         {product.warranty_months > 0 && (
-          <span className="joe-product-warranty">
+          <button type="button" onClick={showWarranty} className="joe-product-warranty text-start">
             <ShieldCheck size={13} />
             {ar
               ? `ضمان ${product.warranty_months} شهر`
               : `${product.warranty_months} month warranty`}
-          </span>
+          </button>
         )}
         <div className="joe-product-purchase">
           <div className="joe-product-price">
-            <strong>{displayedPrice}</strong>
+            <button type="button" onClick={showPrice} aria-label={ar ? `تفاصيل سعر ${name}` : `Price details for ${name}`}><strong>{displayedPrice}</strong></button>
             {product.original_price > product.price && product.price > 0 && (
-              <del>{formatPrice(product.original_price)}</del>
+              <button type="button" onClick={showPrice}><del>{formatPrice(product.original_price)}</del></button>
             )}
           </div>
-          <span className={`joe-product-stock ${stock ? "is-available" : ""}`}>
+          <button type="button" onClick={showStock} className={`joe-product-stock ${stock ? "is-available" : ""}`}>
             {stock
               ? ar
                 ? "متوفر"
@@ -155,7 +155,7 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
               : ar
                 ? "غير متوفر"
                 : "Out of stock"}
-          </span>
+          </button>
         </div>
         <div className="joe-product-actions">
           <button

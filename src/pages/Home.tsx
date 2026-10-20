@@ -29,6 +29,7 @@ import { neonDb } from "../services/neonDb";
 import { SpotlightCard } from "../components/motion/SpotlightCard";
 import { AnimateStorefront } from "../components/motion/AnimateStorefront";
 import { generateWhatsAppWebLink } from "../utils/whatsappService";
+import { useDetails } from "../components/DetailsDialog";
 
 const categoryCards = [
   {
@@ -91,6 +92,7 @@ export const Home: React.FC = () => {
   const { products: allProducts, navigate, settings, sessionId } = useStore();
   const { language, isRTL, t } = useLanguage();
   const ar = language === "ar";
+  const { openDetails } = useDetails();
   const root = useRef<HTMLDivElement>(null);
   const products = useMemo(
     () => allProducts.filter((p) => p.is_active !== false),
@@ -221,7 +223,7 @@ export const Home: React.FC = () => {
               <DiagonalArrow size={18} />
             </button>
           </div>
-          <div className="joe-hero-note">
+          <button type="button" onClick={() => navigate("contact")} className="joe-hero-note text-start">
             <MapPin size={16} />
             <span>{ar ? "جو ستور · المنصورة" : "JOE Store · Mansoura"}</span>
             <span className="joe-note-divider" />
@@ -230,7 +232,7 @@ export const Home: React.FC = () => {
                 ? "اختار أونلاين، أو نوّرنا في المحل"
                 : "Shop online or visit us in store"}
             </span>
-          </div>
+          </button>
         </div>
         <div
           className="joe-hero-art"
@@ -317,11 +319,11 @@ export const Home: React.FC = () => {
               a: "كاش · فودافون كاش · إنستاباي",
               e: "Cash · Vodafone Cash · InstaPay",
             },
-          ].map(({ icon: Icon, a, e }) => (
-            <div key={e}>
+          ].map(({ icon: Icon, a, e }, index) => (
+            <button type="button" key={e} className="text-start" onClick={() => index === 0 ? shop() : openDetails({ title: ar ? a : e, description: index === 1 ? (ar ? 'مدة الضمان وشروطه تختلف حسب المنتج. اضغط على ضمان أي منتج لمعرفة المدة المسجلة، وراجع الفاتورة مع المحل لتأكيد التغطية.' : 'Warranty duration and conditions vary by product. Select a product warranty to see its recorded duration and confirm coverage with the store.') : index === 2 ? (ar ? 'رسوم الشحن تعتمد على المحافظة وقيمة السلة. يظهر المبلغ المحدد قبل تأكيد الطلب، ويحتاج موعد التسليم تأكيدًا من المحل.' : 'Delivery fees depend on the destination and basket value. The exact charge appears before order confirmation; confirm delivery timing with the store.') : (ar ? 'الخيارات المتاحة: الدفع عند الاستلام، فودافون كاش، وإنستاباي. التحويل لا يُعتمد تلقائيًا؛ يراجعه المحل قبل تأكيد الدفع.' : 'Cash on delivery, Vodafone Cash and InstaPay are available. Transfers require store verification before payment is confirmed.'), facts: index === 2 ? [{ label: ar ? 'حد الشحن المجاني المسجل' : 'Recorded free-delivery threshold', value: `${settings.free_shipping_threshold ?? 2500} ${ar ? 'ج.م' : 'EGP'}` }] : [], actions: [{ label: ar ? 'المساعدة والتواصل' : 'Help & contact', run: () => navigate('help') }] })}>
               <Icon size={19} strokeWidth={1.5} />
               <span>{ar ? a : e}</span>
-            </div>
+            </button>
           ))}
         </div>
       </div>

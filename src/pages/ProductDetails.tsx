@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AnimateStorefront } from '../components/motion/AnimateStorefront';
+import { InfoButton } from '../components/DetailsDialog';
+import { useProductInfo } from '../components/useProductInfo';
 import {
   ShieldCheck,
   BatteryMedium,
@@ -55,6 +57,7 @@ export const ProductDetails: React.FC = () => {
   const { t, language, formatPrice, isRTL } = useLanguage();
 
   const rawProduct = products.find(p => p.id === selectedProductId && p.is_active !== false) || null;
+  const { showProductInfo, showPrice, showStock, showWarranty, showReviews } = useProductInfo(rawProduct!);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedStorage, setSelectedStorage] = useState('');
@@ -266,7 +269,7 @@ export const ProductDetails: React.FC = () => {
             <span className="text-slate-600">/</span>
             <button onClick={() => navigate('catalog')} className="hover:text-amber-700 transition-colors">الهواتف والإكسسوارات</button>
             <span className="text-slate-600">/</span>
-            <span className="text-amber-700/90 font-semibold">{product.brand}</span>
+            <button type="button" className="detail-info-button text-amber-700/90 font-semibold" onClick={() => navigate('catalog', undefined, { category: 'all', search: product.brand })}>{product.brand}</button>
             <span className="text-slate-600">/</span>
             <span className="text-slate-800 truncate max-w-xs">{product.name_ar}</span>
           </nav>
@@ -473,9 +476,7 @@ export const ProductDetails: React.FC = () => {
                     -{product.discount_percentage}%
                   </span>
                 )}
-                <span className="text-3xl font-black text-amber-700 font-outfit">
-                  {displayedPrice}
-                </span>
+                <button type="button" className="detail-info-button text-3xl font-black text-amber-700 font-outfit" onClick={showPrice}>{displayedPrice}</button>
                 {product.original_price > product.price && product.price > 0 && (
                   <span className="text-xs text-slate-500 line-through font-outfit">
                     سعر القائمة: {formatPrice(product.original_price)}
@@ -578,10 +579,7 @@ export const ProductDetails: React.FC = () => {
               <h3 className="text-xs font-bold text-slate-600">المواصفات الأساسية:</h3>
               <div className="rounded-xl border border-slate-200 bg-slate-100/60 overflow-hidden divide-y divide-slate-200 text-xs">
                 {Object.entries(enriched.quick_specs).map(([key, val]) => (
-                  <div key={key} className="grid grid-cols-12 px-3 py-2">
-                    <span className="col-span-5 text-slate-600 font-medium">{key}</span>
-                    <span className="col-span-7 text-slate-900 font-bold">{val}</span>
-                  </div>
+                  <InfoButton key={key} className="w-full text-start grid grid-cols-12 px-3 py-2" details={{ title: key, description: val, facts: [{ label: language === 'ar' ? 'المنتج' : 'Product', value: product.name_ar }] }}><span className="col-span-5 text-slate-600 font-medium">{key}</span><span className="col-span-7 text-slate-900 font-bold">{val}</span></InfoButton>
                 ))}
               </div>
             </div>
@@ -654,7 +652,7 @@ export const ProductDetails: React.FC = () => {
               <div className="space-y-1">
                 <div className="text-emerald-700 font-black text-sm flex items-center gap-1.5">
                   <CheckCircle className="w-4 h-4" />
-                  <span>{product.stock > 0 && product.in_stock !== false ? (language === 'ar' ? 'متوفر في المخزون' : 'In stock') : (language === 'ar' ? 'غير متوفر حالياً' : 'Out of stock')}</span>
+                  <button type="button" className="detail-info-button" onClick={showStock}>{product.stock > 0 && product.in_stock !== false ? (language === 'ar' ? 'متوفر في المخزون' : 'In stock') : (language === 'ar' ? 'غير متوفر حالياً' : 'Out of stock')}</button>
                 </div>
                 {product.stock > 0 && product.stock <= 20 && (
                   <p className="text-[11px] text-amber-700 font-bold">
@@ -1075,10 +1073,7 @@ export const ProductDetails: React.FC = () => {
           <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
               {Object.entries(publicSpecs(product.specs)).map(([key, val]) => (
-                <div key={key} className="flex justify-between items-center p-3 rounded-xl bg-slate-100 border border-slate-200">
-                  <span className="text-slate-600 font-medium">{key}</span>
-                  <span className="text-slate-900 font-bold">{val}</span>
-                </div>
+                <InfoButton key={key} className="w-full text-start flex justify-between gap-3 items-center p-3 rounded-xl bg-slate-100 border border-slate-200" details={{ title: key, description: val, facts: [{ label: 'المنتج', value: product.name_ar }] }}><span className="text-slate-600 font-medium">{key}</span><span className="text-slate-900 font-bold">{val}</span></InfoButton>
               ))}
               <div className="flex justify-between items-center p-3 rounded-xl bg-slate-100 border border-slate-200">
                 <span className="text-slate-600 font-medium">{language === 'ar' ? 'كود المنتج' : 'Product code'}</span>
@@ -1086,7 +1081,7 @@ export const ProductDetails: React.FC = () => {
               </div>
               <div className="flex justify-between items-center p-3 rounded-xl bg-slate-100 border border-slate-200">
                 <span className="text-slate-600 font-medium">الضمان المعتمد</span>
-                <span className="text-emerald-700 font-bold">{product.warranty_months > 0 ? `${product.warranty_months} ${language === 'ar' ? 'شهور' : 'months'}` : (language === 'ar' ? 'اسأل المحل عن الضمان' : 'Ask about warranty')}</span>
+                <button type="button" onClick={showWarranty} className="detail-info-button text-emerald-700 font-bold">{product.warranty_months > 0 ? `${product.warranty_months} ${language === 'ar' ? 'شهور' : 'months'}` : (language === 'ar' ? 'اسأل المحل عن الضمان' : 'Ask about warranty')}</button>
               </div>
             </div>
           </div>

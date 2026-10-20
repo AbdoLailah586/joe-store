@@ -34,6 +34,8 @@ import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { egyptianGovernorates } from '../data/governorates';
 import { orderBelongsToAccount } from '../utils/storeExpansion';
+import { InfoButton, useDetails } from '../components/DetailsDialog';
+import { orderDetail, productDetail } from '../utils/detailModels';
 
 const PRESET_AVATARS = [
   'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80',
@@ -60,6 +62,8 @@ export const Profile: React.FC = () => {
 
   const { orders, navigate } = useStore();
   const { t, formatPrice, language, setLanguage } = useLanguage();
+  const { openDetails } = useDetails();
+  const inspectOrder = (order: import('../types').Order) => openDetails(orderDetail(order, formatPrice, p => openDetails(productDetail(p, language, formatPrice))));
 
   type ProfileTab = 'orders' | 'addresses' | 'warranties' | 'personal' | 'security' | 'danger' | 'preferences' | 'payments';
   const readTab = (): ProfileTab => { const key = typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('tab'); return ['orders','addresses','warranties','personal','security','danger','preferences','payments'].includes(key || '') ? key as ProfileTab : 'orders'; };
@@ -373,7 +377,7 @@ export const Profile: React.FC = () => {
         </aside>
         <div className="min-w-0 space-y-5">
           {activeTab === 'preferences' && <section className="p-6 rounded-2xl bg-white border border-slate-200 space-y-5"><h2 className="text-lg font-bold">اللغة وتفضيلات التسوق</h2><label className="block text-sm">لغة العرض<select className="block mt-2 w-full border border-slate-300 rounded-xl p-3 bg-white" value={language} onChange={e => setLanguage(e.target.value as any)}><option value="ar">العربية</option><option value="en">English</option></select></label><p className="text-sm text-slate-600">اللغة والمفضلة وسجل المشاهدة محفوظة في هذا المتصفح. تقدر تضبط ميزانيتك واهتماماتك في مساعد الشراء.</p><button onClick={() => navigate('finder')} className="px-4 py-3 rounded-xl bg-amber-500 text-black font-bold">ضبط اختياراتي</button></section>}
-          {activeTab === 'payments' && <section className="space-y-3"><div className="p-5 rounded-2xl bg-white border border-slate-200"><h2 className="text-lg font-bold">سجل المدفوعات</h2><p className="mt-2 text-sm text-slate-600">حالة الدفع المسجلة لكل طلب؛ التحويل يحتاج مراجعة المحل قبل اعتباره مؤكدًا.</p></div>{userOrders.length ? userOrders.map(o => <div key={o.id} className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-wrap gap-4 justify-between text-sm"><strong>#{o.order_number}</strong><span>{o.payment_method === 'cod' ? 'عند الاستلام' : o.payment_method === 'instapay' ? 'InstaPay' : o.payment_method === 'vodafone_cash' ? 'فودافون كاش' : 'طريقة أخرى'}</span><span>{o.payment_status === 'verified' ? 'مؤكد من المحل' : o.payment_status === 'paid' ? 'مسجل كمدفوع' : 'غير مدفوع'}</span><strong>{formatPrice(o.total)}</strong></div>) : <p className="p-6 bg-white rounded-2xl border border-slate-200 text-slate-600">لا توجد مدفوعات مرتبطة بطلباتك حتى الآن.</p>}</section>}
+          {activeTab === 'payments' && <section className="space-y-3"><div className="p-5 rounded-2xl bg-white border border-slate-200"><h2 className="text-lg font-bold">سجل المدفوعات</h2><p className="mt-2 text-sm text-slate-600">حالة الدفع المسجلة لكل طلب؛ التحويل يحتاج مراجعة المحل قبل اعتباره مؤكدًا.</p></div>{userOrders.length ? userOrders.map(o => <div key={o.id} className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-wrap gap-4 justify-between text-sm"><button type="button" className="detail-info-button font-bold" onClick={() => inspectOrder(o)}>#{o.order_number}</button><span>{o.payment_method === 'cod' ? 'عند الاستلام' : o.payment_method === 'instapay' ? 'InstaPay' : o.payment_method === 'vodafone_cash' ? 'فودافون كاش' : 'طريقة أخرى'}</span><span>{o.payment_status === 'verified' ? 'مؤكد من المحل' : o.payment_status === 'paid' ? 'مسجل كمدفوع' : 'غير مدفوع'}</span><strong>{formatPrice(o.total)}</strong></div>) : <p className="p-6 bg-white rounded-2xl border border-slate-200 text-slate-600">لا توجد مدفوعات مرتبطة بطلباتك حتى الآن.</p>}</section>}
 
       {/* TAB 1: ORDERS */}
       {activeTab === 'orders' && (
@@ -395,7 +399,7 @@ export const Profile: React.FC = () => {
               <div key={ord.id} className="p-6 rounded-3xl bg-white border border-slate-200 space-y-4 shadow-xl">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
                   <div className="flex items-center gap-3">
-                    <strong className="text-slate-900 font-outfit text-base">#{ord.order_number}</strong>
+                    <button type="button" onClick={() => inspectOrder(ord)} className="detail-info-button font-bold text-slate-900 font-outfit text-base">#{ord.order_number}</button>
                     <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-700 border border-amber-500/30">
                       {ord.order_status === 'pending' && 'قيد المراجعة'}
                       {ord.order_status === 'confirmed' && 'تم التأكيد'}
@@ -407,9 +411,7 @@ export const Profile: React.FC = () => {
                     </span>
                   </div>
 
-                  <strong className="text-lg font-black text-amber-700 font-outfit">
-                    {formatPrice(ord.total)}
-                  </strong>
+                  <button type="button" onClick={() => inspectOrder(ord)} className="detail-info-button text-lg font-black text-amber-700 font-outfit">{formatPrice(ord.total)}</button>
                 </div>
 
                 {/* Items */}
@@ -419,7 +421,7 @@ export const Profile: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <img src={it.product.images[0]} alt="" className="w-10 h-10 rounded-lg object-cover bg-slate-100" />
                         <div>
-                          <span className="font-bold text-slate-900 block">{it.product.name_ar}</span>
+                          <button type="button" className="detail-info-button text-start font-bold text-slate-900 block" onClick={() => openDetails(productDetail(it.product, language, formatPrice))}>{it.product.name_ar}</button>
                           <span className="text-[10px] text-slate-600">{it.selected_storage || it.product.storage} • {it.selected_color || it.product.color_ar}</span>
                         </div>
                       </div>
@@ -560,44 +562,7 @@ export const Profile: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 3: WARRANTIES */}
-      {activeTab === 'warranties' && (
-        <div className="space-y-4">
-          <div className="p-6 rounded-3xl bg-white border border-emerald-500/30 space-y-4 shadow-xl">
-            <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-emerald-700" />
-              <span>الضمان المعتمد لأجهزتك من متجر جو ستور</span>
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              جميع الأجهزة المشتراة من متجر جو ستور (JOE Store) مشمولة بضمان استبدال فوري وصيانة رسمية معتمدة ضد عيوب الصناعة بفرعنا في المنصورة.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 rounded-2xl bg-slate-100 border border-slate-200 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <strong className="text-slate-900 font-bold">آبل آيفون 13 (iPhone 13 - 128GB)</strong>
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 text-[10px] font-bold">
-                    ساري حتى سبتمبر 2026
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-600">حالة الجهاز: كسر زيرو ممتاز • نسبة البطارية: 94%</p>
-                <p className="text-[10px] text-emerald-700 font-bold">✓ يشمل الشاشة واللوحة الأم والكاميرات ومستشعر Face ID</p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-slate-100 border border-slate-200 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <strong className="text-slate-900 font-bold">سماعة Apple AirPods Pro 2 الأصلية</strong>
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 text-[10px] font-bold">
-                    ساري حتى مارس 2027
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-600">حالة المنتج: جديد متبرشم • الضمان: استبدال فوري</p>
-                <p className="text-[10px] text-emerald-700 font-bold">✓ عزل الضوضاء النشط وجودة الميكروفونات وشريحة H2</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {activeTab === 'warranties' && <section className="space-y-4"><h2 className="text-lg font-bold">ضمان المنتجات في طلباتك المسلّمة</h2><p className="text-sm text-slate-600">نعرض المدة المسجلة للمنتج فقط. تاريخ بدء الضمان وتغطيته يُراجعان مع فاتورتك والمحل.</p>{userOrders.filter(o => o.order_status === 'delivered').flatMap(o => o.items.filter(i => i.product.warranty_months > 0).map((item, index) => <InfoButton key={`${o.id}-${index}`} className="w-full text-start rounded-xl bg-white border border-slate-200 p-4" details={{ ...productDetail(item.product, language, formatPrice), facts: [...(productDetail(item.product, language, formatPrice).facts || []), { label: 'الطلب', value: `#${o.order_number}` }] }}><strong className="block">{item.product.name_ar}</strong><span className="block mt-2 text-sm">ضمان مسجل: {item.product.warranty_months} شهر · طلب #{o.order_number}</span></InfoButton>))}{!userOrders.some(o => o.order_status === 'delivered' && o.items.some(i => i.product.warranty_months > 0)) && <p className="p-5 rounded-xl bg-white border border-slate-200 text-sm text-slate-600">لا توجد منتجات بضمان مسجل ضمن طلباتك المسلّمة حاليًا.</p>}</section>}
 
       {/* TAB 4: PERSONAL INFO & AVATAR PICKER */}
       {activeTab === 'personal' && (

@@ -3,6 +3,9 @@ import { Truck, PackageCheck, Printer, Search } from 'lucide-react';
 import { neonDb } from '../../services/neonDb';
 import { useAuth } from '../../context/AuthContext';
 import type { Order } from '../../types';
+import { InfoButton, useDetails } from '../../components/DetailsDialog';
+import { orderDetail, orderRows } from '../../utils/detailModels';
+import { useLanguage } from '../../context/LanguageContext';
 
 const button = 'rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40';
 const box = 'rounded-2xl border border-slate-200 bg-white p-4 sm:p-5';
@@ -18,6 +21,8 @@ const REASONS: Record<string, string> = {
 
 export const FulfillmentPanel: React.FC = () => {
   const { user } = useAuth();
+  const { openDetails } = useDetails();
+  const { formatPrice } = useLanguage();
   const actor = user ? { id: user.id, name: user.name } : undefined;
   const [tab, setTab] = useState<'packing' | 'delivery' | 'refusals'>('packing');
   const [picking, setPicking] = useState<Order[]>([]);
@@ -146,9 +151,9 @@ export const FulfillmentPanel: React.FC = () => {
 
     {tab === 'delivery' && <div className="space-y-4">
       {Object.entries(grouped).map(([courier, orders]) => <div key={courier} className={box}>
-        <h3 className="font-bold text-sm mb-2">{courier} · {orders.length} شحنة</h3>
+        <h3 className="font-bold text-sm mb-2"><button type="button" className="detail-info-button" onClick={() => openDetails({ title: `شحنات ${courier}`, description: 'الشحنات الحالية المسندة لهذا المندوب. اضغط على الطلب للاطلاع على أصنافه وعنوانه؛ العرض لا يعيّن مندوبًا أو يغيّر الحالة.', rows: orderRows(orders, formatPrice, o => openDetails(orderDetail(o, formatPrice))) })}>{courier} · {orders.length} شحنة</button></h3>
         <div className="space-y-1">{orders.map(order => <div key={order.id} className="flex flex-wrap items-center justify-between gap-2 text-xs border-t border-slate-100 pt-2 mt-2 first:border-0 first:pt-0 first:mt-0">
-          <div><strong>#{order.order_number}</strong><span className="text-slate-500 mx-2">{order.customer_name}</span><span className="text-slate-500">{order.governorate}</span></div>
+          <div><InfoButton className="font-bold" details={orderDetail(order, formatPrice)}>#{order.order_number}</InfoButton><span className="text-slate-500 mx-2">{order.customer_name}</span><span className="text-slate-500">{order.governorate}</span></div>
           <div className="flex items-center gap-2"><span className="px-2 py-0.5 rounded bg-slate-100">{order.order_status}</span>
             <button onClick={() => assignCourier(order)} className="text-amber-700 font-bold">تعيين مندوب / شحن</button>
             <button onClick={() => recordRefusal(order)} className="text-rose-700 font-bold">تسجيل رفض استلام</button></div>

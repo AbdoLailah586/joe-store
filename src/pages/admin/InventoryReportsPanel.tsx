@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { Download, SlidersHorizontal, RotateCcw, Save, FileSpreadsheet } from 'lucide-react';
 import type { Product } from '../../types';
+import { MetricCard, useDetails } from '../../components/DetailsDialog';
+import { productDetail, productRows, inventoryMetricProducts } from '../../utils/detailModels';
+import { recordedStock, needsReview, hasImage, hasSellingPrice, hasCostPrice, costValue, sellingValue } from '../../utils/inventoryReports';
 import { useLanguage } from '../../context/LanguageContext';
 import { readStoredArray, writeStoredJson } from '../../utils/browserStorage';
 import { categoryLabels, defaultInventoryFilters, defaultReportColumns, InventoryFilters, inventorySummary,
@@ -17,6 +20,12 @@ interface Props {
 }
 export function InventoryReportsPanel({ products, rows, filters, onChange, errors, loading, ready }: Props) {
   const { formatPrice } = useLanguage();
+  const { openDetails } = useDetails();
+  const showProduct = (product: Product) => openDetails(productDetail(product, 'ar', formatPrice, true));
+  const showMetric = (index: number, title: string, note: string) => {
+    const matches = inventoryMetricProducts(rows, index);
+    openDetails({ title, description: `${note}. النتائج أدناه من شروط التقرير الحالية فقط.${index === 4 || index === 5 ? ' القيمة = الكمية الموجبة × السعر المسجل لكل صنف، ولا تمثل مبيعات أو ربحًا.' : ''}`, rows: productRows(matches, formatPrice, showProduct, true).map((row, i) => ({ ...row, ...(index === 4 || index === 5 ? { value: formatPrice(index === 4 ? costValue(matches[i]) : sellingValue(matches[i])) } : {}) })) });
+  };
   const [columns, setColumns] = useState(defaultReportColumns);
   const [title, setTitle] = useState('تقرير المخزون');
   const [saved, setSaved] = useState(() => readStoredArray(savedKey, isSavedInventoryReport));
@@ -100,9 +109,7 @@ export function InventoryReportsPanel({ products, rows, filters, onChange, error
         ['قيمة المخزون بسعر البيع', formatPrice(summary.sellingCents / 100), `${summary.unpricedUnits} قطعة بدون سعر موجب`],
         ['بدون سعر بيع صالح', summary.missingPrice, 'سعر غير مسجل أو غير موجب'],
         ['بدون رابط صورة', summary.missingImage, 'حسب روابط الصور المسجلة'],
-      ].map(([label, value, note]) => <div key={String(label)} className="rounded-2xl border border-slate-200 bg-white p-4 min-w-0">
-        <span className="block text-xs text-slate-600 font-bold">{label}</span><strong className="block mt-1 text-xl font-black text-slate-900 break-words">{loading ? '…' : value}</strong><span className="block text-xs text-slate-500 mt-1">{note}</span>
-      </div>)}
+      ].map(([label, value, note], index) => <MetricCard key={String(label)} title={String(label)} value={loading ? '…' : value} note={String(note)} disabled={loading || !ready || !!errors.length} onClick={() => showMetric(index, String(label), String(note))} />)}
     </div>
     <p className="text-xs text-slate-600">الإحصائيات تخص النتائج المطابقة فقط. القيم المالية تخص الكميات الموجبة والأسعار المسجلة؛ قيمة البيع ليست مبيعات أو أرباحًا محققة.{summary.unknownStock > 0 && ` يوجد ${summary.unknownStock} صنف بلا كمية مسجلة.`}</p>
 
@@ -128,7 +135,7 @@ export function InventoryReportsPanel({ products, rows, filters, onChange, error
     </div>
     {groups.length > 0 && !loading && <details className="rounded-2xl border border-slate-200 p-4 bg-white"><summary className="cursor-pointer text-sm font-bold text-slate-800">إحصائيات النتائج حسب القسم</summary>
       <div className="overflow-x-auto mt-3"><table className="w-full text-right text-sm"><thead><tr className="text-slate-600 border-b border-slate-200">{['القسم', 'الأصناف', 'القطع المتاحة', 'مخزون صفر', 'قيمة التكلفة', 'قيمة البيع'].map(h => <th key={h} className="p-2 whitespace-nowrap">{h}</th>)}</tr></thead>
-        <tbody>{groups.map(g => <tr key={g.category} className="border-b border-slate-100"><td className="p-2 whitespace-nowrap">{g.category}</td><td className="p-2">{g.count}</td><td className="p-2">{g.units}</td><td className="p-2">{g.zero}</td><td className="p-2 whitespace-nowrap">{formatPrice(g.costCents / 100)}</td><td className="p-2 whitespace-nowrap">{formatPrice(g.sellingCents / 100)}</td></tr>)}</tbody>
+        <tbody>{groups.map(g => <tr key={g.category} className="border-b border-slate-100">{[g.category, g.count, g.units, g.zero, formatPrice(g.costCents / 100), formatPrice(g.sellingCents / 100)].map((value, index) => <td key={index} className="p-2 whitespace-nowrap"><button type="button" className="detail-info-button" onClick={() => openDetails({ title: `تفاصيل قسم ${g.category}`, description: 'الأصناف المطابقة للتقرير داخل هذا القسم. اضغط على الصنف لعرض بياناته.', rows: productRows(rows.filter(p => categoryLabels[p.category] === g.category || p.category === g.category).filter(p => index === 3 ? recordedStock(p) === 0 : index === 2 ? (recordedStock(p) ?? 0) > 0 : true), formatPrice, showProduct, true) })}>{value}</button></td>)}</tr>)}</tbody>
       </table></div>
     </details>}
     <p className="text-xs text-slate-500">شروط المخزون الحالية: {inventoryFilterDescription(filters).find(([label]) => label === 'شرط المخزون')?.[1]}</p>

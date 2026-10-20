@@ -59,6 +59,9 @@ import { SecurityPanel } from './SecurityPanel';
 import { FulfillmentPanel } from './FulfillmentPanel';
 import { SupplierQuotesPanel } from './SupplierQuotesPanel';
 import { SupportPanel } from './SupportPanel';
+import { OverviewPanel } from './OverviewPanel';
+import { useDetails } from '../../components/DetailsDialog';
+import { orderDetail, productDetail } from '../../utils/detailModels';
 
 export const AdminDashboard: React.FC = () => {
   const { user, isAdmin, canAccessAdmin, canAccessSection, adminSections: allowedSections, sessionReady, openAuthModal, refreshAccess, isAccessRefreshing, accessRefreshError } = useAuth();
@@ -82,6 +85,9 @@ export const AdminDashboard: React.FC = () => {
   } = useStore();
 
   const { t, language, formatPrice } = useLanguage();
+  const { openDetails } = useDetails();
+  const showProductInfo = (p: Product) => openDetails({ ...productDetail(p, language, formatPrice, canAccessSection('inventory') || canAccessSection('products')), actions: canAccessSection('products') ? [{ label: 'تعديل المنتج', run: () => handleOpenEditProduct(p) }] : [] });
+  const showOrderInfo = (o: Order) => openDetails(orderDetail(o, formatPrice, showProductInfo));
 
   const [activeTab, setSection] = useState<AdminSection>(initialAdminSection);
   const setActiveTab = (section: AdminSection) => {
@@ -264,18 +270,6 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
-  // Quick stats
-  const totalRevenue = orders.filter(o => o.order_status === 'delivered').reduce((sum, o) => sum + o.total, 0);
-  const pendingOrders = orders.filter(o => o.order_status === 'pending');
-  const deliveredOrders = orders.filter(o => o.order_status === 'delivered');
-  const lowStockCount = products.filter(p => (p.stock ?? 0) < 3).length;
-  const abandonedCartsCount = activeCarts.filter(c => c.is_abandoned).length;
-
-  // Actionable-items-first KPIs (admin dashboard guide pillar 6)
-  const pendingDispatchOrders = orders.filter(o => ['confirmed', 'processing'].includes(o.order_status) && (Date.now() - new Date(o.created_at).getTime()) > 24 * 60 * 60 * 1000);
-  const unpaidConfirmationOrders = orders.filter(o => o.payment_method !== 'cod' && o.payment_status === 'unpaid' && !['cancelled', 'delivered'].includes(o.order_status));
-  const outOfStockProducts = products.filter(p => (p.stock ?? 0) <= 0);
-  const averageOrderValue = deliveredOrders.length ? totalRevenue / deliveredOrders.length : 0;
   const [wishlistGap, setWishlistGap] = useState<{ product_id: string; name_ar: string; interest_count: number }[]>([]);
   useEffect(() => { neonDb.getWishlistGap().then(setWishlistGap).catch(() => {}); }, []);
 
@@ -373,120 +367,7 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'support' && <SupportPanel />}
       {activeTab === 'security' && <SecurityPanel />}
 
-      {/* TAB 1: OVERVIEW */}
-      {activeTab === 'overview' && (
-        <div className="space-y-8">
-          {/* Actionable Items — surfaced first, per the admin dashboard guide */}
-          <div>
-            <h3 className="font-bold text-sm text-slate-900 mb-3">المهام القابلة للتنفيذ الفوري</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className={`p-5 rounded-3xl border space-y-2 ${pendingDispatchOrders.length ? 'bg-amber-50 border-amber-300' : 'bg-white border-slate-200'}`}>
-                <span className="text-xs text-slate-600 block">طلبات متأخرة عن الشحن (+24 ساعة)</span>
-                <strong className="text-2xl font-black text-amber-700 font-outfit block">{pendingDispatchOrders.length}</strong>
-              </div>
-              <div className={`p-5 rounded-3xl border space-y-2 ${unpaidConfirmationOrders.length ? 'bg-rose-50 border-rose-300' : 'bg-white border-slate-200'}`}>
-                <span className="text-xs text-slate-600 block">طلبات دفع مسبق بانتظار الاعتماد المالي</span>
-                <strong className="text-2xl font-black text-rose-700 font-outfit block">{unpaidConfirmationOrders.length}</strong>
-              </div>
-              <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-2">
-                <span className="text-xs text-slate-600 block">متوسط قيمة الطلب (AOV)</span>
-                <strong className="text-2xl font-black text-amber-700 font-outfit block">{formatPrice(averageOrderValue)}</strong>
-              </div>
-            </div>
-            {!!outOfStockProducts.length && <p className="text-xs text-slate-500 mt-2">{outOfStockProducts.length} صنف نافد من المخزون الآن.</p>}
-            {!!wishlistGap.length && <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-4">
-              <h4 className="text-xs text-slate-600 mb-2">الأكثر رغبة وغير متوفر بالمخزون (Wishlist)</h4>
-              <ul className="text-xs space-y-1">{wishlistGap.map(row => <li key={row.product_id} className="flex justify-between"><span>{row.name_ar}</span><span className="text-amber-700 font-bold">{row.interest_count}</span></li>)}</ul>
-            </div>}
-          </div>
-
-          {/* KPI Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-2">
-              <div className="flex items-center justify-between text-xs text-slate-600">
-                <span>قيمة الطلبات المسلّمة</span>
-                <DollarSign className="w-4 h-4 text-amber-700" />
-              </div>
-              <strong className="text-2xl font-black text-amber-700 font-outfit block">
-                {formatPrice(totalRevenue)}
-              </strong>
-              <p className="text-[10px] text-emerald-700">يشمل الشحن؛ لا يشمل الملغى</p>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-2">
-              <div className="flex items-center justify-between text-xs text-slate-600">
-                <span>إجمالي الطلبات</span>
-                <ShoppingBag className="w-4 h-4 text-blue-700" />
-              </div>
-              <strong className="text-2xl font-black text-slate-900 font-outfit block">
-                {orders.length}
-              </strong>
-              <p className="text-[10px] text-amber-700 font-bold">{pendingOrders.length} طلبات قيد المراجعة</p>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-2">
-              <div className="flex items-center justify-between text-xs text-slate-600">
-                <span>المنتجات بالمخزن</span>
-                <Package className="w-4 h-4 text-emerald-700" />
-              </div>
-              <strong className="text-2xl font-black text-slate-900 font-outfit block">
-                {products.length}
-              </strong>
-              <p className="text-[10px] text-slate-600">هواتف وإكسسوارات معروضة</p>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-2">
-              <div className="flex items-center justify-between text-xs text-slate-600">
-                <span>ربط واتساب برو</span>
-                <MessageCircle className="w-4 h-4 text-emerald-700" />
-              </div>
-              <strong className="text-sm font-bold text-emerald-700 block flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>{settings.whatsapp_automation_url ? 'رابط الإرسال مضاف' : 'يحتاج إعداد رابط الإرسال'}</span>
-              </strong>
-              <p className="text-[10px] text-slate-600">{whatsappLogs.length} إشعار تم إرساله</p>
-            </div>
-          </div>
-
-          {/* Recent Orders Overview */}
-          <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-slate-900">أحدث طلبات الشراء المسجلة</h3>
-              <button
-                onClick={() => setActiveTab('orders')}
-                className="text-xs text-amber-700 hover:underline"
-              >
-                عرض كل الطلبات ({orders.length}) ←
-              </button>
-            </div>
-
-            {orders.length === 0 ? (
-              <p className="text-xs text-slate-600 py-6 text-center">لا توجد طلبات مسجلة بعد.</p>
-            ) : (
-              <div className="divide-y divide-slate-200 text-xs">
-                {orders.slice(0, 5).map((o) => (
-                  <div key={o.id} className="py-3 flex items-center justify-between gap-4">
-                    <div>
-                      <strong className="text-slate-900 font-outfit">#{o.order_number}</strong>
-                      <span className="text-slate-600 mx-2">•</span>
-                      <span className="text-slate-800">{o.customer_name}</span>
-                      <span className="text-slate-600 mx-2">•</span>
-                      <span className="text-slate-600">{o.governorate}</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <span className="font-outfit font-bold text-amber-700">{formatPrice(o.total)}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-700">
-                        {o.order_status}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {activeTab === 'overview' && <OverviewPanel onSection={setActiveTab} onEdit={handleOpenEditProduct} wishlistGap={wishlistGap} />}
 
       {/* TAB 2: PRODUCTS MANAGER (Manual + Excel Bulk Import + Export) */}
       {activeTab === 'products' && (
@@ -585,7 +466,7 @@ export const AdminDashboard: React.FC = () => {
                           className="w-10 h-10 rounded-xl object-cover bg-slate-100 border border-slate-200 flex-shrink-0"
                         />
                         <div>
-                          <strong className="text-slate-900 block line-clamp-1">{p.name_ar}</strong>
+                          <button type="button" onClick={() => showProductInfo(p)} className="detail-info-button text-start font-bold text-slate-900 block line-clamp-1">{p.name_ar}</button>
                           <span className="text-[10px] text-slate-600 font-outfit">{p.brand} {p.storage && `• ${p.storage}`}</span>
                         </div>
                       </td>
@@ -724,9 +605,7 @@ export const AdminDashboard: React.FC = () => {
                   {/* Order Top Bar */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
                     <div className="flex items-center gap-3">
-                      <strong className="text-base font-black text-slate-900 font-outfit">
-                        #{ord.order_number}
-                      </strong>
+                      <button type="button" onClick={() => showOrderInfo(ord)} className="detail-info-button text-base font-black text-slate-900 font-outfit">#{ord.order_number}</button>
                       <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-700 border border-amber-500/30">
                         {ord.order_status}
                       </span>
@@ -737,9 +616,7 @@ export const AdminDashboard: React.FC = () => {
 
                     <div className="flex items-center gap-3">
                       <span className="text-xs text-slate-600">المطلوب:</span>
-                      <strong className="text-lg font-black text-amber-700 font-outfit">
-                        {formatPrice(ord.total)}
-                      </strong>
+                      <button type="button" onClick={() => showOrderInfo(ord)} className="detail-info-button text-lg font-black text-amber-700 font-outfit">{formatPrice(ord.total)}</button>
                     </div>
                   </div>
 

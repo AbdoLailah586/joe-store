@@ -26,6 +26,7 @@ function source(relative) {
     if (id === 'canvas-confetti') return noop;
     if (id.endsWith('/context/StoreContext')) return { useStore: () => context };
     if (id.endsWith('/context/LanguageContext')) return { useLanguage: () => lang };
+    if (id.endsWith('/DetailsDialog')) return { useDetails: () => ({ openDetails: noop, closeDetails: noop }), InfoButton: ({children, className}) => React.createElement('button', {type:'button', className}, children) };
     if (id.endsWith('/utils/whatsappService')) return { generateWhatsAppWebLink: () => 'https://wa.me/201234567890' };
     if (!id.startsWith('.')) return require(id);
     const base = path.resolve(path.dirname(filename), id);

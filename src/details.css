@@ -1,0 +1,131 @@
+.joe-detail-dialog {
+  padding: 0;
+  width: min(800px, 94vw);
+  max-height: 88dvh;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  color: #1e293b;
+  background: white;
+  box-shadow: 0 24px 100px #0f172a40;
+  overflow-y: auto;
+}
+.joe-detail-dialog::backdrop {
+  background: #0f172a70;
+  backdrop-filter: blur(4px);
+}
+.detail-info-button {
+  text-align: inherit;
+  border-radius: 4px;
+  text-decoration: underline;
+  text-decoration-color: #b6bcad80;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.detail-info-button:hover {
+  color: #b45309;
+  text-decoration-color: currentColor;
+}
+.detail-metric {
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+  cursor: pointer;
+}
+.detail-metric:hover {
+  border-color: #e3ad59;
+  box-shadow: 0 8px 24px -16px #92400e50;
+}
+.detail-metric:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.detail-page-button {
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+.detail-page-button:disabled {
+  opacity: 0.4;
+}
+.detail-click-row {
+  cursor: pointer;
+}
+.detail-click-row:hover {
+  background: #fffbeb;
+}
+.joe-service-items > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 11px;
+  color: #59654c;
+  border-inline-end: 1px solid #dfe1d4;
+}
+.joe-service-items > button:last-child {
+  border: 0;
+}
+.joe-service-items > button:hover {
+  color: #b45309;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.joe-product-badges > button {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fffef9eb;
+  padding: 4px 7px;
+  border-radius: 4px;
+  color: #5e6556;
+  font-size: 8px;
+  font-weight: 700;
+}
+.joe-product-badges > button:hover,
+.joe-product-meta > button:hover,
+.joe-product-warranty:hover,
+.joe-product-stock:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.joe-product-meta > button:first-child {
+  text-transform: uppercase;
+  text-align: start;
+}
+.joe-product-price button:hover strong {
+  color: #b45309;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.joe-product-badges > button {
+  min-height: 24px;
+}
+button.joe-product-storage {
+  pointer-events: auto;
+}
+.joe-product-colors button {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #b6bcad;
+}
+.joe-product-colors button:hover {
+  outline: 1px solid #b45309;
+  outline-offset: 2px;
+}
+@media (max-width: 767px) {
+  .joe-service-items > button {
+    font-size: 9px;
+    justify-content: start;
+    gap: 7px;
+  }
+  .joe-service-items > button:nth-child(even) {
+    border: 0;
+    padding-inline-start: 8px;
+  }
+  .joe-product-badges > button {
+    font-size: 7px;
+    padding: 3px 5px;
+  }
+}

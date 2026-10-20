@@ -27,11 +27,14 @@ import { DeliveryAddressFields, PaymentMethod } from '../types';
 import { useAuth } from '../context/AuthContext';
 import confetti from 'canvas-confetti';
 import { DetailedAddressFields } from '../components/DetailedAddressFields';
+import { InfoButton, useDetails } from '../components/DetailsDialog';
+import { productDetail } from '../utils/detailModels';
 import { buildAddressDetails, formatDeliveryAddress, pickDeliveryFields, normalizeDigits, normalizePhone, isEgyptianPhone, isGoogleMapsUrl } from '../utils/deliveryAddress';
 
 export const Checkout: React.FC = () => {
   const { cart, cartSubtotal, createOrder, navigate, settings, isOfflineCatalog } = useStore();
   const { t, language, formatPrice, isRTL } = useLanguage();
+  const { openDetails } = useDetails();
   const { user, isAuthenticated, openAuthModal, addAddress } = useAuth();
 
   // Selected Address from profile or 'new'
@@ -843,7 +846,7 @@ export const Checkout: React.FC = () => {
                     className="w-12 h-12 rounded-xl object-cover bg-slate-100 border border-slate-200 flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0 text-xs font-cairo">
-                    <h4 className="font-bold text-slate-900 truncate">{language === 'ar' ? item.product.name_ar : item.product.name_en}</h4>
+                    <h4 className="font-bold text-slate-900 truncate"><InfoButton details={productDetail(item.product, language, formatPrice)}>{language === 'ar' ? item.product.name_ar : item.product.name_en}</InfoButton></h4>
                     <p className="text-[10px] text-slate-600">
                       {item.selected_storage || item.product.storage} • {language === 'ar' ? (item.selected_color || item.product.color_ar) : (item.selected_color || item.product.color_en)} × {item.quantity}
                     </p>
@@ -859,23 +862,23 @@ export const Checkout: React.FC = () => {
             <div className="space-y-2 pt-3 border-t border-slate-200 text-xs font-cairo">
               <div className="flex justify-between text-slate-600">
                 <span>{language === 'ar' ? 'المجموع الفرعي:' : 'Subtotal:'}</span>
-                <span className="font-outfit text-slate-900 font-semibold">{formatPrice(cartSubtotal)}</span>
+                <InfoButton className="font-outfit text-slate-900 font-semibold" details={{ title: language === 'ar' ? 'تفاصيل قيمة المنتجات' : 'Basket subtotal', description: language === 'ar' ? 'مجموع سعر كل قطعة مضروبًا في كميتها، قبل رسوم الشحن.' : 'The sum of each item price multiplied by its quantity, before shipping.', rows: cart.map((item, i) => ({ id: String(i), label: item.product.name_ar, value: formatPrice(item.product.price * item.quantity), facts: [{ label: language === 'ar' ? 'الكمية' : 'Quantity', value: item.quantity }] })) }}>{formatPrice(cartSubtotal)}</InfoButton>
               </div>
 
               <div className="flex justify-between text-slate-600">
                 <span>{language === 'ar' ? `مصاريف الشحن (${currentGov.name_ar}):` : `Shipping (${currentGov.name_en}):`}</span>
-                <span className="font-outfit">
+                <button type="button" className="font-outfit detail-info-button" onClick={() => openDetails({ title: language === 'ar' ? 'حساب رسوم الشحن' : 'Shipping calculation', description: language === 'ar' ? 'تُحسب الرسوم حسب المحافظة المحددة وقيمة المنتجات في السلة. هذا عرض للتكلفة الحالية ولا يغيّر العنوان أو الطلب.' : 'Fees depend on your selected governorate and basket subtotal. Viewing this does not change your address or order.', facts: [{ label: language === 'ar' ? 'المحافظة' : 'Governorate', value: currentGov.name_ar }, { label: language === 'ar' ? 'حد الشحن المجاني' : 'Free-delivery threshold', value: formatPrice(settings.free_shipping_threshold ?? 2500) }, { label: language === 'ar' ? 'الشحن الحالي' : 'Current shipping fee', value: formatPrice(shippingFee) }] })}>
                   {isFreeShipping ? (
                     <span className="text-emerald-700 font-bold">{language === 'ar' ? 'شحن مجاني 🎉' : 'Free Shipping 🎉'}</span>
                   ) : (
                     <span>{formatPrice(shippingFee)}</span>
                   )}
-                </span>
+                </button>
               </div>
 
               <div className="flex justify-between text-base font-black text-slate-900 pt-3 border-t border-slate-200">
                 <span>{language === 'ar' ? 'الإجمالي النهائي المطلوب:' : 'Grand Total:'}</span>
-                <span className="font-outfit text-amber-700 text-xl">{formatPrice(grandTotal)}</span>
+                <InfoButton className="font-outfit text-amber-700 text-xl" details={{ title: language === 'ar' ? 'تفاصيل الإجمالي' : 'Total breakdown', description: language === 'ar' ? 'الإجمالي = قيمة المنتجات + رسوم الشحن الحالية. فتح التفاصيل لا يرسل طلبًا.' : 'Total = basket subtotal + current shipping fee. Opening details does not place an order.', facts: [{ label: language === 'ar' ? 'المنتجات' : 'Products', value: formatPrice(cartSubtotal) }, { label: language === 'ar' ? 'الشحن' : 'Shipping', value: formatPrice(shippingFee) }, { label: language === 'ar' ? 'الإجمالي' : 'Total', value: formatPrice(grandTotal) }] }}>{formatPrice(grandTotal)}</InfoButton>
               </div>
             </div>
 

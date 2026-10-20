@@ -5,6 +5,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { neonDb } from '../../services/neonDb';
 import { matchesFinder } from '../../utils/storeExpansion';
+import { InfoButton } from '../../components/DetailsDialog';
 
 const input = 'w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900';
 const button = 'rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40';
@@ -64,7 +65,7 @@ export const SupplierQuotesPanel: React.FC = () => {
             <thead className="text-slate-500 border-b border-slate-200"><tr><th className="p-2">المورد</th><th className="p-2">السعر</th><th className="p-2">مقابل التكلفة الحالية</th><th className="p-2">التاريخ</th></tr></thead>
             <tbody className="divide-y divide-slate-100">{quotes.map(q => {
               const diff = selected.cost_price != null ? Number(q.quoted_price) - selected.cost_price : null;
-              return <tr key={q.id}><td className="p-2 font-bold">{q.supplier_name}</td><td className="p-2 font-outfit">{formatPrice(q.quoted_price)}</td>
+              return <tr key={q.id}><td className="p-2 font-bold"><InfoButton details={{ title: `عرض المورد: ${q.supplier_name}`, description: 'عرض سعر مسجل للمقارنة، وليس طلب شراء أو التزامًا بالدفع.', facts: [{ label: 'الصنف', value: selected.name_ar }, { label: 'السعر المعروض', value: formatPrice(q.quoted_price) }, { label: 'التكلفة الحالية المسجلة', value: selected.cost_price > 0 ? formatPrice(selected.cost_price) : 'غير محددة' }, { label: 'تاريخ العرض', value: new Date(q.quoted_at).toLocaleString('ar-EG') }] }}>{q.supplier_name}</InfoButton></td><td className="p-2 font-outfit"><InfoButton details={{ title: `تفاصيل سعر ${q.supplier_name}`, description: 'هذا هو سعر القطعة المسجل في عرض المورد. لا يغيّر تكلفة الصنف أو سعر بيعه.', facts: [{ label: 'السعر', value: formatPrice(q.quoted_price) }, { label: 'الفرق عن التكلفة الحالية', value: diff === null ? 'التكلفة غير محددة' : formatPrice(diff) }] }}>{formatPrice(q.quoted_price)}</InfoButton></td>
                 <td className={`p-2 font-outfit ${diff != null && diff < 0 ? 'text-emerald-700' : diff != null && diff > 0 ? 'text-rose-700' : ''}`}>{diff != null ? (diff <= 0 ? `أوفر بـ ${formatPrice(Math.abs(diff))}` : `أغلى بـ ${formatPrice(diff)}`) : '-'}</td>
                 <td className="p-2 text-slate-500 whitespace-nowrap">{new Date(q.quoted_at).toLocaleDateString('ar-EG')}</td></tr>;
             })}</tbody>

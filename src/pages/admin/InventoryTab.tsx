@@ -16,6 +16,8 @@ import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Product } from '../../types';
 import { InventoryReportsPanel } from './InventoryReportsPanel';
+import { useDetails } from '../../components/DetailsDialog';
+import { productDetail } from '../../utils/detailModels';
 import { categoryLabels, defaultInventoryFilters, filterInventory, validateInventoryFilters, detailsLabel, imageLabel, recordedStock, recordedImages } from '../../utils/inventoryReports';
 
 interface InventoryTabProps {
@@ -33,6 +35,8 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
   const { formatPrice } = useLanguage();
   const { canAccessSection } = useAuth();
   const canEdit = canAccessSection('products');
+  const { openDetails } = useDetails();
+  const inspectProduct = (p: Product) => openDetails({ ...productDetail(p, 'ar', formatPrice, true), actions: canEdit ? [{ label: 'فتح محرر هذا المنتج', run: () => onOpenEditProduct(p) }] : [] });
 
   const [filters, setFilters] = useState({ ...defaultInventoryFilters });
   const [visibleCount, setVisibleCount] = useState(50);
@@ -118,7 +122,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                         /> : <span className="w-10 h-10 rounded-xl bg-slate-100 text-[9px] text-slate-500 flex items-center justify-center flex-shrink-0">بلا صورة</span>}
                         <div className="space-y-0.5">
                           <strong className="text-slate-900 block font-bold truncate max-w-[200px] sm:max-w-xs">
-                            {p.name_ar}
+                            <button type="button" onClick={() => inspectProduct(p)} className="detail-info-button text-start">{p.name_ar}</button>
                           </strong>
                           <span className="text-[10px] text-slate-500 font-outfit block">
                             SKU: {p.sku || p.id} • {p.brand}
@@ -130,9 +134,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
 
                     {/* Category */}
                     <td className="py-3 px-3">
-                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-cairo text-[11px] whitespace-nowrap">
-                        {categoryLabels[p.category] || p.category}
-                      </span>
+                      <button type="button" className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-cairo text-[11px] whitespace-nowrap hover:underline" onClick={() => setFilters({ ...filters, category: p.category })}>{categoryLabels[p.category] || p.category}</button>
                     </td>
 
                     {/* Price */}

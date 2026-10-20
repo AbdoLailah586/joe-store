@@ -4,6 +4,7 @@ import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
 import { canPurchaseProduct, productNotice, priceLabel } from '../utils/amazonEnricher';
+import { useProductInfo } from './useProductInfo';
 
 export const QuickViewModal: React.FC = () => {
   const {
@@ -17,6 +18,7 @@ export const QuickViewModal: React.FC = () => {
   } = useStore();
 
   const { t, language, formatPrice } = useLanguage();
+  const { showProductInfo, showPrice, showWarranty } = useProductInfo(quickViewProduct!);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedStorage, setSelectedStorage] = useState('');
@@ -140,19 +142,19 @@ export const QuickViewModal: React.FC = () => {
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-200">
               <span className="text-slate-600 block text-[10px]">{language === 'ar' ? 'حالة الجهاز' : 'Condition'}</span>
-              <strong className="text-slate-900 mt-0.5 block font-bold">
+              <button type="button" onClick={showProductInfo} className="detail-info-button text-start text-slate-900 mt-0.5 block font-bold">
                 {product.condition === 'mint'
                   ? (language === 'ar' ? 'كسر زيرو ممتاز' : 'Mint Like-New')
                   : product.condition === 'brand_new'
                   ? (language === 'ar' ? 'جديد متبرشم' : 'Brand New Sealed')
                   : product.condition === 'used_good' ? (language === 'ar' ? 'استعمال خفيف' : 'Light Use') : (language === 'ar' ? 'تحتاج تأكيد' : 'Confirm condition')}
-              </strong>
+              </button>
             </div>
             <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-200">
               <span className="text-slate-600 block text-[10px]">{language === 'ar' ? 'الضمان المعتمد' : 'Certified Warranty'}</span>
-              <strong className="text-emerald-700 mt-0.5 block font-bold">
+              <button type="button" onClick={showWarranty} className="detail-info-button text-start text-emerald-700 mt-0.5 block font-bold">
                 {product.warranty_months > 0 ? `${product.warranty_months} ${language === 'ar' ? 'شهور جو ستور' : 'Mo JOE Store'}` : (language === 'ar' ? 'اسأل عن الضمان' : 'Ask about warranty')}
-              </strong>
+              </button>
             </div>
           </div>
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ShieldCheck, KeyRound, AlertCircle, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { neonDb } from '../../services/neonDb';
+import { InfoButton } from '../../components/DetailsDialog';
 
 const field = 'w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900';
 const button = 'rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40';
@@ -90,7 +91,7 @@ export const SecurityPanel: React.FC = () => {
             <tbody className="divide-y divide-slate-100">{auditRows.map(row => <tr key={row.id}>
               <td className="p-2 text-slate-500 whitespace-nowrap">{new Date(row.created_at).toLocaleString('ar-EG')}</td>
               <td className="p-2">{row.actor_name || row.actor_id || '-'}</td>
-              <td className="p-2 font-mono">{row.action}</td>
+              <td className="p-2 font-mono"><InfoButton details={{ title: 'تفاصيل عملية في سجل المراجعة', description: 'السجل يوثق عملية سابقة. عرض التفاصيل لا يعيد تنفيذها ولا يتراجع عنها.', facts: [{ label: 'العملية', value: row.action }, { label: 'المنفذ', value: row.actor_name || row.actor_id || '—' }, { label: 'العنصر', value: `${row.entity} ${row.entity_id || ''}` }, { label: 'التاريخ', value: new Date(row.created_at).toLocaleString('ar-EG') }, { label: 'السبب المسجل', value: row.reason || 'غير مسجل' }] }}>{row.action}</InfoButton></td>
               <td className="p-2">{row.entity}{row.entity_id ? ` #${String(row.entity_id).slice(0, 8)}` : ''}</td>
               <td className="p-2 text-slate-500">{row.reason || '-'}</td>
             </tr>)}</tbody>

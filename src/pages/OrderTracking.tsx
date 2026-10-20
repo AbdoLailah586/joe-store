@@ -18,10 +18,13 @@ import { useLanguage } from '../context/LanguageContext';
 import { Order, OrderStatus } from '../types';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
 import { neonDb } from '../services/neonDb';
+import { InfoButton, useDetails } from '../components/DetailsDialog';
+import { orderDetail } from '../utils/detailModels';
 
 export const OrderTracking: React.FC = () => {
   const { orders, getOrderById, currentOrder, settings, navigate } = useStore();
   const { t, language, formatPrice } = useLanguage();
+  const { openDetails } = useDetails();
 
   const [searchVal, setSearchVal] = useState(currentOrder?.order_number || '');
   const [searchedOrder, setSearchedOrder] = useState<Order | null>(currentOrder || null);
@@ -103,9 +106,7 @@ export const OrderTracking: React.FC = () => {
           <div className="p-6 rounded-3xl bg-white border border-amber-500/30 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-3">
-                <span className="text-base font-black text-slate-900 font-outfit">
-                  #{searchedOrder.order_number}
-                </span>
+                <InfoButton className="text-base font-black text-slate-900 font-outfit" details={orderDetail(searchedOrder, formatPrice)}>#{searchedOrder.order_number}</InfoButton>
                 <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
                   searchedOrder.order_status === 'cancelled'
                     ? 'bg-rose-500/20 text-rose-700 border-rose-500/30'
@@ -168,7 +169,7 @@ export const OrderTracking: React.FC = () => {
                     <div className="flex-1 text-xs">
                       <div className="flex items-center gap-2">
                         <strong className={`font-bold ${isCurrent ? 'text-amber-700 text-sm' : isPassed ? 'text-slate-900' : 'text-slate-500'}`}>
-                          {step.title}
+                          <button type="button" className="detail-info-button text-start" onClick={() => openDetails({ title: step.title, description: step.desc, facts: [{ label: 'وضع هذه الخطوة', value: searchedOrder.order_status === 'cancelled' ? 'الطلب ملغى' : isCurrent ? 'الحالة الحالية للطلب' : isPassed ? 'تم تجاوز هذه المرحلة' : 'لم يصل الطلب لهذه المرحلة بعد' }, { label: 'رقم الطلب', value: searchedOrder.order_number }, ...(step.key === 'shipped' && searchedOrder.courier_name ? [{ label: 'شركة الشحن', value: searchedOrder.courier_name }] : [])] })}>{step.title}</button>
                         </strong>
                         {isCurrent && (
                           <span className="px-2 py-0.2 rounded bg-amber-500/20 text-amber-700 text-[10px] font-bold animate-pulse">

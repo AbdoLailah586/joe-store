@@ -19,10 +19,13 @@ import { Pagination } from '../components/Pagination';
 import { pageSlice } from '../utils/storeExpansion';
 import { readStoredArray } from '../utils/browserStorage';
 import { AnimateStorefront } from '../components/motion/AnimateStorefront';
+import { useDetails } from '../components/DetailsDialog';
+import { productRows } from '../utils/detailModels';
 
 export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'recent' }> = ({ mode = 'catalog' }) => {
   const {
     products,
+    navigate,
     wishlist,
     isCatalogLoading,
     isCatalogReadyForReports,
@@ -34,6 +37,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
   } = useStore();
 
   const { t, language, formatPrice } = useLanguage();
+  const { openDetails } = useDetails();
   const isAr = language === 'ar';
 
   const initialQuery = useRef(new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search));
@@ -174,9 +178,9 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
           <span className="joe-eyebrow">{isAr ? 'تفاصيل تكمل يومك / JOE COLLECTION' : 'THE JOE COLLECTION / EVERYDAY UPGRADES'}</span>
           <h1 ref={catalogTitle} style={{ scrollMarginTop: 'calc(var(--store-header-height, 160px) + 20px)' }} className="text-2xl sm:text-3xl font-black text-slate-900 font-cairo flex items-center gap-2">
             <span key={language} data-split-title>{title}</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 font-bold border border-amber-500/30">
+            <button type="button" onClick={() => openDetails({ title: isAr ? 'تفاصيل نتائج الكتالوج' : 'Catalog results', description: isAr ? 'المنتجات المطابقة للفلاتر والبحث الحاليين. اضغط على الاسم لفتح صفحة المنتج.' : 'Products matching the current filters and search. Select a name to open its page.', rows: productRows(filteredProducts, formatPrice, p => navigate('product', p.id)) })} className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 font-bold border border-amber-500/30 hover:underline">
               {filteredProducts.length} منتج
-            </span>
+            </button>
           </h1>
           <p className="text-xs text-slate-600 font-cairo">
             {isCatalogLoading ? 'جارٍ تحميل المنتجات…' : `عرض ${slice.from}–${slice.to} من ${filteredProducts.length} • صفحة ${slice.page} من ${slice.pages}`}
