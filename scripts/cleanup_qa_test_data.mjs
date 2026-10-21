@@ -1,0 +1,11 @@
+import { neon } from '@neondatabase/serverless';
+process.loadEnvFile('.env');
+const url = new URL(process.env.DATABASE_URL || process.env.VITE_DATABASE_URL);
+url.hostname = url.hostname.replace('-pooler.', '.');
+const sql = neon(url.toString());
+const covers = await sql`DELETE FROM cover_catalog_additions WHERE brand = 'QA_TEST_BRAND' RETURNING id`;
+const screens = await sql`DELETE FROM screen_catalog_additions WHERE box_code = 'QA-TEST-K999' RETURNING id`;
+const users = await sql`DELETE FROM users WHERE lower(email) = 'qa-admin@joestore.internal' RETURNING id`;
+console.log('Deleted cover additions:', covers.map(r => r.id));
+console.log('Deleted screen additions:', screens.map(r => r.id));
+console.log('Deleted QA admin users:', users.map(r => r.id));
