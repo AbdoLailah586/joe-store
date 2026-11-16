@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /profile
+Disallow: /api/
+Disallow: /checkout
+Disallow: /order-success
+
+Sitemap: https://joestore.com.eg/sitemap.xml

@@ -31,3 +31,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+# Backups and intake raw photos
+backups/
+catalog_intake/incoming/*
+!catalog_intake/incoming/.gitkeep
+

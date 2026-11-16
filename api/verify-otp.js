@@ -5,12 +5,9 @@ import { publicUser } from '../lib/access.js';
 
 export default async function handler(req, res) {
   const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
   }
 
