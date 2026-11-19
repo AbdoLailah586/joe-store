@@ -33,6 +33,17 @@ export const QuickViewModal: React.FC = () => {
     setAddedAnimation(false);
   }, [quickViewProduct?.id]);
 
+  useEffect(() => {
+    if (!quickViewProduct) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setQuickViewProduct(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [quickViewProduct, setQuickViewProduct]);
+
   if (!quickViewProduct || quickViewProduct.is_active === false) return null;
   const product = quickViewProduct;
   const isLiked = isInWishlist(product.id);

@@ -723,9 +723,9 @@ export const initialProducts: Product[] = [
     stock: 15,
     in_stock: true,
     warranty_months: 12,
-    bought_past_month: 34,
-    rating: 5,
-    reviews_count: 2,
+    bought_past_month: 0,
+    rating: 0,
+    reviews_count: 0,
     color_ar: 'أسود كربوني مطفي',
     color_en: 'Matte Black',
     color_hex: '#1A1A1A',
@@ -734,9 +734,9 @@ export const initialProducts: Product[] = [
     ],
     available_storages: [],
     images: [
-      '/product-images/onmust-zolo-30w-box.jpg',
-      'https://media.btech.com/catalogs/c/c/c/5/ccc5b10f89405a291df3ef4498957acc75bf129f_e9cd92487ec233f386b50439cf75bcf31eae0ccf7da9894d27657d3d90c0f3b0.jpeg',
-      'https://2b.com.eg/media/catalog/product/cache/661473ab953cdcdf4c3b607144109b90/m/p/mp661-min.jpg'
+      '/product-images/onmust-zolo-30w-studio.jpg',
+      '/product-images/onmust-zolo-30w-box-clean.png',
+      '/product-images/onmust-zolo-30w-unit-clean.png'
     ],
     description_ar: 'شاحن جداري فائق السرعة ONMUST Zolo بقدرة 30 واط مع منفذ Type-C متطور يدعم بروتوكولات الشحن السريع PD 3.0 و PPS. يتميز بتقنية تبريد ذكية ومقاومة للحرارة العالية لحماية بطارية الهواتف الذكية مع فيشة مصرية ثنائية الدبوس مدمجة متوافقة مع جميع مقابس المنازل والمكاتب.',
     description_en: 'ONMUST Zolo 30W Fast Wall Charger equipped with USB Type-C port supporting Power Delivery 3.0 and PPS protocols. Features intelligent low-temperature thermal management to protect phone battery health, and standard EU two-pin plug compatible with all sockets in Egypt.',
@@ -750,7 +750,7 @@ export const initialProducts: Product[] = [
       'تقنية إدارة الحرارة': 'Low-Temperature Mini Charger لمنع ارتفاع درجة حرارة الجهاز والشاحن',
       'أنظمة الحماية والأمان': 'Enhanced Safety (حماية ضد الماس، الجهد الزائد، الشحن الزائد والتفريغ)',
       'الأجهزة المتوافقة': 'جميع هواتف Apple iPhone (من iPhone 8 حتى 16 Pro Max)، هواتف Samsung Galaxy، أجهزة iPad، وساعات اليد والسماعات',
-      'بلد المنشأ': 'صنع وفق أعلى معايير الجودة العالمية لمستلزمات الهواتف',
+      'بلد المنشأ': 'صنع في الصين وفق أعلى معايير الجودة العالمية',
       'الضمان': 'ضمان استبدال وصيانة معتمد 12 شهراً من متجر جو ستور'
     },
     quick_specs: {
@@ -768,62 +768,20 @@ export const initialProducts: Product[] = [
       '[توافق شامل مع جميع الأجهزة الذكية]: متوافق بنسبة 100% مع أجهزة Apple (iPhone و iPad)، وهواتف Samsung Galaxy، وأجهزة Xiaomi و Oppo و Huawei والسماعات الذكية.',
       '[فيشة ثنائية مصرية قياسية]: مزود بفيشة ثنائية أوروبية متوافقة مباشرة مع مقابس الكهرباء في المنازل والمكاتب في مصر دون الحاجة لأي محولات.'
     ],
-    feature_banners: [
-      {
-        tag: 'السرعة والأداء',
-        title: 'شحن فائق السرعة 30W بتقنية PD 3.0 لشحن 60% في نصف ساعة',
-        subtitle: '30W Blazing Fast PD 3.0 Quick Charging',
-        description: 'شاحن ONMUST Zolo بقدرة 30 واط يمنح هاتفك أقصى طاقة شحن يحتاجها مع دعم بروتوكول الشحن السريع PPS لأجهزة سامسونج وPD لأجهزة آبل.',
-        image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=80'
-      },
-      {
-        tag: 'التحكم في الحرارة',
-        title: 'نظام تبريد ذكي Low-Temperature لحماية عمر البطارية',
-        subtitle: 'Smart Thermal Guard & Battery Health Protection',
-        description: 'شريحة تحكم ذكية تعمل على تنظيم التيار والفولتية تلقائياً عند اقتراب امتلاء البطارية لمنع السخونة والحفاظ على صحة بطارية هاتفك على المدى الطويل.',
-        image_url: 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=1200&q=80'
-      },
-      {
-        tag: 'الحجم والتنقل',
-        title: 'تصميم Mini أنيق وفائق الصغر لسهولة التنقل والسفر',
-        subtitle: 'Ultra-Compact Mini Size Designed for Travel',
-        description: 'شاحن فائق الصغر بتصميم أسود مطفي فاخر يناسب مقابس الكهرباء المنزلية والمكتبية وحقائب السفر دون أي زحام.',
-        image_url: 'https://images.unsplash.com/photo-1622445262464-84b1456045b6?auto=format&fit=crop&w=1200&q=80'
-      }
+    feature_banners: [],
+    frequently_bought_together: [
+      'prod-joyroom-cable-fast'
     ],
     rating_breakdown: {
-      five_star: 100,
+      five_star: 0,
       four_star: 0,
       three_star: 0,
       two_star: 0,
       one_star: 0
     },
-    customer_reviews: [
-      {
-        id: 'rev-onmust-1',
-        author: 'أحمد ممدوح',
-        location: 'المنصورة (حي الجامعة)',
-        rating: 5,
-        date: '15 نوفمبر 2026',
-        title: 'شاحن ممتاز وسريع جداً مع الآيفون 15',
-        comment: 'اشتريته من فرع جو ستور بالمنصورة وشغال معايا ممتاز جداً، مش بيسخن وبيشحن الآيفون بسرعة رهيبة. خامة العلبة والفيشة محترمة جداً وسعره منافس لأي شاحن تاني في السوق.',
-        verified_purchase: true,
-        helpful_count: 14
-      },
-      {
-        id: 'rev-onmust-2',
-        author: 'محمود العوضي',
-        location: 'المنصورة (المشاية)',
-        rating: 5,
-        date: '10 نوفمبر 2026',
-        title: 'حجمه صغير وخفيف وقوة 30 واط حقيقية',
-        comment: 'شاحن عملي ومحترم بيشحن سامسونج S23 ألترا شحن سريع جداً. شكراً جو ستور على المعاملة الراقية.',
-        verified_purchase: true,
-        helpful_count: 9
-      }
-    ],
-    is_featured: true,
+    customer_reviews: [],
+    is_featured: false,
     is_best_seller: false,
     created_at: '2026-11-19'
-  },
+  }
 ];

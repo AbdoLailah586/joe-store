@@ -145,8 +145,14 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
       setSelectedBrand(q.get('brand') || 'all'); setSelectedCondition(q.get('condition') || 'all');
       setMinBatteryHealth(Number(q.get('battery')) || 0); setMaxPrice(q.get('max') ? Number(q.get('max')) : Infinity);
       setSelectedStorage(q.get('storage') || 'all'); setSortBy((q.get('sort') || 'featured') as any); setAvailableOnly(q.get('stock') === 'available');
+      if (q.has('q')) setSearchQuery(q.get('q') || '');
     };
-    window.addEventListener('popstate', restore); return () => window.removeEventListener('popstate', restore);
+    window.addEventListener('popstate', restore);
+    window.addEventListener('joe:navigate', restore);
+    return () => {
+      window.removeEventListener('popstate', restore);
+      window.removeEventListener('joe:navigate', restore);
+    };
   }, []);
   useEffect(() => {
     if (isCatalogLoading || (!isCatalogReadyForReports && !isOfflineCatalog)) return;

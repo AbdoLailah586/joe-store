@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, Trash2, ShoppingBag, ArrowRight, ArrowLeft, Plus, Minus, Truck } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -21,6 +21,15 @@ export const CartDrawer: React.FC = () => {
   const { t, language, formatPrice, isRTL } = useLanguage();
   const estimatedShipping = cartSubtotal >= (settings.free_shipping_threshold ?? 2500) ? 0 : (settings.shipping_fee_default ?? 35);
   const basketDetails = { title: language === 'ar' ? 'تفاصيل قيمة السلة' : 'Basket breakdown', description: language === 'ar' ? 'المجموع الفرعي هو مجموع أسعار القطع × الكميات. رسوم الشحن هنا مبدئية، وتتحدد حسب المحافظة في صفحة إتمام الطلب.' : 'Subtotal is the sum of item prices multiplied by quantities. Shipping shown here is provisional; the exact fee depends on your governorate at checkout.', facts: [{ label: language === 'ar' ? 'قيمة المنتجات' : 'Subtotal', value: formatPrice(cartSubtotal) }, { label: language === 'ar' ? 'الشحن المبدئي' : 'Provisional shipping', value: formatPrice(estimatedShipping) }, { label: language === 'ar' ? 'الإجمالي المبدئي' : 'Provisional total', value: formatPrice(cartSubtotal + estimatedShipping) }, { label: language === 'ar' ? 'حد الشحن المجاني' : 'Free-delivery threshold', value: formatPrice(settings.free_shipping_threshold ?? 2500) }], rows: cart.map((item, i) => ({ id: String(i), label: item.product.name_ar, value: formatPrice(item.product.price * item.quantity), facts: [{ label: language === 'ar' ? 'الكمية' : 'Quantity', value: item.quantity }] })) };
+
+  useEffect(() => {
+    if (!isCartOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsCartOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isCartOpen, setIsCartOpen]);
 
   if (!isCartOpen) return null;
 

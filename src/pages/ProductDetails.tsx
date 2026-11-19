@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AnimateStorefront } from '../components/motion/AnimateStorefront';
-import { InfoButton } from '../components/DetailsDialog';
-import { useProductInfo } from '../components/useProductInfo';
 import {
   ShieldCheck,
   BatteryMedium,
@@ -57,7 +55,6 @@ export const ProductDetails: React.FC = () => {
   const { t, language, formatPrice, isRTL } = useLanguage();
 
   const rawProduct = products.find(p => p.id === selectedProductId && p.is_active !== false) || null;
-  const { showProductInfo, showPrice, showStock, showWarranty, showReviews } = useProductInfo(rawProduct!);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedStorage, setSelectedStorage] = useState('');
@@ -112,6 +109,17 @@ export const ProductDetails: React.FC = () => {
       setBundleSelected(initialBundleMap);
     }
   }, [product?.id, language]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (lightboxOpen) setLightboxOpen(false);
+        if (showReviewModal) setShowReviewModal(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, showReviewModal]);
 
   if (!product || !enriched) {
     return (
@@ -269,7 +277,7 @@ export const ProductDetails: React.FC = () => {
             <span className="text-slate-600">/</span>
             <button onClick={() => navigate('catalog')} className="hover:text-amber-700 transition-colors">الهواتف والإكسسوارات</button>
             <span className="text-slate-600">/</span>
-            <button type="button" className="detail-info-button text-amber-700/90 font-semibold" onClick={() => navigate('catalog', undefined, { category: 'all', search: product.brand })}>{product.brand}</button>
+            <button type="button" className="text-amber-700 hover:text-amber-800 font-semibold hover:underline cursor-pointer" onClick={() => navigate('catalog', undefined, { category: 'all', brand: product.brand, search: '' })}>{product.brand}</button>
             <span className="text-slate-600">/</span>
             <span className="text-slate-800 truncate max-w-xs">{product.name_ar}</span>
           </nav>
@@ -415,10 +423,15 @@ export const ProductDetails: React.FC = () => {
             {/* Brand Store Link */}
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-bold text-amber-700 hover:underline cursor-pointer flex items-center gap-1">
-                  <span>{enriched.brand_store_name}</span>
+                <button
+                  type="button"
+                  onClick={() => navigate('catalog', undefined, { category: 'all', brand: product.brand || enriched.brand_store_name, search: '' })}
+                  className="text-xs font-bold text-amber-700 hover:text-amber-600 hover:underline cursor-pointer flex items-center gap-1 transition-colors"
+                  title={`عرض جميع منتجات ماركة ${product.brand || enriched.brand_store_name}`}
+                >
                   <Award className="w-3.5 h-3.5 text-amber-700" />
-                </span>
+                  <span>{product.brand || enriched.brand_store_name}</span>
+                </button>
               </div>
 
               {/* Amazon Detailed Title */}
@@ -442,18 +455,29 @@ export const ProductDetails: React.FC = () => {
             {/* Ratings & Social Proof Strip */}
             <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-200 text-xs">
               {/* Star Rating */}
-              {product.reviews_count > 0 && product.rating > 0 && <a href="#customer-reviews" className="flex items-center gap-1 text-amber-700 hover:underline">
-                <span className="font-extrabold font-outfit text-sm text-slate-900">{product.rating}</span>
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-3.5 h-3.5 ${i < Math.floor(product.rating) ? 'fill-amber-400 text-amber-700' : 'text-slate-600'}`}
-                    />
-                  ))}
-                </div>
-                <span className="text-slate-600 text-[11px] mr-1">({product.reviews_count} تقييم)</span>
-              </a>}
+              {product.reviews_count > 0 && product.rating > 0 ? (
+                <a href="#customer-reviews" className="flex items-center gap-1 text-amber-700 hover:underline">
+                  <span className="font-extrabold font-outfit text-sm text-slate-900">{product.rating}</span>
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-3.5 h-3.5 ${i < Math.floor(product.rating) ? 'fill-amber-400 text-amber-700' : 'text-slate-300'}`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-slate-600 text-[11px] mr-1">({product.reviews_count} تقييم)</span>
+                </a>
+              ) : (
+                <a href="#customer-reviews" className="flex items-center gap-1 text-slate-500 hover:text-slate-700 text-xs">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 text-slate-300" />
+                    ))}
+                  </div>
+                  <span className="text-[11px] mr-1">لا توجد تقييمات بعد</span>
+                </a>
+              )}
 
               {/* Amazon's Choice Badge */}
               {product.is_featured && <span className="px-2 py-0.5 rounded bg-white border border-amber-500/40 text-[11px] font-bold text-amber-700 flex items-center gap-1">
@@ -476,7 +500,7 @@ export const ProductDetails: React.FC = () => {
                     -{product.discount_percentage}%
                   </span>
                 )}
-                <button type="button" className="detail-info-button text-3xl font-black text-amber-700 font-outfit" onClick={showPrice}>{displayedPrice}</button>
+                <span className="text-3xl font-black text-amber-700 font-outfit">{displayedPrice}</span>
                 {product.original_price > product.price && product.price > 0 && (
                   <span className="text-xs text-slate-500 line-through font-outfit">
                     سعر القائمة: {formatPrice(product.original_price)}
@@ -579,7 +603,10 @@ export const ProductDetails: React.FC = () => {
               <h3 className="text-xs font-bold text-slate-600">المواصفات الأساسية:</h3>
               <div className="rounded-xl border border-slate-200 bg-slate-100/60 overflow-hidden divide-y divide-slate-200 text-xs">
                 {Object.entries(enriched.quick_specs).map(([key, val]) => (
-                  <InfoButton key={key} className="w-full text-start grid grid-cols-12 px-3 py-2" details={{ title: key, description: val, facts: [{ label: language === 'ar' ? 'المنتج' : 'Product', value: product.name_ar }] }}><span className="col-span-5 text-slate-600 font-medium">{key}</span><span className="col-span-7 text-slate-900 font-bold">{val}</span></InfoButton>
+                  <div key={key} className="w-full text-start grid grid-cols-12 px-3 py-2">
+                    <span className="col-span-5 text-slate-600 font-medium">{key}</span>
+                    <span className="col-span-7 text-slate-900 font-bold">{val}</span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -652,7 +679,7 @@ export const ProductDetails: React.FC = () => {
               <div className="space-y-1">
                 <div className="text-emerald-700 font-black text-sm flex items-center gap-1.5">
                   <CheckCircle className="w-4 h-4" />
-                  <button type="button" className="detail-info-button" onClick={showStock}>{product.stock > 0 && product.in_stock !== false ? (language === 'ar' ? 'متوفر في المخزون' : 'In stock') : (language === 'ar' ? 'غير متوفر حالياً' : 'Out of stock')}</button>
+                  <span>{product.stock > 0 && product.in_stock !== false ? (language === 'ar' ? 'متوفر في المخزون' : 'In stock') : (language === 'ar' ? 'غير متوفر حالياً' : 'Out of stock')}</span>
                 </div>
                 {product.stock > 0 && product.stock <= 20 && (
                   <p className="text-[11px] text-amber-700 font-bold">
@@ -756,110 +783,102 @@ export const ProductDetails: React.FC = () => {
         </div>
 
         {/* ==============================================================
-            2. FREQUENTLY BOUGHT TOGETHER (اشتريها معاً)
+            2. FREQUENTLY BOUGHT TOGETHER (عادة ما يتم شراؤها معًا - نمط أمازون)
            ============================================================== */}
         {enriched.bundle_accessories.length > 0 && (
-          <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-6">
-            <div>
-              <h2 className="text-base sm:text-lg font-black text-slate-900 font-cairo flex items-center gap-2">
-                <Layers className="w-5 h-5 text-amber-700" />
-                <span>{language === 'ar' ? 'منتجات مقترحة مع هذه السلعة' : 'Suggested companion products'}</span>
-              </h2>
-              <p className="text-xs text-slate-600 mt-1">
-                {language === 'ar' ? 'اقتراحات من الكتالوج؛ تحقق من التوافق قبل الشراء. الأسعار تجمع دون خصم إضافي.' : 'Catalog suggestions; confirm compatibility before buying. Prices are summed without an extra discount.'}
-              </p>
-            </div>
+          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 space-y-5">
+            <h2 className="text-lg sm:text-xl font-black text-slate-900 font-cairo">
+              {language === 'ar' ? 'عادة ما يتم شراؤها معًا' : 'Frequently bought together'}
+            </h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
               {/* Product cards row */}
-              <div className="lg:col-span-8 flex flex-wrap items-center gap-3">
-                {/* Main Product */}
-                <div className="w-28 sm:w-32 flex-shrink-0 text-center space-y-2">
-                  <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-xl bg-slate-100 border border-slate-200 p-2 flex items-center justify-center overflow-hidden">
-                    <img src={product.images[0]} alt="" className="w-full h-full object-contain" />
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 justify-center sm:justify-start">
+                {/* Main Product Card */}
+                <div className="w-36 sm:w-44 flex-shrink-0 space-y-2">
+                  <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-2xl bg-white border border-slate-200 p-3 flex items-center justify-center relative shadow-sm hover:shadow transition-shadow">
+                    <label className="absolute top-2.5 left-2.5 cursor-pointer z-10">
+                      <input
+                        type="checkbox"
+                        checked={!!bundleSelected[product.id]}
+                        onChange={(e) => setBundleSelected(prev => ({ ...prev, [product.id]: e.target.checked }))}
+                        className="w-4 h-4 accent-amber-500 rounded cursor-pointer"
+                        title={product.name_ar}
+                      />
+                    </label>
+                    <img
+                      src={product.images[0]}
+                      alt={product.name_ar}
+                      className={`max-w-full max-h-28 sm:max-h-36 object-contain transition-opacity ${bundleSelected[product.id] ? 'opacity-100' : 'opacity-40'}`}
+                    />
                   </div>
-                  <p className="text-[11px] font-bold text-slate-900 truncate px-1">{product.name_ar}</p>
-                  <p className="text-xs font-black text-amber-700 font-outfit">{displayedPrice}</p>
+                  <p className="text-xs text-slate-800 line-clamp-2 leading-snug">
+                    <strong className="text-slate-900">هذا المنتج:</strong> {product.name_ar}
+                  </p>
+                  <p className="text-sm font-black text-slate-900 font-outfit">
+                    {displayedPrice}
+                  </p>
                 </div>
 
-                {/* Plus sign */}
-                {enriched.bundle_accessories.map((acc, idx) => (
+                {/* Companions */}
+                {enriched.bundle_accessories.map((acc) => (
                   <React.Fragment key={acc.id}>
-                    <div className="w-6 h-6 rounded-full bg-slate-100 text-amber-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                    <div className="text-slate-400 font-bold text-2xl flex items-center justify-center self-center px-1">
                       +
                     </div>
 
-                    <div className="w-28 sm:w-32 flex-shrink-0 text-center space-y-2">
-                      <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-xl bg-slate-100 border border-slate-200 p-2 flex items-center justify-center overflow-hidden">
-                        <img src={acc.images[0]} alt="" className="w-full h-full object-contain" />
+                    <div className="w-36 sm:w-44 flex-shrink-0 space-y-2">
+                      <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-2xl bg-white border border-slate-200 p-3 flex items-center justify-center relative shadow-sm hover:shadow transition-shadow">
+                        <label className="absolute top-2.5 left-2.5 cursor-pointer z-10">
+                          <input
+                            type="checkbox"
+                            checked={!!bundleSelected[acc.id]}
+                            onChange={(e) => setBundleSelected(prev => ({ ...prev, [acc.id]: e.target.checked }))}
+                            className="w-4 h-4 accent-amber-500 rounded cursor-pointer"
+                            title={acc.name_ar}
+                          />
+                        </label>
+                        <img
+                          src={acc.images[0]}
+                          alt={acc.name_ar}
+                          className={`max-w-full max-h-28 sm:max-h-36 object-contain transition-opacity ${bundleSelected[acc.id] ? 'opacity-100' : 'opacity-40'}`}
+                        />
                       </div>
-                      <p className="text-[11px] font-bold text-slate-900 truncate px-1">{acc.name_ar}</p>
-                      <p className="text-xs font-black text-amber-700 font-outfit">{formatPrice(acc.price)}</p>
+                      <p className="text-xs text-slate-800 line-clamp-2 leading-snug">
+                        {acc.name_ar}
+                      </p>
+                      <p className="text-sm font-black text-slate-900 font-outfit">
+                        {formatPrice(acc.price)}
+                      </p>
                     </div>
                   </React.Fragment>
                 ))}
               </div>
 
-              {/* Total & Action Box */}
-              <div className="lg:col-span-4 p-4 rounded-xl bg-slate-100/80 border border-amber-500/20 space-y-3">
-                {/* Checkboxes */}
-                <div className="space-y-1.5 text-xs">
-                  <label className="flex items-center gap-2 cursor-pointer text-slate-600">
-                    <input
-                      type="checkbox"
-                      checked={!!bundleSelected[product.id]}
-                      onChange={(e) => setBundleSelected(prev => ({ ...prev, [product.id]: e.target.checked }))}
-                      className="accent-amber-500 w-4 h-4 rounded"
-                    />
-                    <span className="truncate"><strong>هذه السلعة:</strong> {product.name_ar}</span>
-                  </label>
-
-                  {enriched.bundle_accessories.map(acc => (
-                    <label key={acc.id} className="flex items-center gap-2 cursor-pointer text-slate-600">
-                      <input
-                        type="checkbox"
-                        checked={!!bundleSelected[acc.id]}
-                        onChange={(e) => setBundleSelected(prev => ({ ...prev, [acc.id]: e.target.checked }))}
-                        className="accent-amber-500 w-4 h-4 rounded"
-                      />
-                      <span className="truncate">{acc.name_ar} (<strong>{formatPrice(acc.price)}</strong>)</span>
-                    </label>
-                  ))}
+              {/* Amazon Total & Action Container */}
+              <div className="w-full lg:w-72 flex-shrink-0 p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 text-center sm:text-right">
+                <div className="text-sm text-slate-800">
+                  <span>إجمالي السعر: </span>
+                  <strong className="text-lg sm:text-xl font-black font-outfit text-slate-900">
+                    {formatPrice(bundleFinalTotal)}
+                  </strong>
                 </div>
 
-                {/* Price display */}
-                <div className="pt-2 border-t border-slate-200">
-                  <div className="text-xs text-slate-600">السعر الإجمالي للسلع المختارة:</div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-black text-amber-700 font-outfit">
-                      {formatPrice(bundleFinalTotal)}
-                    </span>
-                    {bundleDiscount > 0 && (
-                      <span className="text-xs text-slate-500 line-through font-outfit">
-                        {formatPrice(bundleRawTotal)}
-                      </span>
-                    )}
-                  </div>
-                  {bundleDiscount > 0 && (
-                    <span className="text-[11px] text-emerald-700 font-bold block mt-0.5">
-                      ✓ وفرت {formatPrice(bundleDiscount)} مع خصم الباقة
-                    </span>
-                  )}
-                </div>
-
-                {/* Add Bundle Button */}
                 <button
                   onClick={handleAddBundleToCart}
                   disabled={selectedBundleItems.length === 0 || !selectedBundleItems.every(canPurchaseProduct)}
-                  className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-glow-gold active:scale-95"
+                  className="w-full py-2.5 px-4 rounded-full bg-[#FFD814] hover:bg-[#F7CA00] active:scale-95 text-slate-950 font-bold text-xs sm:text-sm shadow-sm transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span>إضافة السلع المختارة إلى عربة التسوق</span>
+                  {selectedBundleItems.length === 1
+                    ? 'إضافة سلعة واحدة إلى عربة التسوق'
+                    : selectedBundleItems.length === 2
+                    ? 'إضافة سلعتين إلى عربة التسوق'
+                    : `إضافة ${selectedBundleItems.length} سلع إلى عربة التسوق`}
                 </button>
 
                 {bundleToast && (
-                  <div className="p-2 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-700 text-[11px] font-bold text-center">
-                    ✓ تمت إضافة الباقة كاملة إلى سلتك بنجاح!
+                  <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold text-center">
+                    ✓ تمت إضافة السلع المختارة إلى سلتك بنجاح!
                   </div>
                 )}
               </div>
@@ -870,65 +889,68 @@ export const ProductDetails: React.FC = () => {
         {/* ==============================================================
             3. A+ ENHANCED BRAND CONTENT & VISUAL FEATURE SHOWCASE
            ============================================================== */}
-        <div id="features-showcase" className="space-y-6 pt-4">
-          <div className="border-b border-slate-200 pb-3 flex items-center justify-between flex-wrap gap-2">
-            <div>
-              <div className="text-xs font-bold text-amber-700 uppercase tracking-wider font-outfit">
-                {language === 'ar' ? 'تفاصيل الكتالوج' : 'CATALOG DETAILS'}
+        {enriched.feature_banners && enriched.feature_banners.length > 0 && (
+          <div id="features-showcase" className="space-y-6 pt-4">
+            <div className="border-b border-slate-200 pb-3 flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <div className="text-xs font-bold text-amber-700 uppercase tracking-wider font-outfit">
+                  {language === 'ar' ? 'تفاصيل الكتالوج' : 'CATALOG DETAILS'}
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 font-cairo">
+                  {language === 'ar' ? 'ميزات وتفاصيل المنتج' : 'Product features and details'}
+                </h2>
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 font-cairo">
-                {language === 'ar' ? 'ميزات وتفاصيل المنتج' : 'Product features and details'}
-              </h2>
+              <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+                {product.catalog_status === 'estimated' ? (language === 'ar' ? 'محتوى تقديري يحتاج مراجعة' : 'Estimated content for review') : (language === 'ar' ? 'محتوى المنتج المسجل' : 'Saved product content')}
+              </span>
             </div>
-            <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
-              {product.catalog_status === 'estimated' ? (language === 'ar' ? 'محتوى تقديري يحتاج مراجعة' : 'Estimated content for review') : (language === 'ar' ? 'محتوى المنتج المسجل' : 'Saved product content')}
-            </span>
-          </div>
 
-          {/* Feature Banners Grid & Visual Cards */}
-          <div className="space-y-8">
-            {enriched.feature_banners.map((feat, idx) => (
-              <div
-                key={idx}
-                className={`rounded-2xl bg-white border border-slate-200 overflow-hidden grid grid-cols-1 lg:grid-cols-12 items-center gap-6 p-6 sm:p-8 ${
-                  idx % 2 === 1 ? 'lg:flex-row-reverse' : ''
-                }`}
-              >
-                {/* Text Content (6 cols) */}
-                <div className={`space-y-3 ${idx % 2 === 1 ? 'lg:col-span-6 lg:order-2' : 'lg:col-span-6 lg:order-1'}`}>
-                  {feat.tag && (
-                    <span className="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-700 border border-amber-500/20 text-xs font-bold font-cairo">
-                      {feat.tag}
-                    </span>
-                  )}
-                  <h3 className="text-lg sm:text-xl font-black text-slate-900 font-cairo leading-snug">
-                    {feat.title}
-                  </h3>
-                  {feat.subtitle && (
-                    <p className="text-xs font-semibold text-amber-700/80 font-outfit">
-                      {feat.subtitle}
+            {/* Feature Banners Grid & Visual Cards */}
+            <div className="space-y-8">
+              {enriched.feature_banners.map((feat, idx) => (
+                <div
+                  key={idx}
+                  className={`rounded-2xl bg-white border border-slate-200 overflow-hidden grid grid-cols-1 lg:grid-cols-12 items-center gap-6 p-6 sm:p-8 ${
+                    idx % 2 === 1 ? 'lg:flex-row-reverse' : ''
+                  }`}
+                >
+                  {/* Text Content (6 cols) */}
+                  <div className={`space-y-3 ${idx % 2 === 1 ? 'lg:col-span-6 lg:order-2' : 'lg:col-span-6 lg:order-1'}`}>
+                    {feat.tag && (
+                      <span className="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-700 border border-amber-500/20 text-xs font-bold font-cairo">
+                        {feat.tag}
+                      </span>
+                    )}
+                    <h3 className="text-lg sm:text-xl font-black text-slate-900 font-cairo leading-snug">
+                      {feat.title}
+                    </h3>
+                    {feat.subtitle && (
+                      <p className="text-xs font-semibold text-amber-700/80 font-outfit">
+                        {feat.subtitle}
+                      </p>
+                    )}
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pt-1">
+                      {feat.description}
                     </p>
-                  )}
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pt-1">
-                    {feat.description}
-                  </p>
-                </div>
+                  </div>
 
-                {/* Image (6 cols) */}
-                <div className={`aspect-video lg:aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 relative group ${
-                  idx % 2 === 1 ? 'lg:col-span-6 lg:order-1' : 'lg:col-span-6 lg:order-2'
-                }`}>
-                  <img
-                    src={feat.image_url}
-                    alt={feat.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  {/* Image (6 cols) */}
+                  <div className={`aspect-video lg:aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 relative group ${
+                    idx % 2 === 1 ? 'lg:col-span-6 lg:order-1' : 'lg:col-span-6 lg:order-2'
+                  }`}>
+                    <img
+                      src={feat.image_url}
+                      alt={feat.title}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* ==============================================================
             4. PRODUCT COMPARISON TABLE (مقارنة المنتجات المشابهة)
@@ -1073,7 +1095,10 @@ export const ProductDetails: React.FC = () => {
           <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
               {Object.entries(publicSpecs(product.specs)).map(([key, val]) => (
-                <InfoButton key={key} className="w-full text-start flex justify-between gap-3 items-center p-3 rounded-xl bg-slate-100 border border-slate-200" details={{ title: key, description: val, facts: [{ label: 'المنتج', value: product.name_ar }] }}><span className="text-slate-600 font-medium">{key}</span><span className="text-slate-900 font-bold">{val}</span></InfoButton>
+                <div key={key} className="w-full text-start flex justify-between gap-3 items-center p-3 rounded-xl bg-slate-100 border border-slate-200">
+                  <span className="text-slate-600 font-medium">{key}</span>
+                  <span className="text-slate-900 font-bold">{val}</span>
+                </div>
               ))}
               <div className="flex justify-between items-center p-3 rounded-xl bg-slate-100 border border-slate-200">
                 <span className="text-slate-600 font-medium">{language === 'ar' ? 'كود المنتج' : 'Product code'}</span>
@@ -1081,7 +1106,7 @@ export const ProductDetails: React.FC = () => {
               </div>
               <div className="flex justify-between items-center p-3 rounded-xl bg-slate-100 border border-slate-200">
                 <span className="text-slate-600 font-medium">الضمان المعتمد</span>
-                <button type="button" onClick={showWarranty} className="detail-info-button text-emerald-700 font-bold">{product.warranty_months > 0 ? `${product.warranty_months} ${language === 'ar' ? 'شهور' : 'months'}` : (language === 'ar' ? 'اسأل المحل عن الضمان' : 'Ask about warranty')}</button>
+                <span className="text-emerald-700 font-bold">{product.warranty_months > 0 ? `${product.warranty_months} ${language === 'ar' ? 'شهور' : 'months'}` : (language === 'ar' ? 'اسأل المحل عن الضمان' : 'Ask about warranty')}</span>
               </div>
             </div>
           </div>

@@ -41,7 +41,8 @@ import {
   Users,
   Mail,
   ShieldAlert,
-  KeyRound
+  KeyRound,
+  Sparkles
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -105,6 +106,15 @@ export const AdminDashboard: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [specsInput, setSpecsInput] = useState('{}');
   const [productSaveError, setProductSaveError] = useState('');
+
+  useEffect(() => {
+    if (!isAddProductModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsAddProductModalOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isAddProductModalOpen]);
 
   // Filter states for orders & products
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
@@ -186,6 +196,7 @@ export const AdminDashboard: React.FC = () => {
     original_price: 22000,
     stock: 5,
     warranty_months: 6,
+    is_featured: false,
     images: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],
     description_ar: '',
   });
@@ -207,6 +218,7 @@ export const AdminDashboard: React.FC = () => {
       original_price: 22000,
       stock: 5,
       warranty_months: 6,
+      is_featured: false,
       images: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],
       description_ar: 'جهاز كسر زيرو خالي من الخدوش مع ضمان معتمد من متجر جو ستور.',
     });
@@ -216,7 +228,7 @@ export const AdminDashboard: React.FC = () => {
   const handleOpenEditProduct = (prod: Product) => {
     if (!canAccessSection('products')) return;
     setEditingProduct(prod);
-    setProdForm(prod);
+    setProdForm({ ...prod, is_featured: !!prod.is_featured });
     setSpecsInput(JSON.stringify(prod.specs || {}, null, 2));
     setProductSaveError('');
     setIsAddProductModalOpen(true);
@@ -237,6 +249,7 @@ export const AdminDashboard: React.FC = () => {
       return;
     }
     const saved = { ...prodForm, specs, quick_specs: specs,
+      is_featured: !!prodForm.is_featured,
       in_stock: (prodForm.stock ?? 0) > 0 && (prodForm.price ?? 0) > 0 && prodForm.is_active !== false };
 
     if (editingProduct) {
@@ -1559,6 +1572,18 @@ export const AdminDashboard: React.FC = () => {
                   الصور توضيحية
                 </label>
               </div>
+              <label className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-800 font-bold cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!prodForm.is_featured}
+                  onChange={e => setProdForm({ ...prodForm, is_featured: e.target.checked })}
+                  className="accent-amber-500 w-4 h-4 rounded cursor-pointer"
+                />
+                <span className="flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-amber-600" />
+                  <span>تمييز كـ "اختيار جو ستور" (Joe Store's Choice) في صفحة المنتج</span>
+                </span>
+              </label>
               {productSaveError && <p role="alert" className="text-rose-700">{productSaveError}</p>}
               <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
                 <button

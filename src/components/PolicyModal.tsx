@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, ShieldCheck, FileText, Truck, Lock, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -11,6 +11,15 @@ interface PolicyModalProps {
 
 export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => {
   const { language } = useLanguage();
+
+  useEffect(() => {
+    if (!policy) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [policy, onClose]);
 
   if (!policy) return null;
 

@@ -89,7 +89,7 @@ interface StoreContextType {
 
   // Navigation & Search
   currentTab: AppTab;
-  navigate: (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string }) => void;
+  navigate: (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string }) => void;
   selectedProductId: string | null;
   quickViewProduct: Product | null;
   setQuickViewProduct: (prod: Product | null) => void;
@@ -419,7 +419,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const navigate = (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string }) => {
+  const navigate = (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string }) => {
     setCurrentTab(tab);
     let targetProductId = selectedProductId;
     if (productId) {
@@ -442,6 +442,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const params = new URLSearchParams();
       if (cat && cat !== 'all') params.set('category', cat);
       if (q) params.set('q', q);
+      if (options?.brand) params.set('brand', options.brand);
       const queryStr = params.toString();
       targetPath = queryStr ? `/${tab}?${queryStr}` : `/${tab}`;
     } else if (tab === 'checkout') {

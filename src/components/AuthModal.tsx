@@ -75,6 +75,17 @@ export const AuthModal: React.FC = () => {
 
   const googleBtnContainerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!isAuthModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeAuthModal();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isAuthModalOpen, closeAuthModal]);
+
   // Render the official sign-in button when Identity Services is ready.
   useEffect(() => {
     if (!isAuthModalOpen || mode === 'otp_verify') return;

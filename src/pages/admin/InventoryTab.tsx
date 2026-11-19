@@ -9,7 +9,8 @@ import {
   Edit,
   Trash2,
   Copy,
-  Smartphone
+  Smartphone,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useStore } from '../../context/StoreContext';
@@ -92,12 +93,13 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                 <th className="pb-3 px-3">السعر</th>
                 <th className="pb-3 px-3 text-center">الكمية بالمخزن</th>
                 <th className="pb-3 px-3 text-center">حالة الظهور (Show/Hide)</th>
+                <th className="pb-3 px-3 text-center">اختيار جو ستور</th>
                 <th className="pb-3 px-3 text-center">الحالة الفنية</th>
                 <th className="pb-3 pl-2 text-center">إجراءات سريعة</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
-              {!filteredProducts.length && <tr><td colSpan={7} className="py-12 text-center text-slate-600">{isCatalogLoading ? 'جارٍ تحميل المخزون…' : errors.length ? 'صحح شروط التقرير لعرض النتائج.' : 'لا توجد أصناف مطابقة. جرّب تعديل الفلاتر أو مسحها.'}</td></tr>}
+              {!filteredProducts.length && <tr><td colSpan={8} className="py-12 text-center text-slate-600">{isCatalogLoading ? 'جارٍ تحميل المخزون…' : errors.length ? 'صحح شروط التقرير لعرض النتائج.' : 'لا توجد أصناف مطابقة. جرّب تعديل الفلاتر أو مسحها.'}</td></tr>}
               {filteredProducts.slice(0, visibleCount).map((p) => {
                 const isPre = p.condition === 'mint' || p.condition === 'used_good';
                 const isHidden = p.is_active === false;
@@ -219,6 +221,23 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                             <span>مخفي مؤقتاً</span>
                           </>
                         )}
+                      </button>
+                    </td>
+
+                    {/* Featured / Joe Store Choice toggle */}
+                    <td className="py-3 px-3 text-center">
+                      <button
+                        disabled={!canEdit}
+                        onClick={() => updateProduct(p.id, { is_featured: !p.is_featured })}
+                        className={`px-2.5 py-1 rounded-xl font-bold text-[11px] transition-all inline-flex items-center gap-1 cursor-pointer ${
+                          p.is_featured
+                            ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-800 border border-amber-500/40 shadow-sm'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-200'
+                        }`}
+                        title={p.is_featured ? 'انقر لإلغاء وسم اختيار جو ستور' : 'انقر لتمييز هذا المنتج كوسم اختيار جو ستور'}
+                      >
+                        <Sparkles className={`w-3 h-3 ${p.is_featured ? 'text-amber-600 fill-amber-500' : 'text-slate-400'}`} />
+                        <span>{p.is_featured ? 'اختيار جو ستور' : 'عادي'}</span>
                       </button>
                     </td>
 
