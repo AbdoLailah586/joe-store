@@ -315,104 +315,283 @@ export const ProductDetails: React.FC = () => {
         <div className="joe-product-layout grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
           {/* ------------------------------------------------------------
-              COLUMN 1: Left Gallery (5 cols on lg)
+              COLUMN 1: Left Gallery & Mobile Buy Flow (5 cols on lg)
              ------------------------------------------------------------ */}
-          <div className="lg:col-span-5 flex flex-col md:flex-row gap-4 items-start lg:sticky self-start" style={{ top: 'calc(var(--store-header-height, 150px) + 16px)' }}>
-            {/* Vertical Thumbnails (Desktop) */}
-            <div className="flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto max-h-[480px] scrollbar-none order-2 md:order-1 flex-shrink-0">
-              {product.images.map((img, idx) => (
+          <div className="lg:col-span-5 flex flex-col gap-4 items-start lg:sticky self-start" style={{ top: 'calc(var(--store-header-height, 150px) + 16px)' }}>
+
+            {/* MOBILE ONLY: Brand Link, Title, Rating, Social Proof (Amazon Mobile Top) */}
+            <div className="lg:hidden space-y-2 mb-1 w-full">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
                 <button
-                  key={idx}
-                  onMouseEnter={() => setSelectedImage(idx)}
-                  onClick={() => setSelectedImage(idx)}
-                  className={`w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden border-2 bg-slate-100 transition-all flex-shrink-0 relative ${
-                    selectedImage === idx
-                      ? 'border-amber-400 shadow-glow-gold scale-105'
-                      : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-500'
-                  }`}
+                  type="button"
+                  onClick={() => navigate('catalog', undefined, { category: 'all', brand: product.brand || enriched.brand_store_name, search: '' })}
+                  className="text-xs font-bold text-amber-700 hover:text-amber-800 hover:underline cursor-pointer flex items-center gap-1 transition-colors"
+                  title={`عرض جميع منتجات ماركة ${product.brand || enriched.brand_store_name}`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <Award className="w-3.5 h-3.5 text-amber-700" />
+                  <span>{product.brand || enriched.brand_store_name}</span>
                 </button>
-              ))}
+
+                {product.reviews_count > 0 && product.rating > 0 ? (
+                  <a href="#customer-reviews" className="flex items-center gap-1 text-amber-700 hover:underline">
+                    <span className="font-extrabold font-outfit text-sm text-slate-900">{product.rating}</span>
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-3 h-3 ${i < Math.floor(product.rating) ? 'fill-amber-400 text-amber-700' : 'text-slate-300'}`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-slate-600 text-[11px]">({product.reviews_count})</span>
+                  </a>
+                ) : (
+                  <span className="text-[11px] text-slate-500">لا توجد تقييمات بعد</span>
+                )}
+              </div>
+
+              <h1 className="text-base sm:text-xl font-black text-slate-900 font-cairo leading-snug">
+                {language === 'ar' ? enriched.detailed_title_ar : enriched.detailed_title_en}
+              </h1>
+
+              {notice && (
+                <p role="note" className="p-2.5 rounded-xl border border-amber-500/50 bg-amber-500/10 text-[11px] leading-relaxed text-amber-700 font-bold">
+                  {notice}
+                </p>
+              )}
+
+              {!!product.data_sources?.length && (
+                <div className="text-[11px] text-slate-600 flex flex-wrap gap-2">
+                  <span>{language === 'ar' ? 'مصادر معلومات المنتج:' : 'Product sources:'}</span>
+                  {product.data_sources.filter(source => /^https?:\/\//.test(source.url)).map(source => (
+                    <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="text-amber-700 underline">
+                      {source.title || source.url}
+                    </a>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                {product.is_featured && (
+                  <span className="px-2 py-0.5 rounded bg-white border border-amber-500/40 text-[11px] font-bold text-amber-700 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-amber-700" />
+                    <span>اختيار جو ستور</span>
+                  </span>
+                )}
+                {enriched.bought_past_month > 0 && (
+                  <div className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded-md">
+                    <Flame className="w-3 h-3 text-emerald-700" />
+                    <span>تم شراء أكثر من {enriched.bought_past_month.toLocaleString('ar-EG')} قطعة الشهر الماضي</span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Main Image with Zoom Magnifier */}
-            <div className="flex-1 w-full order-1 md:order-2 space-y-3">
-              <div
-                ref={imageContainerRef}
-                onMouseEnter={() => setIsZooming(true)}
-                onMouseLeave={() => setIsZooming(false)}
-                onMouseMove={handleMouseMove}
-                onClick={() => setLightboxOpen(true)}
-                className="joe-detail-gallery aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative cursor-crosshair group select-none shadow-xl"
-              >
-                <img
-                  src={product.images[selectedImage] || product.images[0] || '/product-placeholder.svg'}
-                  onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
-                  alt={product.name_ar}
-                  className={`w-full h-full object-contain p-4 transition-transform duration-200 ${
-                    isZooming ? 'scale-125' : 'scale-100'
-                  }`}
-                  style={
-                    isZooming
-                      ? {
-                          transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
-                        }
-                      : undefined
-                  }
-                />
+            {/* Gallery Wrapper (Thumbnails + Main Image) */}
+            <div className="w-full flex flex-col md:flex-row gap-4 items-start">
+              {/* Vertical Thumbnails (Desktop/Tablet) */}
+              <div className="flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto max-h-[480px] scrollbar-none order-2 md:order-1 flex-shrink-0">
+                {product.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onMouseEnter={() => setSelectedImage(idx)}
+                    onClick={() => setSelectedImage(idx)}
+                    className={`w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden border-2 bg-slate-100 transition-all flex-shrink-0 relative ${
+                      selectedImage === idx
+                        ? 'border-amber-400 shadow-glow-gold scale-105'
+                        : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-500'
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
 
-                {/* Badges on Main Image */}
-                <div className="absolute top-3 right-3 flex flex-col gap-1.5 pointer-events-none">
+              {/* Main Image with Zoom Magnifier */}
+              <div className="flex-1 w-full order-1 md:order-2 space-y-3">
+                <div
+                  ref={imageContainerRef}
+                  onMouseEnter={() => setIsZooming(true)}
+                  onMouseLeave={() => setIsZooming(false)}
+                  onMouseMove={handleMouseMove}
+                  onClick={() => setLightboxOpen(true)}
+                  className="joe-detail-gallery aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative cursor-crosshair group select-none shadow-xl"
+                >
+                  <img
+                    src={product.images[selectedImage] || product.images[0] || '/product-placeholder.svg'}
+                    onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
+                    alt={product.name_ar}
+                    className={`w-full h-full object-contain p-4 transition-transform duration-200 ${
+                      isZooming ? 'scale-125' : 'scale-100'
+                    }`}
+                    style={
+                      isZooming
+                        ? {
+                            transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+                          }
+                        : undefined
+                    }
+                  />
+
+                  {/* Badges on Main Image */}
+                  <div className="absolute top-3 right-3 flex flex-col gap-1.5 pointer-events-none">
+                    {product.discount_percentage > 0 && (
+                      <span className="px-2.5 py-1 rounded-lg bg-rose-600/90 text-slate-900 font-extrabold text-[11px] backdrop-blur-md shadow-md">
+                        خصم {product.discount_percentage}%
+                      </span>
+                    )}
+                    {product.is_best_seller && (
+                      <span className="px-2.5 py-1 rounded-lg bg-amber-500 text-black font-extrabold text-[11px] shadow-md flex items-center gap-1">
+                        <Flame className="w-3.5 h-3.5 fill-black" />
+                        الأكثر مبيعاً
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Expand Fullscreen Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLightboxOpen(true);
+                    }}
+                    className="absolute bottom-3 left-3 p-2 rounded-xl bg-white/95 hover:bg-white text-slate-900 backdrop-blur-md border border-slate-200 transition-all opacity-80 group-hover:opacity-100"
+                    title="تكبير الصورة بالحجم الكامل"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                  </button>
+
+                  {/* Hover zoom hint */}
+                  <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-white/95 text-slate-600 text-[10px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                    حرك المؤشر للتكبير
+                  </div>
+                </div>
+
+                {/* Share and Wishlist below image */}
+                <div className="flex items-center justify-between text-xs text-slate-600 px-1">
+                  <button
+                    onClick={handleShareProduct}
+                    className="flex items-center gap-1.5 hover:text-amber-700 transition-colors py-1 px-2 rounded-lg hover:bg-slate-100"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    <span>مشاركة رابط السلعة</span>
+                  </button>
+
+                  <button
+                    onClick={() => toggleWishlist(product.id)}
+                    className="flex items-center gap-1.5 hover:text-rose-700 transition-colors py-1 px-2 rounded-lg hover:bg-slate-100"
+                  >
+                    <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-700' : ''}`} />
+                    <span>{isLiked ? 'في قائمة الرغبات' : 'إضافة للرغبات'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* MOBILE ONLY: Price + Stock + Action Buttons (Directly attached under image, Amazon-style) */}
+            <div className="lg:hidden w-full mt-1 p-4 rounded-2xl bg-white border border-amber-500/30 space-y-3.5 shadow-md">
+              {/* Price row */}
+              <div className="space-y-1">
+                <div className="flex items-baseline gap-2.5 flex-wrap">
                   {product.discount_percentage > 0 && (
-                    <span className="px-2.5 py-1 rounded-lg bg-rose-600/90 text-slate-900 font-extrabold text-[11px] backdrop-blur-md shadow-md">
-                      خصم {product.discount_percentage}%
+                    <span className="text-xl font-black text-rose-700 font-outfit">
+                      -{product.discount_percentage}%
                     </span>
                   )}
-                  {product.is_best_seller && (
-                    <span className="px-2.5 py-1 rounded-lg bg-amber-500 text-black font-extrabold text-[11px] shadow-md flex items-center gap-1">
-                      <Flame className="w-3.5 h-3.5 fill-black" />
-                      الأكثر مبيعاً
+                  <span className="text-2xl font-black text-amber-700 font-outfit">{displayedPrice}</span>
+                  {product.original_price > product.price && product.price > 0 && (
+                    <span className="text-xs text-slate-500 line-through font-outfit">
+                      سعر القائمة: {formatPrice(product.original_price)}
                     </span>
                   )}
                 </div>
+                <p className="text-[11px] text-slate-500">
+                  {language === 'ar' ? 'سعر البيع المسجل شامل كافة التفاصيل لدى المحل' : 'Store-listed price includes all details'}
+                </p>
+              </div>
 
-                {/* Expand Fullscreen Button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLightboxOpen(true);
-                  }}
-                  className="absolute bottom-3 left-3 p-2 rounded-xl bg-white/95 hover:bg-white text-slate-900 backdrop-blur-md border border-slate-200 transition-all opacity-80 group-hover:opacity-100"
-                  title="تكبير الصورة بالحجم الكامل"
-                >
-                  <Maximize2 className="w-4 h-4" />
-                </button>
+              {/* Stock status */}
+              <div className="space-y-1">
+                <div className="text-emerald-700 font-black text-xs sm:text-sm flex items-center gap-1.5">
+                  <CheckCircle className="w-4 h-4" />
+                  <span>{product.stock > 0 && product.in_stock !== false ? (language === 'ar' ? 'متوفر في المخزون' : 'In stock') : (language === 'ar' ? 'غير متوفر حالياً' : 'Out of stock')}</span>
+                </div>
+                {product.stock > 0 && product.stock <= 20 && (
+                  <p className="text-[11px] text-amber-700 font-bold">
+                    متبقي فقط {product.stock} قطع في المحل - اطلب قريباً!
+                  </p>
+                )}
+              </div>
 
-                {/* Hover zoom hint */}
-                <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-white/95 text-slate-600 text-[10px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                  حرك المؤشر للتكبير
+              {/* Quantity Selector */}
+              <div className="flex items-center justify-between text-xs pt-1">
+                <span className="text-slate-600 font-bold">الكمية:</span>
+                <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl px-2 py-1">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={!canPurchase || quantity <= 1}
+                    className="text-slate-600 hover:text-slate-900 px-2 font-bold text-sm"
+                  >
+                    -
+                  </button>
+                  <span className="px-2 font-outfit font-bold text-slate-900 text-sm">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                    disabled={!canPurchase || quantity >= product.stock}
+                    className="text-slate-600 hover:text-slate-900 px-2 font-bold text-sm"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
 
-              {/* Share and Wishlist below image */}
-              <div className="flex items-center justify-between text-xs text-slate-600 px-1">
+              {/* Action Buttons: Add to Cart & Buy Now */}
+              <div className="space-y-2 pt-1">
+                {/* Add to Cart (Amazon Yellow) */}
                 <button
-                  onClick={handleShareProduct}
-                  className="flex items-center gap-1.5 hover:text-amber-700 transition-colors py-1 px-2 rounded-lg hover:bg-slate-100"
+                  onClick={handleAddToCart}
+                  disabled={!canPurchase}
+                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-sm flex items-center justify-center gap-2 shadow-glow-gold transition-all active:scale-95"
                 >
-                  <Share2 className="w-4 h-4" />
-                  <span>مشاركة رابط السلعة</span>
+                  <ShoppingCart className="w-4 h-4" />
+                  <span>أضف إلى عربة التسوق</span>
                 </button>
 
+                {/* Buy Now (Amazon Gold) */}
                 <button
-                  onClick={() => toggleWishlist(product.id)}
-                  className="flex items-center gap-1.5 hover:text-rose-700 transition-colors py-1 px-2 rounded-lg hover:bg-slate-100"
+                  onClick={handleBuyNow}
+                  disabled={!canPurchase}
+                  className="w-full py-3 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md"
                 >
-                  <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-700' : ''}`} />
-                  <span>{isLiked ? 'في قائمة الرغبات' : 'إضافة للرغبات'}</span>
+                  <Zap className="w-4 h-4 fill-black" />
+                  <span>شراء الآن (إتمام فوري)</span>
                 </button>
+
+                {/* WhatsApp Quick Order */}
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 border border-emerald-500/40 font-bold text-xs flex items-center justify-center gap-2 transition-all"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>{language === 'ar' ? 'استفسر عبر واتساب' : 'Ask on WhatsApp'}</span>
+                </a>
               </div>
+
+              {/* Toast Alerts for Mobile */}
+              {addedToast && (
+                <div className="p-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-700 text-xs font-bold flex items-center gap-2 animate-fadeIn">
+                  <Check className="w-4 h-4" />
+                  <span>تمت إضافة المنتج إلى عربة التسوق بنجاح!</span>
+                </div>
+              )}
+
+              {shareToast && (
+                <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-700 text-xs font-bold flex items-center gap-2 animate-fadeIn">
+                  <CheckCircle className="w-4 h-4 text-amber-700" />
+                  <span>تم نسخ الرابط بنجاح! 📋 يمكنك مشاركته الآن</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -420,102 +599,105 @@ export const ProductDetails: React.FC = () => {
               COLUMN 2: Center Product Details (4.5 cols on lg)
              ------------------------------------------------------------ */}
           <div className="lg:col-span-4 space-y-5">
-            {/* Brand Store Link */}
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <button
-                  type="button"
-                  onClick={() => navigate('catalog', undefined, { category: 'all', brand: product.brand || enriched.brand_store_name, search: '' })}
-                  className="text-xs font-bold text-amber-700 hover:text-amber-600 hover:underline cursor-pointer flex items-center gap-1 transition-colors"
-                  title={`عرض جميع منتجات ماركة ${product.brand || enriched.brand_store_name}`}
-                >
-                  <Award className="w-3.5 h-3.5 text-amber-700" />
-                  <span>{product.brand || enriched.brand_store_name}</span>
-                </button>
+            {/* DESKTOP ONLY: Brand Store Link, Title, SKU, Rating, Price Box */}
+            <div className="hidden lg:block space-y-5">
+              {/* Brand Store Link */}
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <button
+                    type="button"
+                    onClick={() => navigate('catalog', undefined, { category: 'all', brand: product.brand || enriched.brand_store_name, search: '' })}
+                    className="text-xs font-bold text-amber-700 hover:text-amber-600 hover:underline cursor-pointer flex items-center gap-1 transition-colors"
+                    title={`عرض جميع منتجات ماركة ${product.brand || enriched.brand_store_name}`}
+                  >
+                    <Award className="w-3.5 h-3.5 text-amber-700" />
+                    <span>{product.brand || enriched.brand_store_name}</span>
+                  </button>
+                </div>
+
+                {/* Amazon Detailed Title */}
+                <h1 key={`${product.id}-${language}`} data-split-title className="text-lg sm:text-2xl font-black text-slate-900 font-cairo leading-relaxed">
+                  {language === 'ar' ? enriched.detailed_title_ar : enriched.detailed_title_en}
+                </h1>
+                {notice && <p role="note" className="mt-3 p-3 rounded-xl border border-amber-500/50 bg-amber-500/10 text-xs leading-relaxed text-amber-700 font-bold">{notice}</p>}
+                {!!product.data_sources?.length && <div className="mt-2 text-[11px] text-slate-600 flex flex-wrap gap-2">
+                  <span>{language === 'ar' ? 'مصادر معلومات المنتج:' : 'Product sources:'}</span>
+                  {product.data_sources.filter(source => /^https?:\/\//.test(source.url)).map(source =>
+                    <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="text-amber-700 underline">{source.title || source.url}</a>)}
+                </div>}
+
+                {/* ASIN / SKU */}
+                <div className="flex items-center gap-3 text-[11px] text-slate-600 mt-1 font-outfit">
+                  {enriched.asin && <span>ASIN: <strong className="text-slate-600">{enriched.asin}</strong></span>}
+                  <span>SKU: <strong className="text-slate-600">{product.sku || product.id}</strong></span>
+                </div>
               </div>
 
-              {/* Amazon Detailed Title */}
-              <h1 key={`${product.id}-${language}`} data-split-title className="text-lg sm:text-2xl font-black text-slate-900 font-cairo leading-relaxed">
-                {language === 'ar' ? enriched.detailed_title_ar : enriched.detailed_title_en}
-              </h1>
-              {notice && <p role="note" className="mt-3 p-3 rounded-xl border border-amber-500/50 bg-amber-500/10 text-xs leading-relaxed text-amber-700 font-bold">{notice}</p>}
-              {!!product.data_sources?.length && <div className="mt-2 text-[11px] text-slate-600 flex flex-wrap gap-2">
-                <span>{language === 'ar' ? 'مصادر معلومات المنتج:' : 'Product sources:'}</span>
-                {product.data_sources.filter(source => /^https?:\/\//.test(source.url)).map(source =>
-                  <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="text-amber-700 underline">{source.title || source.url}</a>)}
-              </div>}
-
-              {/* ASIN / SKU */}
-              <div className="flex items-center gap-3 text-[11px] text-slate-600 mt-1 font-outfit">
-                {enriched.asin && <span>ASIN: <strong className="text-slate-600">{enriched.asin}</strong></span>}
-                <span>SKU: <strong className="text-slate-600">{product.sku || product.id}</strong></span>
-              </div>
-            </div>
-
-            {/* Ratings & Social Proof Strip */}
-            <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-200 text-xs">
-              {/* Star Rating */}
-              {product.reviews_count > 0 && product.rating > 0 ? (
-                <a href="#customer-reviews" className="flex items-center gap-1 text-amber-700 hover:underline">
-                  <span className="font-extrabold font-outfit text-sm text-slate-900">{product.rating}</span>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-3.5 h-3.5 ${i < Math.floor(product.rating) ? 'fill-amber-400 text-amber-700' : 'text-slate-300'}`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-slate-600 text-[11px] mr-1">({product.reviews_count} تقييم)</span>
-                </a>
-              ) : (
-                <a href="#customer-reviews" className="flex items-center gap-1 text-slate-500 hover:text-slate-700 text-xs">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 text-slate-300" />
-                    ))}
-                  </div>
-                  <span className="text-[11px] mr-1">لا توجد تقييمات بعد</span>
-                </a>
-              )}
-
-              {/* Amazon's Choice Badge */}
-              {product.is_featured && <span className="px-2 py-0.5 rounded bg-white border border-amber-500/40 text-[11px] font-bold text-amber-700 flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-700" />
-                <span>اختيار جو ستور</span>
-              </span>}
-
-              {/* Bought in Past Month */}
-              {enriched.bought_past_month > 0 && <div className="w-full sm:w-auto flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded-md">
-                <Flame className="w-3 h-3 text-emerald-700" />
-                <span>تم شراء أكثر من {enriched.bought_past_month.toLocaleString('ar-EG')} قطعة الشهر الماضي</span>
-              </div>}
-            </div>
-
-            {/* Price Box */}
-            <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
-              <div className="flex items-baseline gap-3 flex-wrap">
-                {product.discount_percentage > 0 && (
-                  <span className="text-2xl font-black text-rose-700 font-outfit">
-                    -{product.discount_percentage}%
-                  </span>
+              {/* Ratings & Social Proof Strip */}
+              <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-200 text-xs">
+                {/* Star Rating */}
+                {product.reviews_count > 0 && product.rating > 0 ? (
+                  <a href="#customer-reviews" className="flex items-center gap-1 text-amber-700 hover:underline">
+                    <span className="font-extrabold font-outfit text-sm text-slate-900">{product.rating}</span>
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-3.5 h-3.5 ${i < Math.floor(product.rating) ? 'fill-amber-400 text-amber-700' : 'text-slate-300'}`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-slate-600 text-[11px] mr-1">({product.reviews_count} تقييم)</span>
+                  </a>
+                ) : (
+                  <a href="#customer-reviews" className="flex items-center gap-1 text-slate-500 hover:text-slate-700 text-xs">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 text-slate-300" />
+                      ))}
+                    </div>
+                    <span className="text-[11px] mr-1">لا توجد تقييمات بعد</span>
+                  </a>
                 )}
-                <span className="text-3xl font-black text-amber-700 font-outfit">{displayedPrice}</span>
-                {product.original_price > product.price && product.price > 0 && (
-                  <span className="text-xs text-slate-500 line-through font-outfit">
-                    سعر القائمة: {formatPrice(product.original_price)}
-                  </span>
-                )}
+
+                {/* Amazon's Choice Badge */}
+                {product.is_featured && <span className="px-2 py-0.5 rounded bg-white border border-amber-500/40 text-[11px] font-bold text-amber-700 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-amber-700" />
+                  <span>اختيار جو ستور</span>
+                </span>}
+
+                {/* Bought in Past Month */}
+                {enriched.bought_past_month > 0 && <div className="w-full sm:w-auto flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded-md">
+                  <Flame className="w-3 h-3 text-emerald-700" />
+                  <span>تم شراء أكثر من {enriched.bought_past_month.toLocaleString('ar-EG')} قطعة الشهر الماضي</span>
+                </div>}
               </div>
 
-              <p className="text-[11px] text-slate-600">
-                {language === 'ar' ? 'تأكد من الملحقات والضمان والتوافق مع المحل قبل الشراء.' : 'Confirm included items, warranty and compatibility with the store before buying.'}
-              </p>
+              {/* Price Box */}
+              <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  {product.discount_percentage > 0 && (
+                    <span className="text-2xl font-black text-rose-700 font-outfit">
+                      -{product.discount_percentage}%
+                    </span>
+                  )}
+                  <span className="text-3xl font-black text-amber-700 font-outfit">{displayedPrice}</span>
+                  {product.original_price > product.price && product.price > 0 && (
+                    <span className="text-xs text-slate-500 line-through font-outfit">
+                      سعر القائمة: {formatPrice(product.original_price)}
+                    </span>
+                  )}
+                </div>
 
-              {/* Installment teaser */}
-              <div className="pt-2 border-t border-slate-200 flex items-center gap-2 text-[11px] text-amber-700">
-                <Zap className="w-3.5 h-3.5 text-amber-700 flex-shrink-0" />
-                <span>{language === 'ar' ? 'اسأل المحل عن خيارات الدفع المتاحة.' : 'Ask the store about available payment options.'}</span>
+                <p className="text-[11px] text-slate-600">
+                  {language === 'ar' ? 'تأكد من الملحقات والضمان والتوافق مع المحل قبل الشراء.' : 'Confirm included items, warranty and compatibility with the store before buying.'}
+                </p>
+
+                {/* Installment teaser */}
+                <div className="pt-2 border-t border-slate-200 flex items-center gap-2 text-[11px] text-amber-700">
+                  <Zap className="w-3.5 h-3.5 text-amber-700 flex-shrink-0" />
+                  <span>{language === 'ar' ? 'اسأل المحل عن خيارات الدفع المتاحة.' : 'Ask the store about available payment options.'}</span>
+                </div>
               </div>
             </div>
 
@@ -643,9 +825,9 @@ export const ProductDetails: React.FC = () => {
           </div>
 
           {/* ------------------------------------------------------------
-              COLUMN 3: Right Amazon Buy Box (2.5 cols on lg)
+              COLUMN 3: Right Amazon Buy Box (2.5 cols on lg - Desktop Only)
              ------------------------------------------------------------ */}
-          <div className="lg:col-span-3 lg:sticky self-start" style={{ top: 'calc(var(--store-header-height, 150px) + 16px)' }}>
+          <div className="hidden lg:block lg:col-span-3 lg:sticky self-start" style={{ top: 'calc(var(--store-header-height, 150px) + 16px)' }}>
             <div className="joe-buy-box rounded-2xl bg-white border border-amber-500/30 p-5 space-y-4 shadow-xl relative">
               {/* Price inside Buy Box */}
               <div>
