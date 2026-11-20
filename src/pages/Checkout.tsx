@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   ShieldCheck,
   Truck,
@@ -18,12 +18,15 @@ import {
   Home,
   Building,
   Phone,
-  Check
+  Check,
+  Tag,
+  X,
+  Gift
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { egyptianGovernorates, findAddressGovernorate } from '../data/governorates';
-import { DeliveryAddressFields, PaymentMethod } from '../types';
+import { DeliveryAddressFields, PaymentMethod, DiscountCoupon } from '../types';
 import { useAuth } from '../context/AuthContext';
 import confetti from 'canvas-confetti';
 import { DetailedAddressFields } from '../components/DetailedAddressFields';
@@ -32,7 +35,7 @@ import { productDetail } from '../utils/detailModels';
 import { buildAddressDetails, formatDeliveryAddress, pickDeliveryFields, normalizeDigits, normalizePhone, isEgyptianPhone, isGoogleMapsUrl } from '../utils/deliveryAddress';
 
 export const Checkout: React.FC = () => {
-  const { cart, cartSubtotal, createOrder, navigate, settings, isOfflineCatalog } = useStore();
+  const { cart, cartSubtotal, createOrder, navigate, settings, updateSettings, isOfflineCatalog } = useStore();
   const { t, language, formatPrice, isRTL } = useLanguage();
   const { openDetails } = useDetails();
   const { user, isAuthenticated, openAuthModal, addAddress } = useAuth();
@@ -47,6 +50,12 @@ export const Checkout: React.FC = () => {
   const [customerWhatsApp, setCustomerWhatsApp] = useState(user?.phone || '');
   const [sameAsPhone, setSameAsPhone] = useState(true);
   const [customerEmail, setCustomerEmail] = useState(user?.email || '');
+
+  // Discount Coupon States
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<DiscountCoupon | null>(null);
+  const [couponError, setCouponError] = useState('');
+  const [couponSuccess, setCouponSuccess] = useState('');
 
   // Address Breakdown States
   const [selectedGovId, setSelectedGovId] = useState(egyptianGovernorates[0].id);
@@ -122,7 +131,78 @@ export const Checkout: React.FC = () => {
   const currentGov = egyptianGovernorates.find(g => g.id === selectedGovId) || egyptianGovernorates[0];
   const isFreeShipping = cartSubtotal >= (settings.free_shipping_threshold ?? 2500);
   const shippingFee = isFreeShipping ? 0 : (currentGov.shipping_fee ?? settings.shipping_fee_default);
-  const grandTotal = cartSubtotal + shippingFee;
+
+  // Discount Calculation based on applied coupon
+  const couponDiscount = useMemo(() => {
+    if (!appliedCoupon) return 0;
+    let disc = 0;
+    if (appliedCoupon.discount_type === 'percentage') {
+      disc = (cartSubtotal * appliedCoupon.discount_value) / 100;
+      if (appliedCoupon.max_discount_amount) {
+        disc = Math.min(disc, appliedCoupon.max_discount_amount);
+      }
+    } else {
+      disc = Math.min(cartSubtotal, appliedCoupon.discount_value);
+    }
+    return Math.round(disc);
+  }, [appliedCoupon, cartSubtotal]);
+
+  const grandTotal = Math.max(0, cartSubtotal - couponDiscount + shippingFee);
+
+  // Coupon Handlers
+  const handleApplyCoupon = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setCouponError('');
+    setCouponSuccess('');
+    const code = couponInput.trim().toUpperCase();
+    if (!code) {
+      setCouponError(language === 'ar' ? 'يرجى كتابة كود الخصم.' : 'Please enter coupon code.');
+      return;
+    }
+    const found = (settings.coupons || []).find(
+      (c) => c.code.trim().toUpperCase() === code && c.is_active !== false
+    );
+    if (!found) {
+      setCouponError(language === 'ar' ? 'كود الخصم غير صحيح أو غير متاح حالياً.' : 'Invalid or inactive coupon code.');
+      return;
+    }
+    if (found.min_order_amount && cartSubtotal < found.min_order_amount) {
+      setCouponError(
+        language === 'ar'
+          ? `الحد الأدنى لقيمة المنتجات لتفعيل هذا الكود هو ${formatPrice(found.min_order_amount)}.`
+          : `Minimum order amount for this coupon is ${formatPrice(found.min_order_amount)}.`
+      );
+      return;
+    }
+    // Check if user already used this coupon
+    const userIdentifier = user?.id || user?.email || normalizePhone(customerPhone) || '';
+    const alreadyUsed = (found.used_by || []).some((id) =>
+      (user?.id && id === user.id) ||
+      (user?.email && id.toLowerCase() === user.email.toLowerCase()) ||
+      (customerPhone && id === normalizePhone(customerPhone))
+    );
+    if (alreadyUsed) {
+      setCouponError(
+        language === 'ar'
+          ? 'عذراً، لقد تم استخدام كود الخصم هذا مسبقاً بواسطة هذا الحساب.'
+          : 'This coupon has already been redeemed by your account.'
+      );
+      return;
+    }
+    setAppliedCoupon(found);
+    setCouponSuccess(
+      language === 'ar'
+        ? `تم تطبيق الخصم بنجاح! كود (${found.code})`
+        : `Coupon (${found.code}) applied successfully!`
+    );
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setCouponSuccess('');
+    setCouponError('');
+  };
 
   const handlePhoneChange = (val: string) => {
     setCustomerPhone(val);
@@ -260,7 +340,8 @@ export const Checkout: React.FC = () => {
         items: cart,
         subtotal: cartSubtotal,
         shipping_fee: shippingFee,
-        discount: 0,
+        discount: couponDiscount,
+        coupon_code: appliedCoupon ? appliedCoupon.code : undefined,
         total: grandTotal,
         payment_method: paymentMethod,
         payment_status: 'unpaid',
@@ -268,6 +349,22 @@ export const Checkout: React.FC = () => {
         payment_reference: paymentReference || undefined,
         order_status: 'pending',
       });
+
+      // Mark the coupon as redeemed by this user so it expires for their account
+      if (appliedCoupon) {
+        const userIdentifier = user?.id || user?.email || normalizePhone(customerPhone) || 'customer';
+        const currentCoupons = settings.coupons || [];
+        const updatedCoupons = currentCoupons.map((cp) => {
+          if (cp.code.toUpperCase() === appliedCoupon.code.toUpperCase()) {
+            return {
+              ...cp,
+              used_by: Array.from(new Set([...(cp.used_by || []), userIdentifier]))
+            };
+          }
+          return cp;
+        });
+        updateSettings({ coupons: updatedCoupons });
+      }
 
       // Confetti celebration
       try {
@@ -858,12 +955,74 @@ export const Checkout: React.FC = () => {
               ))}
             </div>
 
+            {/* Coupon Code Section */}
+            <div className="pt-3 border-t border-slate-200 space-y-2">
+              <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-amber-600" />
+                <span>{language === 'ar' ? 'هل لديك كود خصم؟' : 'Have a promo code?'}</span>
+              </label>
+
+              {appliedCoupon ? (
+                <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-between gap-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-800 font-bold font-outfit uppercase">
+                      {appliedCoupon.code}
+                    </span>
+                    <span className="text-emerald-800 font-semibold">
+                      {language === 'ar'
+                        ? `خصم ${appliedCoupon.discount_type === 'percentage' ? `${appliedCoupon.discount_value}%` : `${appliedCoupon.discount_value} ج.م`} (-${formatPrice(couponDiscount)})`
+                        : `Discount (-${formatPrice(couponDiscount)})`}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="p-1 rounded-lg hover:bg-emerald-500/20 text-rose-600 transition-colors"
+                    title={language === 'ar' ? 'إلغاء كود الخصم' : 'Remove coupon'}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                    placeholder={language === 'ar' ? 'أدخل كود الخصم (مثال: JOE2026)' : 'Enter promo code (e.g. JOE2026)'}
+                    className="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 uppercase font-outfit font-semibold"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleApplyCoupon()}
+                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors cursor-pointer"
+                  >
+                    {language === 'ar' ? 'تطبيق' : 'Apply'}
+                  </button>
+                </div>
+              )}
+
+              {couponError && (
+                <p className="text-[11px] text-rose-600 font-semibold">{couponError}</p>
+              )}
+              {couponSuccess && (
+                <p className="text-[11px] text-emerald-700 font-semibold">{couponSuccess}</p>
+              )}
+            </div>
+
             {/* Calculations Breakdown */}
             <div className="space-y-2 pt-3 border-t border-slate-200 text-xs font-cairo">
               <div className="flex justify-between text-slate-600">
                 <span>{language === 'ar' ? 'المجموع الفرعي:' : 'Subtotal:'}</span>
                 <InfoButton className="font-outfit text-slate-900 font-semibold" details={{ title: language === 'ar' ? 'تفاصيل قيمة المنتجات' : 'Basket subtotal', description: language === 'ar' ? 'مجموع سعر كل قطعة مضروبًا في كميتها، قبل رسوم الشحن.' : 'The sum of each item price multiplied by its quantity, before shipping.', rows: cart.map((item, i) => ({ id: String(i), label: item.product.name_ar, value: formatPrice(item.product.price * item.quantity), facts: [{ label: language === 'ar' ? 'الكمية' : 'Quantity', value: item.quantity }] })) }}>{formatPrice(cartSubtotal)}</InfoButton>
               </div>
+
+              {couponDiscount > 0 && appliedCoupon && (
+                <div className="flex justify-between text-emerald-700 font-bold">
+                  <span>{language === 'ar' ? `خصم الكوبون (${appliedCoupon.code}):` : `Coupon Discount (${appliedCoupon.code}):`}</span>
+                  <span className="font-outfit">-{formatPrice(couponDiscount)}</span>
+                </div>
+              )}
 
               <div className="flex justify-between text-slate-600">
                 <span>{language === 'ar' ? `مصاريف الشحن (${currentGov.name_ar}):` : `Shipping (${currentGov.name_en}):`}</span>

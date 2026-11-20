@@ -33,7 +33,8 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     selectedCategory,
     setSelectedCategory,
     searchQuery,
-    setSearchQuery
+    setSearchQuery,
+    settings
   } = useStore();
 
   const { t, language, formatPrice } = useLanguage();
@@ -69,17 +70,33 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
 
   const storages = ['all', '128GB', '256GB', '512GB', '1TB'];
 
-  // Categories list
-  const categoriesList: { key: CategoryKey; label: string }[] = [
-    { key: 'all', label: t('allCategories') },
-    { key: 'smartphones', label: t('smartphones') },
-    { key: 'smartwatches', label: t('smartwatches') },
-    { key: 'audio', label: t('audio') },
-    { key: 'chargers_cables', label: t('chargers_cables') },
-    { key: 'powerbanks', label: t('powerbanks') },
-    { key: 'cases_protection', label: t('cases_protection') },
-    { key: 'accessories', label: t('accessories') },
-  ];
+  // Dynamic Categories list from settings or catalog
+  const categoriesList = useMemo(() => {
+    const list: { key: CategoryKey; label: string }[] = [
+      { key: 'all', label: t('allCategories') }
+    ];
+    if (settings.custom_categories && settings.custom_categories.length > 0) {
+      settings.custom_categories.forEach(c => {
+        list.push({ key: c.key as CategoryKey, label: isAr ? c.name_ar : (c.name_en || c.name_ar) });
+      });
+    } else {
+      list.push(
+        { key: 'smartphones', label: t('smartphones') },
+        { key: 'smartwatches', label: t('smartwatches') },
+        { key: 'audio', label: t('audio') },
+        { key: 'chargers_cables', label: t('chargers_cables') },
+        { key: 'powerbanks', label: t('powerbanks') },
+        { key: 'cases_protection', label: t('cases_protection') },
+        { key: 'accessories', label: t('accessories') }
+      );
+    }
+    products.forEach(p => {
+      if (p.category && !list.some(item => item.key === p.category)) {
+        list.push({ key: p.category, label: p.category });
+      }
+    });
+    return list;
+  }, [settings.custom_categories, products, isAr, t]);
 
   // Reset Filters
   const handleResetFilters = () => {

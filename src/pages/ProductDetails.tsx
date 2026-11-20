@@ -610,25 +610,45 @@ export const ProductDetails: React.FC = () => {
               </div>
 
               {/* Quantity Selector */}
-              <div className="flex items-center justify-between text-xs pt-1">
-                <span className="text-slate-600 font-bold">الكمية:</span>
-                <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl px-2 py-1">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={!canPurchase || quantity <= 1}
-                    className="text-slate-600 hover:text-slate-900 px-2 font-bold text-sm"
-                  >
-                    -
-                  </button>
-                  <span className="px-2 font-outfit font-bold text-slate-900 text-sm">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                    disabled={!canPurchase || quantity >= product.stock}
-                    className="text-slate-600 hover:text-slate-900 px-2 font-bold text-sm"
-                  >
-                    +
-                  </button>
+              <div className="space-y-1 pt-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-600 font-bold">الكمية المطلوبة:</span>
+                  <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl px-1.5 py-1">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={!canPurchase || quantity <= 1}
+                      className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-slate-900 font-bold text-base disabled:opacity-30 rounded-lg hover:bg-slate-200"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      min={1}
+                      max={product.stock}
+                      value={quantity}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (isNaN(val)) setQuantity(1);
+                        else setQuantity(Math.max(1, Math.min(product.stock, val)));
+                      }}
+                      className="w-12 text-center bg-transparent font-outfit font-bold text-slate-900 text-sm focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                      disabled={!canPurchase || quantity >= product.stock}
+                      className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-slate-900 font-bold text-base disabled:opacity-30 rounded-lg hover:bg-slate-200"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
+                {product.stock > 0 && quantity >= product.stock && (
+                  <p className="text-[10px] text-amber-700 font-bold text-end">
+                    أقصى كمية يمكنك طلبها هي {product.stock} قطع (حد المخزون المتوفر).
+                  </p>
+                )}
               </div>
 
               {/* Action Buttons: Add to Cart & Buy Now */}
@@ -958,25 +978,45 @@ export const ProductDetails: React.FC = () => {
               </div>
 
               {/* Quantity Selector */}
-              <div className="flex items-center justify-between text-xs pt-1">
-                <span className="text-slate-600 font-bold">الكمية:</span>
-                <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl px-2 py-1">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={!canPurchase || quantity <= 1}
-                    className="text-slate-600 hover:text-slate-900 px-2 font-bold text-sm"
-                  >
-                    -
-                  </button>
-                  <span className="px-2 font-outfit font-bold text-slate-900 text-sm">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                    disabled={!canPurchase || quantity >= product.stock}
-                    className="text-slate-600 hover:text-slate-900 px-2 font-bold text-sm"
-                  >
-                    +
-                  </button>
+              <div className="space-y-1 pt-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-600 font-bold">الكمية المطلوبة:</span>
+                  <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl px-1.5 py-1">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={!canPurchase || quantity <= 1}
+                      className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-slate-900 font-bold text-base disabled:opacity-30 rounded-lg hover:bg-slate-200"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      min={1}
+                      max={product.stock}
+                      value={quantity}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (isNaN(val)) setQuantity(1);
+                        else setQuantity(Math.max(1, Math.min(product.stock, val)));
+                      }}
+                      className="w-12 text-center bg-transparent font-outfit font-bold text-slate-900 text-sm focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                      disabled={!canPurchase || quantity >= product.stock}
+                      className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-slate-900 font-bold text-base disabled:opacity-30 rounded-lg hover:bg-slate-200"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
+                {product.stock > 0 && quantity >= product.stock && (
+                  <p className="text-[10px] text-amber-700 font-bold text-end">
+                    أقصى كمية يمكنك طلبها هي {product.stock} قطع (حد المخزون المتوفر).
+                  </p>
+                )}
               </div>
 
               {/* Action Buttons */}

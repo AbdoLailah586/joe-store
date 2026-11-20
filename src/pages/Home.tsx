@@ -166,6 +166,19 @@ export const Home: React.FC = () => {
       : defaultHeroSlides;
   }, [settings.hero_slides]);
 
+  // Determine categories dynamically from settings or default
+  const activeCategories = useMemo(() => {
+    if (settings.custom_categories && settings.custom_categories.length > 0) {
+      return settings.custom_categories.map((c) => ({
+        key: c.key as CategoryKey,
+        ar: c.name_ar,
+        en: c.name_en || c.name_ar,
+        image: c.image || '/product-placeholder.svg',
+      }));
+    }
+    return dubaiCategories;
+  }, [settings.custom_categories]);
+
   const currentSlide = slides[slideIndex % slides.length];
   const Arrow = isRTL ? ArrowLeft : ArrowRight;
   const DiagonalArrow = isRTL ? ArrowUpLeft : ArrowUpRight;
@@ -535,7 +548,7 @@ export const Home: React.FC = () => {
 
         {/* Dubai Phone Style Round Category Cards */}
         <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-7 gap-3 sm:gap-4 md:gap-5">
-          {dubaiCategories.map(({ key, ar: title, en, image }) => {
+          {activeCategories.map(({ key, ar: title, en, image }) => {
             const count = products.filter((p) => p.category === key).length;
             return (
               <button

@@ -42,12 +42,15 @@ import {
   Mail,
   ShieldAlert,
   KeyRound,
-  Sparkles
+  Sparkles,
+  Tag,
+  Gift,
+  FolderPlus
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
-import { Product, Order, OrderStatus, CategoryKey, ProductCondition, HeroSlide } from '../../types';
+import { Product, Order, OrderStatus, CategoryKey, ProductCondition, HeroSlide, CustomCategory, DiscountCoupon } from '../../types';
 import { ExcelImportModal } from '../../components/ExcelImportModal';
 import { downloadSampleExcelTemplate, exportCatalogToExcel } from '../../utils/excelParser';
 import { generateWhatsAppWebLink, sendWhatsAppMessage } from '../../utils/whatsappService';
@@ -180,6 +183,136 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteSlide = (id: string) => {
     const currentSlides = settings.hero_slides || [];
     updateSettings({ hero_slides: currentSlides.filter(s => s.id !== id) });
+  };
+
+  // Helper for reading files directly from laptop to Base64 Data URL
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64Url: string) => void) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          callback(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Category Manager States
+  const [showAddCatForm, setShowAddCatForm] = useState(false);
+  const [newCatNameAr, setNewCatNameAr] = useState('');
+  const [newCatNameEn, setNewCatNameEn] = useState('');
+  const [newCatKey, setNewCatKey] = useState('');
+  const [newCatImage, setNewCatImage] = useState('');
+  const [editingCatKey, setEditingCatKey] = useState<string | null>(null);
+  const [editingCatImage, setEditingCatImage] = useState('');
+  const [editingCatNameAr, setEditingCatNameAr] = useState('');
+  const [editingCatNameEn, setEditingCatNameEn] = useState('');
+
+  const defaultCategoriesList: CustomCategory[] = [
+    { key: 'smartphones', name_ar: 'هواتف ذكية', name_en: 'Smartphones', image: '/product-images/15c3630cb4bb430b367edd7f.webp' },
+    { key: 'chargers_cables', name_ar: 'شواحن وكابلات', name_en: 'Chargers & Cables', image: '/product-images/onmust-zolo-30w-studio.jpg' },
+    { key: 'audio', name_ar: 'سماعات وصوتيات', name_en: 'Audio & Earbuds', image: '/product-images/f6427a20c128ea77c56bc426.webp' },
+    { key: 'smartwatches', name_ar: 'ساعات ذكية', name_en: 'Smartwatches', image: '/product-images/3f4452f62308aae22858b473.webp' },
+    { key: 'powerbanks', name_ar: 'باور بانك', name_en: 'Power Banks', image: '/product-images/0e1a38acbfd018e570a0b515.webp' },
+    { key: 'cases_protection', name_ar: 'كفرات وحماية', name_en: 'Cases & Protection', image: '/product-images/2e1f8fb369b614aba97f55d1.webp' },
+    { key: 'accessories', name_ar: 'إكسسوارات متنوعة', name_en: 'Accessories', image: '/product-images/3af3d5bd2ec35679a678251e.webp' },
+  ];
+
+  const currentCategories: CustomCategory[] = (settings.custom_categories && settings.custom_categories.length > 0)
+    ? settings.custom_categories
+    : defaultCategoriesList;
+
+  const handleSaveNewCategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCatNameAr.trim()) return;
+    const key = newCatKey.trim() || newCatNameEn.trim().toLowerCase().replace(/\s+/g, '_') || `cat_${Date.now()}`;
+    const newCat: CustomCategory = {
+      key,
+      name_ar: newCatNameAr.trim(),
+      name_en: newCatNameEn.trim() || newCatNameAr.trim(),
+      image: newCatImage.trim() || '/product-placeholder.svg',
+    };
+    updateSettings({ custom_categories: [...currentCategories.filter(c => c.key !== key), newCat] });
+    setShowAddCatForm(false);
+    setNewCatNameAr('');
+    setNewCatNameEn('');
+    setNewCatKey('');
+    setNewCatImage('');
+  };
+
+  const handleStartEditCategory = (cat: CustomCategory) => {
+    setEditingCatKey(cat.key);
+    setEditingCatNameAr(cat.name_ar);
+    setEditingCatNameEn(cat.name_en);
+    setEditingCatImage(cat.image);
+  };
+
+  const handleSaveCategoryEdit = (key: string) => {
+    const updated = currentCategories.map(c => {
+      if (c.key === key) {
+        return {
+          ...c,
+          name_ar: editingCatNameAr.trim() || c.name_ar,
+          name_en: editingCatNameEn.trim() || c.name_en,
+          image: editingCatImage.trim() || c.image,
+        };
+      }
+      return c;
+    });
+    updateSettings({ custom_categories: updated });
+    setEditingCatKey(null);
+  };
+
+  const handleDeleteCategory = (key: string) => {
+    const updated = currentCategories.filter(c => c.key !== key);
+    updateSettings({ custom_categories: updated });
+  };
+
+  // Coupon Manager States
+  const [showAddCouponForm, setShowAddCouponForm] = useState(false);
+  const [newCouponCode, setNewCouponCode] = useState('');
+  const [newCouponType, setNewCouponType] = useState<'percentage' | 'fixed'>('percentage');
+  const [newCouponValue, setNewCouponValue] = useState<number>(10);
+  const [newCouponMinOrder, setNewCouponMinOrder] = useState<number>(0);
+  const [newCouponMaxDisc, setNewCouponMaxDisc] = useState<number>(0);
+
+  const handleSaveNewCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCouponCode.trim() || newCouponValue <= 0) return;
+    const coupon: DiscountCoupon = {
+      id: `coupon-${Date.now()}`,
+      code: newCouponCode.trim().toUpperCase(),
+      discount_type: newCouponType,
+      discount_value: newCouponValue,
+      min_order_amount: newCouponMinOrder > 0 ? newCouponMinOrder : undefined,
+      max_discount_amount: newCouponMaxDisc > 0 ? newCouponMaxDisc : undefined,
+      is_active: true,
+      used_by: [],
+      created_at: new Date().toISOString()
+    };
+    const current = settings.coupons || [];
+    updateSettings({ coupons: [...current.filter(c => c.code.toUpperCase() !== coupon.code), coupon] });
+    setShowAddCouponForm(false);
+    setNewCouponCode('');
+    setNewCouponValue(10);
+    setNewCouponMinOrder(0);
+    setNewCouponMaxDisc(0);
+  };
+
+  const handleToggleCoupon = (code: string) => {
+    const current = settings.coupons || [];
+    updateSettings({
+      coupons: current.map(c => c.code === code ? { ...c, is_active: !c.is_active } : c)
+    });
+  };
+
+  const handleDeleteCoupon = (code: string) => {
+    const current = settings.coupons || [];
+    updateSettings({
+      coupons: current.filter(c => c.code !== code)
+    });
   };
 
   // New/Edit Product Form State
@@ -1376,6 +1509,367 @@ export const AdminDashboard: React.FC = () => {
               ))}
             </div>
           </div>
+
+          {/* Section 4: Category Manager & Custom Images */}
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-6">
+            <div className="flex items-center justify-between flex-wrap gap-4 border-b border-slate-200 pb-4">
+              <div>
+                <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                  <Layers className="w-5 h-5 text-amber-700" />
+                  <span>{language === 'ar' ? 'إدارة الفئات (الأقسام) وصور العرض' : 'Category & Images Management'}</span>
+                </h3>
+                <p className="text-slate-600 text-xs mt-1">
+                  {language === 'ar'
+                    ? 'أضف فئات جديدة أو عدل صور الفئات المعروضة في الصفحة الرئيسية، مع خيار رفع أي صورة مباشرة من جهازك.'
+                    : 'Add new categories or edit existing category photos with direct file upload from your device.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddCatForm(!showAddCatForm)}
+                className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{language === 'ar' ? 'إضافة فئة جديدة' : 'Add Category'}</span>
+              </button>
+            </div>
+
+            {/* Add New Category Form */}
+            {showAddCatForm && (
+              <form onSubmit={handleSaveNewCategory} className="p-5 rounded-2xl bg-slate-50 border border-amber-500/30 space-y-4 text-xs font-cairo">
+                <h4 className="font-bold text-sm text-slate-900">
+                  {language === 'ar' ? 'إضافة فئة منتجات جديدة' : 'Add New Category'}
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-slate-700 mb-1 font-semibold">اسم الفئة بالعربية *</label>
+                    <input
+                      type="text"
+                      required
+                      value={newCatNameAr}
+                      onChange={(e) => {
+                        setNewCatNameAr(e.target.value);
+                        if (!newCatKey) setNewCatKey(e.target.value.trim().toLowerCase().replace(/\s+/g, '_'));
+                      }}
+                      placeholder="مثال: إكسسوارات سيارات"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 mb-1 font-semibold">الاسم بالإنجليزية</label>
+                    <input
+                      type="text"
+                      value={newCatNameEn}
+                      onChange={(e) => setNewCatNameEn(e.target.value)}
+                      placeholder="e.g. Car Accessories"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 mb-1 font-semibold">المعرف البرمجي (Key)</label>
+                    <input
+                      type="text"
+                      value={newCatKey}
+                      onChange={(e) => setNewCatKey(e.target.value)}
+                      placeholder="car_accessories"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
+                    />
+                  </div>
+                </div>
+
+                {/* Image Options: URL or Direct Laptop Upload */}
+                <div className="space-y-2">
+                  <label className="block text-slate-700 font-semibold">صورة الفئة (رابط أو رفع من اللاب توب)</label>
+                  <div className="flex flex-col sm:flex-row gap-3 items-center">
+                    <input
+                      type="text"
+                      value={newCatImage}
+                      onChange={(e) => setNewCatImage(e.target.value)}
+                      placeholder="الصق رابط صورة أو ارفع صورة من جهازك"
+                      className="flex-1 bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                    />
+                    <label className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-sm transition-all whitespace-nowrap">
+                      <Upload className="w-4 h-4 text-amber-400" />
+                      <span>رفع صورة من الجهاز</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleFileUpload(e, (url) => setNewCatImage(url))}
+                      />
+                    </label>
+                  </div>
+                  {newCatImage && (
+                    <div className="flex items-center gap-3 p-2 bg-white rounded-xl border border-slate-200 w-fit">
+                      <img src={newCatImage} alt="" className="w-12 h-12 object-contain rounded-lg bg-slate-50 border" />
+                      <span className="text-[11px] text-emerald-700 font-bold">تم اختيار ومعاينة الصورة بنجاح ✓</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddCatForm(false)}
+                    className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold"
+                  >
+                    إلغاء
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold shadow-md"
+                  >
+                    حفظ الفئة الجديدة
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Existing Categories Grid & Image Customization */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-xs font-cairo">
+              {currentCategories.map((cat) => (
+                <div key={cat.key} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-3 relative group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-16 h-16 rounded-full bg-white border-2 border-slate-200 overflow-hidden flex items-center justify-center p-2 flex-shrink-0 shadow-sm">
+                      <img
+                        src={cat.image || '/product-placeholder.svg'}
+                        alt={cat.name_ar}
+                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/product-placeholder.svg'; }}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <strong className="text-slate-900 font-bold text-sm block truncate">{cat.name_ar}</strong>
+                      <span className="text-slate-500 text-[11px] font-outfit block truncate">{cat.name_en}</span>
+                      <span className="text-[10px] text-amber-700 font-outfit bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 inline-block mt-0.5">
+                        {cat.key}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Inline Edit Form for this Category */}
+                  {editingCatKey === cat.key ? (
+                    <div className="p-3 rounded-xl bg-white border border-amber-400 space-y-2 mt-2">
+                      <label className="block text-[11px] font-bold text-slate-800">تعديل الاسم والصورة:</label>
+                      <input
+                        type="text"
+                        value={editingCatNameAr}
+                        onChange={(e) => setEditingCatNameAr(e.target.value)}
+                        placeholder="الاسم بالعربي"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs text-slate-900"
+                      />
+                      <input
+                        type="text"
+                        value={editingCatImage}
+                        onChange={(e) => setEditingCatImage(e.target.value)}
+                        placeholder="رابط الصورة"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs text-slate-900"
+                      />
+                      <label className="w-full py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer">
+                        <Upload className="w-3.5 h-3.5 text-amber-400" />
+                        <span>رفع صورة جديدة من اللاب توب</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleFileUpload(e, (url) => setEditingCatImage(url))}
+                        />
+                      </label>
+                      {editingCatImage && (
+                        <div className="flex items-center gap-2 p-1.5 bg-slate-50 rounded-lg border">
+                          <img src={editingCatImage} alt="" className="w-8 h-8 object-contain rounded" />
+                          <span className="text-[10px] text-emerald-700 font-bold">معاينة الصورة المحدثة</span>
+                        </div>
+                      )}
+                      <div className="flex justify-end gap-1.5 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setEditingCatKey(null)}
+                          className="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-700 text-[11px] font-bold"
+                        >
+                          إلغاء
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveCategoryEdit(cat.key)}
+                          className="px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-bold"
+                        >
+                          حفظ
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-200/80">
+                      <button
+                        type="button"
+                        onClick={() => handleStartEditCategory(cat)}
+                        className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold text-[11px] flex items-center gap-1 transition-colors cursor-pointer"
+                      >
+                        <Edit className="w-3 h-3 text-amber-600" />
+                        <span>تعديل الصورة</span>
+                      </button>
+                      {!['smartphones', 'chargers_cables', 'audio', 'smartwatches', 'powerbanks', 'cases_protection', 'accessories'].includes(cat.key) && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteCategory(cat.key)}
+                          className="p-1.5 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors"
+                          title="حذف الفئة"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section 5: Discount Coupons Management */}
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-6">
+            <div className="flex items-center justify-between flex-wrap gap-4 border-b border-slate-200 pb-4">
+              <div>
+                <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                  <Tag className="w-5 h-5 text-emerald-600" />
+                  <span>{language === 'ar' ? 'أكواد الخصم والكوبونات الترويجية' : 'Discount Coupons Management'}</span>
+                </h3>
+                <p className="text-slate-600 text-xs mt-1">
+                  {language === 'ar'
+                    ? 'أنشئ كوبونات خصم (نسبة مئوية أو مبلغ ثابت). الكود صالح للاستخدام مرة واحدة لكل حساب وينتهي تلقائياً بعد إتمام الدفع.'
+                    : 'Create discount coupons with single-use per account protection that expires after checkout.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddCouponForm(!showAddCouponForm)}
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{language === 'ar' ? 'إنشاء كود خصم جديد' : 'New Coupon'}</span>
+              </button>
+            </div>
+
+            {/* Add Coupon Form */}
+            {showAddCouponForm && (
+              <form onSubmit={handleSaveNewCoupon} className="p-5 rounded-2xl bg-slate-50 border border-emerald-500/30 space-y-4 text-xs font-cairo">
+                <h4 className="font-bold text-sm text-slate-900">إنشاء كود خصم جديد</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div>
+                    <label className="block text-slate-700 mb-1 font-semibold">كود الخصم (Promo Code) *</label>
+                    <input
+                      type="text"
+                      required
+                      value={newCouponCode}
+                      onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
+                      placeholder="مثال: JOE2026"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 uppercase font-outfit font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 mb-1 font-semibold">نوع الخصم</label>
+                    <select
+                      value={newCouponType}
+                      onChange={(e) => setNewCouponType(e.target.value as any)}
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                    >
+                      <option value="percentage">نسبة مئوية (%)</option>
+                      <option value="fixed">مبلغ ثابت بالجنيه (ج.م)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 mb-1 font-semibold">قيمة الخصم *</label>
+                    <input
+                      type="number"
+                      min={1}
+                      required
+                      value={newCouponValue}
+                      onChange={(e) => setNewCouponValue(Number(e.target.value) || 0)}
+                      placeholder="مثال: 10 أو 100"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 mb-1 font-semibold">الحد الأدنى للطلب (ج.م)</label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={newCouponMinOrder}
+                      onChange={(e) => setNewCouponMinOrder(Number(e.target.value) || 0)}
+                      placeholder="اختياري (مثال: 300)"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddCouponForm(false)}
+                    className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold"
+                  >
+                    إلغاء
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md"
+                  >
+                    حفظ وتفعيل الكود
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Coupons List */}
+            <div className="space-y-3">
+              {(settings.coupons || []).length === 0 ? (
+                <p className="text-slate-500 text-xs py-4 text-center">لا توجد أكواد خصم مضافة بعد.</p>
+              ) : (
+                (settings.coupons || []).map((cp) => (
+                  <div key={cp.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-cairo">
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                      <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-800 border border-emerald-500/30">
+                        <Tag className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <strong className="text-slate-900 text-sm font-outfit font-black tracking-wider">{cp.code}</strong>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${cp.is_active ? 'bg-emerald-500/20 text-emerald-700' : 'bg-slate-200 text-slate-600'}`}>
+                            {cp.is_active ? 'مفعل وجاهز' : 'معطل'}
+                          </span>
+                        </div>
+                        <p className="text-slate-600 text-[11px] mt-0.5">
+                          الخصم: <strong className="text-emerald-700">{cp.discount_type === 'percentage' ? `${cp.discount_value}%` : `${cp.discount_value} ج.م`}</strong>
+                          {cp.min_order_amount ? ` • الحد الأدنى: ${cp.min_order_amount} ج.م` : ''}
+                          {cp.max_discount_amount ? ` • أقصى خصم: ${cp.max_discount_amount} ج.م` : ''}
+                        </p>
+                        <span className="text-slate-500 text-[10px] font-outfit mt-0.5 block">
+                          تم استخدامه في {cp.used_by?.length || 0} طلب مكتمل
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 self-end sm:self-center">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleCoupon(cp.code)}
+                        className={`px-3 py-1.5 rounded-xl border font-bold text-[11px] transition-colors ${cp.is_active ? 'bg-amber-500/10 border-amber-500/30 text-amber-700 hover:bg-amber-500/20' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 hover:bg-emerald-500/20'}`}
+                      >
+                        {cp.is_active ? 'تعطيل مؤقت' : 'تفعيل الكود'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteCoupon(cp.code)}
+                        className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 border border-rose-500/20 transition-colors"
+                        title="حذف كود الخصم"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       )}
 
@@ -1432,12 +1926,14 @@ export const AdminDashboard: React.FC = () => {
                     onChange={(e) => setProdForm({ ...prodForm, category: e.target.value as CategoryKey })}
                     className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900"
                   >
-                    <option value="smartphones">هواتف ذكية</option>
-                    <option value="smartwatches">ساعات ذكية</option>
-                    <option value="audio">سماعات</option>
-                    <option value="chargers_cables">شواحن وكابلات</option>
-                    <option value="powerbanks">باوربانك</option>
-                    <option value="cases_protection">جرابات وحمايات</option>
+                    {currentCategories.map((cat) => (
+                      <option key={cat.key} value={cat.key}>
+                        {cat.name_ar} ({cat.key})
+                      </option>
+                    ))}
+                    {!currentCategories.some((c) => c.key === prodForm.category) && prodForm.category && (
+                      <option value={prodForm.category}>{prodForm.category}</option>
+                    )}
                   </select>
                 </div>
 

@@ -159,8 +159,11 @@ export const CartDrawer: React.FC = () => {
                           {item.quantity}
                         </span>
                         <button
+                          type="button"
                           onClick={() => updateCartQuantity(item.product.id, item.quantity + 1, item.selected_storage, item.selected_color)}
-                          className="w-5 h-5 rounded flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                          disabled={item.quantity >= item.product.stock}
+                          className="w-5 h-5 rounded flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                          title={item.quantity >= item.product.stock ? `الحد الأقصى للمخزون (${item.product.stock})` : undefined}
                         >
                           <Plus className="w-3 h-3" />
                         </button>

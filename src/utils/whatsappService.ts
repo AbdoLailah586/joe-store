@@ -64,6 +64,73 @@ export const defaultSettings: StoreSettings = {
       image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=1200&q=80',
       cat: 'audio'
     }
+  ],
+  custom_categories: [
+    {
+      key: 'smartphones',
+      name_ar: 'هواتف ذكية',
+      name_en: 'Smartphones',
+      image: '/product-images/15c3630cb4bb430b367edd7f.webp',
+    },
+    {
+      key: 'chargers_cables',
+      name_ar: 'شواحن وكابلات',
+      name_en: 'Chargers & Cables',
+      image: '/product-images/onmust-zolo-30w-studio.jpg',
+    },
+    {
+      key: 'audio',
+      name_ar: 'سماعات وصوتيات',
+      name_en: 'Audio & Earbuds',
+      image: '/product-images/f6427a20c128ea77c56bc426.webp',
+    },
+    {
+      key: 'smartwatches',
+      name_ar: 'ساعات ذكية',
+      name_en: 'Smartwatches',
+      image: '/product-images/3f4452f62308aae22858b473.webp',
+    },
+    {
+      key: 'powerbanks',
+      name_ar: 'باور بانك',
+      name_en: 'Power Banks',
+      image: '/product-images/0e1a38acbfd018e570a0b515.webp',
+    },
+    {
+      key: 'cases_protection',
+      name_ar: 'كفرات وحماية',
+      name_en: 'Cases & Protection',
+      image: '/product-images/2e1f8fb369b614aba97f55d1.webp',
+    },
+    {
+      key: 'accessories',
+      name_ar: 'إكسسوارات متنوعة',
+      name_en: 'Accessories',
+      image: '/product-images/3af3d5bd2ec35679a678251e.webp',
+    },
+  ],
+  coupons: [
+    {
+      id: 'coupon-joe2026',
+      code: 'JOE2026',
+      discount_type: 'percentage',
+      discount_value: 10,
+      min_order_amount: 200,
+      max_discount_amount: 500,
+      is_active: true,
+      used_by: [],
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 'coupon-welcome50',
+      code: 'WELCOME50',
+      discount_type: 'fixed',
+      discount_value: 50,
+      min_order_amount: 300,
+      is_active: true,
+      used_by: [],
+      created_at: new Date().toISOString()
+    }
   ]
 };
 

@@ -103,6 +103,16 @@ export const readStoredSettings = (defaults: StoreSettings): StoreSettings => {
         && Object.values(slide).every(field => typeof field === 'string'))) {
         merged.hero_slides = value;
       }
+    } else if (key === 'custom_categories') {
+      if (Array.isArray(value) && value.every(cat => isRecord(cat)
+        && typeof cat.key === 'string' && typeof cat.name_ar === 'string')) {
+        merged.custom_categories = value;
+      }
+    } else if (key === 'coupons') {
+      if (Array.isArray(value) && value.every(c => isRecord(c)
+        && typeof c.code === 'string' && typeof c.discount_value === 'number')) {
+        merged.coupons = value;
+      }
     } else if (key in defaults ? typeof value === typeof defaults[key] : typeof value === 'string') {
       // Match known default types; optional settings (theme/email fields) are strings.
       (merged as any)[key] = value;

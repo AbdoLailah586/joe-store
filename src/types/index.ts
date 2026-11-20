@@ -6,7 +6,27 @@ export type CategoryKey =
   | 'chargers_cables'
   | 'powerbanks'
   | 'cases_protection'
-  | 'accessories';
+  | 'accessories'
+  | (string & {});
+
+export interface CustomCategory {
+  key: string;
+  name_ar: string;
+  name_en: string;
+  image: string;
+}
+
+export interface DiscountCoupon {
+  id: string;
+  code: string;
+  discount_type: 'percentage' | 'fixed';
+  discount_value: number; // e.g. 10 for 10% or 50 for 50 EGP
+  min_order_amount?: number;
+  max_discount_amount?: number;
+  is_active: boolean;
+  used_by?: string[]; // IDs, phone numbers, or emails of accounts who placed an order with this coupon
+  created_at: string;
+}
 
 export type ProductCondition = 'brand_new' | 'mint' | 'used_good' | 'unknown';
 
@@ -148,6 +168,7 @@ export interface Order extends DeliveryAddressFields {
   subtotal: number;
   shipping_fee: number;
   discount: number;
+  coupon_code?: string;
   total: number;
   payment_method: PaymentMethod;
   payment_status: PaymentStatus;
@@ -214,6 +235,8 @@ export interface StoreSettings {
   active_theme?: 'royal_gold' | 'titanium_blue' | 'emerald_tech';
   theme_mode?: 'dark' | 'light';
   hero_slides?: HeroSlide[];
+  custom_categories?: CustomCategory[];
+  coupons?: DiscountCoupon[];
   // Email Template Customization
   email_subject_template?: string;
   email_header_title?: string;
