@@ -158,7 +158,7 @@ export const OrderSuccess: React.FC = () => {
         {/* Delivery Address & Payment */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-200 text-xs">
           <div className="p-3 rounded-xl bg-slate-100 border border-slate-200 space-y-1">
-            <span className="text-slate-600 block text-[11px]">📍 عنوان التوصيل:</span>
+            <span className="text-slate-600 block text-[11px]">عنوان التوصيل:</span>
             <strong className="text-slate-900 block">
               {[currentOrder.governorate, currentOrder.city].filter(Boolean).join(' - ')}
             </strong>
@@ -166,7 +166,7 @@ export const OrderSuccess: React.FC = () => {
           </div>
 
           <div className="p-3 rounded-xl bg-slate-100 border border-slate-200 space-y-1">
-            <span className="text-slate-600 block text-[11px]">💳 طريقة الدفع المحددة:</span>
+            <span className="text-slate-600 block text-[11px]">طريقة الدفع المحددة:</span>
             <strong className="text-slate-900 block">
               {currentOrder.payment_method === 'cod' ? 'الدفع عند الاستلام (COD)' : currentOrder.payment_method === 'instapay' ? 'إنستاباي (InstaPay)' : currentOrder.payment_method === 'vodafone_cash' ? 'فودافون كاش' : 'بطاقة بنكية'}
             </strong>

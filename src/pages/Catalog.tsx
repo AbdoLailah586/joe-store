@@ -490,8 +490,8 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
           {/* Products Grid */}
           {filteredProducts.length === 0 ? (
             <div className="p-12 text-center rounded-3xl bg-white border border-slate-200 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-3xl mx-auto">
-                🔍
+              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mx-auto">
+                <Search className="w-8 h-8" />
               </div>
               <h3 className="text-base font-bold text-slate-900 font-cairo">
                 {language === 'ar' ? 'لا توجد منتجات تطابق الفلاتر المحددة' : 'No products match the selected filters'}

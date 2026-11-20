@@ -12,10 +12,10 @@ export const WhatsAppFloatingButton: React.FC = () => {
 
   // If in admin dashboard, we can keep it subtle or hidden
   const quickQuestions = [
-    { text: 'السلام عليكم، أريد الاستفسار عن الآيفون كسر زيرو المتوفر وأسعاره اليوم.', icon: '📱' },
-    { text: 'مرحباً، أود السؤال عن مواعيد العمل وعنوان المحل في المنصورة.', icon: '📍' },
-    { text: 'أريد معرفة تفاصيل الضمان وإمكانية فحص الجهاز قبل الاستلام.', icon: '🛡️' },
-    { text: 'أود تتبع شحنتي والتأكد من موعد وصول المندوب.', icon: '🚚' },
+    { text: 'السلام عليكم، أريد الاستفسار عن الآيفون كسر زيرو المتوفر وأسعاره اليوم.' },
+    { text: 'مرحباً، أود السؤال عن مواعيد العمل وعنوان المحل في المنصورة.' },
+    { text: 'أريد معرفة تفاصيل الضمان وإمكانية فحص الجهاز قبل الاستلام.' },
+    { text: 'أود تتبع شحنتي والتأكد من موعد وصول المندوب.' },
   ];
 
   const handleSend = (text: string) => {
@@ -33,8 +33,8 @@ export const WhatsAppFloatingButton: React.FC = () => {
           <div className="p-4 bg-gradient-to-r from-emerald-700 to-teal-800 flex items-center justify-between text-on-brand">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl">
-                  📱
+                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+                  <Smartphone className="w-5 h-5 text-emerald-800" />
                 </div>
                 <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-emerald-700" />
               </div>
@@ -59,7 +59,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
           {/* Body */}
           <div className="p-4 space-y-3 bg-white">
             <div className="p-3 rounded-2xl bg-slate-100 border border-slate-200 text-xs text-slate-800 leading-relaxed font-cairo">
-              👋 أهلاً بك في متجر <strong>جو ستور (JOE Store)</strong>! كيف يمكننا مساعدتك اليوم بخصوص الهواتف، الإكسسوارات، أو طلباتك؟
+              أهلاً بك في متجر <strong>جو ستور (JOE Store)</strong>! كيف يمكننا مساعدتك اليوم بخصوص الهواتف، الإكسسوارات، أو طلباتك؟
             </div>
 
             {/* Quick Chips */}
@@ -73,7 +73,6 @@ export const WhatsAppFloatingButton: React.FC = () => {
                   onClick={() => handleSend(q.text)}
                   className="w-full text-right p-2 rounded-xl bg-slate-100/80 hover:bg-emerald-500/15 border border-slate-200 hover:border-emerald-500/30 text-xs text-slate-600 transition-all flex items-center gap-2 group"
                 >
-                  <span>{q.icon}</span>
                   <span className="flex-1 line-clamp-1 group-hover:text-emerald-700">{q.text}</span>
                 </button>
               ))}

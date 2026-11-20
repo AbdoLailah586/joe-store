@@ -697,7 +697,7 @@ export const ProductDetails: React.FC = () => {
               {shareToast && (
                 <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-700 text-xs font-bold flex items-center gap-2 animate-fadeIn">
                   <CheckCircle className="w-4 h-4 text-amber-700" />
-                  <span>تم نسخ الرابط بنجاح! 📋 يمكنك مشاركته الآن</span>
+                  <span>تم نسخ الرابط بنجاح! يمكنك مشاركته الآن</span>
                 </div>
               )}
             </div>
@@ -1085,7 +1085,7 @@ export const ProductDetails: React.FC = () => {
               {shareToast && (
                 <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-700 text-xs font-bold flex items-center gap-2 animate-fadeIn">
                   <CheckCircle className="w-4 h-4 text-amber-700" />
-                  <span>تم نسخ الرابط بنجاح! 📋 يمكنك مشاركته الآن</span>
+                  <span>تم نسخ الرابط بنجاح! يمكنك مشاركته الآن</span>
                 </div>
               )}
             </div>

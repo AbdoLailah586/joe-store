@@ -21,7 +21,8 @@ import {
   Check,
   Tag,
   X,
-  Gift
+  Gift,
+  ShoppingCart
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -110,8 +111,8 @@ export const Checkout: React.FC = () => {
   if (cart.length === 0) {
     return (
       <div className="max-w-md mx-auto my-16 p-8 rounded-3xl bg-white border border-slate-200 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-3xl mx-auto">
-          🛒
+        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 mx-auto">
+          <ShoppingCart className="w-8 h-8" />
         </div>
         <h2 className="text-xl font-bold text-slate-900 font-cairo">عربة التسوق فارغة</h2>
         <p className="text-xs text-slate-600 font-cairo">
@@ -742,7 +743,7 @@ export const Checkout: React.FC = () => {
                     ) : (
                       <>
                         <Compass className="w-4 h-4 text-slate-900" />
-                        <span>📍 حدد موقعي الحالي (GPS)</span>
+                        <span>حدد موقعي الحالي (GPS)</span>
                       </>
                     )}
                   </button>
@@ -828,7 +829,7 @@ export const Checkout: React.FC = () => {
                 <div className="flex-1 text-xs">
                   <div className="flex items-center justify-between">
                     <strong className="text-slate-900 font-bold text-sm block">
-                      💵 الدفع عند الاستلام (COD)
+                      الدفع عند الاستلام (COD)
                     </strong>
                     <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 font-bold">
                       معاينة وفحص 100%
@@ -858,7 +859,7 @@ export const Checkout: React.FC = () => {
                 />
                 <div className="flex-1 text-xs">
                   <strong className="text-slate-900 font-bold text-sm block">
-                    ⚡ تحويل لحظي عبر تطبيق إنستاباي (InstaPay)
+                    تحويل لحظي عبر تطبيق إنستاباي (InstaPay)
                   </strong>
                   <p className="text-slate-600 text-[11px] mt-1">
                     تحويل بنكي فوري بدون أي رسوم إضافية لحساب جو ستور الرسمي.
@@ -915,7 +916,7 @@ export const Checkout: React.FC = () => {
                 />
                 <div className="flex-1 text-xs">
                   <strong className="text-slate-900 font-bold text-sm block">
-                    📱 فودافون كاش والمحافظ الإلكترونية (Orange / WE / Etisalat)
+                    فودافون كاش والمحافظ الإلكترونية (Orange / WE / Etisalat)
                   </strong>
                   <p className="text-slate-600 text-[11px] mt-1">
                     تحويل مباشر على رقم محفظة جو ستور الرسمية.
@@ -1061,7 +1062,7 @@ export const Checkout: React.FC = () => {
                 <span>{language === 'ar' ? `مصاريف الشحن (${currentGov.name_ar}):` : `Shipping (${currentGov.name_en}):`}</span>
                 <button type="button" className="font-outfit detail-info-button" onClick={() => openDetails({ title: language === 'ar' ? 'حساب رسوم الشحن' : 'Shipping calculation', description: language === 'ar' ? 'تُحسب الرسوم حسب المحافظة المحددة وقيمة المنتجات في السلة. هذا عرض للتكلفة الحالية ولا يغيّر العنوان أو الطلب.' : 'Fees depend on your selected governorate and basket subtotal. Viewing this does not change your address or order.', facts: [{ label: language === 'ar' ? 'المحافظة' : 'Governorate', value: currentGov.name_ar }, { label: language === 'ar' ? 'حد الشحن المجاني' : 'Free-delivery threshold', value: formatPrice(settings.free_shipping_threshold ?? 2500) }, { label: language === 'ar' ? 'الشحن الحالي' : 'Current shipping fee', value: formatPrice(shippingFee) }] })}>
                   {isFreeShipping ? (
-                    <span className="text-emerald-700 font-bold">{language === 'ar' ? 'شحن مجاني 🎉' : 'Free Shipping 🎉'}</span>
+                    <span className="text-emerald-700 font-bold">{language === 'ar' ? 'شحن مجاني' : 'Free Shipping'}</span>
                   ) : (
                     <span>{formatPrice(shippingFee)}</span>
                   )}
@@ -1118,7 +1119,7 @@ export const Checkout: React.FC = () => {
                 {language === 'ar' ? 'راجع تفاصيل الطلب قبل التأكيد' : 'Review your order before confirming'}
               </div>
               <div className="p-2 rounded-xl bg-slate-100 border border-slate-200">
-                {language === 'ar' ? '🛡️ ضمان استبدال رسمي' : '🛡️ Official Warranty'}
+                {language === 'ar' ? 'ضمان استبدال رسمي' : 'Official Warranty'}
               </div>
             </div>
           </div>

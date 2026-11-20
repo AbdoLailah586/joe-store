@@ -15,8 +15,6 @@ import {
   SlidersHorizontal,
   Layers3,
   History,
-  ChevronLeft,
-  ChevronRight,
   Truck,
   CreditCard,
   PackageCheck,
@@ -385,65 +383,59 @@ export const Home: React.FC = () => {
           1. DUBAI PHONE STYLE HERO SLIDER (At the very top)
          ============================================================== */}
       <section
-        className="joe-container pt-3 sm:pt-6"
+        className="w-full bg-white border-b border-slate-100"
         aria-label={ar ? "عروض المتجر الرئيسية" : "Store Hero Banner Slider"}
       >
         <div
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-white text-slate-900 shadow-sm sm:shadow-md border border-slate-200/90"
+          className="relative w-full max-w-7xl mx-auto overflow-hidden bg-transparent text-slate-900"
         >
-          {/* Main Slide Content: Always Landscape/Horizontal Banner (بالعرض مثل دبي فون) */}
-          <div className="relative min-h-[160px] xs:min-h-[180px] sm:min-h-[260px] md:min-h-[380px] flex flex-row items-center justify-between p-3 xs:p-4 sm:p-7 md:p-12 gap-2 sm:gap-6 select-none bg-gradient-to-br from-slate-50/90 via-white to-amber-50/20">
+          {/* Main Slide Content: Always Landscape/Horizontal Banner (بالعرض ممتد وكبير) */}
+          <div className="relative min-h-[220px] xs:min-h-[250px] sm:min-h-[320px] md:min-h-[420px] flex flex-row items-center justify-between px-4 py-5 xs:px-6 xs:py-6 sm:px-10 sm:py-10 md:px-14 md:py-14 gap-3 sm:gap-8 select-none">
             {/* Left/Start: Promotional Text & Action */}
-            <div className="w-[60%] sm:w-[58%] md:w-3/5 space-y-1 xs:space-y-1.5 sm:space-y-3 md:space-y-4 z-10 text-start">
-              {/* Sleek Badge */}
-              <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-amber-50 border border-amber-200/70 text-amber-900 text-[10px] sm:text-xs md:text-sm font-bold shadow-sm">
-                <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-600 flex-shrink-0" />
-                <span className="truncate max-w-[130px] sm:max-w-none">{currentSlide.badge}</span>
-              </div>
-
+            <div className="w-[58%] sm:w-[58%] md:w-3/5 space-y-2 xs:space-y-2.5 sm:space-y-4 z-10 text-start">
               {/* Title */}
               <h2
                 onClick={() => handleSlideClick(currentSlide)}
-                className="text-xs xs:text-sm sm:text-2xl md:text-4xl font-black font-cairo text-slate-900 leading-snug sm:leading-tight line-clamp-2 cursor-pointer hover:text-amber-700 transition-colors"
+                className="text-sm xs:text-base sm:text-2xl md:text-4xl font-black font-cairo text-slate-900 leading-snug sm:leading-tight line-clamp-2 cursor-pointer hover:text-amber-700 transition-colors"
               >
                 {ar ? currentSlide.title_ar : currentSlide.title_en}
               </h2>
 
               {/* Subtitle */}
-              <p className="text-[10px] sm:text-xs md:text-sm text-slate-600 leading-relaxed line-clamp-1 sm:line-clamp-2 hidden xs:block">
+              <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed line-clamp-1 sm:line-clamp-2 hidden xs:block">
                 {ar ? currentSlide.subtitle_ar : currentSlide.subtitle_en}
               </p>
 
               {/* Price & Tag Box */}
-              <div className="flex items-center gap-1.5 sm:gap-3 pt-0.5 sm:pt-1 flex-wrap">
+              <div className="flex items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1 flex-wrap">
                 {currentSlide.price && (
-                  <div className="flex items-baseline gap-1 sm:gap-2">
-                    <strong className="text-xs xs:text-sm sm:text-2xl md:text-3xl font-black text-slate-950 font-outfit">
+                  <div className="flex items-baseline gap-1.5 sm:gap-2">
+                    <strong className="text-sm xs:text-base sm:text-2xl md:text-3xl font-black text-slate-950 font-outfit">
                       {currentSlide.price} {ar ? "ج.م" : "EGP"}
                     </strong>
                     {currentSlide.oldPrice && (
-                      <del className="text-[9px] sm:text-xs md:text-sm text-slate-400 font-outfit">
+                      <del className="text-[10px] xs:text-xs sm:text-sm md:text-base text-slate-400 font-outfit">
                         {currentSlide.oldPrice} {ar ? "ج.م" : "EGP"}
                       </del>
                     )}
                   </div>
                 )}
                 {currentSlide.tag && (
-                  <span className="hidden sm:inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] sm:text-xs font-semibold border border-slate-200">
+                  <span className="hidden sm:inline-block px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
                     {currentSlide.tag}
                   </span>
                 )}
               </div>
 
               {/* CTA Action Buttons */}
-              <div className="flex items-center gap-2 sm:gap-3 pt-1 sm:pt-2">
+              <div className="flex items-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
                 <button
                   type="button"
                   onClick={() => handleSlideClick(currentSlide)}
-                  className="px-3 sm:px-6 py-1.5 sm:py-3 rounded-lg sm:rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] sm:text-sm md:text-base flex items-center gap-1 sm:gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
+                  className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm md:text-base flex items-center gap-1.5 sm:gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
                 >
                   <span>{ar ? "تسوق العرض" : "Shop Offer"}</span>
                   <Arrow size={14} className="sm:w-4 sm:h-4" />
@@ -459,8 +451,8 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
-            {/* Right/End: Product Cutout Image */}
-            <div className="w-[40%] sm:w-[42%] md:w-2/5 flex items-center justify-center z-10 shrink-0">
+            {/* Right/End: Large Prominent Product Cutout Image */}
+            <div className="w-[42%] sm:w-[42%] md:w-2/5 flex items-center justify-center z-10 shrink-0">
               <button
                 type="button"
                 onClick={() => handleSlideClick(currentSlide)}
@@ -473,54 +465,29 @@ export const Home: React.FC = () => {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = "/product-placeholder.svg";
                   }}
-                  className="max-h-[110px] xs:max-h-[135px] sm:max-h-[220px] md:max-h-[330px] w-auto object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
+                  className="max-h-[160px] xs:max-h-[190px] sm:max-h-[270px] md:max-h-[360px] w-auto object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
                 />
               </button>
             </div>
           </div>
 
-          {/* Slider Controls (Chevrons & Dots) */}
+          {/* Dots Pagination (No arrows) */}
           {slides.length > 1 && (
-            <>
-              {/* Prev Button */}
-              <button
-                type="button"
-                aria-label={ar ? "العرض السابق" : "Previous slide"}
-                onClick={() =>
-                  setSlideIndex((prev) => (prev - 1 + slides.length) % slides.length)
-                }
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-slate-800 border border-slate-200 shadow-sm flex items-center justify-center transition-all z-20 cursor-pointer"
-              >
-                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-
-              {/* Next Button */}
-              <button
-                type="button"
-                aria-label={ar ? "العرض التالي" : "Next slide"}
-                onClick={() => setSlideIndex((prev) => (prev + 1) % slides.length)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-slate-800 border border-slate-200 shadow-sm flex items-center justify-center transition-all z-20 cursor-pointer"
-              >
-                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-
-              {/* Dots Pagination */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
-                {slides.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    aria-label={`انتقل إلى العرض ${idx + 1}`}
-                    onClick={() => setSlideIndex(idx)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      (slideIndex % slides.length) === idx
-                        ? "w-6 bg-slate-900"
-                        : "w-2 bg-slate-300 hover:bg-slate-400"
-                    }`}
-                  />
-                ))}
-              </div>
-            </>
+            <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-20 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-200/60 shadow-xs">
+              {slides.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  aria-label={`انتقل إلى العرض ${idx + 1}`}
+                  onClick={() => setSlideIndex(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    (slideIndex % slides.length) === idx
+                      ? "w-6 bg-slate-900"
+                      : "w-2 bg-slate-300 hover:bg-slate-400"
+                  }`}
+                />
+              ))}
+            </div>
           )}
         </div>
       </section>

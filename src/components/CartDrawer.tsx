@@ -71,7 +71,7 @@ export const CartDrawer: React.FC = () => {
                 <Truck className="w-4 h-4 text-amber-700" />
                 {remainingForFreeShipping === 0 ? (
                   <span className="text-emerald-700 font-bold">
-                    {language === 'ar' ? '🎉 مبروك! حصلت على شحن مجاني لطلبك' : '🎉 Congrats! Free shipping unlocked'}
+                    {language === 'ar' ? 'مبروك! حصلت على شحن مجاني لطلبك' : 'Congrats! Free shipping unlocked'}
                   </span>
                 ) : (
                   <span>
@@ -97,8 +97,8 @@ export const CartDrawer: React.FC = () => {
           <div className="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-slate-200">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
-                <div className="w-20 h-20 rounded-full bg-slate-100/80 flex items-center justify-center text-3xl border border-slate-200 shadow-inner">
-                  🛒
+                <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                  <ShoppingBag className="w-9 h-9 text-slate-400" />
                 </div>
                 <h3 className="font-bold text-base text-slate-800 font-cairo">{t('emptyCart')}</h3>
                 <p className="text-xs text-slate-600 max-w-xs leading-relaxed font-cairo">
@@ -138,7 +138,7 @@ export const CartDrawer: React.FC = () => {
                         <span>• {item.selected_color}</span>
                       )}
                       {item.product.battery_health && (
-                        <span className="text-emerald-700">🔋 {item.product.battery_health}%</span>
+                        <span className="text-emerald-700">بطارية {item.product.battery_health}%</span>
                       )}
                     </div>
 

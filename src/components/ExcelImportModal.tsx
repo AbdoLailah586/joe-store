@@ -265,7 +265,7 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({ isOpen, onCl
                         </td>
                         <td className="p-3">
                           {prod.battery_health ? (
-                            <span className="text-emerald-700 font-bold">🔋 {prod.battery_health}%</span>
+                            <span className="text-emerald-700 font-bold">{prod.battery_health}%</span>
                           ) : (
                             <span className="text-slate-500">-</span>
                           )}

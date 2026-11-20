@@ -459,7 +459,7 @@ export const AuthModal: React.FC = () => {
                 ) : mode === 'login' ? (
                   <span>تسجيل الدخول</span>
                 ) : (
-                  <span>متابعة وإرسال كود التأكيد 📩</span>
+                  <span>متابعة وإرسال كود التأكيد</span>
                 )}
               </button>
             </form>
@@ -567,7 +567,7 @@ export const AuthModal: React.FC = () => {
                 disabled={loading || otpCode.join('').length < 6}
                 className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black text-xs sm:text-sm shadow-glow-gold transition-all active:scale-95 disabled:opacity-40 flex items-center justify-center gap-2"
               >
-                {loading ? 'جاري التحقق...' : 'تأكيد وتفعيل الحساب ⚡'}
+                {loading ? 'جاري التحقق...' : 'تأكيد وتفعيل الحساب'}
               </button>
 
               {/* Resend Cooldown */}

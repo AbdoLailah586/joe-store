@@ -43,13 +43,13 @@ export const OrderTracking: React.FC = () => {
     finally { setLoading(false); }
   };
 
-  const steps: { key: OrderStatus; title: string; desc: string; icon: string }[] = [
-    { key: 'pending', title: 'تم استلام الطلب', desc: 'جاري مراجعة الطلب مع خدمة العملاء', icon: '📝' },
-    { key: 'confirmed', title: 'تم التأكيد وتجهيز الفاتورة', desc: 'تم حجز المنتجات ومراجعة بيانات التوصيل', icon: '✅' },
-    { key: 'processing', title: 'التغليف والفحص النهائي', desc: 'فحص الجهاز واختبار البطارية قبل التغليف', icon: '📦' },
-    { key: 'shipped', title: 'تم التسليم لشركة الشحن', desc: 'الشحنة بحوزة شركة الشحن والمندوب', icon: '🚚' },
-    { key: 'out_for_delivery', title: 'جاري التوصيل اليوم', desc: 'المندوب في طريقه لعنوانك للتسليم', icon: '🛵' },
-    { key: 'delivered', title: 'تم التوصيل بنجاح', desc: 'تم استلام الجهاز ومطابقة المواصفات', icon: '🎉' }
+  const steps: { key: OrderStatus; title: string; desc: string }[] = [
+    { key: 'pending', title: 'تم استلام الطلب', desc: 'جاري مراجعة الطلب مع خدمة العملاء' },
+    { key: 'confirmed', title: 'تم التأكيد وتجهيز الفاتورة', desc: 'تم حجز المنتجات ومراجعة بيانات التوصيل' },
+    { key: 'processing', title: 'التغليف والفحص النهائي', desc: 'فحص الجهاز واختبار البطارية قبل التغليف' },
+    { key: 'shipped', title: 'تم التسليم لشركة الشحن', desc: 'الشحنة بحوزة شركة الشحن والمندوب' },
+    { key: 'out_for_delivery', title: 'جاري التوصيل اليوم', desc: 'المندوب في طريقه لعنوانك للتسليم' },
+    { key: 'delivered', title: 'تم التوصيل بنجاح', desc: 'تم استلام الجهاز ومطابقة المواصفات' }
   ];
 
   const getStepIndex = (status: OrderStatus) => {
@@ -128,7 +128,7 @@ export const OrderTracking: React.FC = () => {
               </p>
               {searchedOrder.order_status === 'cancelled' && (
                 <div className="mt-2 p-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-700 text-xs">
-                  ⚠️ <strong>تم إلغاء هذا الطلب:</strong> {searchedOrder.cancellation_reason || 'بناءً على طلب العميل'}
+                  <strong>تم إلغاء هذا الطلب:</strong> {searchedOrder.cancellation_reason || 'بناءً على طلب العميل'}
                 </div>
               )}
             </div>
@@ -182,7 +182,7 @@ export const OrderTracking: React.FC = () => {
                       </p>
                       {step.key === 'shipped' && searchedOrder.courier_name && isPassed && (
                         <div className="mt-1 text-[11px] text-amber-700">
-                          🚚 شركة الشحن: {searchedOrder.courier_name} {searchedOrder.tracking_number && `(بوليصة: ${searchedOrder.tracking_number})`}
+                          شركة الشحن: {searchedOrder.courier_name} {searchedOrder.tracking_number && `(بوليصة: ${searchedOrder.tracking_number})`}
                         </div>
                       )}
                     </div>

@@ -122,7 +122,7 @@ export const CustomerCrmTab: React.FC = () => {
 
                   // Pre-filled personalized WhatsApp recovery message
                   const itemsList = items.map((it: any) => it.product?.name_ar || 'منتج').slice(0, 2).join(' و ');
-                  const recoveryMsg = `أهلاً بحضرتك يا ${name} من متجر جو ستور بالمنصورة 📱✨! لاحظنا أنك تركت سلة بها (${itemsList}) بإجمالي (${formatPrice(cart.subtotal)}). حابب نساعدك في إتمام الطلب وتوصيله لمنزلك اليوم؟`;
+                  const recoveryMsg = `أهلاً بحضرتك يا ${name} من متجر جو ستور بالمنصورة! لاحظنا أنك تركت سلة بها (${itemsList}) بإجمالي (${formatPrice(cart.subtotal)}). حابب نساعدك في إتمام الطلب وتوصيله لمنزلك اليوم؟`;
 
                   const whatsappLink = phone
                     ? generateWhatsAppWebLink(phone, recoveryMsg)
@@ -174,11 +174,11 @@ export const CustomerCrmTab: React.FC = () => {
                       <td className="py-3 px-3 text-center">
                         {cart.is_abandoned ? (
                           <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-700 border border-rose-500/30">
-                            سلة متروكة ⚠️
+                            سلة متروكة
                           </span>
                         ) : (
                           <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-700 border border-emerald-500/30">
-                            نشطة حالياً 🟢
+                            نشطة حالياً
                           </span>
                         )}
                       </td>
@@ -194,7 +194,7 @@ export const CustomerCrmTab: React.FC = () => {
                             title="إرسال تذكير مباشر بالواتساب للعميل"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
-                            <span>تذكير عبر واتساب 💬</span>
+                            <span>تذكير عبر واتساب</span>
                           </a>
                         ) : (
                           <span className="text-[10px] text-slate-500">

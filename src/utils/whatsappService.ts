@@ -27,7 +27,7 @@ export const defaultSettings: StoreSettings = {
   hero_slides: [
     {
       id: 'slide-iphone-13',
-      badge: 'العرض الأقوى في المنصورة ⚡',
+      badge: 'العرض الأقوى في المنصورة',
       title_ar: 'آيفون 13 كسر زيرو بالضمان',
       title_en: 'iPhone 13 Mint Condition',
       subtitle_ar: 'بطاريات أصلية من 85% لـ 97% | ألوان أبيض، أزرق، زيتي، بينك | مفحوص 100% مع ضمان استبدال رسمي',
@@ -40,7 +40,7 @@ export const defaultSettings: StoreSettings = {
     },
     {
       id: 'slide-iphone-15',
-      badge: 'الإصدار الرائد الجديد متبرشم 🌟',
+      badge: 'الإصدار الرائد الجديد متبرشم',
       title_ar: 'آيفون 15 برو ماكس تيتانيوم',
       title_en: 'iPhone 15 Pro Max Titanium',
       subtitle_ar: 'أقوى أداء بمعالج A17 Pro وكاميرا تقريب بصري 5x ومنفذ تايب سي فائق السرعة',
@@ -53,7 +53,7 @@ export const defaultSettings: StoreSettings = {
     },
     {
       id: 'slide-airpods',
-      badge: 'صوت سينمائي ونقاء استثنائي 🎧',
+      badge: 'صوت سينمائي ونقاء استثنائي',
       title_ar: 'إيربودز برو 2 الجديدة تايب سي',
       title_en: 'AirPods Pro 2 USB-C',
       subtitle_ar: 'عزل ضوضاء مضاعف، تتبع صوتي مكاني، وشحن لاسلكي MagSafe',
@@ -258,55 +258,55 @@ export const buildOrderConfirmationMessage = (order: Order, settings: StoreSetti
     : `▫️ *رقم الهاتف:* ${order.customer_phone}`;
 
   const mapsSection = order.google_maps_url
-    ? `\n🗺️ *رابط موقع التوصيل على خرائط جوجل:* \n${order.google_maps_url}`
+    ? `\n*رابط موقع التوصيل على خرائط جوجل:* \n${order.google_maps_url}`
     : '';
 
-  return `🎉 *أهلاً بك يا ${order.customer_name} في متجر جو ستور (JOE Store)!*
+  return `*أهلاً بك يا ${order.customer_name} في متجر جو ستور (JOE Store)*
 
 تم استلام طلبك بنجاح وجاري مراجعته وتجهيزه بعناية فائقة.
 
-📋 *تفاصيل الطلب:*
+*تفاصيل الطلب:*
 ▫️ *رقم الطلب:* #${order.order_number}
 ▫️ *تاريخ الطلب:* ${new Date(order.created_at).toLocaleDateString('ar-EG')}
 ${phoneSection}
 ▫️ *طريقة الدفع:* ${order.payment_method === 'cod' ? 'الدفع عند الاستلام (مع إمكانية المعاينة والفحص)' : order.payment_method === 'instapay' ? 'إنستاباي (InstaPay)' : order.payment_method === 'vodafone_cash' ? 'فودافون كاش' : `بطاقة بنكية (${order.card_last4 || 'Visa/Mastercard'})`}
 
-📦 *المنتجات:*
+*المنتجات:*
 ${itemsList}
 
-💵 *الإجمالي النهائي:* *${order.total.toLocaleString()} ج.م* (شامل مصاريف التوصيل: ${order.shipping_fee} ج.م)
+*الإجمالي النهائي:* *${order.total.toLocaleString()} ج.م* (شامل مصاريف التوصيل: ${order.shipping_fee} ج.م)
 
-📍 *عنوان التوصيل:* ${addressLine}${mapsSection}
+*عنوان التوصيل:* ${addressLine}${mapsSection}
 
-💡 *ملاحظة:* سنرسل لك إشعاراً آلياً فور خروج الطلب مع مندوب التوصيل لتحديد موعد الاستلام.
-لأي استفسار يمكنك الرد مباشرة على هذه الرسالة! 📱`;
+*ملاحظة:* سنرسل لك إشعاراً آلياً فور خروج الطلب مع مندوب التوصيل لتحديد موعد الاستلام.
+لأي استفسار يمكنك الرد مباشرة على هذه الرسالة.`;
 };
 
 export const buildPaymentConfirmedMessage = (order: Order, settings: StoreSettings): string => {
-  return `✅ *تم تأكيد الدفع لطلبك #${order.order_number} - متجر جو ستور*
+  return `*تم تأكيد الدفع لطلبك #${order.order_number} - متجر جو ستور*
 
 عزيزنا العميل *${order.customer_name}*،
 تم مراجعة وتأكيد عملية الدفع بمبلغ *${order.total.toLocaleString()} ج.م* بنجاح.
 طلبك الآن قيد التجهيز والتغليف الآمن لنقله لشركة الشحن.
 
-شكراً لثقتك في جو ستور! 🌟`;
+شكراً لثقتك في جو ستور.`;
 };
 
 export const buildShippedMessage = (order: Order, courierName: string = 'مندوب جو ستور السريع', trackingNumber: string = ''): string => {
-  return `🚀 *شحنتك في الطريق إليك! - جو ستور (JOE Store)*
+  return `*شحنتك في الطريق إليك - جو ستور (JOE Store)*
 
 عزيزنا العميل *${order.customer_name}*،
 تم تسليم طلبك رقم *#${order.order_number}* إلى:
-🚚 *شركة الشحن / المندوب:* ${courierName}
-${trackingNumber ? `🏷️ *رقم بوليصة الشحن:* ${trackingNumber}\n` : ''}
-📍 *العنوان:* ${order.governorate} - ${order.city}
-💵 *المبلغ المطلوب عند الاستلام:* ${order.payment_status === 'paid' ? '0 ج.م (مدفوع بالكامل مسبقاً)' : `${order.total.toLocaleString()} ج.م`}
+*شركة الشحن / المندوب:* ${courierName}
+${trackingNumber ? `*رقم بوليصة الشحن:* ${trackingNumber}\n` : ''}
+*العنوان:* ${order.governorate} - ${order.city}
+*المبلغ المطلوب عند الاستلام:* ${order.payment_status === 'paid' ? '0 ج.م (مدفوع بالكامل مسبقاً)' : `${order.total.toLocaleString()} ج.م`}
 
-يرجى إبقاء هاتفك متاحاً للتنسيق مع المندوب. نتمنى لك تجربة ممتعة! ✨`;
+يرجى إبقاء هاتفك متاحاً للتنسيق مع المندوب. نتمنى لك تجربة ممتعة.`;
 };
 
 export const buildOutForDeliveryMessage = (order: Order): string => {
-  return `🛵 *مندوب التوصيل في طريقه إليك اليوم! - جو ستور*
+  return `*مندوب التوصيل في طريقه إليك اليوم - جو ستور*
 
 عزيزنا *${order.customer_name}*،
 طلبك رقم *#${order.order_number}* مع المندوب الآن وسيصلك خلال ساعات اليوم.
@@ -320,12 +320,12 @@ export const buildDeliveredMessage = (order: Order): string => {
     return months > 0 || (Boolean(spec) && !/لا يوجد|بدون|غير متوفر/i.test(spec));
   });
   const warrantyText = warrantedItems.length > 0
-    ? `\n🛡️ *الضمان:* الأجهزة والمنتجات المشمولة بالضمان في طلبك مفعل ضمانها المعتمد لدى متجر جو ستور وفقاً للشروط المحددة.`
+    ? `\n*الضمان:* الأجهزة والمنتجات المشمولة بالضمان في طلبك مفعل ضمانها المعتمد لدى متجر جو ستور وفقاً للشروط المحددة.`
     : '';
 
-  return `🎁 *تم توصيل طلبك بنجاح! - جو ستور (JOE Store)*
+  return `*تم توصيل طلبك بنجاح - جو ستور (JOE Store)*
 
-ألف مبروك استلام طلبك يا *${order.customer_name}*! 🎉
+ألف مبروك استلام طلبك يا *${order.customer_name}*.
 يسعدنا إتمام تسليم طلبك رقم *#${order.order_number}*.${warrantyText}`;
 };
 

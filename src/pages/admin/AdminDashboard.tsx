@@ -536,7 +536,7 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="space-y-2">
             <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-700 font-black text-[11px] border border-rose-500/30">
-              منطقة إدارية مقيدة ⛔
+              منطقة إدارية مقيدة
             </span>
             <h2 className="text-xl font-black text-slate-900">لوحة تحكم الإدارة للإداريين فقط</h2>
             <p className="text-xs text-slate-600 leading-relaxed">
@@ -723,7 +723,7 @@ export const AdminDashboard: React.FC = () => {
                       <td className="p-3.5">
                         {p.battery_health ? (
                           <span className="text-emerald-700 font-bold font-outfit">
-                            🔋 {p.battery_health}%
+                            {p.battery_health}%
                           </span>
                         ) : (
                           <span className="text-slate-500">-</span>
@@ -883,7 +883,7 @@ export const AdminDashboard: React.FC = () => {
                             title="فتح موقع العميل على خرائط جوجل"
                           >
                             <MapPin className="w-3 h-3 text-amber-700" />
-                            <span>موقع GPS 📍</span>
+                            <span>موقع GPS</span>
                           </a>
                         )}
                       </div>
@@ -940,7 +940,7 @@ export const AdminDashboard: React.FC = () => {
                           onClick={() => updatePaymentStatus(ord.id, 'verified')}
                           className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-700 border border-purple-500/30 text-xs font-bold transition-all"
                         >
-                          تأكيد الدفع ⚡
+                          تأكيد الدفع
                         </button>
                       )}
 
@@ -963,7 +963,7 @@ export const AdminDashboard: React.FC = () => {
                           }}
                           className="px-3 py-1.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 text-blue-700 border border-blue-500/30 text-xs font-bold transition-all"
                         >
-                          تسليم للشحن 🚚
+                          تسليم للشحن
                         </button>
                       )}
 
@@ -973,7 +973,7 @@ export const AdminDashboard: React.FC = () => {
                           onClick={() => updateOrderStatus(ord.id, 'out_for_delivery')}
                           className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-700 border border-amber-500/30 text-xs font-bold transition-all"
                         >
-                          خروج للتسليم 🛵
+                          خروج للتسليم
                         </button>
                       )}
 
@@ -983,7 +983,7 @@ export const AdminDashboard: React.FC = () => {
                           onClick={() => updateOrderStatus(ord.id, 'delivered')}
                           className="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 border border-emerald-500/30 text-xs font-bold transition-all"
                         >
-                          تم التسليم بنجاح 🎉
+                          تم التسليم بنجاح
                         </button>
                       )}
 
@@ -994,7 +994,7 @@ export const AdminDashboard: React.FC = () => {
                           className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-700 border border-amber-500/30 text-xs font-bold transition-all flex items-center gap-1"
                         >
                           <Star className="w-3.5 h-3.5 fill-amber-400" />
-                          <span>إرسال طلب تقييم واتساب ⭐</span>
+                          <span>إرسال طلب تقييم واتساب</span>
                         </button>
                       )}
 
@@ -1014,7 +1014,7 @@ export const AdminDashboard: React.FC = () => {
                           title="إلغاء الطلب وإرجاع المنتجات للمخزون"
                         >
                           <X className="w-3.5 h-3.5" />
-                          <span>إلغاء الطلب واسترجاع المخزن ❌</span>
+                          <span>إلغاء الطلب واسترجاع المخزن</span>
                         </button>
                       ) : (
                         <span className="px-2.5 py-1 rounded-xl bg-rose-500/20 text-rose-700 border border-rose-500/30 text-xs font-bold">
@@ -1282,8 +1282,8 @@ export const AdminDashboard: React.FC = () => {
                 />
                 <p className="text-[11px] text-slate-600">
                   {language === 'ar'
-                    ? '💡 يمكنك تعديل رابط التيك توك هنا في أي وقت وسيتم تحديثه تلقائياً في الفوتر وكافة أزرار التواصل بالموقع.'
-                    : '💡 Modify your TikTok link here anytime; it updates automatically across all footer links.'}
+                    ? 'يمكنك تعديل رابط التيك توك هنا في أي وقت وسيتم تحديثه تلقائياً في الفوتر وكافة أزرار التواصل بالموقع.'
+                    : 'Modify your TikTok link here anytime; it updates automatically across all footer links.'}
                 </p>
               </div>
 
@@ -1528,7 +1528,7 @@ export const AdminDashboard: React.FC = () => {
                                   price: String(prod.price),
                                   oldPrice: prod.original_price ? String(prod.original_price) : String(Math.round(prod.price * 1.2)),
                                   cat: prod.category || 'smartphones',
-                                  badge: `أقوى عروض ${prod.brand || 'المتجر'}`,
+                                  badge: '',
                                   subtitle_ar: prod.description_ar ? prod.description_ar.slice(0, 110) : `متوفر الآن بحالة ${prod.condition === 'mint' ? 'كسر زيرو ممتاز' : 'جديد'} مع ضمان جو ستور المعتمد`,
                                   image: prod.images?.[0] || '/product-placeholder.svg',
                                   linked_product_id: prod.id,
@@ -2785,7 +2785,7 @@ export const AdminDashboard: React.FC = () => {
                   dir="rtl"
                 />
                 <div className="flex items-center justify-between mt-1 text-[11px] text-slate-500">
-                  <span>💡 ملاحظة: لا يتم ذكر الضمان إلا للأصناف المشمولة بضمان رسمي، ويمكنك تعديل أو حذف أي سطر يدوياً.</span>
+                  <span>ملاحظة: لا يتم ذكر الضمان إلا للأصناف المشمولة بضمان رسمي، ويمكنك تعديل أو حذف أي سطر يدوياً.</span>
                   <span>{editableWhatsAppText.length} حرف</span>
                 </div>
               </div>

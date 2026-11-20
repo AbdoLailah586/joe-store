@@ -108,7 +108,7 @@ export const translations: Translations = {
   confirmOrderBtn: { ar: 'تأكيد وإرسال الطلب الآن', en: 'Confirm & Place Order' },
 
   // Order Success & Tracking
-  orderPlacedSuccess: { ar: 'تم استلام طلبك بنجاح! 🎉', en: 'Order Placed Successfully! 🎉' },
+  orderPlacedSuccess: { ar: 'تم استلام طلبك بنجاح!', en: 'Order Placed Successfully!' },
   orderNumber: { ar: 'رقم الطلب', en: 'Order Number' },
   whatsappAlertNotice: { ar: 'تم إرسال رسالة واتساب آلية إلى رقمك تحتوي على تفاصيل الطلب وكود المتابعة.', en: 'An automated WhatsApp message was dispatched with your order receipt & tracking details.' },
   orderStatus: { ar: 'حالة الطلب', en: 'Order Status' },

@@ -29,7 +29,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
       title_en: 'Official Warranty & Replacement Policy - JOE Store',
       icon: <ShieldCheck className="w-8 h-8 text-amber-700" />,
       text_ar: `
-📌 *ضمان متجر جو ستور (المنصورة):*
+*ضمان متجر جو ستور (المنصورة):*
 
 1. **حق الفحص والمعاينة قبل الدفع:**
    يحق للعميل عند الاستلام فحص الجهاز بالكامل مع مندوب التوصيل، والتأكد من مطابقة نسبة البطارية المعلنة وسلامة الشاشة والكاميرات وحساس Face ID قبل دفع قيمة الطلب.
@@ -45,7 +45,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
    نضمن أن نسبة البطارية المعلنة في المتجر أصلية ومطابقة بنسبة 100% لقراءة فحص أجهزة Apple المعتمدة دون أي تعديل برمجي.
       `,
       text_en: `
-📌 *JOE Store Official Warranty Guarantee:*
+*JOE Store Official Warranty Guarantee:*
 
 1. **Inspection Before Payment:**
    Customers have the full right to thoroughly inspect the smartphone, battery percentage, Face ID, and cameras with the delivery courier before making any payment.
@@ -62,7 +62,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
       title_en: 'Privacy & Data Protection Policy - JOE Store',
       icon: <Lock className="w-8 h-8 text-emerald-700" />,
       text_ar: `
-🔒 *خصوصيتك وأمان بياناتك أولويتنا:*
+*خصوصيتك وأمان بياناتك أولويتنا:*
 
 1. **جمع واستخدام البيانات:**
    يتم جمع الاسم ورقم الهاتف ورقم الواتساب والعنوان فقط لأغراض تجهيز وتوصيل الشحنة، وإرسال فواتير الشراء وتحديثات التتبع الآلية عبر واتساب.
@@ -74,7 +74,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
    رسائل الواتساب الصادرة من متجر جو ستور تقتصر فقط على تفاصيل طلبك الفعلي، ومتابعة شركة الشحن، وطلب تقييم الجودة بعد الاستلام.
       `,
       text_en: `
-🔒 *Your Privacy & Security:*
+*Your Privacy & Security:*
 
 1. **Information Collection:**
    We collect customer name, phone number, WhatsApp, and delivery address strictly to process orders and dispatch automated WhatsApp tracking receipts.
@@ -88,7 +88,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
       title_en: 'Terms & Conditions - JOE Store',
       icon: <FileText className="w-8 h-8 text-blue-700" />,
       text_ar: `
-📋 *الشروط والأحكام العامة للطلب:*
+*الشروط والأحكام العامة للطلب:*
 
 1. **الأسعار وتوافر المخزون:**
    جميع الأسعار المعروضة بالجنيه المصري (EGP) وتخضع للتحديث وفقاً لحركة السوق وتوافر الأجهزة في فرعنا بالمنصورة.
@@ -100,7 +100,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
    يمكن للعميل إلغاء الطلب مجاناً قبل خروج الشحنة مع مندوب التوصيل عبر الرد على رسالة الواتساب أو التواصل مع خدمة العملاء.
       `,
       text_en: `
-📋 *General Ordering Terms:*
+*General Ordering Terms:*
 
 1. **Pricing & Currency:**
    All product prices are quoted in Egyptian Pounds (EGP) and reflect current live inventory.
@@ -114,7 +114,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
       title_en: 'Shipping & Delivery Policy - JOE Store',
       icon: <Truck className="w-8 h-8 text-purple-700" />,
       text_ar: `
-🚚 *مواعيد ورسوم الشحن والتوصيل:*
+*مواعيد ورسوم الشحن والتوصيل:*
 
 1. **محافظة الدقهلية والمنصورة:**
    - توصيل فوري في نفس اليوم خلال (3 - 6 ساعات) داخل المنصورة وطلخا والقرى المجاورة.
@@ -128,7 +128,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
    - شحن آمن مع شركات شحن متخصصة خلال 48 إلى 72 ساعة.
       `,
       text_en: `
-🚚 *Delivery Timelines & Rates across Egypt:*
+*Delivery Timelines & Rates across Egypt:*
 
 1. **Mansoura & Dakahlia:**
    Same-day instant express delivery within 3-6 hours. Default fee: 35 EGP (or Free for orders above 2,500 EGP).

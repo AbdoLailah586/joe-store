@@ -30,7 +30,7 @@ export const EmailTemplatesTab: React.FC = () => {
     settings.email_header_subtitle || 'وجهتك الموثوقة للهواتف والإكسسوارات الأصلية - المنصورة'
   );
   const [subjectTemplate, setSubjectTemplate] = useState(
-    settings.email_subject_template || 'رمز تأكيد حسابك في متجر جو ستور ⚡ (كود: {code})'
+    settings.email_subject_template || 'رمز تأكيد حسابك في متجر جو ستور (كود: {code})'
   );
   const [welcomeMsg, setWelcomeMsg] = useState(
     settings.email_welcome_msg || 'سعداء بانضمامك إلى عائلة جو ستور. لإتمام إنشاء حسابك والتحقق من بريدك الإلكتروني، يرجى استخدام رمز الأمان التالي:'
@@ -79,7 +79,7 @@ export const EmailTemplatesTab: React.FC = () => {
   const handleResetDefaults = () => {
     setHeaderTitle('JOE Store | متجر جو ستور');
     setHeaderSubtitle('وجهتك الموثوقة للهواتف والإكسسوارات الأصلية - المنصورة');
-    setSubjectTemplate('رمز تأكيد حسابك في متجر جو ستور ⚡ (كود: {code})');
+    setSubjectTemplate('رمز تأكيد حسابك في متجر جو ستور (كود: {code})');
     setWelcomeMsg('سعداء بانضمامك إلى عائلة جو ستور. لإتمام إنشاء حسابك والتحقق من بريدك الإلكتروني، يرجى استخدام رمز الأمان التالي:');
     setSupportPhone('01554826209');
     setStoreAddress('المنصورة - شارع الإمام محمد عبده - ناصية آمون');
@@ -173,7 +173,7 @@ export const EmailTemplatesTab: React.FC = () => {
             className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-glow-gold transition-all active:scale-95 flex items-center gap-2"
           >
             <Save className="w-4 h-4" />
-            <span>{isSaved ? 'تم الحفظ بنجاح! ✓' : 'حفظ التعديلات 💾'}</span>
+            <span>{isSaved ? 'تم الحفظ بنجاح! ✓' : 'حفظ التعديلات'}</span>
           </button>
         </div>
       </div>
@@ -229,7 +229,7 @@ export const EmailTemplatesTab: React.FC = () => {
                 value={subjectTemplate}
                 onChange={(e) => setSubjectTemplate(e.target.value)}
                 className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-400 font-outfit"
-                placeholder="رمز تأكيد حسابك في متجر جو ستور ⚡ (كود: {code})"
+                placeholder="رمز تأكيد حسابك في متجر جو ستور (كود: {code})"
               />
             </div>
 
@@ -459,7 +459,7 @@ export const EmailTemplatesTab: React.FC = () => {
                   <div className="p-6 space-y-4 text-center">
                     <div className="p-5 rounded-2xl bg-white/[0.03] border border-slate-200 space-y-3">
                       <h3 className="text-sm font-bold text-slate-900">
-                        مرحباً أحمد عبد الرحمن 👋
+                        مرحباً أحمد عبد الرحمن
                       </h3>
                       <p className="text-xs text-slate-600 leading-relaxed">
                         {welcomeMsg}
