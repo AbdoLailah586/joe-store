@@ -342,5 +342,17 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
 
   async updateUserProfile(userId: string, data: { name?: string; phone?: string; email?: string; avatar?: string; addresses?: any[] }): Promise<{ success: boolean; user?: any; error?: string; requiresTotp?: boolean }> { return await callStore('updateUserProfile', [userId,data]); },
 
-  async changePassword(userId: string, oldPass: string, newPass: string): Promise<{ success: boolean; error?: string }> { return await callStore('changePassword', [userId,oldPass,newPass]); }
+  async changePassword(userId: string, oldPass: string, newPass: string): Promise<{ success: boolean; error?: string }> { return await callStore('changePassword', [userId,oldPass,newPass]); },
+
+  async getStoreSettings(): Promise<any> {
+    try {
+      return await callStore('getStoreSettings', []);
+    } catch {
+      return null;
+    }
+  },
+
+  async updateStoreSettings(settings: any): Promise<{ success: boolean; error?: string }> {
+    return await callAction('updateStoreSettings', [settings]);
+  }
 };

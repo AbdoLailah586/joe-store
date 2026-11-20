@@ -360,10 +360,29 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return { ...merged, theme_mode: 'light' };
   });
 
+  // Synchronize settings with database across all devices (mobile, laptop, and customers)
+  useEffect(() => {
+    let active = true;
+    neonDb.getStoreSettings().then(remoteSettings => {
+      if (!active || !remoteSettings || typeof remoteSettings !== 'object') return;
+      setSettings(prev => {
+        const merged = { ...defaultSettings, ...prev, ...remoteSettings, theme_mode: 'light' as const };
+        writeStoredJson('joe_store_settings', merged);
+        return merged;
+      });
+    }).catch(err => {
+      console.warn('⚠️ Could not fetch remote store settings:', err);
+    });
+    return () => { active = false; };
+  }, []);
+
   const updateSettings = (newSettings: Partial<StoreSettings>) => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings, theme_mode: 'light' as const };
       writeStoredJson('joe_store_settings', updated);
+      neonDb.updateStoreSettings(updated).catch(err => {
+        console.warn('⚠️ Could not sync settings to database:', err);
+      });
       return updated;
     });
   };

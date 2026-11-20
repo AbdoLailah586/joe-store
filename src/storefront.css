@@ -2056,11 +2056,11 @@
   width: max-content;
   gap: 14px;
   will-change: transform;
-  animation: joe-marquee-scroll 32s linear infinite;
+  animation: joe-marquee-scroll 80s linear infinite;
 }
 
 [dir="rtl"] .joe-marquee-track {
-  animation: joe-marquee-scroll 32s linear infinite;
+  animation: joe-marquee-scroll 80s linear infinite;
 }
 
 .joe-marquee-track:hover,

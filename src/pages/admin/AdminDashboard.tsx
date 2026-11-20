@@ -1,5 +1,5 @@
 import { formatDeliveryAddress } from '../../utils/deliveryAddress';
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { AdminShell, AdminSection, initialAdminSection } from './AdminShell';
 const AdminTools = lazy(() => import('./AdminTools').then(m => ({ default: m.AdminTools })));
 const ScreenFinder = lazy(() => import('./ScreenFinder').then(m => ({ default: m.ScreenFinder })));
@@ -149,8 +149,11 @@ export const AdminDashboard: React.FC = () => {
 
   // Hero Slide Customization State
   const [showSlideForm, setShowSlideForm] = useState(false);
+  const [selectedBannerProduct, setSelectedBannerProduct] = useState<Product | null>(null);
+  const [bannerProductSearch, setBannerProductSearch] = useState<string>('');
+  const [isBannerSearchOpen, setIsBannerSearchOpen] = useState<boolean>(false);
   const [newSlide, setNewSlide] = useState<Partial<HeroSlide>>({
-    badge: 'عرض حصري جديد ⚡',
+    badge: 'عرض حصري جديد',
     title_ar: '',
     title_en: '',
     subtitle_ar: '',
@@ -159,15 +162,29 @@ export const AdminDashboard: React.FC = () => {
     oldPrice: '',
     tag: 'متوفر بالمحل',
     image: '',
-    cat: 'smartphones'
+    cat: 'smartphones',
+    linked_product_id: '',
+    product_id: ''
   });
+
+  const filteredBannerProducts = useMemo(() => {
+    if (!bannerProductSearch.trim()) return products.slice(0, 20);
+    const q = bannerProductSearch.toLowerCase().trim();
+    return products.filter(p =>
+      p.name_ar.toLowerCase().includes(q) ||
+      (p.name_en && p.name_en.toLowerCase().includes(q)) ||
+      (p.brand && p.brand.toLowerCase().includes(q)) ||
+      (p.sku && p.sku.toLowerCase().includes(q)) ||
+      (p.model_name && p.model_name.toLowerCase().includes(q))
+    ).slice(0, 30);
+  }, [products, bannerProductSearch]);
 
   const handleAddSlide = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSlide.title_ar || !newSlide.image) return;
     const slideItem: HeroSlide = {
       id: `slide-${Date.now()}`,
-      badge: newSlide.badge || 'عرض خاص ⚡',
+      badge: newSlide.badge || 'عرض خاص',
       title_ar: newSlide.title_ar,
       title_en: newSlide.title_en || newSlide.title_ar,
       subtitle_ar: newSlide.subtitle_ar || '',
@@ -176,12 +193,16 @@ export const AdminDashboard: React.FC = () => {
       oldPrice: newSlide.oldPrice || '',
       tag: newSlide.tag || '',
       image: newSlide.image,
-      cat: (newSlide.cat as CategoryKey) || 'smartphones'
+      cat: (newSlide.cat as CategoryKey) || 'smartphones',
+      linked_product_id: newSlide.linked_product_id || newSlide.product_id || selectedBannerProduct?.id,
+      product_id: newSlide.product_id || newSlide.linked_product_id || selectedBannerProduct?.id
     };
     const currentSlides = settings.hero_slides || [];
     updateSettings({ hero_slides: [...currentSlides, slideItem] });
     setShowSlideForm(false);
     setSelectedBannerProduct(null);
+    setBannerProductSearch('');
+    setIsBannerSearchOpen(false);
     setNewSlide({
       badge: 'عرض حصري جديد',
       title_ar: '',
@@ -192,7 +213,9 @@ export const AdminDashboard: React.FC = () => {
       oldPrice: '',
       tag: 'متوفر بالمحل',
       image: '',
-      cat: 'smartphones'
+      cat: 'smartphones',
+      linked_product_id: '',
+      product_id: ''
     });
   };
 
@@ -200,8 +223,6 @@ export const AdminDashboard: React.FC = () => {
     const currentSlides = settings.hero_slides || [];
     updateSettings({ hero_slides: currentSlides.filter(s => s.id !== id) });
   };
-
-  const [selectedBannerProduct, setSelectedBannerProduct] = useState<Product | null>(null);
 
   // Toggle Homepage Default Featured Product
   const handleToggleHomepageFeatured = (productId: string) => {
@@ -1440,42 +1461,123 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Instant Store Product Picker - Auto Fill Banner Details */}
                 <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2.5">
-                  <label className="block text-slate-800 font-bold text-xs flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                    <span>{language === 'ar' ? 'اختيار منتج من المتجر لتعبئة بيانات وصور البانر تلقائياً:' : 'Pick product from store to auto-fill banner:'}</span>
+                  <label className="block text-slate-800 font-bold text-xs flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                      <span>{language === 'ar' ? 'بحث واختيار منتج من المتجر لتعبئة بيانات البانر:' : 'Search & pick product to auto-fill banner:'}</span>
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-normal">
+                      ({products.length} {language === 'ar' ? 'منتج متاح' : 'products'})
+                    </span>
                   </label>
-                  <select
-                    onChange={(e) => {
-                      const prodId = e.target.value;
-                      if (!prodId) {
-                        setSelectedBannerProduct(null);
-                        return;
-                      }
-                      const prod = products.find(p => p.id === prodId);
-                      if (prod) {
-                        setNewSlide({
-                          ...newSlide,
-                          title_ar: prod.name_ar,
-                          title_en: prod.name_en || prod.name_ar,
-                          price: String(prod.price),
-                          oldPrice: prod.original_price ? String(prod.original_price) : String(Math.round(prod.price * 1.2)),
-                          cat: prod.category || 'smartphones',
-                          badge: `أقوى عروض ${prod.brand || 'المتجر'}`,
-                          subtitle_ar: prod.description_ar ? prod.description_ar.slice(0, 110) : `متوفر الآن بحالة ${prod.condition === 'mint' ? 'كسر زيرو ممتاز' : 'جديد'} مع ضمان جو ستور المعتمد`,
-                          image: prod.images?.[0] || '/product-placeholder.svg',
-                        });
-                        setSelectedBannerProduct(prod);
-                      }
-                    }}
-                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-cairo text-xs"
-                  >
-                    <option value="">-- اضغط للبحث واختيار منتج من منتجات المتجر --</option>
-                    {products.map(p => (
-                      <option key={p.id} value={p.id}>
-                        {p.name_ar} - {p.price} ج.م ({p.brand || 'عام'})
-                      </option>
-                    ))}
-                  </select>
+
+                  <div className="relative">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder={language === 'ar' ? 'ابحث باسم المنتج أو الموديل أو الماركة (مثال: شاحن، آيفون، 1006)...' : 'Search by name, model, brand...'}
+                        value={bannerProductSearch}
+                        onChange={(e) => {
+                          setBannerProductSearch(e.target.value);
+                          setIsBannerSearchOpen(true);
+                        }}
+                        onFocus={() => setIsBannerSearchOpen(true)}
+                        className="w-full bg-white border border-amber-500/40 focus:border-amber-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 pr-9 focus:outline-none focus:ring-2 focus:ring-amber-500/30 font-cairo shadow-inner"
+                      />
+                      <Search className="w-4 h-4 text-amber-600 absolute right-3 top-2.5 pointer-events-none" />
+                      {bannerProductSearch && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBannerProductSearch('');
+                            setSelectedBannerProduct(null);
+                          }}
+                          className="absolute left-3 top-2.5 text-slate-400 hover:text-slate-600"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {isBannerSearchOpen && (
+                      <div className="absolute z-30 mt-1.5 w-full bg-white border border-slate-300 rounded-2xl shadow-2xl max-h-60 overflow-y-auto p-1.5 space-y-1">
+                        <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-100 text-[11px] text-slate-500 font-bold">
+                          <span>{language === 'ar' ? `نتائج البحث (${filteredBannerProducts.length})` : `Results (${filteredBannerProducts.length})`}</span>
+                          <button
+                            type="button"
+                            onClick={() => setIsBannerSearchOpen(false)}
+                            className="text-amber-700 hover:underline"
+                          >
+                            {language === 'ar' ? 'إغلاق' : 'Close'}
+                          </button>
+                        </div>
+                        {filteredBannerProducts.length === 0 ? (
+                          <div className="p-3 text-center text-slate-500 text-xs">
+                            {language === 'ar' ? `لا يوجد منتج يطابق بحثك "${bannerProductSearch}"` : 'No matching products'}
+                          </div>
+                        ) : (
+                          filteredBannerProducts.map(prod => (
+                            <button
+                              key={prod.id}
+                              type="button"
+                              onClick={() => {
+                                setNewSlide({
+                                  ...newSlide,
+                                  title_ar: prod.name_ar,
+                                  title_en: prod.name_en || prod.name_ar,
+                                  price: String(prod.price),
+                                  oldPrice: prod.original_price ? String(prod.original_price) : String(Math.round(prod.price * 1.2)),
+                                  cat: prod.category || 'smartphones',
+                                  badge: `أقوى عروض ${prod.brand || 'المتجر'}`,
+                                  subtitle_ar: prod.description_ar ? prod.description_ar.slice(0, 110) : `متوفر الآن بحالة ${prod.condition === 'mint' ? 'كسر زيرو ممتاز' : 'جديد'} مع ضمان جو ستور المعتمد`,
+                                  image: prod.images?.[0] || '/product-placeholder.svg',
+                                  linked_product_id: prod.id,
+                                  product_id: prod.id
+                                });
+                                setSelectedBannerProduct(prod);
+                                setBannerProductSearch(prod.name_ar);
+                                setIsBannerSearchOpen(false);
+                              }}
+                              className="w-full text-right p-2 rounded-xl hover:bg-amber-500/10 flex items-center gap-3 transition-colors text-xs cursor-pointer border border-transparent hover:border-amber-200"
+                            >
+                              <img
+                                src={prod.images?.[0] || '/product-placeholder.svg'}
+                                alt={prod.name_ar}
+                                className="w-10 h-10 object-contain rounded-lg border border-slate-200 bg-white flex-shrink-0"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <strong className="block text-slate-900 truncate font-cairo">{prod.name_ar}</strong>
+                                <div className="flex items-center gap-2 text-[11px] text-slate-500 font-outfit">
+                                  <span className="text-amber-700 font-bold">{prod.price} ج.م</span>
+                                  <span>•</span>
+                                  <span>{prod.brand || 'عام'}</span>
+                                  <span>•</span>
+                                  <span>كود: {prod.sku || prod.id}</span>
+                                </div>
+                              </div>
+                              <span className="text-[11px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md flex-shrink-0">
+                                اختيار
+                              </span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedBannerProduct && (
+                    <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-2.5">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-emerald-600" />
+                        <span className="text-emerald-900 font-bold text-xs">
+                          تم ربط البانر بالمنتج: {selectedBannerProduct.name_ar}
+                        </span>
+                      </div>
+                      <span className="text-emerald-700 font-bold text-xs">
+                        {selectedBannerProduct.price} ج.م
+                      </span>
+                    </div>
+                  )}
 
                   {/* Thumbnail Photo Selector if product has photos */}
                   {selectedBannerProduct && (selectedBannerProduct.images?.length > 1) && (

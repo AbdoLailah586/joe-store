@@ -224,6 +224,7 @@ export interface HeroSlide {
   image: string;
   cat: CategoryKey;
   linked_product_id?: string;
+  product_id?: string;
 }
 
 export interface StoreSettings {

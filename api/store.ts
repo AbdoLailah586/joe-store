@@ -18,7 +18,8 @@ const policies: Record<string,string[]> = {
   getAuditLog:['security'],getPickingList:['fulfillment'],getDeliveryBoard:['fulfillment'],
   updateOrderStatus:['orders','fulfillment'],confirmPacking:['fulfillment'],recordDeliveryRefusal:['fulfillment'],
   getRefusalHistory:['fulfillment'],getAllRefusals:['fulfillment'],addSupplierQuote:['suppliers'],getSupplierQuotes:['suppliers'],
-  listSupportTickets:['support'],escalateSupportTicket:['support'],closeSupportTicket:['support'],getWishlistGap:['overview','analytics']
+  listSupportTickets:['support'],escalateSupportTicket:['support'],closeSupportTicket:['support'],getWishlistGap:['overview','analytics'],
+  updateStoreSettings:['overview','products']
 };
 function safeProduct(product: any, privileged: boolean) {
   if (privileged) return product;
@@ -105,6 +106,13 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     if(!user) return [];
     const rows=await sql`SELECT * FROM orders WHERE lower(customer_email)=${user.email.toLowerCase()} ORDER BY created_at DESC LIMIT 100`;
     return rows.map(mapRowToOrder);
+  }
+  if(method==='getStoreSettings') {
+    return store.getStoreSettings ? store.getStoreSettings() : null;
+  }
+  if(method==='updateStoreSettings') {
+    if(!isFullAdmin(user) && !hasAny(user,['overview','products','inventory'])) throw forbidden();
+    return store.updateStoreSettings ? store.updateStoreSettings(args[0]) : {success:true};
   }
   if(method==='getAllUsers') return (await store.getAllUsers()).map(publicUser);
   if(method==='logWishlistEvent') {

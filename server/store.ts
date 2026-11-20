@@ -989,5 +989,30 @@ async getWishlistGap(limit = 5): Promise<{ product_id: string; name_ar: string; 
       console.error('❌ neonDb.getWishlistGap error:', error);
       return [];
     }
+  },
+  async getStoreSettings(): Promise<any> {
+    try {
+      const rows = await sql`SELECT settings FROM store_settings WHERE id = 'main' LIMIT 1;`;
+      return rows[0]?.settings || null;
+    } catch (error) {
+      console.warn('⚠️ Could not load store_settings:', error);
+      return null;
+    }
+  },
+  async updateStoreSettings(newSettings: any): Promise<{ success: boolean; error?: string }> {
+    try {
+      if (!newSettings || typeof newSettings !== 'object') return { success: false, error: 'بيانات غير صالحة' };
+      await sql`
+        INSERT INTO store_settings (id, settings, updated_at)
+        VALUES ('main', ${JSON.stringify(newSettings)}::jsonb, NOW())
+        ON CONFLICT (id) DO UPDATE SET
+          settings = EXCLUDED.settings,
+          updated_at = NOW();
+      `;
+      return { success: true };
+    } catch (error: any) {
+      console.error('❌ neonDb.updateStoreSettings error:', error);
+      return { success: false, error: error.message };
+    }
   }
 };
