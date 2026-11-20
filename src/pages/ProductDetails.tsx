@@ -29,6 +29,7 @@ import {
   Layers,
   SlidersHorizontal,
   ChevronRight,
+  ChevronLeft,
   Eye,
   Award
 } from 'lucide-react';
@@ -69,6 +70,34 @@ export const ProductDetails: React.FC = () => {
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const detailRoot = useRef<HTMLDivElement>(null);
+
+  // Mobile touch swipe for image gallery
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+    setTouchEndX(null);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX === null || touchEndX === null || !product?.images?.length) return;
+    const distance = touchStartX - touchEndX;
+    const minSwipeDistance = 40;
+    if (product.images.length > 1) {
+      if (distance > minSwipeDistance) {
+        setSelectedImage((prev) => (prev + 1) % product.images.length);
+      } else if (distance < -minSwipeDistance) {
+        setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+      }
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+  };
 
   // Frequently Bought Together Bundle Selection state
   const [bundleSelected, setBundleSelected] = useState<{ [id: string]: boolean }>({});
@@ -325,7 +354,159 @@ export const ProductDetails: React.FC = () => {
              ------------------------------------------------------------ */}
           <div className="lg:col-span-5 flex flex-col gap-4 items-start lg:sticky self-start" style={{ top: 'calc(var(--store-header-height, 150px) + 16px)' }}>
 
-            {/* MOBILE ONLY: Brand Link, Title, Rating, Social Proof (Amazon Mobile Top) */}
+            {/* Gallery Wrapper (Thumbnails + Main Image with Mobile Touch Swipe) */}
+            <div className="w-full flex flex-col md:flex-row gap-4 items-start">
+              {/* Vertical Thumbnails (Desktop/Tablet) */}
+              <div className="flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto max-h-[480px] scrollbar-none order-2 md:order-1 flex-shrink-0">
+                {product.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onMouseEnter={() => setSelectedImage(idx)}
+                    onClick={() => setSelectedImage(idx)}
+                    className={`w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden border-2 bg-slate-100 transition-all flex-shrink-0 relative ${
+                      selectedImage === idx
+                        ? 'border-amber-400 shadow-glow-gold scale-105'
+                        : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-500'
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+
+              {/* Main Image with Zoom Magnifier & Mobile Swipe */}
+              <div className="flex-1 w-full order-1 md:order-2 space-y-3">
+                <div
+                  ref={imageContainerRef}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onMouseEnter={() => setIsZooming(true)}
+                  onMouseLeave={() => setIsZooming(false)}
+                  onMouseMove={handleMouseMove}
+                  onClick={() => setLightboxOpen(true)}
+                  className="joe-detail-gallery aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative cursor-crosshair group select-none shadow-xl touch-pan-y"
+                >
+                  <img
+                    src={product.images[selectedImage] || product.images[0] || '/product-placeholder.svg'}
+                    onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
+                    alt={product.name_ar}
+                    className={`w-full h-full object-contain p-4 transition-transform duration-200 ${
+                      isZooming ? 'scale-125' : 'scale-100'
+                    }`}
+                    style={
+                      isZooming
+                        ? {
+                            transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+                          }
+                        : undefined
+                    }
+                  />
+
+                  {/* Badges on Main Image */}
+                  <div className="absolute top-3 right-3 flex flex-col gap-1.5 pointer-events-none z-10">
+                    {product.discount_percentage > 0 && (
+                      <span className="px-2.5 py-1 rounded-lg bg-rose-600/90 text-slate-900 font-extrabold text-[11px] backdrop-blur-md shadow-md">
+                        خصم {product.discount_percentage}%
+                      </span>
+                    )}
+                    {product.is_best_seller && (
+                      <span className="px-2.5 py-1 rounded-lg bg-amber-500 text-black font-extrabold text-[11px] shadow-md flex items-center gap-1">
+                        <Flame className="w-3.5 h-3.5 fill-black" />
+                        الأكثر مبيعاً
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Image counter indicator (Mobile like Dubai Phone) */}
+                  {product.images.length > 1 && (
+                    <div className="md:hidden absolute top-3 left-3 bg-black/60 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full backdrop-blur-md z-10 pointer-events-none font-outfit">
+                      {selectedImage + 1} / {product.images.length}
+                    </div>
+                  )}
+
+                  {/* Mobile Navigation Arrows */}
+                  {product.images.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+                        }}
+                        aria-label="الصورة السابقة"
+                        className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 text-slate-800 shadow-md flex items-center justify-center z-10 transition-transform active:scale-90"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedImage((prev) => (prev + 1) % product.images.length);
+                        }}
+                        aria-label="الصورة التالية"
+                        className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 text-slate-800 shadow-md flex items-center justify-center z-10 transition-transform active:scale-90"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </>
+                  )}
+
+                  {/* Mobile Pagination Dots Indicator */}
+                  {product.images.length > 1 && (
+                    <div className="md:hidden absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full pointer-events-none">
+                      {product.images.map((_, i) => (
+                        <span
+                          key={i}
+                          className={`h-1.5 rounded-full transition-all duration-300 ${
+                            selectedImage === i ? 'w-4 bg-amber-400' : 'w-1.5 bg-white/60'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Expand Fullscreen Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLightboxOpen(true);
+                    }}
+                    className="hidden md:flex absolute bottom-3 left-3 p-2 rounded-xl bg-white/95 hover:bg-white text-slate-900 backdrop-blur-md border border-slate-200 transition-all opacity-80 group-hover:opacity-100"
+                    title="تكبير الصورة بالحجم الكامل"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                  </button>
+
+                  {/* Hover zoom hint */}
+                  <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-white/95 text-slate-600 text-[10px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                    حرك المؤشر للتكبير
+                  </div>
+                </div>
+
+                {/* Share and Wishlist below image */}
+                <div className="flex items-center justify-between text-xs text-slate-600 px-1">
+                  <button
+                    onClick={handleShareProduct}
+                    className="flex items-center gap-1.5 hover:text-amber-700 transition-colors py-1 px-2 rounded-lg hover:bg-slate-100"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    <span>مشاركة رابط السلعة</span>
+                  </button>
+
+                  <button
+                    onClick={() => toggleWishlist(product.id)}
+                    className="flex items-center gap-1.5 hover:text-rose-700 transition-colors py-1 px-2 rounded-lg hover:bg-slate-100"
+                  >
+                    <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-700' : ''}`} />
+                    <span>{isLiked ? 'في قائمة الرغبات' : 'إضافة للرغبات'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* MOBILE ONLY: Brand Link, Title, Rating, Social Proof (Now placed directly under Gallery) */}
             <div className="lg:hidden space-y-2 mb-1 w-full">
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 <button
@@ -390,106 +571,6 @@ export const ProductDetails: React.FC = () => {
                     <span>تم شراء أكثر من {enriched.bought_past_month.toLocaleString('ar-EG')} قطعة الشهر الماضي</span>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* Gallery Wrapper (Thumbnails + Main Image) */}
-            <div className="w-full flex flex-col md:flex-row gap-4 items-start">
-              {/* Vertical Thumbnails (Desktop/Tablet) */}
-              <div className="flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto max-h-[480px] scrollbar-none order-2 md:order-1 flex-shrink-0">
-                {product.images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onMouseEnter={() => setSelectedImage(idx)}
-                    onClick={() => setSelectedImage(idx)}
-                    className={`w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden border-2 bg-slate-100 transition-all flex-shrink-0 relative ${
-                      selectedImage === idx
-                        ? 'border-amber-400 shadow-glow-gold scale-105'
-                        : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-500'
-                    }`}
-                  >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-
-              {/* Main Image with Zoom Magnifier */}
-              <div className="flex-1 w-full order-1 md:order-2 space-y-3">
-                <div
-                  ref={imageContainerRef}
-                  onMouseEnter={() => setIsZooming(true)}
-                  onMouseLeave={() => setIsZooming(false)}
-                  onMouseMove={handleMouseMove}
-                  onClick={() => setLightboxOpen(true)}
-                  className="joe-detail-gallery aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative cursor-crosshair group select-none shadow-xl"
-                >
-                  <img
-                    src={product.images[selectedImage] || product.images[0] || '/product-placeholder.svg'}
-                    onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
-                    alt={product.name_ar}
-                    className={`w-full h-full object-contain p-4 transition-transform duration-200 ${
-                      isZooming ? 'scale-125' : 'scale-100'
-                    }`}
-                    style={
-                      isZooming
-                        ? {
-                            transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
-                          }
-                        : undefined
-                    }
-                  />
-
-                  {/* Badges on Main Image */}
-                  <div className="absolute top-3 right-3 flex flex-col gap-1.5 pointer-events-none">
-                    {product.discount_percentage > 0 && (
-                      <span className="px-2.5 py-1 rounded-lg bg-rose-600/90 text-slate-900 font-extrabold text-[11px] backdrop-blur-md shadow-md">
-                        خصم {product.discount_percentage}%
-                      </span>
-                    )}
-                    {product.is_best_seller && (
-                      <span className="px-2.5 py-1 rounded-lg bg-amber-500 text-black font-extrabold text-[11px] shadow-md flex items-center gap-1">
-                        <Flame className="w-3.5 h-3.5 fill-black" />
-                        الأكثر مبيعاً
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Expand Fullscreen Button */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLightboxOpen(true);
-                    }}
-                    className="absolute bottom-3 left-3 p-2 rounded-xl bg-white/95 hover:bg-white text-slate-900 backdrop-blur-md border border-slate-200 transition-all opacity-80 group-hover:opacity-100"
-                    title="تكبير الصورة بالحجم الكامل"
-                  >
-                    <Maximize2 className="w-4 h-4" />
-                  </button>
-
-                  {/* Hover zoom hint */}
-                  <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-white/95 text-slate-600 text-[10px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                    حرك المؤشر للتكبير
-                  </div>
-                </div>
-
-                {/* Share and Wishlist below image */}
-                <div className="flex items-center justify-between text-xs text-slate-600 px-1">
-                  <button
-                    onClick={handleShareProduct}
-                    className="flex items-center gap-1.5 hover:text-amber-700 transition-colors py-1 px-2 rounded-lg hover:bg-slate-100"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    <span>مشاركة رابط السلعة</span>
-                  </button>
-
-                  <button
-                    onClick={() => toggleWishlist(product.id)}
-                    className="flex items-center gap-1.5 hover:text-rose-700 transition-colors py-1 px-2 rounded-lg hover:bg-slate-100"
-                  >
-                    <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-700' : ''}`} />
-                    <span>{isLiked ? 'في قائمة الرغبات' : 'إضافة للرغبات'}</span>
-                  </button>
-                </div>
               </div>
             </div>
 
