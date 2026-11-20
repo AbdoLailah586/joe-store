@@ -37,6 +37,7 @@ import { AnimateStorefront } from "../components/motion/AnimateStorefront";
 import { generateWhatsAppWebLink } from "../utils/whatsappService";
 import { useDetails } from "../components/DetailsDialog";
 import { readStoredArray, writeStoredJson } from "../utils/browserStorage";
+import { sortCatalogProducts } from "../utils/productSorting";
 
 // Dubai Phone style categories with real product imagery
 const dubaiCategories: {
@@ -152,7 +153,7 @@ export const Home: React.FC = () => {
   const { openDetails } = useDetails();
   const root = useRef<HTMLDivElement>(null);
   const products = useMemo(
-    () => allProducts.filter((p) => p.is_active !== false),
+    () => sortCatalogProducts(allProducts.filter((p) => p.is_active !== false), 'newest'),
     [allProducts],
   );
   const [recommendations, setRecommendations] = useState<Product[]>([]);
@@ -312,14 +313,12 @@ export const Home: React.FC = () => {
       return products.filter((p) => p.category === activeCollection).slice(0, 8);
     }
     if (recommendations.length > 0) {
-      return recommendations.slice(0, 8);
+      return sortCatalogProducts(recommendations, 'newest').slice(0, 8);
     }
     if (defaultHomepageProducts && defaultHomepageProducts.length > 0) {
       return defaultHomepageProducts;
     }
-    const base = [...products].sort(
-      (a, b) => Number(!!b.is_featured) - Number(!!a.is_featured),
-    );
+    const base = sortCatalogProducts(products, 'featured');
     const picks: Product[] = [];
     for (const category of [
       "smartphones",

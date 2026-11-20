@@ -39,6 +39,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { ProductCard } from '../components/ProductCard';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
 import { enrichProductData, canPurchaseProduct, productNotice, priceLabel, publicSpecs, getCategoryComparisonRows } from '../utils/amazonEnricher';
+import { sortCatalogProducts } from '../utils/productSorting';
 import { Product } from '../types';
 
 export const ProductDetails: React.FC = () => {
@@ -1606,8 +1607,11 @@ export const ProductDetails: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products
-              .filter(p => p.id !== product.id && p.is_active !== false)
+            {sortCatalogProducts(
+              products.filter(p => p.id !== product.id && p.is_active !== false)
+                .sort((a, b) => (b.category === product.category ? 1 : 0) - (a.category === product.category ? 1 : 0)),
+              'newest'
+            )
               .slice(0, 4)
               .map(p => (
                 <ProductCard key={p.id} product={p} />

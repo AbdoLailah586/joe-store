@@ -5,6 +5,7 @@ import { ProductCard } from '../components/ProductCard';
 import { categoryLabels, parseReportNumber } from '../utils/inventoryReports';
 import { readStoredJson, writeStoredJson } from '../utils/browserStorage';
 import { canPurchaseProduct } from '../utils/amazonEnricher';
+import { sortCatalogProducts } from '../utils/productSorting';
 import { matchesFinder, pageSlice } from '../utils/storeExpansion';
 import { Pagination } from '../components/Pagination';
 import { useAuth } from '../context/AuthContext';
@@ -47,7 +48,10 @@ export function ShoppingPages({ mode }: { mode: 'brands' | 'finder' | 'help' | '
   const titles = { brands: 'تسوّق حسب الماركة', finder: 'اختار المنتج المناسب لك', bundles: 'جمّع باقتك', help: 'مركز المساعدة', contact: 'زورنا وتواصل معنا' };
   const budget = parseReportNumber(preferences.budget) ?? Number.NaN;
   const validBudget = !preferences.budget.trim() || Number.isFinite(budget) && budget > 0;
-  const suggested = active.filter(p => canPurchaseProduct(p) && (preferences.category === 'all' || p.category === preferences.category) && (preferences.brand === 'all' || p.brand === preferences.brand) && (!preferences.budget.trim() || validBudget && p.price <= budget) && matchesFinder([p.name_ar,p.name_en,p.brand].join(' '),query));
+  const suggested = sortCatalogProducts(
+    active.filter(p => canPurchaseProduct(p) && (preferences.category === 'all' || p.category === preferences.category) && (preferences.brand === 'all' || p.brand === preferences.brand) && (!preferences.budget.trim() || validBudget && p.price <= budget) && matchesFinder([p.name_ar,p.name_en,p.brand].join(' '),query)),
+    'newest'
+  );
   const slice = pageSlice(suggested, page, 24);
   const selected = active.filter(p => chosen.includes(p.id));
   const total = selected.reduce((n,p) => n+p.price,0);

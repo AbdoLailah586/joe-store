@@ -21,6 +21,7 @@ import { readStoredArray } from '../utils/browserStorage';
 import { AnimateStorefront } from '../components/motion/AnimateStorefront';
 import { useDetails } from '../components/DetailsDialog';
 import { productRows } from '../utils/detailModels';
+import { sortCatalogProducts } from '../utils/productSorting';
 
 export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'recent' }> = ({ mode = 'catalog' }) => {
   const {
@@ -58,7 +59,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
   const [maxPrice, setMaxPrice] = useState<number>(initialQuery.current.get('max') ? Math.max(0, Number(initialQuery.current.get('max')) || 0) : Number.POSITIVE_INFINITY);
   const priceCeiling = useMemo(() => Math.max(65000, ...products.map(product => product.price)), [products]);
   const [selectedStorage, setSelectedStorage] = useState<string>(initialQuery.current.get('storage') || 'all');
-  const [sortBy, setSortBy] = useState<'featured' | 'price_asc' | 'price_desc' | 'rating' | 'newest'>(() => (['featured', 'price_asc', 'price_desc', 'rating', 'newest'].includes(initialQuery.current.get('sort') || '') ? initialQuery.current.get('sort') : 'featured') as any);
+  const [sortBy, setSortBy] = useState<'newest' | 'featured' | 'price_asc' | 'price_desc' | 'rating'>(() => (['newest', 'featured', 'price_asc', 'price_desc', 'rating'].includes(initialQuery.current.get('sort') || '') ? initialQuery.current.get('sort') : 'newest') as any);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
 
@@ -123,7 +124,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
 
   // Filtered & Sorted Products
   const filteredProducts = useMemo(() => {
-    return products.filter(p => {
+    const matched = products.filter(p => {
       if (p.is_active === false) return false;
       if (mode === 'wishlist' && !wishlist.includes(p.id)) return false;
       if (mode === 'deals' && !(p.price > 0 && ((p.original_price || 0) > p.price || p.is_flash_sale))) return false;
@@ -150,13 +151,9 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
         if (!combined.includes(q)) return false;
       }
       return true;
-    }).sort((a, b) => {
-      if (sortBy === 'price_asc') return a.price - b.price;
-      if (sortBy === 'price_desc') return b.price - a.price;
-      if (sortBy === 'rating') return b.rating - a.rating;
-      if (sortBy === 'newest') return (b.created_at || '').localeCompare(a.created_at || '');
-      return (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0);
     });
+
+    return sortCatalogProducts(matched, sortBy);
   }, [products, selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, mode, wishlist, recentIds.join()]);
 
   const filterKey = JSON.stringify([selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, pageSize, mode]);
@@ -172,7 +169,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
       setPage(Number(q.get('page')) || 1); setPageSize([24, 36, 48].includes(Number(q.get('size'))) ? Number(q.get('size')) : 36);
       setSelectedBrand(q.get('brand') || 'all'); setSelectedCondition(q.get('condition') || 'all');
       setMinBatteryHealth(Number(q.get('battery')) || 0); setMaxPrice(q.get('max') ? Number(q.get('max')) : Infinity);
-      setSelectedStorage(q.get('storage') || 'all'); setSortBy((q.get('sort') || 'featured') as any); setAvailableOnly(q.get('stock') === 'available');
+      setSelectedStorage(q.get('storage') || 'all'); setSortBy((q.get('sort') || 'newest') as any); setAvailableOnly(q.get('stock') === 'available');
       if (q.has('q')) setSearchQuery(q.get('q') || '');
     };
     window.addEventListener('popstate', restore);
@@ -192,7 +189,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     if (minBatteryHealth) q.set('battery', String(minBatteryHealth));
     if (Number.isFinite(maxPrice) && maxPrice < priceCeiling) q.set('max', String(maxPrice));
     if (selectedStorage !== 'all') q.set('storage', selectedStorage);
-    if (sortBy !== 'featured') q.set('sort', sortBy);
+    if (sortBy !== 'newest') q.set('sort', sortBy);
     if (availableOnly) q.set('stock', 'available');
     if (slice.page > 1) q.set('page', String(slice.page));
     if (pageSize !== 36) q.set('size', String(pageSize));
@@ -245,11 +242,11 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
               onChange={(e) => setSortBy(e.target.value as any)}
               className="bg-transparent text-slate-900 font-bold font-cairo focus:outline-none cursor-pointer"
             >
+              <option value="newest" className="bg-slate-100">{language === 'ar' ? 'الأحدث إضافة (الافتراضي)' : 'Newest First (Default)'}</option>
               <option value="featured" className="bg-slate-100">{t('sortFeatured')}</option>
               <option value="price_asc" className="bg-slate-100">{t('sortPriceAsc')}</option>
               <option value="price_desc" className="bg-slate-100">{t('sortPriceDesc')}</option>
               <option value="rating" className="bg-slate-100">{t('sortRating')}</option>
-              <option value="newest" className="bg-slate-100">{language === 'ar' ? 'الأحدث إضافة' : 'Newest'}</option>
             </select>
           </div>
         </div>

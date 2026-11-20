@@ -568,13 +568,13 @@ export const neonDb = {
             if (clauses.length > 0) {
                 recQuery += ` AND (${clauses.join(' OR ')})`;
             }
-            recQuery += ` ORDER BY is_featured DESC, created_at DESC LIMIT 6;`;
+            recQuery += ` ORDER BY (CASE WHEN COALESCE(stock_quantity, 0) > 0 THEN 1 ELSE 0 END) DESC, is_featured DESC, created_at DESC LIMIT 6;`;
             let recommendedRows = await sql.query(recQuery, params);
             if (!recommendedRows || recommendedRows.length < 4) {
                 const fillRows = await sql `
           SELECT * FROM products 
           WHERE is_active = true 
-          ORDER BY is_featured DESC, stock_quantity DESC 
+          ORDER BY (CASE WHEN COALESCE(stock_quantity, 0) > 0 THEN 1 ELSE 0 END) DESC, is_featured DESC, created_at DESC 
           LIMIT 6;
         `;
                 recommendedRows = fillRows;
