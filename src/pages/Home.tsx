@@ -36,6 +36,7 @@ import { SpotlightCard } from "../components/motion/SpotlightCard";
 import { AnimateStorefront } from "../components/motion/AnimateStorefront";
 import { generateWhatsAppWebLink } from "../utils/whatsappService";
 import { useDetails } from "../components/DetailsDialog";
+import { readStoredArray, writeStoredJson } from "../utils/browserStorage";
 
 // Dubai Phone style categories with real product imagery
 const dubaiCategories: {
@@ -92,7 +93,7 @@ const dubaiCategories: {
 const defaultHeroSlides = [
   {
     id: "slide-1",
-    badge: "العرض الأقوى في المنصورة ⚡",
+    badge: "عرض حصري في المنصورة",
     title_ar: "آيفون 13 و 15 برو ماكس كسر زيرو ومتبرشم",
     title_en: "iPhone 13 & 15 Pro Max Mint & Sealed",
     subtitle_ar: "أجهزة مفحوصة 100% مع ضمان استبدال رسمي وبطاريات أصلية حتى 98%",
@@ -105,7 +106,7 @@ const defaultHeroSlides = [
   },
   {
     id: "slide-2",
-    badge: "أحدث تكنولوجيا شحن سريع ⚡",
+    badge: "تقنية الشحن فائق السرعة",
     title_ar: "رؤوس شواحن ONMUST وAnker السريعة 30W PD",
     title_en: "ONMUST & Anker 30W Fast PD Chargers",
     subtitle_ar: "شحن 60% في 30 دقيقة بتقنية التبريد الذكي وحماية البطارية",
@@ -118,7 +119,7 @@ const defaultHeroSlides = [
   },
   {
     id: "slide-3",
-    badge: "صوت سينمائي ونقاء استثنائي 🎧",
+    badge: "صوت سينمائي ونقاء استثنائي",
     title_ar: "تشكيلة سماعات Apple وJoyroom اللاسلكية",
     title_en: "Apple & Joyroom Wireless Earbuds Collection",
     subtitle_ar: "عزل ضوضاء فائق، ميكروفونات عالية الدقة للمكالمات، وبطارية تدوم طوال اليوم",
@@ -131,7 +132,7 @@ const defaultHeroSlides = [
   },
   {
     id: "slide-4",
-    badge: "أناقة وتقنية في معصمك ⌚",
+    badge: "أناقة وتقنية في معصمك",
     title_ar: "ساعات ذكية متوافقة مع آيفون وأندرويد",
     title_en: "Smartwatches for iPhone & Android",
     subtitle_ar: "شاشات AMOLED فائقة الوضوح، تتبع النبض والأنشطة الرياضية، وتنبيهات المكالمات",
@@ -234,17 +235,70 @@ export const Home: React.FC = () => {
     };
   }, [sessionId]);
 
+  // 1. User's recently viewed products from browser storage
+  const [recentVersion, setRecentVersion] = useState(0);
+  const recentProductIds = useMemo(() => {
+    return readStoredArray('joe_recent_products', (v): v is string => typeof v === 'string');
+  }, [recentVersion]);
+
+  const recentlyViewed = useMemo(() => {
+    if (!recentProductIds.length) return [];
+    return recentProductIds
+      .map((id) => products.find((p) => p.id === id))
+      .filter((p): p is Product => Boolean(p && p.is_active !== false))
+      .slice(0, 8);
+  }, [recentProductIds, products]);
+
+  // 2. Determine user's top favorite brand from their browsing history
+  const userPreferredBrand = useMemo(() => {
+    if (!recentlyViewed.length) return null;
+    const counts: Record<string, number> = {};
+    recentlyViewed.forEach((p) => {
+      if (p.brand && p.brand.trim() && !/unknown|unbranded|غير/i.test(p.brand)) {
+        counts[p.brand] = (counts[p.brand] || 0) + 1;
+      }
+    });
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    return sorted.length ? sorted[0][0] : null;
+  }, [recentlyViewed]);
+
+  // 3. Recommended other products from that favorite brand
+  const brandAffinityProducts = useMemo(() => {
+    if (!userPreferredBrand) return [];
+    return products
+      .filter(
+        (p) =>
+          p.brand?.toLowerCase() === userPreferredBrand.toLowerCase() &&
+          !recentProductIds.includes(p.id)
+      )
+      .slice(0, 8);
+  }, [userPreferredBrand, products, recentProductIds]);
+
+  // 4. Admin-configured default homepage products (or null if none)
+  const defaultHomepageProducts = useMemo(() => {
+    if (settings.homepage_featured_ids && settings.homepage_featured_ids.length > 0) {
+      const pinned = settings.homepage_featured_ids
+        .map((id) => products.find((p) => p.id === id))
+        .filter((p): p is Product => Boolean(p && p.is_active !== false));
+      if (pinned.length > 0) return pinned.slice(0, 8);
+    }
+    return null;
+  }, [settings.homepage_featured_ids, products]);
+
+  // 5. Featured collection (Personalized recommendations > Admin default > Category picks)
   const featured = useMemo(() => {
-    const base =
-      activeCollection === "all"
-        ? recommendations.length
-          ? recommendations
-          : [...products].sort(
-              (a, b) => Number(!!b.is_featured) - Number(!!a.is_featured),
-            )
-        : products.filter((p) => p.category === activeCollection);
-    if (activeCollection !== "all" || recommendations.length)
-      return base.slice(0, 8);
+    if (activeCollection !== "all") {
+      return products.filter((p) => p.category === activeCollection).slice(0, 8);
+    }
+    if (recommendations.length > 0) {
+      return recommendations.slice(0, 8);
+    }
+    if (defaultHomepageProducts && defaultHomepageProducts.length > 0) {
+      return defaultHomepageProducts;
+    }
+    const base = [...products].sort(
+      (a, b) => Number(!!b.is_featured) - Number(!!a.is_featured),
+    );
     const picks: Product[] = [];
     for (const category of [
       "smartphones",
@@ -262,7 +316,7 @@ export const Home: React.FC = () => {
       ...picks,
       ...base.filter((p) => !picks.some((item) => item.id === p.id)),
     ].slice(0, 8);
-  }, [products, recommendations, activeCollection]);
+  }, [products, recommendations, activeCollection, defaultHomepageProducts]);
 
   // Flash deals & offers (Up to 8 items)
   const offers = useMemo(() => {
@@ -318,28 +372,25 @@ export const Home: React.FC = () => {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950 text-white shadow-2xl border border-amber-500/20"
+          className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-white text-slate-900 shadow-sm sm:shadow-md border border-slate-200/90"
         >
           {/* Main Slide Content */}
-          <div className="relative min-h-[340px] sm:min-h-[420px] md:min-h-[460px] flex flex-col md:flex-row items-center justify-between p-6 sm:p-10 md:p-14 gap-6 select-none">
-            {/* Background ambient lighting */}
-            <div className="absolute inset-0 bg-radial-gradient from-amber-500/10 via-transparent to-transparent pointer-events-none" />
-
+          <div className="relative min-h-[340px] sm:min-h-[400px] md:min-h-[440px] flex flex-col md:flex-row items-center justify-between p-6 sm:p-10 md:p-12 gap-6 select-none bg-gradient-to-br from-slate-50/80 via-white to-amber-50/20">
             {/* Left/Start: Promotional Text & Action */}
             <div className="w-full md:w-3/5 space-y-3 sm:space-y-4 z-10 text-start">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs sm:text-sm font-bold shadow-glow-gold backdrop-blur-md">
-                <Sparkles className="w-4 h-4 text-amber-400" />
+              {/* Sleek Badge without emojis */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/70 text-amber-900 text-xs sm:text-sm font-bold shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                 <span>{currentSlide.badge}</span>
               </div>
 
               {/* Title */}
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black font-cairo text-white leading-tight">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black font-cairo text-slate-900 leading-tight">
                 {ar ? currentSlide.title_ar : currentSlide.title_en}
               </h1>
 
               {/* Subtitle */}
-              <p className="text-xs sm:text-base text-slate-300 max-w-xl leading-relaxed">
+              <p className="text-xs sm:text-base text-slate-600 max-w-xl leading-relaxed">
                 {ar ? currentSlide.subtitle_ar : currentSlide.subtitle_en}
               </p>
 
@@ -347,7 +398,7 @@ export const Home: React.FC = () => {
               <div className="flex items-center gap-3 pt-1 flex-wrap">
                 {currentSlide.price && (
                   <div className="flex items-baseline gap-2">
-                    <strong className="text-2xl sm:text-3xl font-black text-amber-400 font-outfit">
+                    <strong className="text-2xl sm:text-3xl font-black text-slate-950 font-outfit">
                       {currentSlide.price} {ar ? "ج.م" : "EGP"}
                     </strong>
                     {currentSlide.oldPrice && (
@@ -358,7 +409,7 @@ export const Home: React.FC = () => {
                   </div>
                 )}
                 {currentSlide.tag && (
-                  <span className="px-2.5 py-1 rounded-md bg-white/10 text-slate-200 text-xs font-semibold backdrop-blur-md border border-white/10">
+                  <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
                     {currentSlide.tag}
                   </span>
                 )}
@@ -369,7 +420,7 @@ export const Home: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => shop(currentSlide.cat || "all")}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-sm sm:text-base flex items-center gap-2 shadow-glow-gold transition-all active:scale-95 cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm sm:text-base flex items-center gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
                 >
                   <span>{ar ? "تسوق العرض الآن" : "Shop Offer Now"}</span>
                   <Arrow size={18} />
@@ -377,7 +428,7 @@ export const Home: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => shop()}
-                  className="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm flex items-center gap-2 backdrop-blur-md transition-all cursor-pointer"
+                  className="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm flex items-center gap-2 border border-slate-200 transition-all cursor-pointer"
                 >
                   <span>{ar ? "اكتشف الكتالوج" : "Explore Catalog"}</span>
                   <DiagonalArrow size={16} />
@@ -385,14 +436,13 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
-            {/* Right/End: Product Cutout Image */}
+            {/* Right/End: Product Cutout Image with Natural Clean Styling */}
             <div className="w-full md:w-2/5 flex items-center justify-center z-10">
               <button
                 type="button"
                 onClick={() => shop(currentSlide.cat || "all")}
-                className="relative group cursor-pointer focus:outline-none"
+                className="relative group cursor-pointer focus:outline-none flex items-center justify-center p-2"
               >
-                <div className="absolute inset-0 bg-amber-500/20 rounded-full blur-3xl transform group-hover:scale-110 transition-transform duration-500" />
                 <img
                   src={currentSlide.image}
                   alt={ar ? currentSlide.title_ar : currentSlide.title_en}
@@ -400,7 +450,7 @@ export const Home: React.FC = () => {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = "/product-placeholder.svg";
                   }}
-                  className="relative max-h-[200px] sm:max-h-[280px] md:max-h-[340px] w-auto object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_20px_35px_rgba(0,0,0,0.6)]"
+                  className="relative max-h-[220px] sm:max-h-[300px] md:max-h-[360px] w-auto object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
                 />
               </button>
             </div>
@@ -416,7 +466,7 @@ export const Home: React.FC = () => {
                 onClick={() =>
                   setSlideIndex((prev) => (prev - 1 + slides.length) % slides.length)
                 }
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all z-20 cursor-pointer"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-slate-800 border border-slate-200 shadow-sm flex items-center justify-center transition-all z-20 cursor-pointer"
               >
                 <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
@@ -426,13 +476,13 @@ export const Home: React.FC = () => {
                 type="button"
                 aria-label={ar ? "العرض التالي" : "Next slide"}
                 onClick={() => setSlideIndex((prev) => (prev + 1) % slides.length)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all z-20 cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-slate-800 border border-slate-200 shadow-sm flex items-center justify-center transition-all z-20 cursor-pointer"
               >
                 <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
 
               {/* Dots Pagination */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
                 {slides.map((_, idx) => (
                   <button
                     key={idx}
@@ -441,8 +491,8 @@ export const Home: React.FC = () => {
                     onClick={() => setSlideIndex(idx)}
                     className={`h-2 rounded-full transition-all duration-300 ${
                       (slideIndex % slides.length) === idx
-                        ? "w-6 bg-amber-400 shadow-glow-gold"
-                        : "w-2 bg-white/50 hover:bg-white"
+                        ? "w-6 bg-slate-900"
+                        : "w-2 bg-slate-300 hover:bg-slate-400"
                     }`}
                   />
                 ))}
@@ -601,10 +651,10 @@ export const Home: React.FC = () => {
             </button>
           </div>
 
-          {/* Continuous Infinite Gliding Marquee */}
+          {/* Continuous Infinite Gliding Marquee (Touch-swipeable & Never disappearing) */}
           <div className="joe-marquee-container" dir="ltr">
             <div className="joe-marquee-track">
-              {[...allBrands, ...allBrands].map((brand, idx) => (
+              {[...allBrands, ...allBrands, ...allBrands, ...allBrands].map((brand, idx) => (
                 <button
                   key={`${brand}-${idx}`}
                   type="button"
@@ -756,6 +806,86 @@ export const Home: React.FC = () => {
           {/* Guaranteed 2 products per row on mobile (grid-cols-2) */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
             {phones.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ==============================================================
+          7.B. BRAND AFFINITY (ترشيحات ذكية بناءً على الماركة المفضلة للعميل)
+         ============================================================== */}
+      {brandAffinityProducts.length > 0 && userPreferredBrand && (
+        <section className="joe-container joe-section" data-reveal>
+          <div className="joe-section-heading">
+            <div>
+              <span className="joe-eyebrow">
+                {ar ? `لأنك مهتم بمنتجات ${userPreferredBrand}` : `MORE FROM ${userPreferredBrand.toUpperCase()}`}
+              </span>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900">
+                {ar ? `تشكيلة مختارة من ${userPreferredBrand}` : `Recommended from ${userPreferredBrand}`}
+              </h2>
+            </div>
+            <button
+              className="joe-text-link"
+              onClick={() =>
+                navigate("catalog", undefined, {
+                  category: "all",
+                  brand: userPreferredBrand,
+                  search: "",
+                })
+              }
+            >
+              {ar ? `كل منتجات ${userPreferredBrand}` : `All ${userPreferredBrand}`}
+              <Arrow size={17} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+            {brandAffinityProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ==============================================================
+          7.C. RECENTLY VIEWED (منتجات شاهدها العميل مؤخراً)
+         ============================================================== */}
+      {recentlyViewed.length > 0 && (
+        <section className="joe-container joe-section" data-reveal>
+          <div className="joe-section-heading">
+            <div>
+              <span className="joe-eyebrow">
+                {ar ? "سجل تصفحك" : "RECENTLY VIEWED"}
+              </span>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900">
+                {ar ? "منتجات شاهدتها مؤخراً" : "Recently Viewed Products"}
+              </h2>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  writeStoredJson("joe_recent_products", []);
+                  setRecentVersion((v) => v + 1);
+                }}
+                className="text-xs text-slate-500 hover:text-rose-600 transition-colors font-medium"
+              >
+                {ar ? "مسح السجل" : "Clear"}
+              </button>
+              <button
+                className="joe-text-link"
+                onClick={() => navigate("catalog", undefined, { search: "" })}
+              >
+                {ar ? "الكتالوج" : "Catalog"}
+                <Arrow size={17} />
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+            {recentlyViewed.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

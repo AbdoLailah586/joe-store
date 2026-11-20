@@ -129,8 +129,41 @@ export const Checkout: React.FC = () => {
 
   // Selected Governorate calculations
   const currentGov = egyptianGovernorates.find(g => g.id === selectedGovId) || egyptianGovernorates[0];
+
+  // Dynamic Cities list (defaults from currentGov + custom_cities - disabled_cities)
+  const availableCities = useMemo(() => {
+    if (!currentGov) return [];
+    let list = [...currentGov.cities];
+    if (settings.custom_cities && settings.custom_cities.length > 0) {
+      const added = settings.custom_cities
+        .filter(c => c.governorate_id === currentGov.id)
+        .map(c => ({ name_ar: c.name_ar, name_en: c.name_en || c.name_ar }));
+      list = [...list, ...added];
+    }
+    if (settings.disabled_cities && settings.disabled_cities.length > 0) {
+      list = list.filter(c => !settings.disabled_cities!.includes(c.name_ar));
+    }
+    return list;
+  }, [currentGov, settings.custom_cities, settings.disabled_cities]);
+
+  // Dynamic Shipping Fee calculation (City-specific > Governorate-specific > Base Default)
   const isFreeShipping = cartSubtotal >= (settings.free_shipping_threshold ?? 2500);
-  const shippingFee = isFreeShipping ? 0 : (currentGov.shipping_fee ?? settings.shipping_fee_default);
+  const shippingFee = useMemo(() => {
+    if (isFreeShipping) return 0;
+    if (settings.custom_shipping_rates && settings.custom_shipping_rates.length > 0) {
+      if (selectedCity) {
+        const cityRate = settings.custom_shipping_rates.find(
+          r => r.governorate_id === selectedGovId && r.city_name === selectedCity && r.is_active !== false
+        );
+        if (cityRate) return cityRate.shipping_fee;
+      }
+      const govRate = settings.custom_shipping_rates.find(
+        r => r.governorate_id === selectedGovId && (!r.city_name || r.city_name === '*') && r.is_active !== false
+      );
+      if (govRate) return govRate.shipping_fee;
+    }
+    return currentGov.shipping_fee ?? settings.shipping_fee_default ?? 35;
+  }, [isFreeShipping, settings.custom_shipping_rates, settings.shipping_fee_default, selectedGovId, selectedCity, currentGov]);
 
   // Discount Calculation based on applied coupon
   const couponDiscount = useMemo(() => {
@@ -642,7 +675,7 @@ export const Checkout: React.FC = () => {
                     <option value="">اختر المحافظة...</option>
                     {egyptianGovernorates.map((gov) => (
                       <option key={gov.id} value={gov.id} className="bg-slate-100">
-                        {gov.name_ar} {gov.id === 'daqahlia' ? '⚡ (المنصورة)' : ''}
+                        {gov.name_ar} {gov.id === 'daqahlia' ? '(المنصورة ومراكزها)' : ''}
                       </option>
                     ))}
                   </select>
@@ -660,9 +693,9 @@ export const Checkout: React.FC = () => {
                     className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 font-cairo focus:outline-none focus:border-amber-400 cursor-pointer"
                   >
                     <option value="">اختر المنطقة / المركز...</option>
-                    {selectedCity && !currentGov.cities.some(c => c.name_ar === selectedCity) && <option value={selectedCity}>{selectedCity}</option>}
+                    {selectedCity && !availableCities.some(c => c.name_ar === selectedCity) && <option value={selectedCity}>{selectedCity}</option>}
                     <option value="__other__">اكتب مدينة / قرية أخرى</option>
-                    {currentGov.cities.map((c, i) => (
+                    {availableCities.map((c, i) => (
                       <option key={i} value={c.name_ar} className="bg-slate-100">
                         {c.name_ar}
                       </option>

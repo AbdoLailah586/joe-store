@@ -2028,43 +2028,44 @@
    ============================================================== */
 @keyframes joe-marquee-scroll {
   0% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translateX(-50%);
-  }
-}
-@keyframes joe-marquee-scroll-rtl {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 .joe-marquee-container {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   position: relative;
   width: 100%;
   padding-block: 8px;
-  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+}
+.joe-marquee-container::-webkit-scrollbar {
+  display: none;
 }
 
 .joe-marquee-track {
   display: flex;
   width: max-content;
-  gap: 16px;
-  animation: joe-marquee-scroll 26s linear infinite;
+  gap: 14px;
+  will-change: transform;
+  animation: joe-marquee-scroll 32s linear infinite;
 }
 
 [dir="rtl"] .joe-marquee-track {
-  animation: joe-marquee-scroll-rtl 26s linear infinite;
+  animation: joe-marquee-scroll 32s linear infinite;
 }
 
 .joe-marquee-track:hover,
-.joe-marquee-track:focus-within {
+.joe-marquee-track:focus-within,
+.joe-marquee-track:active {
   animation-play-state: paused;
 }
 

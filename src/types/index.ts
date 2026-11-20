@@ -196,6 +196,21 @@ export interface WhatsAppNotification {
   error_message?: string;
 }
 
+export interface CustomShippingRate {
+  governorate_id: string;
+  city_name?: string; // specific city, or omitted / '*' for entire governorate
+  shipping_fee: number;
+  delivery_time_ar?: string;
+  delivery_time_en?: string;
+  is_active?: boolean;
+}
+
+export interface CustomCity {
+  governorate_id: string;
+  name_ar: string;
+  name_en?: string;
+}
+
 export interface HeroSlide {
   id: string;
   badge: string;
@@ -208,6 +223,7 @@ export interface HeroSlide {
   tag: string;
   image: string;
   cat: CategoryKey;
+  linked_product_id?: string;
 }
 
 export interface StoreSettings {
@@ -237,6 +253,10 @@ export interface StoreSettings {
   hero_slides?: HeroSlide[];
   custom_categories?: CustomCategory[];
   coupons?: DiscountCoupon[];
+  homepage_featured_ids?: string[];
+  custom_shipping_rates?: CustomShippingRate[];
+  custom_cities?: CustomCity[];
+  disabled_cities?: string[];
   // Email Template Customization
   email_subject_template?: string;
   email_header_title?: string;

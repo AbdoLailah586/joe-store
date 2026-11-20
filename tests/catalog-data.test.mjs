@@ -143,6 +143,7 @@ const placeholderModules = Object.fromEntries([
 ].map(id => [id, new Proxy({}, { get: () => noop })]));
 const { AdminDashboard } = compile('src/pages/admin/AdminDashboard.tsx', {
   ...placeholderModules, 'lucide-react': icons,
+  '../../data/governorates': { egyptianGovernorates: [] },
   '../../components/DetailsDialog': { useDetails: () => ({openDetails:noop,closeDetails:noop}) },
   '../../context/AuthContext': { useAuth: () => ({ user: null, isAdmin: false, canAccessAdmin:false, adminSections:[], sessionReady:true, openAuthModal: noop }) },
   '../../context/LanguageContext': { useLanguage: () => ({ language: 'ar', t: value => value, formatPrice: value => String(value) }) },

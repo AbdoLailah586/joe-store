@@ -113,6 +113,22 @@ export const readStoredSettings = (defaults: StoreSettings): StoreSettings => {
         && typeof c.code === 'string' && typeof c.discount_value === 'number')) {
         merged.coupons = value;
       }
+    } else if (key === 'homepage_featured_ids') {
+      if (Array.isArray(value) && value.every(id => typeof id === 'string')) {
+        merged.homepage_featured_ids = value;
+      }
+    } else if (key === 'custom_shipping_rates') {
+      if (Array.isArray(value) && value.every(r => isRecord(r) && typeof r.governorate_id === 'string' && typeof r.shipping_fee === 'number')) {
+        merged.custom_shipping_rates = value;
+      }
+    } else if (key === 'custom_cities') {
+      if (Array.isArray(value) && value.every(c => isRecord(c) && typeof c.governorate_id === 'string' && typeof c.name_ar === 'string')) {
+        merged.custom_cities = value;
+      }
+    } else if (key === 'disabled_cities') {
+      if (Array.isArray(value) && value.every(c => typeof c === 'string')) {
+        merged.disabled_cities = value;
+      }
     } else if (key in defaults ? typeof value === typeof defaults[key] : typeof value === 'string') {
       // Match known default types; optional settings (theme/email fields) are strings.
       (merged as any)[key] = value;

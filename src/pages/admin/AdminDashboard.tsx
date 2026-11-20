@@ -50,7 +50,8 @@ import {
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
-import { Product, Order, OrderStatus, CategoryKey, ProductCondition, HeroSlide, CustomCategory, DiscountCoupon } from '../../types';
+import { Product, Order, OrderStatus, CategoryKey, ProductCondition, HeroSlide, CustomCategory, DiscountCoupon, CustomShippingRate, CustomCity } from '../../types';
+import { egyptianGovernorates } from '../../data/governorates';
 import { ExcelImportModal } from '../../components/ExcelImportModal';
 import { downloadSampleExcelTemplate, exportCatalogToExcel } from '../../utils/excelParser';
 import { generateWhatsAppWebLink, sendWhatsAppMessage } from '../../utils/whatsappService';
@@ -166,8 +167,9 @@ export const AdminDashboard: React.FC = () => {
     const currentSlides = settings.hero_slides || [];
     updateSettings({ hero_slides: [...currentSlides, slideItem] });
     setShowSlideForm(false);
+    setSelectedBannerProduct(null);
     setNewSlide({
-      badge: 'عرض حصري جديد ⚡',
+      badge: 'عرض حصري جديد',
       title_ar: '',
       title_en: '',
       subtitle_ar: '',
@@ -183,6 +185,58 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteSlide = (id: string) => {
     const currentSlides = settings.hero_slides || [];
     updateSettings({ hero_slides: currentSlides.filter(s => s.id !== id) });
+  };
+
+  const [selectedBannerProduct, setSelectedBannerProduct] = useState<Product | null>(null);
+
+  // Toggle Homepage Default Featured Product
+  const handleToggleHomepageFeatured = (productId: string) => {
+    const current = settings.homepage_featured_ids || [];
+    const updated = current.includes(productId)
+      ? current.filter(id => id !== productId)
+      : [...current, productId];
+    updateSettings({ homepage_featured_ids: updated });
+  };
+
+  // Shipping & Cities States & Handlers
+  const [shippingGovId, setShippingGovId] = useState<string>('daqahlia');
+  const [newCityNameAr, setNewCityNameAr] = useState('');
+  const [newCityFee, setNewCityFee] = useState<number>(35);
+
+  const currentShippingGov = egyptianGovernorates.find(g => g.id === shippingGovId) || egyptianGovernorates[0];
+
+  const handleSetGovBaseFee = (govId: string, fee: number) => {
+    const existing = settings.custom_shipping_rates || [];
+    const filtered = existing.filter(r => !(r.governorate_id === govId && (!r.city_name || r.city_name === '*')));
+    const updated: CustomShippingRate[] = [...filtered, { governorate_id: govId, city_name: '*', shipping_fee: fee, is_active: true }];
+    updateSettings({ custom_shipping_rates: updated });
+  };
+
+  const handleSetCityFee = (govId: string, cityName: string, fee: number) => {
+    const existing = settings.custom_shipping_rates || [];
+    const filtered = existing.filter(r => !(r.governorate_id === govId && r.city_name === cityName));
+    const updated: CustomShippingRate[] = [...filtered, { governorate_id: govId, city_name: cityName, shipping_fee: fee, is_active: true }];
+    updateSettings({ custom_shipping_rates: updated });
+  };
+
+  const handleAddCustomCity = (govId: string, nameAr: string, fee: number) => {
+    if (!nameAr.trim()) return;
+    const existingCities = settings.custom_cities || [];
+    if (!existingCities.some(c => c.governorate_id === govId && c.name_ar === nameAr.trim())) {
+      updateSettings({
+        custom_cities: [...existingCities, { governorate_id: govId, name_ar: nameAr.trim() }]
+      });
+    }
+    handleSetCityFee(govId, nameAr.trim(), fee);
+    setNewCityNameAr('');
+  };
+
+  const handleToggleDisableCity = (cityName: string) => {
+    const currentDisabled = settings.disabled_cities || [];
+    const updated = currentDisabled.includes(cityName)
+      ? currentDisabled.filter(c => c !== cityName)
+      : [...currentDisabled, cityName];
+    updateSettings({ disabled_cities: updated });
   };
 
   // Helper for reading files directly from laptop to Base64 Data URL
@@ -653,6 +707,19 @@ export const AdminDashboard: React.FC = () => {
 
                       <td className="p-3.5">
                         <div className="flex items-center justify-center gap-1.5">
+                          {/* Pin / Star to Homepage Default */}
+                          <button
+                            onClick={() => handleToggleHomepageFeatured(p.id)}
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              (settings.homepage_featured_ids || []).includes(p.id)
+                                ? 'bg-amber-500/20 text-amber-700 border border-amber-500/30'
+                                : 'bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-amber-600'
+                            }`}
+                            title={(settings.homepage_featured_ids || []).includes(p.id) ? 'مثبت في الصفحة الرئيسية (اضغط للإلغاء)' : 'تثبيت كمنتج افتراضي في الصفحة الرئيسية'}
+                          >
+                            <Star className={`w-3.5 h-3.5 ${(settings.homepage_featured_ids || []).includes(p.id) ? 'fill-amber-500 text-amber-600' : ''}`} />
+                          </button>
+
                           {/* Duplicate */}
                           <button
                             onClick={() => duplicateProduct(p.id)}
@@ -1352,8 +1419,73 @@ export const AdminDashboard: React.FC = () => {
 
             {/* Slide Creation Form */}
             {showSlideForm && (
-              <form onSubmit={handleAddSlide} className="p-5 rounded-2xl bg-slate-100 border border-amber-500/40 space-y-4 text-xs font-cairo">
-                <h4 className="font-bold text-amber-700 text-sm">{language === 'ar' ? 'بيانات الشريحة / البانر الجديد' : 'New Banner Slide Details'}</h4>
+              <form onSubmit={handleAddSlide} className="p-5 rounded-2xl bg-slate-50 border border-amber-500/40 space-y-4 text-xs font-cairo">
+                <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
+                  <h4 className="font-bold text-amber-700 text-sm">{language === 'ar' ? 'بيانات الشريحة / البانر الجديد' : 'New Banner Slide Details'}</h4>
+                </div>
+
+                {/* Instant Store Product Picker - Auto Fill Banner Details */}
+                <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2.5">
+                  <label className="block text-slate-800 font-bold text-xs flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                    <span>{language === 'ar' ? 'اختيار منتج من المتجر لتعبئة بيانات وصور البانر تلقائياً:' : 'Pick product from store to auto-fill banner:'}</span>
+                  </label>
+                  <select
+                    onChange={(e) => {
+                      const prodId = e.target.value;
+                      if (!prodId) {
+                        setSelectedBannerProduct(null);
+                        return;
+                      }
+                      const prod = products.find(p => p.id === prodId);
+                      if (prod) {
+                        setNewSlide({
+                          ...newSlide,
+                          title_ar: prod.name_ar,
+                          title_en: prod.name_en || prod.name_ar,
+                          price: String(prod.price),
+                          oldPrice: prod.original_price ? String(prod.original_price) : String(Math.round(prod.price * 1.2)),
+                          cat: prod.category || 'smartphones',
+                          badge: `أقوى عروض ${prod.brand || 'المتجر'}`,
+                          subtitle_ar: prod.description_ar ? prod.description_ar.slice(0, 110) : `متوفر الآن بحالة ${prod.condition === 'mint' ? 'كسر زيرو ممتاز' : 'جديد'} مع ضمان جو ستور المعتمد`,
+                          image: prod.images?.[0] || '/product-placeholder.svg',
+                        });
+                        setSelectedBannerProduct(prod);
+                      }
+                    }}
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-cairo text-xs"
+                  >
+                    <option value="">-- اضغط للبحث واختيار منتج من منتجات المتجر --</option>
+                    {products.map(p => (
+                      <option key={p.id} value={p.id}>
+                        {p.name_ar} - {p.price} ج.م ({p.brand || 'عام'})
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Thumbnail Photo Selector if product has photos */}
+                  {selectedBannerProduct && (selectedBannerProduct.images?.length > 1) && (
+                    <div className="pt-2 border-t border-amber-500/20 space-y-1.5">
+                      <span className="text-[11px] font-semibold text-slate-700 block">
+                        اختر أي صورة من صور هذا المنتج لتكون صورة البانر الرئيسية:
+                      </span>
+                      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                        {selectedBannerProduct.images.map((img, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => setNewSlide(prev => ({ ...prev, image: img }))}
+                            className={`p-1 rounded-lg border transition-all flex-shrink-0 bg-white ${
+                              newSlide.image === img ? 'border-amber-500 ring-2 ring-amber-400/40 shadow-sm' : 'border-slate-200 hover:border-slate-300'
+                            }`}
+                          >
+                            <img src={img} alt="" className="w-12 h-12 object-contain rounded" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -1364,7 +1496,7 @@ export const AdminDashboard: React.FC = () => {
                       value={newSlide.title_ar}
                       onChange={(e) => setNewSlide({ ...newSlide, title_ar: e.target.value })}
                       placeholder="مثال: خصومات حصرية على الآيفون 14 برو"
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
                     />
                   </div>
 
@@ -1375,7 +1507,7 @@ export const AdminDashboard: React.FC = () => {
                       value={newSlide.title_en}
                       onChange={(e) => setNewSlide({ ...newSlide, title_en: e.target.value })}
                       placeholder="e.g. Exclusive Deals on iPhone 14 Pro"
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-outfit"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
                     />
                   </div>
 
@@ -1385,8 +1517,8 @@ export const AdminDashboard: React.FC = () => {
                       type="text"
                       value={newSlide.badge}
                       onChange={(e) => setNewSlide({ ...newSlide, badge: e.target.value })}
-                      placeholder="عرض المنصورة الأقوى ⚡"
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                      placeholder="عرض حصري في المنصورة"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
                     />
                   </div>
 
@@ -1395,14 +1527,13 @@ export const AdminDashboard: React.FC = () => {
                     <select
                       value={newSlide.cat}
                       onChange={(e) => setNewSlide({ ...newSlide, cat: e.target.value as CategoryKey })}
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
                     >
-                      <option value="smartphones">هواتف ذكية</option>
-                      <option value="smartwatches">ساعات ذكية</option>
-                      <option value="audio">سماعات</option>
-                      <option value="chargers_cables">شواحن وكابلات</option>
-                      <option value="powerbanks">باوربانك</option>
-                      <option value="cases_protection">جرابات وحمايات</option>
+                      {currentCategories.map(cat => (
+                        <option key={cat.key} value={cat.key}>
+                          {cat.name_ar}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -1413,7 +1544,7 @@ export const AdminDashboard: React.FC = () => {
                       value={newSlide.price}
                       onChange={(e) => setNewSlide({ ...newSlide, price: e.target.value })}
                       placeholder="24,500"
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-outfit"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
                     />
                   </div>
 
@@ -1424,20 +1555,39 @@ export const AdminDashboard: React.FC = () => {
                       value={newSlide.oldPrice}
                       onChange={(e) => setNewSlide({ ...newSlide, oldPrice: e.target.value })}
                       placeholder="27,000"
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-outfit"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
                     />
                   </div>
 
-                  <div className="sm:col-span-2">
-                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'رابط صورة البانر (Image URL) *:' : 'Banner Image URL *:'}</label>
-                    <input
-                      type="text"
-                      required
-                      value={newSlide.image}
-                      onChange={(e) => setNewSlide({ ...newSlide, image: e.target.value })}
-                      placeholder="https://images.unsplash.com/... أو رابط الصورة المباشر"
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-mono"
-                    />
+                  {/* Banner Image URL + Laptop Upload */}
+                  <div className="sm:col-span-2 space-y-1.5">
+                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'صورة البانر (رابط أو رفع من اللاب توب) *:' : 'Banner Image *:'}</label>
+                    <div className="flex flex-col sm:flex-row gap-2.5 items-center">
+                      <input
+                        type="text"
+                        required
+                        value={newSlide.image}
+                        onChange={(e) => setNewSlide({ ...newSlide, image: e.target.value })}
+                        placeholder="الصق رابط الصورة أو ارفعها من جهازك"
+                        className="flex-1 w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono text-xs"
+                      />
+                      <label className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-sm transition-all whitespace-nowrap self-stretch sm:self-auto justify-center">
+                        <Upload className="w-4 h-4 text-amber-400" />
+                        <span>رفع صورة من اللاب توب</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleFileUpload(e, (url) => setNewSlide(prev => ({ ...prev, image: url })))}
+                        />
+                      </label>
+                    </div>
+                    {newSlide.image && (
+                      <div className="flex items-center gap-3 p-2 bg-white rounded-xl border border-slate-200 w-fit mt-1">
+                        <img src={newSlide.image} alt="" className="w-12 h-12 object-contain rounded-lg bg-slate-50 border" />
+                        <span className="text-[11px] text-emerald-700 font-bold">معاينة صورة البانر ✓</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="sm:col-span-2">
@@ -1446,8 +1596,8 @@ export const AdminDashboard: React.FC = () => {
                       rows={2}
                       value={newSlide.subtitle_ar}
                       onChange={(e) => setNewSlide({ ...newSlide, subtitle_ar: e.target.value })}
-                      placeholder="أجهزة كسر زيرو ببطارية 90%+ مع شاحن أصلي وضمان استبدال"
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                      placeholder="أجهزة كسر زيرو ببطارية 90%+ مع شاحن أصلي وضمان استبدال رسمي"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
                     />
                   </div>
                 </div>
@@ -1867,6 +2017,295 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                   </div>
                 ))
+              )}
+            </div>
+          </div>
+
+          {/* Section 6: Shipping Rates, Governorates & Cities Management */}
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                <Truck className="w-5 h-5 text-amber-700" />
+                <span>{language === 'ar' ? 'إدارة أسعار الشحن، المحافظات، والمدن والمناطق' : 'Shipping Rates & Cities Manager'}</span>
+              </h3>
+              <p className="text-slate-600 text-xs mt-1">
+                {language === 'ar'
+                  ? 'تحكم في سعر التوصيل لكل محافظة وكل مدينة أو حي بالمنصورة بشكل مستقل، وأضف مناطق جديدة أو عطل مناطق معينة.'
+                  : 'Manage shipping fees per governorate and specific city/neighborhood, add custom zones or toggle availability.'}
+              </p>
+            </div>
+
+            {/* Select Governorate & Base Fee */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-cairo">
+              <div>
+                <label className="block text-slate-700 font-bold mb-1.5">اختر المحافظة لإدارتها:</label>
+                <select
+                  value={shippingGovId}
+                  onChange={(e) => setShippingGovId(e.target.value)}
+                  className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold"
+                >
+                  {egyptianGovernorates.map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.name_ar} {g.id === 'daqahlia' ? '(المنصورة ومراكزها)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1.5">
+                  سعر الشحن الأساسي للمحافظة ({currentShippingGov.name_ar}):
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    min={0}
+                    defaultValue={
+                      (settings.custom_shipping_rates || []).find(
+                        (r) => r.governorate_id === shippingGovId && (!r.city_name || r.city_name === '*')
+                      )?.shipping_fee ?? currentShippingGov.shipping_fee ?? 35
+                    }
+                    key={`gov-fee-${shippingGovId}`}
+                    id={`input-gov-fee-${shippingGovId}`}
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit font-bold"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const input = document.getElementById(`input-gov-fee-${shippingGovId}`) as HTMLInputElement;
+                      if (input) {
+                        handleSetGovBaseFee(shippingGovId, Number(input.value) || 0);
+                        alert(`تم تحديث سعر الشحن الأساسي لمحافظة ${currentShippingGov.name_ar} إلى ${input.value} ج.م`);
+                      }
+                    }}
+                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl whitespace-nowrap cursor-pointer"
+                  >
+                    حفظ السعر
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Add Custom City / Neighborhood Form */}
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-3 text-xs font-cairo">
+              <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <Plus className="w-4 h-4 text-amber-700" />
+                <span>إضافة حي أو منطقة أو مدينة جديدة تحت ({currentShippingGov.name_ar})</span>
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-slate-700 font-semibold mb-1">اسم المنطقة / الحي بالعربي *</label>
+                  <input
+                    type="text"
+                    value={newCityNameAr}
+                    onChange={(e) => setNewCityNameAr(e.target.value)}
+                    placeholder="مثال: المنصورة - حي الأشجار أو طلخا - شارع الجيش"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">سعر الشحن المخصص (ج.م) *</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      value={newCityFee}
+                      onChange={(e) => setNewCityFee(Number(e.target.value) || 0)}
+                      placeholder="35"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleAddCustomCity(shippingGovId, newCityNameAr, newCityFee)}
+                      className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl whitespace-nowrap shadow-sm cursor-pointer"
+                    >
+                      إضافة
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Cities Table for selected governorate */}
+            <div className="space-y-2 text-xs font-cairo">
+              <h4 className="font-bold text-slate-900 text-xs">
+                المدن والمناطق المسجلة في ({currentShippingGov.name_ar}) وأسعار توصيلها:
+              </h4>
+
+              <div className="max-h-80 overflow-y-auto rounded-2xl border border-slate-200 divide-y divide-slate-100 bg-white">
+                {[
+                  ...currentShippingGov.cities,
+                  ...(settings.custom_cities || [])
+                    .filter((c) => c.governorate_id === shippingGovId)
+                    .map((c) => ({ name_ar: c.name_ar, name_en: c.name_en || c.name_ar })),
+                ]
+                  .filter((city, idx, arr) => arr.findIndex((c) => c.name_ar === city.name_ar) === idx)
+                  .map((city) => {
+                    const isDisabled = (settings.disabled_cities || []).includes(city.name_ar);
+                    const cityRate = (settings.custom_shipping_rates || []).find(
+                      (r) => r.governorate_id === shippingGovId && r.city_name === city.name_ar
+                    );
+                    const effectiveFee =
+                      cityRate?.shipping_fee ??
+                      (settings.custom_shipping_rates || []).find(
+                        (r) => r.governorate_id === shippingGovId && (!r.city_name || r.city_name === '*')
+                      )?.shipping_fee ??
+                      currentShippingGov.shipping_fee ??
+                      35;
+
+                    return (
+                      <div
+                        key={city.name_ar}
+                        className={`p-3 flex items-center justify-between gap-3 flex-wrap transition-colors ${
+                          isDisabled ? 'bg-slate-100/70 opacity-60' : 'hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-[180px]">
+                          <span
+                            className={`w-2 h-2 rounded-full ${
+                              isDisabled ? 'bg-rose-500' : 'bg-emerald-500'
+                            }`}
+                          />
+                          <span className="font-bold text-slate-900">{city.name_ar}</span>
+                          {cityRate && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold border border-blue-200">
+                              سعر مخصص
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-slate-500 text-[11px]">الشحن:</span>
+                          <input
+                            type="number"
+                            min={0}
+                            defaultValue={effectiveFee}
+                            id={`city-fee-${city.name_ar}`}
+                            className="w-20 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-outfit text-center font-bold"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const input = document.getElementById(
+                                `city-fee-${city.name_ar}`
+                              ) as HTMLInputElement;
+                              if (input) {
+                                handleSetCityFee(shippingGovId, city.name_ar, Number(input.value) || 0);
+                                alert(`تم تحديث سعر شحن ${city.name_ar} إلى ${input.value} ج.م`);
+                              }
+                            }}
+                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold border border-slate-200 cursor-pointer"
+                          >
+                            تحديث
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleToggleDisableCity(city.name_ar)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors cursor-pointer ${
+                              isDisabled
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                                : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                            }`}
+                          >
+                            {isDisabled ? 'تفعيل' : 'تعطيل'}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          </div>
+
+          {/* Section 7: Default Homepage Featured Products */}
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
+                <span>{language === 'ar' ? 'المنتجات الافتراضية المثبتة في الصفحة الرئيسية' : 'Default Homepage Featured Products'}</span>
+              </h3>
+              <p className="text-slate-600 text-xs mt-1">
+                {language === 'ar'
+                  ? 'اختر المنتجات التي ترغب في عرضها كواجهة أساسية بالصفحة الرئيسية للزوار الجدد (يمكنك أيضاً الضغط على علامة النجمة بجانب أي منتج في جدول المنتجات لتثبيته).'
+                  : 'Select products that appear on the homepage for new visitors (or click the star icon in the products table).'}
+              </p>
+            </div>
+
+            {/* Quick Add to Featured */}
+            <div className="flex flex-col sm:flex-row gap-3 items-center text-xs font-cairo">
+              <select
+                id="select-add-featured"
+                className="w-full sm:flex-1 bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                defaultValue=""
+              >
+                <option value="">-- اختر منتجاً من المتجر لتثبيته في الصفحة الرئيسية --</option>
+                {products
+                  .filter((p) => !(settings.homepage_featured_ids || []).includes(p.id))
+                  .map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name_ar} - {p.price} ج.م ({p.brand || 'عام'})
+                    </option>
+                  ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => {
+                  const sel = document.getElementById('select-add-featured') as HTMLSelectElement;
+                  if (sel && sel.value) {
+                    handleToggleHomepageFeatured(sel.value);
+                    sel.value = '';
+                  }
+                }}
+                className="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl shadow-sm whitespace-nowrap cursor-pointer"
+              >
+                + تثبيت بالرئيسية
+              </button>
+            </div>
+
+            {/* List of currently pinned products */}
+            <div className="space-y-2 text-xs font-cairo">
+              <span className="font-semibold text-slate-700 block">
+                المنتجات المثبتة حالياً ({(settings.homepage_featured_ids || []).length} منتج):
+              </span>
+
+              {(settings.homepage_featured_ids || []).length === 0 ? (
+                <div className="p-4 rounded-2xl bg-slate-50 border border-dashed border-slate-300 text-center text-slate-500">
+                  لا توجد منتجات مثبتة يدوياً حالياً، ويعتمد المتجر على الترتيب التلقائي الذكي حسب الأكثر طلباً.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {(settings.homepage_featured_ids || [])
+                    .map((id) => products.find((p) => p.id === id))
+                    .filter((p): p is Product => Boolean(p))
+                    .map((p) => (
+                      <div
+                        key={p.id}
+                        className="p-3 rounded-2xl bg-slate-50 border border-amber-500/30 flex items-center justify-between gap-3"
+                      >
+                        <div className="flex items-center gap-2.5 overflow-hidden">
+                          <img
+                            src={p.images?.[0] || '/product-placeholder.svg'}
+                            alt=""
+                            className="w-10 h-10 object-contain rounded-lg bg-white border flex-shrink-0"
+                          />
+                          <div className="truncate">
+                            <strong className="text-slate-900 block truncate text-xs">{p.name_ar}</strong>
+                            <span className="text-amber-700 font-outfit font-bold text-[11px]">{p.price} ج.م</span>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleToggleHomepageFeatured(p.id)}
+                          className="p-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 transition-colors flex-shrink-0 cursor-pointer"
+                          title="إلغاء التثبيت من الرئيسية"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                </div>
               )}
             </div>
           </div>

@@ -19,40 +19,104 @@ export const egyptianGovernorates: Governorate[] = [
     "delivery_time_en": "Delivery timing is confirmed when preparing your order",
     "cities": [
       {
+        "name_ar": "المنصورة (وسط البلد)",
+        "name_en": "Mansoura (Downtown)"
+      },
+      {
+        "name_ar": "المنصورة - حي الجامعة وجيهان",
+        "name_en": "Mansoura (University District)"
+      },
+      {
+        "name_ar": "المنصورة - المشاية وتوريل",
+        "name_en": "Mansoura (Mashaya & Touril)"
+      },
+      {
+        "name_ar": "المنصورة - المختلط والجلاء",
+        "name_en": "Mansoura (Mokhtalat & Galaa)"
+      },
+      {
+        "name_ar": "المنصورة - قناة السويس وعبد السلام عارف",
+        "name_en": "Mansoura (Suez Canal & Aref)"
+      },
+      {
+        "name_ar": "المنصورة - سندوب والدراسات",
+        "name_en": "Mansoura (Sandoub & Derasat)"
+      },
+      {
+        "name_ar": "المنصورة - المجزر والعبور وجديلة",
+        "name_en": "Mansoura (Magzar, Obour & Gedeila)"
+      },
+      {
         "name_ar": "المنصورة",
-        "name_en": "المنصورة"
+        "name_en": "Mansoura"
       },
       {
         "name_ar": "طلخا",
-        "name_en": "طلخا"
+        "name_en": "Talkha"
+      },
+      {
+        "name_ar": "نبروه",
+        "name_en": "Nabaroh"
       },
       {
         "name_ar": "ميت غمر",
-        "name_en": "ميت غمر"
+        "name_en": "Mit Ghamr"
       },
       {
         "name_ar": "السنبلاوين",
-        "name_en": "السنبلاوين"
-      },
-      {
-        "name_ar": "دكرنس",
-        "name_en": "دكرنس"
-      },
-      {
-        "name_ar": "بلقاس",
-        "name_en": "بلقاس"
-      },
-      {
-        "name_ar": "شربين",
-        "name_en": "شربين"
+        "name_en": "El Senbellawein"
       },
       {
         "name_ar": "أجا",
-        "name_en": "أجا"
+        "name_en": "Aga"
+      },
+      {
+        "name_ar": "دكرنس",
+        "name_en": "Dikirnis"
+      },
+      {
+        "name_ar": "بلقاس",
+        "name_en": "Belqas"
+      },
+      {
+        "name_ar": "شربين",
+        "name_en": "Sherbin"
+      },
+      {
+        "name_ar": "المنزلة",
+        "name_en": "El Manzala"
+      },
+      {
+        "name_ar": "المطرية (الدقهلية)",
+        "name_en": "El Matareya (Dakahlia)"
+      },
+      {
+        "name_ar": "منية النصر",
+        "name_en": "Meniet El Nasr"
+      },
+      {
+        "name_ar": "بني عبيد",
+        "name_en": "Bani Ubaid"
+      },
+      {
+        "name_ar": "تمي الأمديد",
+        "name_en": "Temy El Amdeed"
+      },
+      {
+        "name_ar": "ميت سلسيل",
+        "name_en": "Mit Salsil"
+      },
+      {
+        "name_ar": "الكردي",
+        "name_en": "El Kurdi"
+      },
+      {
+        "name_ar": "محلة دمنة",
+        "name_en": "Mahallet Damana"
       },
       {
         "name_ar": "جمصة",
-        "name_en": "جمصة"
+        "name_en": "Gamasa"
       }
     ]
   },
