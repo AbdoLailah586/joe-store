@@ -4,6 +4,7 @@ import { AdminShell, AdminSection, initialAdminSection } from './AdminShell';
 const AdminTools = lazy(() => import('./AdminTools').then(m => ({ default: m.AdminTools })));
 const ScreenFinder = lazy(() => import('./ScreenFinder').then(m => ({ default: m.ScreenFinder })));
 const CoverFinder = lazy(() => import('./CoverFinder').then(m => ({ default: m.CoverFinder })));
+const ReviewsModerationPanel = lazy(() => import('./ReviewsModerationPanel').then(m => ({ default: m.ReviewsModerationPanel })));
 import {
   LayoutDashboard,
   Package,
@@ -103,6 +104,17 @@ export const AdminDashboard: React.FC = () => {
   };
   useEffect(() => { const restore = () => setSection(initialAdminSection()); window.addEventListener('popstate', restore); return () => window.removeEventListener('popstate', restore); }, []);
   useEffect(() => { if (sessionReady && canAccessAdmin && !new URLSearchParams(window.location.search).has('section') && !canAccessSection(activeTab)) setSection(allowedSections[0] as AdminSection); }, [sessionReady, canAccessAdmin, allowedSections.join(',')]);
+
+  const [productsSubTab, setProductsSubTab] = useState<'catalog' | 'reviews'>('catalog');
+  const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
+
+  useEffect(() => {
+    neonDb.getAllProductReviews({ status: 'pending', limit: 1 }).then(res => {
+      if (res?.counts?.pending != null) {
+        setPendingReviewsCount(res.counts.pending);
+      }
+    }).catch(() => {});
+  }, [activeTab]);
 
 
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
@@ -607,7 +619,51 @@ export const AdminDashboard: React.FC = () => {
       {/* TAB 2: PRODUCTS MANAGER (Manual + Excel Bulk Import + Export) */}
       {activeTab === 'products' && (
         <div className="space-y-6">
-          {/* Action Ribbon */}
+          {/* Sub-tab Switcher: Catalog vs Reviews */}
+          <div className="flex items-center gap-2 p-1.5 bg-slate-200/70 rounded-2xl w-fit">
+            <button
+              type="button"
+              onClick={() => setProductsSubTab('catalog')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                productsSubTab === 'catalog'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Package className="w-4 h-4 text-amber-600" />
+              <span>إدارة المنتجات والكتالوج</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setProductsSubTab('reviews')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                productsSubTab === 'reviews'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Star className="w-4 h-4 text-amber-500 fill-amber-400" />
+              <span>مراجعة تقييمات العملاء</span>
+              {pendingReviewsCount > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-500 text-black font-black">
+                  {pendingReviewsCount} جديد
+                </span>
+              )}
+            </button>
+          </div>
+
+          {productsSubTab === 'reviews' ? (
+            <Suspense fallback={<div className="p-12 text-center text-xs text-slate-500 font-bold">جاري تحميل لوحة التقييمات...</div>}>
+              <ReviewsModerationPanel
+                onNavigateToProduct={(prodId) => {
+                  navigate('product', prodId);
+                }}
+              />
+            </Suspense>
+          ) : (
+            <>
+              {/* Action Ribbon */}
           <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-white border border-slate-200">
             {/* Search and Category Filter */}
             <div className="flex items-center gap-2 flex-1 max-w-md">
@@ -793,6 +849,8 @@ export const AdminDashboard: React.FC = () => {
               </table>
             </div>
           </div>
+            </>
+          )}
         </div>
       )}
 

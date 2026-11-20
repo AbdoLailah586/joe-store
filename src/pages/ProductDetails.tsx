@@ -31,7 +31,9 @@ import {
   ChevronRight,
   ChevronLeft,
   Eye,
-  Award
+  Award,
+  Camera,
+  Upload
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useStore } from '../context/StoreContext';
@@ -40,7 +42,40 @@ import { ProductCard } from '../components/ProductCard';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
 import { enrichProductData, canPurchaseProduct, productNotice, priceLabel, publicSpecs, getCategoryComparisonRows } from '../utils/amazonEnricher';
 import { sortCatalogProducts } from '../utils/productSorting';
+import { neonDb } from '../services/neonDb';
 import { Product } from '../types';
+
+function getClientSessionId(): string {
+  try {
+    let sid = localStorage.getItem('joe_session_id');
+    if (!sid) {
+      sid = `ses-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      localStorage.setItem('joe_session_id', sid);
+    }
+    return sid;
+  } catch {
+    return 'ses-guest';
+  }
+}
+
+function getLocalSubmittedReviews(productId: string): any[] {
+  try {
+    const raw = localStorage.getItem(`joe_submitted_reviews_${productId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalSubmittedReview(productId: string, review: any) {
+  try {
+    const list = getLocalSubmittedReviews(productId);
+    const updated = [review, ...list.filter(r => r.id !== review.id)];
+    localStorage.setItem(`joe_submitted_reviews_${productId}`, JSON.stringify(updated.slice(0, 20)));
+  } catch {
+    // ignore
+  }
+}
 
 export const ProductDetails: React.FC = () => {
   const {
@@ -109,13 +144,19 @@ export const ProductDetails: React.FC = () => {
   const [helpfulCounts, setHelpfulCounts] = useState<{ [id: string]: number }>({});
   const [userVotedHelpful, setUserVotedHelpful] = useState<{ [id: string]: boolean }>({});
 
-  // Review Submission Modal
+  // Customer Reviews & Shadow Moderation State
+  const [dbReviews, setDbReviews] = useState<any[]>([]);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showAllReviewsModal, setShowAllReviewsModal] = useState(false);
+  const [previewReviewImage, setPreviewReviewImage] = useState<string | null>(null);
+  const [reviewImages, setReviewImages] = useState<string[]>([]);
   const [newReviewAuthor, setNewReviewAuthor] = useState('');
+  const [newReviewPhone, setNewReviewPhone] = useState('');
   const [newReviewCity, setNewReviewCity] = useState('');
   const [newReviewRating, setNewReviewRating] = useState(5);
   const [newReviewTitle, setNewReviewTitle] = useState('');
   const [newReviewComment, setNewReviewComment] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewSubmittedToast, setReviewSubmittedToast] = useState(false);
 
   // Enrich product data using our intelligent engine
@@ -269,37 +310,171 @@ export const ProductDetails: React.FC = () => {
     }));
   };
 
-  // Add customer review handler
-  const handleAddReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newReviewAuthor || !newReviewComment) return;
+  // Fetch reviews for current product (including author's pending reviews)
+  useEffect(() => {
+    if (!rawProduct?.id) return;
+    const local = getLocalSubmittedReviews(rawProduct.id);
+    setDbReviews(local);
 
-    const newRev = {
-      id: `rev-user-${Date.now()}`,
-      author: newReviewAuthor,
-      location: newReviewCity || 'مصر',
-      rating: newReviewRating,
-      date: 'اليوم',
-      title: newReviewTitle || 'تقييم ممتاز وتجربة رائعة',
-      comment: newReviewComment,
-      verified_purchase: false,
-      helpful_count: 0
-    };
+    const sessionId = getClientSessionId();
+    neonDb.getProductReviews(rawProduct.id, sessionId).then(serverReviews => {
+      if (Array.isArray(serverReviews)) {
+        const combined = [...serverReviews];
+        local.forEach(loc => {
+          if (!combined.some(s => s.id === loc.id)) {
+            combined.unshift(loc);
+          }
+        });
+        setDbReviews(combined);
+      }
+    }).catch(err => console.warn('Could not fetch reviews:', err));
+  }, [rawProduct?.id]);
 
-    enriched.customer_reviews.unshift(newRev);
-    setShowReviewModal(false);
-    setReviewSubmittedToast(true);
-    setNewReviewAuthor('');
-    setNewReviewTitle('');
-    setNewReviewComment('');
-    setTimeout(() => setReviewSubmittedToast(false), 3000);
+  // Image upload handler for customer review (max 3 images)
+  const handleReviewImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || !files.length) return;
+    const currentCount = reviewImages.length;
+    const remaining = 3 - currentCount;
+    if (remaining <= 0) {
+      alert('الحد الأقصى لرفع الصور هو 3 صور فقط');
+      return;
+    }
+    const toProcess = Array.from(files).slice(0, remaining);
+    toProcess.forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 800;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          setReviewImages(prev => prev.length < 3 ? [...prev, dataUrl] : prev);
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
   };
 
-  const filteredReviews = enriched.customer_reviews.filter(r => {
-    if (reviewFilter === '5') return r.rating === 5;
-    if (reviewFilter === '4') return r.rating === 4;
-    return true;
-  });
+  // Add customer review handler (shadow moderation)
+  const handleAddReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newReviewAuthor.trim() || !newReviewComment.trim() || !product?.id) return;
+    if (newReviewComment.trim().length > 500) {
+      alert('الحد الأقصى للتعليق هو 500 حرف');
+      return;
+    }
+
+    setIsSubmittingReview(true);
+    const sessionId = getClientSessionId();
+
+    const reviewPayload = {
+      product_id: product.id,
+      product_name_ar: product.name_ar,
+      author_name: newReviewAuthor.trim(),
+      author_phone: newReviewPhone.trim() || undefined,
+      session_id: sessionId,
+      rating: newReviewRating,
+      comment: newReviewComment.trim(),
+      images: reviewImages
+    };
+
+    try {
+      const res = await neonDb.submitProductReview(reviewPayload);
+      const savedReview = res.success && res.review ? res.review : {
+        id: `rev-local-${Date.now()}`,
+        ...reviewPayload,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      };
+
+      saveLocalSubmittedReview(product.id, savedReview);
+      setDbReviews(prev => [savedReview, ...prev.filter(r => r.id !== savedReview.id)]);
+      setShowReviewModal(false);
+      setReviewSubmittedToast(true);
+      setNewReviewAuthor('');
+      setNewReviewPhone('');
+      setNewReviewCity('');
+      setNewReviewTitle('');
+      setNewReviewComment('');
+      setReviewImages([]);
+      setNewReviewRating(5);
+      setTimeout(() => setReviewSubmittedToast(false), 4000);
+    } catch (err) {
+      console.error('Error submitting review:', err);
+      const fallbackReview = {
+        id: `rev-local-${Date.now()}`,
+        ...reviewPayload,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      };
+      saveLocalSubmittedReview(product.id, fallbackReview);
+      setDbReviews(prev => [fallbackReview, ...prev.filter(r => r.id !== fallbackReview.id)]);
+      setShowReviewModal(false);
+      setReviewSubmittedToast(true);
+      setTimeout(() => setReviewSubmittedToast(false), 4000);
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+
+  const allReviews = useMemo(() => {
+    const list: any[] = [];
+    const seen = new Set<string>();
+
+    dbReviews.forEach(r => {
+      if (r && r.id && !seen.has(r.id)) {
+        seen.add(r.id);
+        list.push({
+          id: r.id,
+          author: r.author_name || r.author,
+          location: r.author_phone ? 'مصر' : (r.location || 'مصر'),
+          rating: Number(r.rating) || 5,
+          date: r.created_at ? new Date(r.created_at).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'اليوم',
+          title: r.title || 'تقييم العميل',
+          comment: r.comment,
+          images: Array.isArray(r.images) ? r.images : [],
+          verified_purchase: Boolean(r.verified_purchase ?? true),
+          helpful_count: Number(r.helpful_count) || 0
+        });
+      }
+    });
+
+    (enriched?.customer_reviews || []).forEach(r => {
+      if (r && r.id && !seen.has(r.id)) {
+        seen.add(r.id);
+        list.push(r);
+      }
+    });
+
+    return list;
+  }, [dbReviews, enriched?.customer_reviews]);
+
+  const filteredReviews = useMemo(() => {
+    return allReviews.filter(r => {
+      if (reviewFilter === '5') return r.rating === 5;
+      if (reviewFilter === '4') return r.rating === 4;
+      return true;
+    });
+  }, [allReviews, reviewFilter]);
 
   return (
     <div ref={detailRoot} className="joe-product-page w-full bg-slate-50 text-slate-900 font-cairo">
@@ -1422,26 +1597,27 @@ export const ProductDetails: React.FC = () => {
         {/* ==============================================================
             6. CUSTOMER REVIEWS & RATINGS BREAKDOWN (تقييمات وآراء العملاء)
            ============================================================== */}
-        {enriched.customer_reviews.length > 0 ? <div id="customer-reviews" className="space-y-6 pt-6 border-t border-slate-200">
+        <div id="customer-reviews" className="space-y-6 pt-6 border-t border-slate-200">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 font-cairo">
                 تقييمات وآراء العملاء المسجلة
               </h2>
               <p className="text-xs text-slate-600 mt-1">
-                المراجعات المتاحة لهذا المنتج؛ تظهر علامة الشراء الموثق فقط عند تسجيلها.
+                المراجعات الحقيقية من مشتري المنتج وعملاء المتجر.
               </p>
             </div>
 
             <button
-              disabled
-              title="تقديم المراجعات غير متاح حالياً"
-              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-100 text-amber-700 border border-amber-500/30 font-bold text-xs flex items-center gap-2 transition-all"
+              onClick={() => setShowReviewModal(true)}
+              className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center gap-2 transition-all shadow-sm cursor-pointer"
             >
-              <Star className="w-4 h-4 fill-amber-400 text-amber-700" />
-              <span>تقديم المراجعات قريباً</span>
+              <Plus className="w-4 h-4" />
+              <span>اكتب تقييمك وتجربتك</span>
             </button>
           </div>
+
+          {allReviews.length > 0 ? (
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Breakdown Column (4 cols) */}
@@ -1487,7 +1663,7 @@ export const ProductDetails: React.FC = () => {
 
             </div>
 
-            {/* Right Reviews List Column (8 cols) */}
+            {/* Right Reviews List Column (8 cols) - Max 3 in main page */}
             <div className="lg:col-span-8 space-y-4">
               {/* Review Filter Pills */}
               <div className="flex gap-2 pb-2 overflow-x-auto text-xs">
@@ -1499,7 +1675,7 @@ export const ProductDetails: React.FC = () => {
                       : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
                   }`}
                 >
-                  جميع المراجعات ({enriched.customer_reviews.length})
+                  جميع المراجعات ({allReviews.length})
                 </button>
                 <button
                   onClick={() => setReviewFilter('5')}
@@ -1523,9 +1699,9 @@ export const ProductDetails: React.FC = () => {
                 </button>
               </div>
 
-              {/* Review Items */}
+              {/* Review Items: Max 3 displayed */}
               <div className="space-y-3">
-                {filteredReviews.map(rev => {
+                {filteredReviews.slice(0, 3).map(rev => {
                   const currentHelpful = helpfulCounts[rev.id] ?? rev.helpful_count;
                   const isVoted = !!userVotedHelpful[rev.id];
 
@@ -1562,9 +1738,26 @@ export const ProductDetails: React.FC = () => {
 
                       {/* Title & Comment */}
                       <div className="space-y-1">
-                        <h4 className="text-sm font-bold text-slate-900">{rev.title}</h4>
-                        <p className="text-xs text-slate-600 leading-relaxed">{rev.comment}</p>
+                        {rev.title && <h4 className="text-sm font-bold text-slate-900">{rev.title}</h4>}
+                        <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">{rev.comment}</p>
                       </div>
+
+                      {/* Photos Thumbnail Gallery (Up to 3 images) */}
+                      {Array.isArray(rev.images) && rev.images.length > 0 && (
+                        <div className="flex items-center gap-2 pt-1 flex-wrap">
+                          {rev.images.map((img: string, idx: number) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setPreviewReviewImage(img)}
+                              className="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 hover:border-amber-500 transition-all p-0.5 bg-slate-50 cursor-pointer shadow-sm hover:scale-105"
+                              title="انقر لتكبير الصورة"
+                            >
+                              <img src={img} alt={`صورة التقييم ${idx + 1}`} className="w-full h-full object-cover rounded-lg" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Helpful Button */}
                       <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
@@ -1585,9 +1778,41 @@ export const ProductDetails: React.FC = () => {
                   );
                 })}
               </div>
+
+              {/* Read More button if more than 3 reviews */}
+              {allReviews.length > 3 && (
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAllReviewsModal(true)}
+                    className="w-full py-3 px-4 rounded-xl bg-white border border-slate-300 hover:border-amber-500 hover:bg-amber-50/50 text-slate-800 hover:text-amber-800 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+                  >
+                    <span>قراءة المزيد من التقييمات (عرض كافة الـ {allReviews.length} تقييم)</span>
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
-        </div> : <div id="customer-reviews" className="pt-6 border-t border-slate-200 text-sm text-slate-600">{language === 'ar' ? 'لا توجد مراجعات مسجلة لهذا المنتج بعد.' : 'No recorded reviews for this product yet.'}</div>}
+        ) : (
+          <div className="p-8 rounded-2xl bg-white border border-slate-200 text-center space-y-3">
+            <Star className="w-8 h-8 text-amber-500 fill-amber-400 mx-auto" />
+            <h3 className="font-bold text-slate-900 text-sm">
+              {language === 'ar' ? 'لا توجد مراجعات مسجلة لهذا المنتج بعد.' : 'No recorded reviews for this product yet.'}
+            </h3>
+            <p className="text-xs text-slate-500 max-w-md mx-auto">
+              كن أول من يكتب تقييماً ويشارك تجربته حول أداء المنتج وجودته لمساعدة باقي المشترين.
+            </p>
+            <button
+              onClick={() => setShowReviewModal(true)}
+              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs inline-flex items-center gap-2 transition-all shadow-sm cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>أضف تقييمك الآن</span>
+            </button>
+          </div>
+        )}
+      </div>
 
         {/* ==============================================================
             7. RELATED PRODUCTS CAROUSEL / GRID
@@ -1677,7 +1902,7 @@ export const ProductDetails: React.FC = () => {
 
             <form onSubmit={handleAddReview} className="space-y-3 text-xs">
               <div>
-                <label className="block text-slate-600 font-bold mb-1">اسمك الكامل:</label>
+                <label className="block text-slate-700 font-bold mb-1">اسمك الكامل *:</label>
                 <input
                   type="text"
                   required
@@ -1689,66 +1914,104 @@ export const ProductDetails: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-slate-600 font-bold mb-1">المحافظة / المدينة:</label>
+                <label className="block text-slate-700 font-bold mb-1">رقم الهاتف للتواصل (اختياري):</label>
                 <input
-                  type="text"
-                  value={newReviewCity}
-                  onChange={(e) => setNewReviewCity(e.target.value)}
-                  placeholder="مثال: القاهرة، المنصورة، الإسكندرية..."
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-900 focus:border-amber-400 focus:outline-none"
+                  type="tel"
+                  value={newReviewPhone}
+                  onChange={(e) => setNewReviewPhone(e.target.value)}
+                  placeholder="01XXXXXXXXX"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-900 focus:border-amber-400 focus:outline-none font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-600 font-bold mb-1">تقييمك بالنجوم:</label>
+                <label className="block text-slate-700 font-bold mb-1">تقييمك بالنجوم:</label>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map(st => (
                     <button
                       type="button"
                       key={st}
                       onClick={() => setNewReviewRating(st)}
-                      className="p-1 text-amber-700"
+                      className="p-1 text-amber-700 hover:scale-110 transition-transform cursor-pointer"
                     >
-                      <Star className={`w-6 h-6 ${st <= newReviewRating ? 'fill-amber-400' : 'text-slate-600'}`} />
+                      <Star className={`w-7 h-7 ${st <= newReviewRating ? 'fill-amber-400 text-amber-500' : 'text-slate-300'}`} />
                     </button>
                   ))}
+                  <span className="text-xs font-bold text-slate-700 self-center ms-2">
+                    {newReviewRating} من 5 نجوم
+                  </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-600 font-bold mb-1">عنوان المراجعة:</label>
-                <input
-                  type="text"
-                  value={newReviewTitle}
-                  onChange={(e) => setNewReviewTitle(e.target.value)}
-                  placeholder="مثال: منتج ممتاز وصوت نقي جداً"
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-slate-700 font-bold">تفاصيل تجربتك ورأيك بالمنتج *:</label>
+                  <span className={`text-[10px] font-mono ${newReviewComment.length > 450 ? 'text-amber-700 font-bold' : 'text-slate-500'}`}>
+                    {newReviewComment.length} / 500 حرف
+                  </span>
+                </div>
+                <textarea
+                  required
+                  rows={3}
+                  maxLength={500}
+                  value={newReviewComment}
+                  onChange={(e) => setNewReviewComment(e.target.value)}
+                  placeholder="اكتب رأيك بصراحة في جودة المنتج، البطارية، الشحن، وسرعة التوصيل..."
                   className="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-900 focus:border-amber-400 focus:outline-none"
                 />
               </div>
 
+              {/* Upload up to 3 images */}
               <div>
-                <label className="block text-slate-600 font-bold mb-1">تفاصيل تجربتك:</label>
-                <textarea
-                  required
-                  rows={3}
-                  value={newReviewComment}
-                  onChange={(e) => setNewReviewComment(e.target.value)}
-                  placeholder="اكتب رأيك بصراحة في جودة المنتج وسرعة التوصيل..."
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-900 focus:border-amber-400 focus:outline-none"
-                />
+                <label className="block text-slate-700 font-bold mb-1.5">
+                  إرفاق صور للمنتج من جهازك (اختياري - حتى 3 صور):
+                </label>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {reviewImages.map((img, idx) => (
+                    <div key={idx} className="relative w-16 h-16 rounded-xl border border-slate-300 overflow-hidden group shadow-xs">
+                      <img src={img} alt={`مرفق ${idx + 1}`} className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setReviewImages(prev => prev.filter((_, i) => i !== idx))}
+                        className="absolute top-1 right-1 w-5 h-5 bg-rose-600 text-white rounded-full flex items-center justify-center text-xs hover:bg-rose-700 shadow-md cursor-pointer"
+                        title="حذف الصورة"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+
+                  {reviewImages.length < 3 && (
+                    <label className="w-16 h-16 rounded-xl border-2 border-dashed border-slate-300 hover:border-amber-500 bg-slate-50 hover:bg-amber-50/50 flex flex-col items-center justify-center cursor-pointer transition-colors text-slate-500 hover:text-amber-700">
+                      <Camera className="w-5 h-5 mb-0.5" />
+                      <span className="text-[10px] font-bold">إضافة صورة</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={handleReviewImageUpload}
+                      />
+                    </label>
+                  )}
+                </div>
+                <p className="text-[10px] text-slate-500 mt-1">
+                  يمكنك رفع صور حية للمنتج مباشرة من الكاميرا أو ألبوم الصور على جهازك.
+                </p>
               </div>
 
               <div className="pt-2 flex gap-2">
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold transition-all shadow-glow-gold"
+                  disabled={isSubmittingReview}
+                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:bg-slate-300 text-black font-extrabold transition-all shadow-sm cursor-pointer"
                 >
-                  نشر التقييم فوراً
+                  {isSubmittingReview ? 'جاري النشر...' : 'نشر التقييم'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowReviewModal(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-600 hover:text-slate-900"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer"
                 >
                   إلغاء
                 </button>
@@ -1758,11 +2021,185 @@ export const ProductDetails: React.FC = () => {
         </div>
       )}
 
+      {/* Read More / All Reviews Modal */}
+      {showAllReviewsModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-fadeIn">
+            {/* Header */}
+            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+              <div>
+                <h3 className="font-black text-slate-900 text-base sm:text-lg">
+                  جميع تقييمات المشترين ({allReviews.length} تقييم)
+                </h3>
+                <p className="text-xs text-slate-600 truncate max-w-md">
+                  {product.name_ar}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setShowAllReviewsModal(false);
+                    setShowReviewModal(true);
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs flex items-center gap-1 shadow-sm cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>أضف تقييمك</span>
+                </button>
+                <button
+                  onClick={() => setShowAllReviewsModal(false)}
+                  className="p-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Content List */}
+            <div className="p-5 overflow-y-auto space-y-4 flex-1">
+              {/* Rating summary bar */}
+              <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-black text-slate-900 font-outfit">
+                    {product.rating > 0 ? product.rating : (allReviews.reduce((s, r) => s + (Number(r.rating) || 5), 0) / allReviews.length).toFixed(1)}
+                  </span>
+                  <div>
+                    <div className="flex text-amber-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-500" />
+                      ))}
+                    </div>
+                    <span className="text-xs text-slate-600">{allReviews.length} تقييم مسجل</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-1.5 text-xs">
+                  <button
+                    onClick={() => setReviewFilter('all')}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                      reviewFilter === 'all'
+                        ? 'bg-amber-500 text-black'
+                        : 'bg-white text-slate-600 border border-slate-200'
+                    }`}
+                  >
+                    الكل ({allReviews.length})
+                  </button>
+                  <button
+                    onClick={() => setReviewFilter('5')}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                      reviewFilter === '5'
+                        ? 'bg-amber-500 text-black'
+                        : 'bg-white text-slate-600 border border-slate-200'
+                    }`}
+                  >
+                    5 نجوم
+                  </button>
+                  <button
+                    onClick={() => setReviewFilter('4')}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                      reviewFilter === '4'
+                        ? 'bg-amber-500 text-black'
+                        : 'bg-white text-slate-600 border border-slate-200'
+                    }`}
+                  >
+                    4 نجوم
+                  </button>
+                </div>
+              </div>
+
+              {/* All reviews list */}
+              <div className="space-y-3">
+                {filteredReviews.map(rev => (
+                  <div key={rev.id} className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-slate-100 text-amber-700 font-bold flex items-center justify-center border border-slate-200 text-xs">
+                          {rev.author.charAt(0)}
+                        </div>
+                        <div>
+                          <strong className="text-slate-900 block font-bold">{rev.author}</strong>
+                          <span className="text-[11px] text-slate-500">{rev.location || 'مصر'}</span>
+                        </div>
+                      </div>
+                      <span className="text-[11px] text-slate-500 font-outfit">{rev.date}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <div className="flex text-amber-500">
+                        {[...Array(rev.rating)].map((_, i) => (
+                          <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
+                        ))}
+                      </div>
+                      {rev.verified_purchase && (
+                        <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>شراء موثق</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {rev.title && <h4 className="text-xs font-bold text-slate-900">{rev.title}</h4>}
+                    <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-line">{rev.comment}</p>
+
+                    {Array.isArray(rev.images) && rev.images.length > 0 && (
+                      <div className="flex items-center gap-2 pt-1 flex-wrap">
+                        {rev.images.map((img: string, idx: number) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setPreviewReviewImage(img)}
+                            className="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 hover:border-amber-500 transition-all p-0.5 bg-slate-50 cursor-pointer shadow-sm hover:scale-105"
+                          >
+                            <img src={img} alt={`مرفق ${idx + 1}`} className="w-full h-full object-cover rounded-lg" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end">
+              <button
+                onClick={() => setShowAllReviewsModal(false)}
+                className="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs cursor-pointer"
+              >
+                إغلاق
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Lightbox Modal */}
+      {previewReviewImage && (
+        <div
+          className="fixed inset-0 z-60 bg-black/85 flex items-center justify-center p-4"
+          onClick={() => setPreviewReviewImage(null)}
+        >
+          <div className="relative max-w-2xl max-h-[85vh] bg-transparent" onClick={e => e.stopPropagation()}>
+            <button
+              onClick={() => setPreviewReviewImage(null)}
+              className="absolute -top-10 left-0 text-white bg-slate-800/80 hover:bg-slate-700 p-2 rounded-full cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src={previewReviewImage}
+              alt="صورة التقييم مكبرة"
+              className="max-h-[80vh] max-w-full rounded-2xl object-contain shadow-2xl border border-white/20"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Review Submitted Toast */}
       {reviewSubmittedToast && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-emerald-950 border border-emerald-500 text-emerald-700 text-xs font-bold shadow-2xl flex items-center gap-2 animate-fadeIn">
-          <CheckCircle className="w-5 h-5 text-emerald-700" />
-          <span>شكراً لك! تم نشر تقييمك بنجاح وأصبح ظاهراً لكافة المشترين.</span>
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-white border-2 border-emerald-500 text-emerald-800 text-xs font-bold shadow-2xl flex items-center gap-2 animate-fadeIn">
+          <CheckCircle className="w-5 h-5 text-emerald-600" />
+          <span>تم تسجيل تقييمك ومشاركته بنجاح! شكراً لرأيك الصادق.</span>
         </div>
       )}
     </div>

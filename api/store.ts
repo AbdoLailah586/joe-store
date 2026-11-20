@@ -19,7 +19,10 @@ const policies: Record<string,string[]> = {
   updateOrderStatus:['orders','fulfillment'],confirmPacking:['fulfillment'],recordDeliveryRefusal:['fulfillment'],
   getRefusalHistory:['fulfillment'],getAllRefusals:['fulfillment'],addSupplierQuote:['suppliers'],getSupplierQuotes:['suppliers'],
   listSupportTickets:['support'],escalateSupportTicket:['support'],closeSupportTicket:['support'],getWishlistGap:['overview','analytics'],
-  updateStoreSettings:['overview','products']
+  updateStoreSettings:['overview','products'],
+  getAllProductReviews:['overview','products'],
+  updateProductReviewStatus:['overview','products'],
+  deleteProductReview:['overview','products']
 };
 function safeProduct(product: any, privileged: boolean) {
   if (privileged) return product;
@@ -221,10 +224,39 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     await sql`INSERT INTO cover_catalog_overrides(cover_id,data,updated_by) VALUES(${id},${JSON.stringify(clean)}::jsonb,${user.id}) ON CONFLICT(cover_id) DO UPDATE SET data=EXCLUDED.data,updated_by=EXCLUDED.updated_by,updated_at=NOW()`;
     return {success:true};
   }
+  if(method==='submitProductReview') {
+    const data = args[0] || {};
+    const productId = String(data.product_id || '').trim();
+    const authorName = String(data.author_name || '').trim().slice(0, 100);
+    const comment = String(data.comment || '').trim().slice(0, 600);
+    const rating = Math.max(1, Math.min(5, Math.round(Number(data.rating) || 5)));
+    if (!productId || !authorName || !comment) throw fail(400, 'يرجى كتابة الاسم والتعليق واختيار المنتج.');
+    const images = Array.isArray(data.images)
+      ? data.images.filter((img: any) => typeof img === 'string' && img.trim()).slice(0, 3)
+      : [];
+    return store.submitProductReview({
+      product_id: productId,
+      product_name_ar: data.product_name_ar ? String(data.product_name_ar).slice(0, 200) : undefined,
+      author_name: authorName,
+      author_phone: data.author_phone ? String(data.author_phone).trim().slice(0, 30) : undefined,
+      user_id: user?.id || data.user_id || undefined,
+      session_id: data.session_id ? String(data.session_id).slice(0, 100) : undefined,
+      rating,
+      comment,
+      images
+    });
+  }
+  if(method==='getProductReviews') {
+    const [productId, sessionId] = args;
+    if(!productId || typeof productId !== 'string') return [];
+    return store.getProductReviews(productId, sessionId, user?.id);
+  }
   if(policies[method]||['trackActivity','syncActiveCart','getPersonalizedRecommendations'].includes(method)) {
     if(typeof store[method]!=='function') throw fail(400,'الإجراء غير مدعوم.');
     const actor=user?{id:user.id,name:user.name}:undefined;
     if(method==='updateProduct')args[2]=actor;
+    if(method==='updateProductReviewStatus')args[2]=actor;
+    if(method==='deleteProductReview')args[1]=actor;
     if(['updateOrderStatus','confirmPacking'].includes(method)) {
       const options={...(args[2]||{}),actor};
       if(options.override&&!isFullAdmin(user))throw forbidden();

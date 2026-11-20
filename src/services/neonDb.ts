@@ -354,5 +354,46 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
 
   async updateStoreSettings(settings: any): Promise<{ success: boolean; error?: string }> {
     return await callAction('updateStoreSettings', [settings]);
+  },
+
+  async submitProductReview(reviewData: {
+    product_id: string;
+    product_name_ar?: string;
+    author_name: string;
+    author_phone?: string;
+    user_id?: string;
+    session_id?: string;
+    rating: number;
+    comment: string;
+    images?: string[];
+  }): Promise<{ success: boolean; review?: any; error?: string }> {
+    return await callAction('submitProductReview', [reviewData]);
+  },
+
+  async getProductReviews(productId: string, sessionId?: string): Promise<any[]> {
+    try {
+      return await callStore('getProductReviews', [productId, sessionId]);
+    } catch {
+      return [];
+    }
+  },
+
+  async getAllProductReviews(params?: { status?: string; productId?: string; limit?: number }): Promise<{
+    reviews: any[];
+    counts: { pending: number; approved: number; rejected: number; all: number };
+  }> {
+    try {
+      return await callStore('getAllProductReviews', [params]);
+    } catch {
+      return { reviews: [], counts: { pending: 0, approved: 0, rejected: 0, all: 0 } };
+    }
+  },
+
+  async updateProductReviewStatus(reviewId: string, status: 'approved' | 'rejected'): Promise<{ success: boolean; error?: string }> {
+    return await callAction('updateProductReviewStatus', [reviewId, status]);
+  },
+
+  async deleteProductReview(reviewId: string): Promise<{ success: boolean; error?: string }> {
+    return await callAction('deleteProductReview', [reviewId]);
   }
 };

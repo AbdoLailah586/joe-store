@@ -49,6 +49,23 @@ export interface CustomerReviewItem {
   verified_purchase: boolean;
   helpful_count: number;
   avatar?: string;
+  images?: string[];
+}
+
+export interface ProductReview {
+  id: string;
+  product_id: string;
+  product_name_ar?: string;
+  author_name: string;
+  author_phone?: string;
+  user_id?: string;
+  session_id?: string;
+  rating: number;
+  comment: string;
+  images: string[];
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+  updated_at?: string;
 }
 
 export interface RatingBreakdown {

@@ -1014,5 +1014,207 @@ async getWishlistGap(limit = 5): Promise<{ product_id: string; name_ar: string; 
       console.error('❌ neonDb.updateStoreSettings error:', error);
       return { success: false, error: error.message };
     }
+  },
+  async submitProductReview(review: {
+    product_id: string;
+    product_name_ar?: string;
+    author_name: string;
+    author_phone?: string;
+    user_id?: string;
+    session_id?: string;
+    rating: number;
+    comment: string;
+    images?: string[];
+  }): Promise<{ success: boolean; review?: any; error?: string }> {
+    try {
+      if (!review.product_id) return { success: false, error: 'معرف المنتج مطلوب.' };
+      const author = String(review.author_name || '').trim();
+      if (!author) return { success: false, error: 'اسم كاتب التقييم مطلوب.' };
+      const rating = Math.max(1, Math.min(5, Math.round(Number(review.rating) || 5)));
+      const comment = String(review.comment || '').trim();
+      if (!comment) return { success: false, error: 'نص التقييم مطلوب.' };
+      if (comment.length > 600) return { success: false, error: 'الحد الأقصى للتعليق هو 600 حرف.' };
+
+      const images = Array.isArray(review.images)
+        ? review.images.filter(img => typeof img === 'string' && img.trim()).slice(0, 3)
+        : [];
+
+      const id = `rev-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const rows = await sql`
+        INSERT INTO product_reviews (
+          id, product_id, product_name_ar, author_name, author_phone,
+          user_id, session_id, rating, comment, images, status, created_at, updated_at
+        ) VALUES (
+          ${id},
+          ${review.product_id},
+          ${review.product_name_ar || null},
+          ${author.slice(0, 100)},
+          ${review.author_phone ? String(review.author_phone).trim().slice(0, 30) : null},
+          ${review.user_id || null},
+          ${review.session_id || null},
+          ${rating},
+          ${comment},
+          ${JSON.stringify(images)}::jsonb,
+          'pending',
+          NOW(),
+          NOW()
+        )
+        RETURNING *;
+      `;
+      const created = rows[0] ? { ...rows[0], images: Array.isArray(rows[0].images) ? rows[0].images : [] } : undefined;
+      return { success: true, review: created };
+    } catch (error: any) {
+      console.error('❌ neonDb.submitProductReview error:', error);
+      return { success: false, error: error.message || 'تعذر إرسال التقييم' };
+    }
+  },
+
+  async getProductReviews(productId: string, sessionId?: string, userId?: string): Promise<any[]> {
+    try {
+      if (!productId) return [];
+      let rows;
+      if (sessionId || userId) {
+        rows = await sql`
+          SELECT * FROM product_reviews
+          WHERE product_id = ${productId}
+            AND (
+              status = 'approved'
+              OR (status = 'pending' AND (
+                (${sessionId || null}::text IS NOT NULL AND session_id = ${sessionId || null})
+                OR (${userId || null}::text IS NOT NULL AND user_id = ${userId || null})
+              ))
+            )
+          ORDER BY created_at DESC;
+        `;
+      } else {
+        rows = await sql`
+          SELECT * FROM product_reviews
+          WHERE product_id = ${productId} AND status = 'approved'
+          ORDER BY created_at DESC;
+        `;
+      }
+      return rows.map((r: any) => ({
+        ...r,
+        images: Array.isArray(r.images) ? r.images : []
+      }));
+    } catch (error) {
+      console.error('❌ neonDb.getProductReviews error:', error);
+      return [];
+    }
+  },
+
+  async getAllProductReviews(params?: { status?: string; productId?: string; limit?: number }): Promise<{
+    reviews: any[];
+    counts: { pending: number; approved: number; rejected: number; all: number };
+  }> {
+    try {
+      const limit = Math.min(300, Math.max(1, Number(params?.limit) || 100));
+      const status = params?.status && ['pending', 'approved', 'rejected'].includes(params.status) ? params.status : null;
+      const productId = params?.productId ? String(params.productId).trim() : null;
+
+      let reviews;
+      if (status && productId) {
+        reviews = await sql`
+          SELECT * FROM product_reviews
+          WHERE status = ${status} AND product_id = ${productId}
+          ORDER BY created_at DESC
+          LIMIT ${limit};
+        `;
+      } else if (status) {
+        reviews = await sql`
+          SELECT * FROM product_reviews
+          WHERE status = ${status}
+          ORDER BY created_at DESC
+          LIMIT ${limit};
+        `;
+      } else if (productId) {
+        reviews = await sql`
+          SELECT * FROM product_reviews
+          WHERE product_id = ${productId}
+          ORDER BY created_at DESC
+          LIMIT ${limit};
+        `;
+      } else {
+        reviews = await sql`
+          SELECT * FROM product_reviews
+          ORDER BY created_at DESC
+          LIMIT ${limit};
+        `;
+      }
+
+      const countsRows = await sql`
+        SELECT
+          COUNT(*)::int AS all,
+          COUNT(*) FILTER (WHERE status = 'pending')::int AS pending,
+          COUNT(*) FILTER (WHERE status = 'approved')::int AS approved,
+          COUNT(*) FILTER (WHERE status = 'rejected')::int AS rejected
+        FROM product_reviews;
+      `;
+
+      const counts = countsRows[0] || { pending: 0, approved: 0, rejected: 0, all: 0 };
+      return {
+        reviews: reviews.map((r: any) => ({
+          ...r,
+          images: Array.isArray(r.images) ? r.images : []
+        })),
+        counts
+      };
+    } catch (error) {
+      console.error('❌ neonDb.getAllProductReviews error:', error);
+      return { reviews: [], counts: { pending: 0, approved: 0, rejected: 0, all: 0 } };
+    }
+  },
+
+  async updateProductReviewStatus(reviewId: string, status: 'approved' | 'rejected', actor?: { id: string; name: string }): Promise<{ success: boolean; error?: string }> {
+    try {
+      if (!['approved', 'rejected'].includes(status)) {
+        return { success: false, error: 'حالة المراجعة غير صالحة.' };
+      }
+      const rows = await sql`
+        UPDATE product_reviews
+        SET status = ${status}, updated_at = NOW()
+        WHERE id = ${reviewId}
+        RETURNING *;
+      `;
+      if (!rows.length) return { success: false, error: 'المراجعة غير موجودة.' };
+      if (actor) {
+        await logAudit({
+          actorId: actor.id,
+          actorName: actor.name,
+          action: status === 'approved' ? 'REVIEW_APPROVED' : 'REVIEW_REJECTED',
+          entity: 'product_review',
+          entityId: reviewId,
+          after: { status }
+        });
+      }
+      return { success: true };
+    } catch (error: any) {
+      console.error('❌ neonDb.updateProductReviewStatus error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  async deleteProductReview(reviewId: string, actor?: { id: string; name: string }): Promise<{ success: boolean; error?: string }> {
+    try {
+      const rows = await sql`
+        DELETE FROM product_reviews
+        WHERE id = ${reviewId}
+        RETURNING id;
+      `;
+      if (!rows.length) return { success: false, error: 'المراجعة غير موجودة.' };
+      if (actor) {
+        await logAudit({
+          actorId: actor.id,
+          actorName: actor.name,
+          action: 'REVIEW_DELETED',
+          entity: 'product_review',
+          entityId: reviewId
+        });
+      }
+      return { success: true };
+    } catch (error: any) {
+      console.error('❌ neonDb.deleteProductReview error:', error);
+      return { success: false, error: error.message };
+    }
   }
 };
