@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { AnimateStorefront } from '../components/motion/AnimateStorefront';
 import {
   ShieldCheck,
@@ -37,7 +37,7 @@ import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ProductCard } from '../components/ProductCard';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
-import { enrichProductData, canPurchaseProduct, productNotice, priceLabel, publicSpecs } from '../utils/amazonEnricher';
+import { enrichProductData, canPurchaseProduct, productNotice, priceLabel, publicSpecs, getCategoryComparisonRows } from '../utils/amazonEnricher';
 import { Product } from '../types';
 
 export const ProductDetails: React.FC = () => {
@@ -91,6 +91,12 @@ export const ProductDetails: React.FC = () => {
   // Enrich product data using our intelligent engine
   const enriched = rawProduct ? enrichProductData(rawProduct, products) : null;
   const product = rawProduct;
+
+  // Dynamic category-specific specifications comparison
+  const comparisonRows = useMemo(() => {
+    if (!product || !enriched?.comparison_items?.length) return [];
+    return getCategoryComparisonRows(product, enriched.comparison_items, language);
+  }, [product, enriched?.comparison_items, language]);
 
   // Initialize bundle selection when product changes
   useEffect(() => {
@@ -1206,31 +1212,28 @@ export const ProductDetails: React.FC = () => {
                     ))}
                   </tr>
 
-                  {/* Battery */}
-                  <tr>
-                    <td className="p-3 text-slate-600 font-semibold">عمر البطارية</td>
-                    <td className="p-3 text-center text-emerald-700 font-bold bg-amber-500/5 border-x border-amber-500/20">
-                      {publicSpecs(product.specs)['عمر البطارية'] || (language === 'ar' ? 'غير مذكور' : 'Not specified')}
-                    </td>
-                    {enriched.comparison_items.map(comp => (
-                      <td key={comp.id} className="p-3 text-center text-slate-600">
-                        {publicSpecs(comp.specs)['عمر البطارية'] || (language === 'ar' ? 'غير مذكور' : 'Not specified')}
+                  {/* Dynamic Category-Specific Specifications */}
+                  {comparisonRows.map((row, idx) => (
+                    <tr key={idx}>
+                      <td className="p-3 text-slate-600 font-semibold">{row.label}</td>
+                      <td className="p-3 text-center bg-amber-500/5 border-x border-amber-500/20">
+                        {row.currentValue ? (
+                          <span className="text-emerald-700 font-bold">{row.currentValue}</span>
+                        ) : (
+                          <span className="text-slate-400 text-[11px] font-normal">{language === 'ar' ? 'غير مذكور' : 'Not specified'}</span>
+                        )}
                       </td>
-                    ))}
-                  </tr>
-
-                  {/* Wireless Charging */}
-                  <tr>
-                    <td className="p-3 text-slate-600 font-semibold">الشحن اللاسلكي</td>
-                    <td className="p-3 text-center text-emerald-700 font-bold bg-amber-500/5 border-x border-amber-500/20">
-                      {publicSpecs(product.specs)['الشحن اللاسلكي'] || (language === 'ar' ? 'غير مذكور' : 'Not specified')}
-                    </td>
-                    {enriched.comparison_items.map(comp => (
-                      <td key={comp.id} className="p-3 text-center text-slate-600">
-                        {publicSpecs(comp.specs)['الشحن اللاسلكي'] || (language === 'ar' ? 'غير مذكور' : 'Not specified')}
-                      </td>
-                    ))}
-                  </tr>
+                      {row.compValues.map(comp => (
+                        <td key={comp.id} className="p-3 text-center text-slate-700">
+                          {comp.value ? (
+                            <span className="font-medium text-slate-800">{comp.value}</span>
+                          ) : (
+                            <span className="text-slate-400 text-[11px] font-normal">{language === 'ar' ? 'غير مذكور' : 'Not specified'}</span>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
 
                   {/* Action row */}
                   <tr>
