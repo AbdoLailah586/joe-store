@@ -70,6 +70,17 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
 
   const storages = ['all', '128GB', '256GB', '512GB', '1TB'];
 
+  const activeFilterCount = useMemo(() => {
+    return (selectedCategory !== 'all' ? 1 : 0) +
+      (selectedCondition !== 'all' ? 1 : 0) +
+      (minBatteryHealth > 0 ? 1 : 0) +
+      (selectedStorage !== 'all' ? 1 : 0) +
+      (selectedBrand !== 'all' ? 1 : 0) +
+      (Number.isFinite(maxPrice) && maxPrice < priceCeiling ? 1 : 0) +
+      (availableOnly ? 1 : 0) +
+      (searchQuery.trim() ? 1 : 0);
+  }, [selectedCategory, selectedCondition, minBatteryHealth, selectedStorage, selectedBrand, maxPrice, priceCeiling, availableOnly, searchQuery]);
+
   // Dynamic Categories list from settings or catalog
   const categoriesList = useMemo(() => {
     const list: { key: CategoryKey; label: string }[] = [
@@ -215,10 +226,15 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
           {/* Mobile Filter Toggle */}
           <button
             onClick={() => setIsMobileFiltersOpen(true)}
-            className="md:hidden flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800"
+            className="md:hidden flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold text-slate-800 transition-colors"
           >
             <Filter className="w-4 h-4 text-amber-700" />
-            <span>الفلاتر</span>
+            <span>{isAr ? 'الفلاتر' : 'Filters'}</span>
+            {activeFilterCount > 0 && (
+              <span className="w-5 h-5 rounded-full bg-amber-500 text-black text-[10px] font-black flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
           </button>
 
           {/* Sort Dropdown */}
@@ -239,26 +255,54 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
         </div>
       </div>
 
+      {/* Mobile Quick Category Slider */}
+      <div className="md:hidden flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-1 px-1">
+        {categoriesList.map(cat => (
+          <button
+            key={cat.key}
+            onClick={() => setSelectedCategory(cat.key)}
+            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all border ${
+              selectedCategory === cat.key
+                ? 'bg-amber-500 text-black border-amber-500 shadow-sm'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
       <div className="joe-catalog-toolbar flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-sm">
         <label className="flex items-center gap-2"><input type="checkbox" checked={availableOnly} onChange={e => setAvailableOnly(e.target.checked)} className="accent-amber-600" />{isAr ? 'المتاح للشراء فقط' : 'Available to buy only'}</label>
         <label className="flex items-center gap-2">{isAr ? 'منتجات في الصفحة' : 'Per page'}<select className="border border-slate-300 rounded-lg p-2 bg-white" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>{[24,36,48].map(n => <option key={n}>{n}</option>)}</select></label>
       </div>
       {/* Main Layout: Sidebar Filters + Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-        {/* Desktop Sidebar Filters */}
-        <aside className="hidden md:block col-span-1 bg-white border border-slate-200 rounded-2xl p-5 space-y-6 sticky top-28">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start relative">
+        {/* Desktop Sidebar Filters: Independent Scroll Container + Dividing Border */}
+        <aside
+          aria-label={t('filters')}
+          className="hidden md:block col-span-1 bg-white border border-slate-200/90 rounded-2xl p-5 space-y-5 sticky top-28 max-h-[calc(100vh-8.5rem)] overflow-y-auto overscroll-contain shadow-sm border-s-4 border-s-amber-500/80 rtl:border-l-2 ltr:border-r-2 rtl:border-l-slate-200 ltr:border-r-slate-200 scrollbar-thin"
+          style={{ scrollbarWidth: 'thin' }}
+        >
           <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-            <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2 font-cairo">
-              <SlidersHorizontal className="w-4 h-4 text-amber-700" />
-              <span>{t('filters')}</span>
-            </h3>
-            <button
-              onClick={handleResetFilters}
-              className="text-[11px] text-amber-700 hover:text-amber-700 flex items-center gap-1 font-semibold"
-            >
-              <RotateCcw className="w-3 h-3" />
-              <span>{t('clearFilters')}</span>
-            </button>
+            <div>
+              <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2 font-cairo">
+                <SlidersHorizontal className="w-4 h-4 text-amber-700" />
+                <span>{t('filters')}</span>
+              </h3>
+              <span className="text-[10px] text-slate-500 block mt-0.5">
+                {isAr ? 'تمرير مستقل للفلاتر ↕' : 'Independent filter scroll ↕'}
+              </span>
+            </div>
+            {activeFilterCount > 0 && (
+              <button
+                onClick={handleResetFilters}
+                className="text-[11px] text-amber-700 hover:text-amber-800 flex items-center gap-1 font-semibold"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>{t('clearFilters')}</span>
+              </button>
+            )}
           </div>
 
           {/* Category Filter */}
@@ -482,37 +526,51 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
         </main>
       </div>
 
-      {/* Mobile Filters Slide-in Modal */}
+      {/* Mobile Filters Slide-in Bottom Sheet */}
       {isMobileFiltersOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex">
-          <div className={`w-4/5 max-w-xs bg-white h-full p-5 overflow-y-auto ${isAr ? 'border-l' : 'border-r'} border-amber-500/30 flex flex-col justify-between`}>
-            <div className="space-y-5">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-amber-700" />
-                  <span>{isAr ? 'الفلاتر والخيارات' : 'Filters & Options'}</span>
-                </h3>
-                <button
-                  onClick={() => setIsMobileFiltersOpen(false)}
-                  className="p-1.5 rounded-lg bg-slate-100 text-slate-600"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+        <div className="md:hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex flex-col justify-end">
+          <div className="flex-1" onClick={() => setIsMobileFiltersOpen(false)} />
+          <div className="w-full bg-white rounded-t-3xl border-t border-slate-200 shadow-2xl flex flex-col max-h-[85vh] animate-in slide-in-from-bottom duration-200">
+            {/* Grab handle */}
+            <div className="pt-3 pb-1 text-center" onClick={() => setIsMobileFiltersOpen(false)}>
+              <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto cursor-pointer" />
+            </div>
 
-              {/* Categories */}
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-200">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4 text-amber-700" />
+                <h3 className="font-bold text-sm text-slate-900 font-cairo">
+                  {isAr ? 'تصفية وخيارات المنتجات' : 'Filter Products'}
+                </h3>
+                {activeFilterCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 text-[11px] font-bold">
+                    {activeFilterCount} {isAr ? 'مفعل' : 'active'}
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => setIsMobileFiltersOpen(false)}
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Scrollable Filters Content */}
+            <div className="flex-1 overflow-y-auto overscroll-contain p-5 space-y-5 text-xs font-cairo">
+              {/* Category */}
               <div>
-                <h4 className="text-xs font-bold text-slate-600 mb-2">{isAr ? 'الأقسام' : 'Categories'}</h4>
-                <div className="space-y-1">
+                <h4 className="text-xs font-bold text-slate-700 mb-2">{isAr ? 'الأقسام' : 'Categories'}</h4>
+                <div className="grid grid-cols-2 gap-1.5">
                   {categoriesList.map(cat => (
                     <button
                       key={cat.key}
-                      onClick={() => {
-                        setSelectedCategory(cat.key);
-                        setIsMobileFiltersOpen(false);
-                      }}
-                      className={`w-full ${isAr ? 'text-right' : 'text-left'} px-3 py-1.5 rounded-lg text-xs ${
-                        selectedCategory === cat.key ? 'bg-amber-500 text-black font-bold' : 'text-slate-600'
+                      onClick={() => setSelectedCategory(cat.key)}
+                      className={`text-right px-3 py-2 rounded-xl text-xs font-semibold transition-all border ${
+                        selectedCategory === cat.key
+                          ? 'bg-amber-500 text-black border-amber-400 font-bold shadow-sm'
+                          : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                       }`}
                     >
                       {cat.label}
@@ -523,19 +581,40 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
 
               {/* Condition */}
               <div className="pt-3 border-t border-slate-200">
-                <h4 className="text-xs font-bold text-slate-600 mb-2">{isAr ? 'الحالة' : 'Condition'}</h4>
-                <div className="flex flex-col gap-1 text-xs">
-                  <button onClick={() => setSelectedCondition('all')} className={`${isAr ? 'text-right' : 'text-left'} py-1 text-slate-600`}>{isAr ? 'الكل' : 'All'}</button>
-                  <button onClick={() => setSelectedCondition('mint')} className={`${isAr ? 'text-right' : 'text-left'} py-1 text-amber-700 font-bold`}>{t('mint')}</button>
-                  <button onClick={() => setSelectedCondition('brand_new')} className={`${isAr ? 'text-right' : 'text-left'} py-1 text-emerald-700`}>{t('brandNew')}</button>
+                <h4 className="text-xs font-bold text-slate-700 mb-2">{isAr ? 'الحالة' : 'Condition'}</h4>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    onClick={() => setSelectedCondition('all')}
+                    className={`py-2 rounded-xl font-bold border text-center transition-all ${selectedCondition === 'all' ? 'bg-amber-500 text-black border-amber-400' : 'bg-slate-50 text-slate-600 border-slate-200'}`}
+                  >
+                    {isAr ? 'الكل' : 'All'}
+                  </button>
+                  <button
+                    onClick={() => setSelectedCondition('mint')}
+                    className={`py-2 rounded-xl font-bold border text-center transition-all ${selectedCondition === 'mint' ? 'bg-amber-500 text-black border-amber-400' : 'bg-slate-50 text-slate-600 border-slate-200'}`}
+                  >
+                    {t('mint')}
+                  </button>
+                  <button
+                    onClick={() => setSelectedCondition('brand_new')}
+                    className={`py-2 rounded-xl font-bold border text-center transition-all ${selectedCondition === 'brand_new' ? 'bg-amber-500 text-black border-amber-400' : 'bg-slate-50 text-slate-600 border-slate-200'}`}
+                  >
+                    {t('brandNew')}
+                  </button>
                 </div>
               </div>
 
               {/* Battery slider */}
               <div className="pt-3 border-t border-slate-200">
-                <h4 className="text-xs font-bold text-slate-600 mb-1">
-                  {isAr ? `الحد الأدنى للبطارية: ${minBatteryHealth}%` : `Min Battery Health: ${minBatteryHealth}%`}
-                </h4>
+                <div className="flex items-center justify-between mb-1.5">
+                  <h4 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <BatteryMedium className="w-4 h-4 text-emerald-700" />
+                    <span>{isAr ? 'الحد الأدنى للبطارية:' : 'Min Battery:'}</span>
+                  </h4>
+                  <span className="font-bold text-emerald-700 font-outfit">
+                    {minBatteryHealth > 0 ? `${minBatteryHealth}%+` : (isAr ? 'الكل' : 'All')}
+                  </span>
+                </div>
                 <input
                   type="range"
                   min="0"
@@ -543,28 +622,88 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
                   step="5"
                   value={minBatteryHealth}
                   onChange={(e) => setMinBatteryHealth(Number(e.target.value))}
-                  className="w-full accent-amber-500 bg-slate-100 rounded-lg"
+                  className="w-full accent-amber-500 bg-slate-100 rounded-lg cursor-pointer"
                 />
+              </div>
+
+              {/* Max Price Slider */}
+              <div className="pt-3 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-1.5">
+                  <h4 className="text-xs font-bold text-slate-700">
+                    {isAr ? 'الحد الأقصى للسعر:' : 'Max Price:'}
+                  </h4>
+                  <span className="font-bold text-amber-700 font-outfit">
+                    {formatPrice(Math.min(maxPrice, priceCeiling))}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="500"
+                  max={priceCeiling}
+                  step="500"
+                  value={Math.min(maxPrice, priceCeiling)}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  className="w-full accent-amber-500 bg-slate-100 rounded-lg cursor-pointer"
+                />
+              </div>
+
+              {/* Storage */}
+              <div className="pt-3 border-t border-slate-200">
+                <h4 className="text-xs font-bold text-slate-700 mb-2">{t('storage')}</h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {storages.map(st => (
+                    <button
+                      key={st}
+                      onClick={() => setSelectedStorage(st)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold font-outfit border transition-all ${
+                        selectedStorage === st
+                          ? 'bg-amber-500 text-black border-amber-400'
+                          : 'bg-slate-50 text-slate-600 border-slate-200'
+                      }`}
+                    >
+                      {st === 'all' ? (isAr ? 'الكل' : 'All') : st}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Brands */}
+              <div className="pt-3 border-t border-slate-200">
+                <h4 className="text-xs font-bold text-slate-700 mb-2">{t('filterBrand')}</h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {brands.map(b => (
+                    <button
+                      key={b}
+                      onClick={() => setSelectedBrand(b)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold font-outfit border transition-all ${
+                        selectedBrand === b
+                          ? 'bg-amber-500 text-black border-amber-400 font-bold'
+                          : 'bg-slate-50 text-slate-600 border-slate-200'
+                      }`}
+                    >
+                      {b === 'all' ? (isAr ? 'الكل' : 'All') : b}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-200 space-y-2">
+            {/* Bottom Actions Bar */}
+            <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center gap-2">
+              <button
+                onClick={handleResetFilters}
+                className="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-100 transition-colors"
+              >
+                {isAr ? 'إعادة ضبط' : 'Reset'}
+              </button>
               <button
                 onClick={() => setIsMobileFiltersOpen(false)}
-                className="w-full py-2.5 rounded-xl bg-amber-500 text-black font-bold text-xs"
+                className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-md transition-colors"
               >
                 {isAr ? `تطبيق (${filteredProducts.length}) منتج` : `Apply (${filteredProducts.length}) Products`}
               </button>
-              <button
-                onClick={handleResetFilters}
-                className="w-full py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-semibold"
-              >
-                {isAr ? 'مسح الفلاتر' : 'Reset Filters'}
-              </button>
             </div>
           </div>
-
-          <div className="flex-1" onClick={() => setIsMobileFiltersOpen(false)} />
         </div>
       )}
     </div>

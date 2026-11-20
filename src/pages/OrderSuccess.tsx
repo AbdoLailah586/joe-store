@@ -83,10 +83,10 @@ export const OrderSuccess: React.FC = () => {
           </div>
           <div className="space-y-1">
             <h3 className="font-bold text-sm text-emerald-700">
-              إشعار واتساب فوري لطلبك (WhatsApp Automated Receipt)
+              إشعار واتساب فوري لطلبك (WhatsApp Receipt)
             </h3>
             <p className="text-xs text-slate-600 leading-relaxed">
-              تم إرسال رسالة آلية عبر نظام <strong>واتساب برو</strong> إلى هاتفك (<strong>{currentOrder.customer_whatsapp}</strong>) تحتوي على الفاتورة وتفاصيل المنتجات ومتابعة حالة التوصيل.
+              تم إرسال رسالة آلية عبر <strong>الواتساب</strong> إلى هاتفك (<strong>{currentOrder.customer_whatsapp}</strong>) تحتوي على الفاتورة وتفاصيل المنتجات ومتابعة حالة التوصيل.
             </p>
           </div>
         </div>

@@ -54,7 +54,7 @@ import { Product, Order, OrderStatus, CategoryKey, ProductCondition, HeroSlide, 
 import { egyptianGovernorates } from '../../data/governorates';
 import { ExcelImportModal } from '../../components/ExcelImportModal';
 import { downloadSampleExcelTemplate, exportCatalogToExcel } from '../../utils/excelParser';
-import { generateWhatsAppWebLink, sendWhatsAppMessage } from '../../utils/whatsappService';
+import { generateWhatsAppWebLink, sendWhatsAppMessage, buildDefaultWhatsAppMessage } from '../../utils/whatsappService';
 import { InventoryTab } from './InventoryTab';
 import { CustomerCrmTab } from './CustomerCrmTab';
 import { EmailTemplatesTab } from './EmailTemplatesTab';
@@ -132,6 +132,20 @@ export const AdminDashboard: React.FC = () => {
   const [trackingInput, setTrackingInput] = useState('');
   const [isSendingWhatsApp, setIsSendingWhatsApp] = useState(false);
   const [sendWhatsAppAlert, setSendWhatsAppAlert] = useState<{ success: boolean; msg: string } | null>(null);
+  const [editableWhatsAppText, setEditableWhatsAppText] = useState<string>('');
+
+  useEffect(() => {
+    if (whatsappModalOrder) {
+      const defaultText = buildDefaultWhatsAppMessage(
+        customMsgType,
+        whatsappModalOrder,
+        settings,
+        courierInput || whatsappModalOrder.courier_name,
+        trackingInput || whatsappModalOrder.tracking_number
+      );
+      setEditableWhatsAppText(defaultText);
+    }
+  }, [whatsappModalOrder, customMsgType]);
 
   // Hero Slide Customization State
   const [showSlideForm, setShowSlideForm] = useState(false);
@@ -454,7 +468,7 @@ export const AdminDashboard: React.FC = () => {
     setSendWhatsAppAlert(null);
 
     try {
-      const res = await manualSendWhatsAppNotification(whatsappModalOrder, customMsgType);
+      const res = await manualSendWhatsAppNotification(whatsappModalOrder, customMsgType, editableWhatsAppText);
       if (res.success) {
         setSendWhatsAppAlert({ success: true, msg: 'تم إرسال إشعار الواتساب للعميل بنجاح!' });
       } else {
@@ -2543,7 +2557,7 @@ export const AdminDashboard: React.FC = () => {
       {/* MODAL 2: MANUAL WHATSAPP DISPATCH */}
       {whatsappModalOrder && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="relative w-full max-w-lg bg-white border border-emerald-500/40 rounded-3xl p-6 text-slate-900 shadow-2xl space-y-4">
+          <div className="relative w-full max-w-xl bg-white border border-emerald-500/40 rounded-3xl p-6 text-slate-900 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
                 <MessageCircle className="w-5 h-5 text-emerald-700" />
@@ -2551,26 +2565,34 @@ export const AdminDashboard: React.FC = () => {
               </h3>
               <button
                 onClick={() => setWhatsappModalOrder(null)}
-                className="p-1 rounded-lg bg-slate-100 text-slate-600"
+                className="p-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-3 text-xs font-cairo">
-              <div>
-                <label className="block text-slate-600 mb-1">رقم المستلم:</label>
-                <strong className="text-slate-900 font-outfit text-sm">
-                  {whatsappModalOrder.customer_whatsapp || whatsappModalOrder.customer_phone}
-                </strong>
+            <div className="space-y-3.5 text-xs font-cairo">
+              <div className="flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                <div>
+                  <span className="text-slate-500 block text-[11px]">رقم هاتف العميل:</span>
+                  <strong className="text-slate-900 font-outfit text-sm">
+                    {whatsappModalOrder.customer_whatsapp || whatsappModalOrder.customer_phone}
+                  </strong>
+                </div>
+                <div className="text-end">
+                  <span className="text-slate-500 block text-[11px]">العميل:</span>
+                  <strong className="text-slate-900 text-xs font-bold">
+                    {whatsappModalOrder.customer_name}
+                  </strong>
+                </div>
               </div>
 
               <div>
-                <label className="block text-slate-600 mb-1">نوع الرسالة / القالب الآلي:</label>
+                <label className="block text-slate-700 font-bold mb-1">نوع الرسالة / القالب الآلي:</label>
                 <select
                   value={customMsgType}
                   onChange={(e) => setCustomMsgType(e.target.value as any)}
-                  className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                  className="w-full bg-slate-100 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium"
                 >
                   <option value="order_confirmed">تأكيد الطلب والفاتورة (Order Placed)</option>
                   <option value="payment_verified">تأكيد استلام الدفع (Payment Verified)</option>
@@ -2579,6 +2601,91 @@ export const AdminDashboard: React.FC = () => {
                   <option value="delivered">تم التوصيل بنجاح (Delivered)</option>
                   <option value="review_request">طلب تقييم الخدمة والجهاز (Review Request)</option>
                 </select>
+              </div>
+
+              {customMsgType === 'shipped' && (
+                <div className="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                  <div>
+                    <label className="block text-slate-600 mb-1">اسم المندوب / شركة الشحن:</label>
+                    <input
+                      type="text"
+                      value={courierInput}
+                      onChange={(e) => {
+                        setCourierInput(e.target.value);
+                        if (whatsappModalOrder) {
+                          setEditableWhatsAppText(buildDefaultWhatsAppMessage(
+                            'shipped',
+                            whatsappModalOrder,
+                            settings,
+                            e.target.value,
+                            trackingInput
+                          ));
+                        }
+                      }}
+                      className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-600 mb-1">رقم البوليصة (اختياري):</label>
+                    <input
+                      type="text"
+                      value={trackingInput}
+                      onChange={(e) => {
+                        setTrackingInput(e.target.value);
+                        if (whatsappModalOrder) {
+                          setEditableWhatsAppText(buildDefaultWhatsAppMessage(
+                            'shipped',
+                            whatsappModalOrder,
+                            settings,
+                            courierInput,
+                            e.target.value
+                          ));
+                        }
+                      }}
+                      placeholder="مثال: EGY-98213"
+                      className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-900"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-slate-700 font-bold text-xs">
+                    نص الرسالة (يمكنك تعديل أو حذف أي جزء منها بحرية قبل الإرسال):
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (whatsappModalOrder) {
+                        const resetText = buildDefaultWhatsAppMessage(
+                          customMsgType,
+                          whatsappModalOrder,
+                          settings,
+                          courierInput || whatsappModalOrder.courier_name,
+                          trackingInput || whatsappModalOrder.tracking_number
+                        );
+                        setEditableWhatsAppText(resetText);
+                      }
+                    }}
+                    className="text-[11px] text-amber-700 hover:text-amber-800 font-semibold flex items-center gap-1"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    <span>استعادة القالب الأصلي</span>
+                  </button>
+                </div>
+                <textarea
+                  rows={8}
+                  value={editableWhatsAppText}
+                  onChange={(e) => setEditableWhatsAppText(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-3 text-xs text-slate-900 font-mono focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 leading-relaxed resize-y"
+                  placeholder="اكتب أو عدل نص رسالة الواتساب هنا..."
+                  dir="rtl"
+                />
+                <div className="flex items-center justify-between mt-1 text-[11px] text-slate-500">
+                  <span>💡 ملاحظة: لا يتم ذكر الضمان إلا للأصناف المشمولة بضمان رسمي، ويمكنك تعديل أو حذف أي سطر يدوياً.</span>
+                  <span>{editableWhatsAppText.length} حرف</span>
+                </div>
               </div>
 
               {sendWhatsAppAlert && (
@@ -2591,21 +2698,33 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               )}
 
-              <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
-                <button
-                  onClick={() => setWhatsappModalOrder(null)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 text-slate-600"
+              <div className="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <a
+                  href={generateWhatsAppWebLink(whatsappModalOrder.customer_whatsapp || whatsappModalOrder.customer_phone, editableWhatsAppText)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold flex items-center gap-1.5 transition-colors text-xs"
                 >
-                  إغلاق
-                </button>
-                <button
-                  onClick={handleTriggerWhatsApp}
-                  disabled={isSendingWhatsApp}
-                  className="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-400 text-black font-extrabold flex items-center gap-1.5 shadow-md"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{isSendingWhatsApp ? 'جاري الإرسال...' : 'إرسال الإشعار الآن'}</span>
-                </button>
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  <span>فتح في واتساب ويب مباشرة</span>
+                </a>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setWhatsappModalOrder(null)}
+                    className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+                  >
+                    إغلاق
+                  </button>
+                  <button
+                    onClick={handleTriggerWhatsApp}
+                    disabled={isSendingWhatsApp}
+                    className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold flex items-center gap-1.5 shadow-md transition-colors disabled:opacity-50"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{isSendingWhatsApp ? 'جاري الإرسال...' : 'إرسال الإشعار الآن'}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

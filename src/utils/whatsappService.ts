@@ -233,7 +233,15 @@ export const sendWhatsAppMessage = async (
 
 export const buildOrderConfirmationMessage = (order: Order, settings: StoreSettings): string => {
   const itemsList = order.items
-    .map((item, i) => `${i + 1}. *${item.product.name_ar}* (${item.selected_storage || item.product.storage || ''} ${item.selected_color || item.product.color_ar || ''}) × ${item.quantity} = ${(item.product.price * item.quantity).toLocaleString()} ج.م`)
+    .map((item, i) => {
+      const months = item.product.warranty_months ?? 0;
+      const warrantySpec = item.product.specs?.['الضمان'] || item.product.specs?.['warranty'];
+      const hasWarranty = months > 0 || (Boolean(warrantySpec) && !/لا يوجد|بدون|غير متوفر/i.test(warrantySpec));
+      const warrantyTag = hasWarranty 
+        ? ` [ضمان: ${months > 0 ? `${months} شهر` : warrantySpec}]` 
+        : '';
+      return `${i + 1}. *${item.product.name_ar}* (${item.selected_storage || item.product.storage || ''} ${item.selected_color || item.product.color_ar || ''}) × ${item.quantity} = ${(item.product.price * item.quantity).toLocaleString()} ج.م${warrantyTag}`;
+    })
     .join('\n');
 
   const addressLine = [
@@ -306,11 +314,19 @@ export const buildOutForDeliveryMessage = (order: Order): string => {
 };
 
 export const buildDeliveredMessage = (order: Order): string => {
+  const warrantedItems = order.items.filter(item => {
+    const months = item.product.warranty_months ?? 0;
+    const spec = item.product.specs?.['الضمان'] || item.product.specs?.['warranty'];
+    return months > 0 || (Boolean(spec) && !/لا يوجد|بدون|غير متوفر/i.test(spec));
+  });
+  const warrantyText = warrantedItems.length > 0
+    ? `\n🛡️ *الضمان:* الأجهزة والمنتجات المشمولة بالضمان في طلبك مفعل ضمانها المعتمد لدى متجر جو ستور وفقاً للشروط المحددة.`
+    : '';
+
   return `🎁 *تم توصيل طلبك بنجاح! - جو ستور (JOE Store)*
 
-ألف مبروك جهازك الجديد يا *${order.customer_name}*! 🎉
-يسعدنا إتمام تسليم طلبك رقم *#${order.order_number}*.
-جهازك مشمول بضمان معتمد رسمي من متجر جو ستور.`;
+ألف مبروك استلام طلبك يا *${order.customer_name}*! 🎉
+يسعدنا إتمام تسليم طلبك رقم *#${order.order_number}*.${warrantyText}`;
 };
 
 export const buildReviewRequestMessage = (order: Order): string => {
@@ -321,6 +337,22 @@ export const buildReviewRequestMessage = (order: Order): string => {
 رأيك يهمنا جداً في تطوير خدماتنا. نرجو منك تقييم تجربة الشراء وجودة المنتج وسرعة التوصيل عبر الرد على هذه الرسالة أو تقييمنا على صفحتنا.
 
 شكراً لاختيارك جو ستور، ودائماً في خدمتك! ❤️📱`;
+};
+
+export const buildDefaultWhatsAppMessage = (
+  type: WhatsAppNotification['type'],
+  order: Order,
+  settings: StoreSettings = defaultSettings,
+  courierName: string = 'مندوب جو ستور السريع',
+  trackingNumber: string = ''
+): string => {
+  if (type === 'order_confirmed') return buildOrderConfirmationMessage(order, settings);
+  if (type === 'payment_verified') return buildPaymentConfirmedMessage(order, settings);
+  if (type === 'shipped') return buildShippedMessage(order, courierName, trackingNumber);
+  if (type === 'out_for_delivery') return buildOutForDeliveryMessage(order);
+  if (type === 'delivered') return buildDeliveredMessage(order);
+  if (type === 'review_request') return buildReviewRequestMessage(order);
+  return buildOrderConfirmationMessage(order, settings);
 };
 
 // Generates direct wa.me link for manual fallback
