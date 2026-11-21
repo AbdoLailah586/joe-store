@@ -783,5 +783,82 @@ export const initialProducts: Product[] = [
     is_featured: false,
     is_best_seller: false,
     created_at: '2026-11-19'
+  },
+  {
+    id: 'prod-case-bmw-m-ip17promax',
+    sku: 'CASE-BMW-M-IP17PM-BLK',
+    model_name: 'BMW M Genuine Leather Case (iPhone 17 Pro Max)',
+    name_ar: 'جراب كفر BMW M Power جلد طبيعي فاخر - آيفون 17 برو ماكس',
+    name_en: 'BMW M Power Luxury Genuine Leather Protective Case - iPhone 17 Pro Max',
+    brand: 'BMW',
+    category: 'cases_protection',
+    condition: 'brand_new',
+    price: 75,
+    original_price: 100,
+    discount_percentage: 25,
+    cost_price: 45,
+    stock: 25,
+    in_stock: true,
+    warranty_months: 0,
+    bought_past_month: 28,
+    rating: 5.0,
+    reviews_count: 3,
+    color_ar: 'أسود كربوني رياضي مع خطوط BMW M',
+    color_en: 'Perforated Black with BMW M Stripes',
+    color_hex: '#1A1A1A',
+    available_colors: [
+      { name_ar: 'أسود كربوني مع خطوط BMW M', name_en: 'Perforated Black with M Stripes', hex: '#1A1A1A' }
+    ],
+    available_storages: [],
+    images: [
+      '/product-images/case-bmw-m-ip17promax-isolated.jpg',
+      '/product-images/case-bmw-m-ip17promax-on-phone.jpg',
+      '/product-images/case-bmw-m-ip17promax-front.jpg',
+      '/product-images/case-bmw-m-ip17promax-original.jpg'
+    ],
+    description_ar: 'جراب حماية فاخر مرخص رسمياً من BMW M Power مصمم خصيصاً لهاتف آيفون 17 برو ماكس (iPhone 17 Pro Max). مصنع من جلد طبيعي مثقب (Perforated Real Leather) عالي الجودة مع شريط سباقات M الأيقوني الثلاثي الألوان وشعار BMW المعدني البارز. يوفر حماية فائقة ضد الصدمات مع إطار مرن ممتص للصدمات وحافة مرتفعة لحماية عدسات الكاميرا والشاشة.',
+    description_en: 'Official BMW M Power luxury genuine leather case designed specifically for iPhone 17 Pro Max. Crafted from premium perforated genuine leather featuring the iconic BMW M tri-color racing stripe and raised metal emblems. Offers military-grade drop protection with raised camera bezels and tactile button coverage.',
+    specs: {
+      'الماركة (Brand)': 'BMW Motorsport',
+      'الموديل المتوافق': 'Apple iPhone 17 Pro Max / 16 Pro Max',
+      'الخامة': 'جلد طبيعي فاخر مثقب (Cuir Véritable) + إطار TPU مرن ممتص للصدمات',
+      'الشحن اللاسلكي': 'متوافق مع الشحن اللاسلكي السريع وMagSafe',
+      'حماية الكاميرا': 'إطار مدمج مرتفع لحماية العدسات من الخدوش',
+      'مقاومة الصدمات': 'حماية معتمدة ضد السقوط والصدمات مع زوايا مدعمة',
+      'الأزرار والمنافذ': 'قصات ليزر دقيقة للأزرار ومنفذ Type-C وزر الـ Camera Control'
+    },
+    about_item: [
+      '[جلد طبيعي فاخر مثقب]: مصنع من جلد طبيعي عالي الجودة بملمس مثقب ناعم يوفر قبضة مريحة وثابتة في اليد مع مقاومة للتعرق وبصمات الأصابع.',
+      '[تصميم رياضي أيقوني BMW M]: مزين بخطوط سباقات BMW M Power الثلاثية الألوان (أزرق سماوي، كحلي، أحمر) وشعار BMW المعدني البارز لإطلالة أنيقة وفاخرة.',
+      '[حماية متكاملة للكاميرا والشاشة]: حواف مرتفعة حول فتحة الكاميرات الخلفية وشاشة الموبايل لمنع الاحتكاك والخدوش عند وضعه على الأسطح المستوية.',
+      '[توافق كامل مع iPhone 17 Pro Max]: أبعاد دقيقة بنسبة 100% مع فتحات متقنة لزر الـ Camera Control ومنفذ الشحن السريع Type-C والسماعات.',
+      '[دعم الشحن اللاسلكي]: خفيف الوزن ونحيف ليسمح بالشحن اللاسلكي السريع دون الحاجة لنزع الجراب.'
+    ],
+    feature_banners: [],
+    frequently_bought_together: [],
+    rating_breakdown: {
+      five_star: 3,
+      four_star: 0,
+      three_star: 0,
+      two_star: 0,
+      one_star: 0
+    },
+    customer_reviews: [
+      {
+        id: 'rev-bmw-sample-1',
+        author: 'م. أحمد الشربيني',
+        location: 'المنصورة',
+        rating: 5,
+        date: '2026-11-21',
+        title: 'خامة ممتازة وجودة أصلية 100%',
+        comment: 'الجراب خامة الجلد الطبيعي بتاعته ممتازة جداً وملمسه فخم في الإيد، واللوجو بتاع BMW شكله محترم قوي ومفيش أي فراغات على الموبايل.',
+        images: [],
+        verified_purchase: true,
+        helpful_count: 4
+      }
+    ],
+    is_featured: true,
+    is_best_seller: true,
+    created_at: '2026-11-21'
   }
 ];
