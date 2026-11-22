@@ -816,21 +816,22 @@ export const initialProducts: Product[] = [
       '/product-images/case-bmw-m-ip17promax-front.jpg',
       '/product-images/case-bmw-m-ip17promax-original.jpg'
     ],
-    description_ar: 'جراب حماية فاخر مرخص رسمياً من BMW M Power مصمم خصيصاً لهاتف آيفون 17 برو ماكس (iPhone 17 Pro Max). مصنع من جلد طبيعي مثقب (Perforated Real Leather) عالي الجودة مع شريط سباقات M الأيقوني الثلاثي الألوان وشعار BMW المعدني البارز. يوفر حماية فائقة ضد الصدمات مع إطار مرن ممتص للصدمات وحافة مرتفعة لحماية عدسات الكاميرا والشاشة.',
-    description_en: 'Official BMW M Power luxury genuine leather case designed specifically for iPhone 17 Pro Max. Crafted from premium perforated genuine leather featuring the iconic BMW M tri-color racing stripe and raised metal emblems. Offers military-grade drop protection with raised camera bezels and tactile button coverage.',
+    description_ar: 'جراب حماية فاخر مرخص رسمياً من BMW M Power مصمم خصيصاً لهاتف آيفون 17 برو ماكس (iPhone 17 Pro Max) بالتصميم الجديد لمنصة الكاميرات العريضة (Camera Plateau). مصنع من جلد طبيعي مثقب (Perforated Real Leather) عالي الجودة مع شريط سباقات M الأيقوني الثلاثي الألوان وشعار BMW المعدني البارز. يوفر حماية فائقة لمنصة الكاميرات الأفقية وإطار مرن ممتص للصدمات وحافة مرتفعة لحماية العدسات والشاشة.',
+    description_en: 'Official BMW M Power luxury genuine leather case designed specifically for iPhone 17 Pro Max featuring the new Camera Plateau horizontal visor platform. Crafted from premium perforated genuine leather with the iconic BMW M tri-color racing stripe and raised metal emblems.',
     specs: {
       'الماركة (Brand)': 'BMW Motorsport',
-      'الموديل المتوافق': 'Apple iPhone 17 Pro Max / 16 Pro Max',
+      'الموديل المتوافق': 'Apple iPhone 17 Pro Max (Camera Plateau Edition)',
       'الخامة': 'جلد طبيعي فاخر مثقب (Cuir Véritable) + إطار TPU مرن ممتص للصدمات',
       'الشحن اللاسلكي': 'متوافق مع الشحن اللاسلكي السريع وMagSafe',
-      'حماية الكاميرا': 'إطار مدمج مرتفع لحماية العدسات من الخدوش',
+      'حماية الكاميرا': 'إطار مدمج مرتفع مصمم خصيصاً لحماية شريط الكاميرا العريض Camera Plateau الجديد',
       'مقاومة الصدمات': 'حماية معتمدة ضد السقوط والصدمات مع زوايا مدعمة',
       'الأزرار والمنافذ': 'قصات ليزر دقيقة للأزرار ومنفذ Type-C وزر الـ Camera Control'
     },
     about_item: [
+      '[تصميم متوافق مع Camera Plateau]: مصمم هندسياً بفتحة أفقية عريضة مع إطار بارز مخصص لحماية شريط الكاميرات العريض الجديد كلياً في هاتف iPhone 17 Pro Max.',
       '[جلد طبيعي فاخر مثقب]: مصنع من جلد طبيعي عالي الجودة بملمس مثقب ناعم يوفر قبضة مريحة وثابتة في اليد مع مقاومة للتعرق وبصمات الأصابع.',
       '[تصميم رياضي أيقوني BMW M]: مزين بخطوط سباقات BMW M Power الثلاثية الألوان (أزرق سماوي، كحلي، أحمر) وشعار BMW المعدني البارز لإطلالة أنيقة وفاخرة.',
-      '[حماية متكاملة للكاميرا والشاشة]: حواف مرتفعة حول فتحة الكاميرات الخلفية وشاشة الموبايل لمنع الاحتكاك والخدوش عند وضعه على الأسطح المستوية.',
+      '[حماية متكاملة للكاميرا والشاشة]: حواف مرتفعة حول منصة الكاميرات وشاشة الموبايل لمنع الاحتكاك والخدوش عند وضعه على الأسطح المستوية.',
       '[توافق كامل مع iPhone 17 Pro Max]: أبعاد دقيقة بنسبة 100% مع فتحات متقنة لزر الـ Camera Control ومنفذ الشحن السريع Type-C والسماعات.',
       '[دعم الشحن اللاسلكي]: خفيف الوزن ونحيف ليسمح بالشحن اللاسلكي السريع دون الحاجة لنزع الجراب.'
     ],
