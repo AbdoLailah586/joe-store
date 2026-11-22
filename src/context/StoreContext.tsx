@@ -168,7 +168,7 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user: account, sessionReady, adminSections: accountSections = [] } = useAuth();
   const accountAccessKey = `${account?.id || ''}:${account?.role || ''}:${accountSections.join(',')}`;
-  const CURRENT_VERSION = 'v5_researched_excel_catalog';
+  const CURRENT_VERSION = 'v6_researched_excel_catalog';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
@@ -314,7 +314,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               .map(product => locallyEditedIds.current.has(product.id)
                 ? previousById.get(product.id) || product : product),
             ...previous.filter(product => locallyEditedIds.current.has(product.id)
-              && !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id))
+              && !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id)),
+            ...initialProducts.filter(product => !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id))
           ];
         });
         setCatalogLoaded(true);

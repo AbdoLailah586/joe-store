@@ -198,6 +198,66 @@ export const ProductDetails: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxOpen, showReviewModal]);
 
+  // Fetch reviews for current product (including author's pending reviews)
+  useEffect(() => {
+    if (!rawProduct?.id) return;
+    const local = getLocalSubmittedReviews(rawProduct.id);
+    setDbReviews(local);
+
+    const sessionId = getClientSessionId();
+    neonDb.getProductReviews(rawProduct.id, sessionId).then(serverReviews => {
+      if (Array.isArray(serverReviews)) {
+        const combined = [...serverReviews];
+        local.forEach(loc => {
+          if (!combined.some(s => s.id === loc.id)) {
+            combined.unshift(loc);
+          }
+        });
+        setDbReviews(combined);
+      }
+    }).catch(err => console.warn('Could not fetch reviews:', err));
+  }, [rawProduct?.id]);
+
+  const allReviews = useMemo(() => {
+    const list: any[] = [];
+    const seen = new Set<string>();
+
+    dbReviews.forEach(r => {
+      if (r && r.id && !seen.has(r.id)) {
+        seen.add(r.id);
+        list.push({
+          id: r.id,
+          author: r.author_name || r.author,
+          location: r.author_phone ? 'مصر' : (r.location || 'مصر'),
+          rating: Number(r.rating) || 5,
+          date: r.created_at ? new Date(r.created_at).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'اليوم',
+          title: r.title || 'تقييم العميل',
+          comment: r.comment,
+          images: Array.isArray(r.images) ? r.images : [],
+          verified_purchase: Boolean(r.verified_purchase ?? true),
+          helpful_count: Number(r.helpful_count) || 0
+        });
+      }
+    });
+
+    (enriched?.customer_reviews || []).forEach(r => {
+      if (r && r.id && !seen.has(r.id)) {
+        seen.add(r.id);
+        list.push(r);
+      }
+    });
+
+    return list;
+  }, [dbReviews, enriched?.customer_reviews]);
+
+  const filteredReviews = useMemo(() => {
+    return allReviews.filter(r => {
+      if (reviewFilter === '5') return r.rating === 5;
+      if (reviewFilter === '4') return r.rating === 4;
+      return true;
+    });
+  }, [allReviews, reviewFilter]);
+
   if (!product || !enriched) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-24 text-center space-y-5">
@@ -310,26 +370,6 @@ export const ProductDetails: React.FC = () => {
     }));
   };
 
-  // Fetch reviews for current product (including author's pending reviews)
-  useEffect(() => {
-    if (!rawProduct?.id) return;
-    const local = getLocalSubmittedReviews(rawProduct.id);
-    setDbReviews(local);
-
-    const sessionId = getClientSessionId();
-    neonDb.getProductReviews(rawProduct.id, sessionId).then(serverReviews => {
-      if (Array.isArray(serverReviews)) {
-        const combined = [...serverReviews];
-        local.forEach(loc => {
-          if (!combined.some(s => s.id === loc.id)) {
-            combined.unshift(loc);
-          }
-        });
-        setDbReviews(combined);
-      }
-    }).catch(err => console.warn('Could not fetch reviews:', err));
-  }, [rawProduct?.id]);
-
   // Image upload handler for customer review (max 3 images)
   const handleReviewImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -435,46 +475,6 @@ export const ProductDetails: React.FC = () => {
       setIsSubmittingReview(false);
     }
   };
-
-  const allReviews = useMemo(() => {
-    const list: any[] = [];
-    const seen = new Set<string>();
-
-    dbReviews.forEach(r => {
-      if (r && r.id && !seen.has(r.id)) {
-        seen.add(r.id);
-        list.push({
-          id: r.id,
-          author: r.author_name || r.author,
-          location: r.author_phone ? 'مصر' : (r.location || 'مصر'),
-          rating: Number(r.rating) || 5,
-          date: r.created_at ? new Date(r.created_at).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'اليوم',
-          title: r.title || 'تقييم العميل',
-          comment: r.comment,
-          images: Array.isArray(r.images) ? r.images : [],
-          verified_purchase: Boolean(r.verified_purchase ?? true),
-          helpful_count: Number(r.helpful_count) || 0
-        });
-      }
-    });
-
-    (enriched?.customer_reviews || []).forEach(r => {
-      if (r && r.id && !seen.has(r.id)) {
-        seen.add(r.id);
-        list.push(r);
-      }
-    });
-
-    return list;
-  }, [dbReviews, enriched?.customer_reviews]);
-
-  const filteredReviews = useMemo(() => {
-    return allReviews.filter(r => {
-      if (reviewFilter === '5') return r.rating === 5;
-      if (reviewFilter === '4') return r.rating === 4;
-      return true;
-    });
-  }, [allReviews, reviewFilter]);
 
   return (
     <div ref={detailRoot} className="joe-product-page w-full bg-slate-50 text-slate-900 font-cairo">
@@ -1724,7 +1724,7 @@ export const ProductDetails: React.FC = () => {
                       {/* Stars & Verified Badge */}
                       <div className="flex items-center gap-3">
                         <div className="flex text-amber-700">
-                          {[...Array(rev.rating)].map((_, i) => (
+                          {[...Array(Math.max(1, Math.min(5, Math.round(Number(rev.rating) || 5))))].map((_, i) => (
                             <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-700" />
                           ))}
                         </div>
@@ -2061,7 +2061,7 @@ export const ProductDetails: React.FC = () => {
               <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-3">
                   <span className="text-3xl font-black text-slate-900 font-outfit">
-                    {product.rating > 0 ? product.rating : (allReviews.reduce((s, r) => s + (Number(r.rating) || 5), 0) / allReviews.length).toFixed(1)}
+                    {product.rating > 0 ? product.rating : (allReviews.length ? (allReviews.reduce((s, r) => s + (Number(r.rating) || 5), 0) / allReviews.length).toFixed(1) : '5.0')}
                   </span>
                   <div>
                     <div className="flex text-amber-500">
@@ -2126,7 +2126,7 @@ export const ProductDetails: React.FC = () => {
 
                     <div className="flex items-center gap-2">
                       <div className="flex text-amber-500">
-                        {[...Array(rev.rating)].map((_, i) => (
+                        {[...Array(Math.max(1, Math.min(5, Math.round(Number(rev.rating) || 5))))].map((_, i) => (
                           <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
                         ))}
                       </div>
