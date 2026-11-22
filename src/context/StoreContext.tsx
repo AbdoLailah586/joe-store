@@ -168,7 +168,7 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user: account, sessionReady, adminSections: accountSections = [] } = useAuth();
   const accountAccessKey = `${account?.id || ''}:${account?.role || ''}:${accountSections.join(',')}`;
-  const CURRENT_VERSION = 'v6_researched_excel_catalog';
+  const CURRENT_VERSION = 'v7_bmw_m_gpt_case_render';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);

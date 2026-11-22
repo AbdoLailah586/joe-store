@@ -811,9 +811,9 @@ export const initialProducts: Product[] = [
     ],
     available_storages: [],
     images: [
+      '/product-images/case-bmw-m-ip17promax-front.jpg',
       '/product-images/case-bmw-m-ip17promax-isolated.jpg',
       '/product-images/case-bmw-m-ip17promax-on-phone.jpg',
-      '/product-images/case-bmw-m-ip17promax-front.jpg',
       '/product-images/case-bmw-m-ip17promax-original.jpg'
     ],
     description_ar: 'جراب حماية فاخر مرخص رسمياً من BMW M Power مصمم خصيصاً لهاتف آيفون 17 برو ماكس (iPhone 17 Pro Max) بالتصميم الجديد لمنصة الكاميرات العريضة (Camera Plateau). مصنع من جلد طبيعي مثقب (Perforated Real Leather) عالي الجودة مع شريط سباقات M الأيقوني الثلاثي الألوان وشعار BMW المعدني البارز. يوفر حماية فائقة لمنصة الكاميرات الأفقية وإطار مرن ممتص للصدمات وحافة مرتفعة لحماية العدسات والشاشة.',
