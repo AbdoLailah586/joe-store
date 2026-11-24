@@ -860,5 +860,80 @@ export const initialProducts: Product[] = [
     is_featured: true,
     is_best_seller: true,
     created_at: '2026-11-21'
+  },
+  {
+    id: 'prod-case-carrio-mesh-ip17promax',
+    sku: 'CASE-CARRIO-MESH-IP17PM-ORG',
+    model_name: 'Carrio Classic Mesh Case (iPhone 17 Pro Max)',
+    name_ar: 'جراب كفر Carrio كلاسيك شبكي مبرد MagSafe - آيفون 17 برو ماكس',
+    name_en: 'Carrio Classic Breathable Mesh MagSafe Case - iPhone 17 Pro Max',
+    brand: 'Carrio',
+    category: 'cases_protection',
+    condition: 'brand_new',
+    price: 500,
+    original_price: 650,
+    discount_percentage: 23,
+    cost_price: 350,
+    stock: 20,
+    in_stock: true,
+    warranty_months: 6,
+    bought_past_month: 19,
+    rating: 5.0,
+    reviews_count: 2,
+    color_ar: 'تيراكوتا برتقالي محروق',
+    color_en: 'Terracotta Rust Orange',
+    color_hex: '#C2593F',
+    available_colors: [
+      { name_ar: 'تيراكوتا برتقالي محروق', name_en: 'Terracotta Rust Orange', hex: '#C2593F' }
+    ],
+    available_storages: [],
+    images: [
+      '/product-images/case-carrio-carbon-terracotta-ip17promax.jpg',
+      '/product-images/case-carrio-carbon-terracotta-ip17promax-original.jpg'
+    ],
+    description_ar: 'جراب حماية كلاسيكي مبرد من Carrio مصمم خصيصاً لهاتف آيفون 17 برو ماكس (iPhone 17 Pro Max). يتميز بشبكة ثقوب تهوية دقيقة لتبديد حرارة الهاتف أثناء الاستخدام المكثف والألعاب، مع إطار بارز مصمم هندسياً لحماية شريط الكاميرات العريض (Camera Plateau)، ودعم كامل للشحن اللاسلكي السريع وتقنية MagSafe.',
+    description_en: 'Carrio Classic breathable mesh protective case designed specifically for iPhone 17 Pro Max. Features micro-ventilation holes for cooling, raised camera plateau bezel, and full MagSafe compatibility.',
+    specs: {
+      'الماركة (Brand)': 'Carrio Classic',
+      'الموديل المتوافق': 'Apple iPhone 17 Pro Max (Camera Plateau Edition)',
+      'الخامة': 'TPU سيليكون صدمات مع شبكة تبريد مثقبة مدمجة',
+      'الشحن اللاسلكي': 'متوافق مع الشحن اللاسلكي السريع وتقنية MagSafe',
+      'حماية الكاميرا': 'إطار بارز مرتفع لحماية شريط الكاميرا العريض والعدسات الثلاث',
+      'مقاومة الصدمات': 'حماية معتمدة ضد السقوط والصدمات',
+      'الأزرار والمنافذ': 'قصات ليزر دقيقة للأزرار وزر الـ Camera Control ومنفذ Type-C',
+      'الباركود': '28012443465065'
+    },
+    about_item: [
+      '[شبكة تبريد مثقبة مدمجة]: فتحات تهوية ميكروية تساعد على تبديد حرارة الهاتف أثناء الألعاب والشحن السريع.',
+      '[متوافق مع شريط Camera Plateau]: إطار حماية مخصص لأحدث تصميم لكاميرات iPhone 17 Pro Max.',
+      '[دعم كامل لتقنية MagSafe]: حلقات مغناطيسية مدمجة تثبت بقوة على شواحن وإكسسوارات MagSafe.',
+      '[خامة مريحة مانعة للانزلاق]: ملمس Soft-touch مريح في اليد ومقاوم للبصمات والأتربة.'
+    ],
+    feature_banners: [],
+    frequently_bought_together: [],
+    rating_breakdown: {
+      five_star: 2,
+      four_star: 0,
+      three_star: 0,
+      two_star: 0,
+      one_star: 0
+    },
+    customer_reviews: [
+      {
+        id: 'rev-carrio-sample-1',
+        author: 'حسام الدين فؤاد',
+        location: 'القاهرة',
+        rating: 5,
+        date: '2026-11-22',
+        title: 'جراب ممتاز والتهوية بتاعته ممتازة في الألعاب',
+        comment: 'اللون البرتقالي التيراكوتا شكله شيك جداً وفتحة الكاميرات مظبوطة بالمللي على الموبايل وفتحات التهوية بتفرق جداً في سخونة الجهاز.',
+        images: [],
+        verified_purchase: true,
+        helpful_count: 3
+      }
+    ],
+    is_featured: true,
+    is_best_seller: false,
+    created_at: '2026-11-22'
   }
 ];
