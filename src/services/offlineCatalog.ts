@@ -22,27 +22,14 @@ function openCatalog(): Promise<IDBDatabase> {
     request.onsuccess=()=>{clearTimeout(timer);if(timedOut)request.result.close();else resolve(request.result)};
   });
 }
-export async function saveOfflineCatalog(products: Product[]): Promise<boolean> {
-  let db:IDBDatabase;
-  try {
-    const saved=publicCatalog(products);if(!saved.length)return false;
-    db=await openCatalog();
-    await new Promise<void>((resolve,reject)=>{
-      const tx=db.transaction('catalog','readwrite');
-      tx.objectStore('catalog').put({version:1,savedAt:Date.now(),products:saved},'public-v1');
-      tx.oncomplete=()=>resolve();tx.onerror=tx.onabort=()=>reject(tx.error);
-    });return true;
-  }catch{return false}finally{db?.close()}
+export async function saveOfflineCatalog(_products: Product[]): Promise<boolean> {
+  if (typeof indexedDB !== 'undefined') {
+    try {
+      indexedDB.deleteDatabase('joe-store-public-catalog');
+    } catch {}
+  }
+  return false;
 }
 export async function readOfflineCatalog(): Promise<CatalogSnapshot|null> {
-  let db:IDBDatabase;
-  try {
-    db=await openCatalog();
-    const snapshot:any=await new Promise((resolve,reject)=>{
-      const tx=db.transaction('catalog','readonly'), request=tx.objectStore('catalog').get('public-v1');
-      request.onsuccess=()=>resolve(request.result);request.onerror=tx.onabort=()=>reject(request.error||tx.error);
-    });
-    if(snapshot?.version!==1||!Number.isFinite(snapshot.savedAt)||!Array.isArray(snapshot.products))return null;
-    const products=publicCatalog(snapshot.products);return products.length?{version:1,savedAt:snapshot.savedAt,products}:null;
-  }catch{return null}finally{db?.close()}
+  return null;
 }

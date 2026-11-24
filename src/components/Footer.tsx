@@ -55,10 +55,9 @@ export const Footer: React.FC = () => {
             </span>
             <p>
               {ar
-                ? "ثبّت المتجر. واكتشف آخر كتالوج محفوظ حتى من غير نت."
-                : "Install the store. Browse your saved catalog, even offline."}
+                ? "ثبّت المتجر كأيقونة سريعة للوصول لمنتجاتك المفضلة وعروض جو ستور."
+                : "Install the store for quick access to your favorite products and offers."}
             </p>
-            <OfflineReadyLabel />
           </div>
           <InstallAppButton />
         </div>

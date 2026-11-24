@@ -1,11 +1,31 @@
 import fs from 'node:fs';
-import path from 'node:path';
-import {createHash} from 'node:crypto';
-const files = ['/index.html','/offline.html','/manifest.webmanifest','/pwa/icon-192.png','/pwa/icon-512.png','/pwa/maskable-512.png','/logo.webp','/logo-icon.png','/product-placeholder.svg',
-  ...fs.readdirSync('dist/assets').filter(file => /\.(js|css)$/.test(file)).sort().map(file => '/assets/'+file)];
-const template = fs.readFileSync('pwa/service-worker.template.js','utf8');
-const digest = createHash('sha256').update(template);
-for (const file of files) digest.update(fs.readFileSync(path.join('dist',file)));
-const version = digest.digest('hex').slice(0,16);
-fs.writeFileSync('dist/sw.js',template.replace('__PWA_VERSION__',version).replace('__PWA_PRECACHE__',JSON.stringify(files)));
-console.log(`PWA ${version}: ${files.length} public app files ready for offline use.`);
+
+const unregisterWorker = `/* Self-unregistering Service Worker that purges all caches and stays inactive */
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.map(k => caches.delete(k))))
+      .then(() => self.registration.unregister())
+      .then(() => self.clients.matchAll({ type: 'window' }))
+      .then(clients => {
+        for (const client of clients) {
+          if (client.url && 'navigate' in client) {
+            client.navigate(client.url);
+          }
+        }
+      })
+  );
+});
+`;
+
+if (fs.existsSync('dist')) {
+  fs.writeFileSync('dist/sw.js', unregisterWorker);
+}
+if (fs.existsSync('public')) {
+  fs.writeFileSync('public/sw.js', unregisterWorker);
+}
+console.log('Service worker configured to self-destruct and purge caches on all client devices.');

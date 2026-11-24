@@ -168,7 +168,7 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user: account, sessionReady, adminSections: accountSections = [] } = useAuth();
   const accountAccessKey = `${account?.id || ''}:${account?.role || ''}:${accountSections.join(',')}`;
-  const CURRENT_VERSION = 'v7_bmw_m_gpt_case_render';
+  const CURRENT_VERSION = 'v11_live_gpt_render_no_stale_cache';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
@@ -183,8 +183,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [products, setProducts] = useState<Product[]>(() => {
     if (!deviceIsOnline()) return [];
     const savedVersion = readStorage('joe_store_catalog_ver');
-    // Previous builds generated Excel entries with guessed stock/prices. Keep
-    // their cache on disk, but use the reconciled database entries for those IDs.
+    if (savedVersion && savedVersion !== CURRENT_VERSION) {
+      removeStorage('joe_store_products');
+      writeStorage('joe_store_catalog_ver', CURRENT_VERSION);
+      return initialProducts.filter(product => !locallyDeletedIds.current.has(product.id));
+    }
     const saved = readStoredArray('joe_store_products', isStoredProduct).filter(product =>
       !product.id.startsWith('prod-pos-') || product.catalog_status !== undefined);
     if (saved.length) {
@@ -207,8 +210,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         });
         return saved;
       }
-      // Older/partial caches may contain administrator edits. Retain them while
-      // filling missing catalog entries from the current bundled inventory.
       const cachedById = new Map(saved.map(product => [product.id, product]));
       const seededIds = new Set(initialProducts.map(product => product.id));
       return [

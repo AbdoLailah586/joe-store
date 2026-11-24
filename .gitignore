@@ -36,4 +36,10 @@ lerna-debug.log*
 backups/
 catalog_intake/incoming/*
 !catalog_intake/incoming/.gitkeep
+scratch_grids/
+جرابات/
+scripts/check_neon_prod.mjs
+scripts/update_neon_prod.mjs
+scripts/process_bmw_images.py
+
 
