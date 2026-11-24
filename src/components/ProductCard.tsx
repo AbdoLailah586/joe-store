@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Heart,
   Eye,
@@ -47,6 +47,26 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     used_good: t("usedGood"),
     unknown: ar ? "الحالة تحتاج تأكيد" : "Confirm condition",
   }[product.condition];
+  const initialImg = normalizeProductImage(product.images?.[0]);
+  const [imgSrc, setImgSrc] = useState(initialImg);
+  const retryRef = useRef(0);
+
+  useEffect(() => {
+    setImgSrc(normalizeProductImage(product.images?.[0]));
+    retryRef.current = 0;
+  }, [product.images]);
+
+  const handleImageError = () => {
+    if (retryRef.current < 2 && initialImg && initialImg !== "/product-placeholder.svg") {
+      retryRef.current += 1;
+      setTimeout(() => {
+        setImgSrc(`${initialImg}?v=${Date.now()}`);
+      }, 1000);
+    } else {
+      setImgSrc("/product-placeholder.svg");
+    }
+  };
+
   const whatsapp = generateWhatsAppWebLink(
     settings.store_whatsapp,
     `مرحباً جو ستور، أود الاستفسار عن: ${product.name_ar} (السعر: ${displayedPrice})`,
@@ -61,11 +81,8 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
           aria-label={ar ? `عرض ${name}` : `View ${name}`}
         >
           <img
-            src={normalizeProductImage(product.images[0])}
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = "/product-placeholder.svg";
-            }}
+            src={imgSrc}
+            onError={handleImageError}
             alt={name}
             loading="lazy"
             width="400"
