@@ -935,5 +935,277 @@ export const initialProducts: Product[] = [
     is_featured: true,
     is_best_seller: false,
     created_at: '2026-11-22'
+  },
+  {
+    id: 'prod-case-apple-silicone-desert-ip17promax',
+    sku: 'CASE-APL-SIL-IP17PM-DST',
+    model_name: 'Apple Silicone MagSafe Case (iPhone 17 Pro Max)',
+    name_ar: 'جراب كفر سيليكون أبل ماج سيف الأصلي - آيفون 17 برو ماكس (تيتانيوم صحراوي)',
+    name_en: 'Official Apple Silicone MagSafe Case - iPhone 17 Pro Max (Desert Titanium)',
+    brand: 'Apple',
+    category: 'cases_protection',
+    condition: 'brand_new',
+    price: 200,
+    original_price: 300,
+    discount_percentage: 33,
+    cost_price: 130,
+    stock: 25,
+    in_stock: true,
+    warranty_months: 6,
+    bought_past_month: 42,
+    rating: 5.0,
+    reviews_count: 5,
+    color_ar: 'تيتانيوم صحراوي بيج دافئ',
+    color_en: 'Desert Titanium Tan',
+    color_hex: '#C4A482',
+    available_colors: [
+      { name_ar: 'تيتانيوم صحراوي بيج دافئ', name_en: 'Desert Titanium Tan', hex: '#C4A482' },
+      { name_ar: 'لافندر بنفسجي فاتح', name_en: 'Lavender Violet', hex: '#BDB0D0' },
+      { name_ar: 'نبيتي داكن / بورجوندي', name_en: 'Burgundy Plum', hex: '#63202E' },
+      { name_ar: 'برتقالي كوزميك', name_en: 'Cosmic Orange', hex: '#D6653E' }
+    ],
+    available_storages: [],
+    images: [
+      '/product-images/case-apple-silicone-desert-ip17promax.jpg',
+      '/product-images/case-apple-silicone-desert-ip17promax-original.jpg'
+    ],
+    description_ar: 'جراب كفر سيليكون أصلي من Apple مصمم خصيصاً لهاتف آيفون 17 برو ماكس (iPhone 17 Pro Max). يوفر ملمساً حريرياً ناعماً ومريحاً في اليد مع بطانة داخلية ناعمة من المايكروفايبر، وحماية مخصصة لشريط منصة الكاميرات العريض (Camera Plateau)، ودعم الشحن اللاسلكي السريع مع MagSafe.',
+    description_en: 'Official Apple Silicone Case with MagSafe designed specifically for iPhone 17 Pro Max. Features silky soft-touch silicone exterior, microfiber lining, raised camera plateau bezel, and built-in magnets for fast wireless charging.',
+    specs: {
+      'الماركة (Brand)': 'Apple Official',
+      'الموديل المتوافق': 'Apple iPhone 17 Pro Max (Camera Plateau Edition)',
+      'الخامة': 'سيليكون ناعم بملمس حريري + بطانة داخلية مايكروفايبر',
+      'الشحن اللاسلكي': 'متوافق مع تقنية MagSafe المغناطيسية السريعة',
+      'حماية الكاميرا': 'إطار سيليكون مرتفع يحيط بشريط منصة الكاميرات بالكامل',
+      'الباركود': '2378835851868'
+    },
+    about_item: [
+      '[ملمس حريري ناعم]: مصنع من سيليكون فائق الجودة بملمس Soft-touch مريح جداً في اليد ومقاوم لبصمات الأصابع.',
+      '[متوافق مع منصة Camera Plateau]: إطار بارز مصمم بدقة لحماية شريط الكاميرات العريض الجديد كلياً.',
+      '[مغناطيس MagSafe مدمج]: محاذاة مغناطيسية مثالية لشحن لاسلكي أسرع وأكثر استقراراً.',
+      '[حماية داخلية من الخدوش]: بطانة ناعمة من ألياف المايكروفايبر لحماية ظهر الهاتف الزجاجي.'
+    ],
+    feature_banners: [],
+    frequently_bought_together: [],
+    rating_breakdown: { five_star: 5, four_star: 0, three_star: 0, two_star: 0, one_star: 0 },
+    customer_reviews: [
+      {
+        id: 'rev-apple-silicone-1',
+        author: 'كريم عبد الرازق',
+        location: 'الإسكندرية',
+        rating: 5,
+        date: '2026-11-23',
+        title: 'خامة السيليكون ناعمة جداً واللون الصحراوي تحفة',
+        comment: 'الجراب أصلي وفتحة الكاميرات مظبوطة بالمللي ومحكم جداً على الموبايل.',
+        images: [],
+        verified_purchase: true,
+        helpful_count: 5
+      }
+    ],
+    is_featured: true,
+    is_best_seller: true,
+    created_at: '2026-11-23'
+  },
+  {
+    id: 'prod-case-xinreeu-frosted-orange-ip17promax',
+    sku: 'CASE-XIN-FRST-IP17PM-ORG',
+    model_name: 'XINREEU Frosted Hybrid MagSafe Case (iPhone 17 Pro Max)',
+    name_ar: 'جراب كفر XINREEU هايبرد ماج سيف بإطار كاميرا معدني - آيفون 17 برو ماكس',
+    name_en: 'XINREEU Frosted Hybrid MagSafe Case with Metallic Camera Bezel - iPhone 17 Pro Max',
+    brand: 'XINREEU',
+    category: 'cases_protection',
+    condition: 'brand_new',
+    price: 550,
+    original_price: 700,
+    discount_percentage: 21,
+    cost_price: 380,
+    stock: 18,
+    in_stock: true,
+    warranty_months: 6,
+    bought_past_month: 16,
+    rating: 5.0,
+    reviews_count: 2,
+    color_ar: 'برتقالي كوزميك مع ظهر شفاف مثلج',
+    color_en: 'Frosted Orange Metallic',
+    color_hex: '#E06928',
+    available_colors: [
+      { name_ar: 'برتقالي كوزميك مع ظهر شفاف مثلج', name_en: 'Frosted Orange Metallic', hex: '#E06928' }
+    ],
+    available_storages: [],
+    images: [
+      '/product-images/case-xinreeu-frosted-orange-ip17promax.jpg',
+      '/product-images/case-xinreeu-frosted-orange-ip17promax-original.jpg'
+    ],
+    description_ar: 'جراب حماية هجين فاخر من XINREEU لهاتف آيفون 17 برو ماكس (iPhone 17 Pro Max). يجمع بين ظهر مطفي مثلج مقاوم للبصمات، وإطار حماية معدني مؤكسد بلون برتقالي نحاسي محفور عليه شعار XINREEU لحماية شريط الكاميرات العريض، وحلقة MagSafe مغناطيسية قوية باللون البرتقالي.',
+    description_en: 'Luxury frosted hybrid MagSafe case by XINREEU for iPhone 17 Pro Max. Features fingerprint-resistant matte back, anodized metallic copper-orange camera plateau visor frame, and matching orange magnetic ring.',
+    specs: {
+      'الماركة (Brand)': 'XINREEU Fashion',
+      'الموديل المتوافق': 'Apple iPhone 17 Pro Max (Camera Plateau)',
+      'الخامة': 'أكريليك مطفي مثلج + مصدات TPU برتقالية ممتصة للصدمات',
+      'إطار الكاميرا': 'معدن مؤكسد برتقالي بارز محفور بشعار XINREEU',
+      'الشحن اللاسلكي': 'حلقة MagSafe مغناطيسية قوية',
+      'الباركود': '7706998784245'
+    },
+    about_item: [
+      '[إطار كاميرا معدني مؤكسد]: حماية معدنية متينة مصممة بدقة لمنصة الكاميرات العريضة Camera Plateau.',
+      '[ظهر شفاف مثلج أنيق]: يظهر لون الهاتف الداخلي مع منع بصمات الأصابع والخدوش اليومية.',
+      '[حلقة MagSafe برتقالية جذابة]: قوة تثبيت مغناطيسية فائقة على الشواحن وحوامل السيارات.',
+      '[مصدات صدمات معززة]: إطار سيليكون برتقالي صامد للسقوط مع أزرار لمسية سريعة الاستجابة.'
+    ],
+    feature_banners: [],
+    frequently_bought_together: [],
+    rating_breakdown: { five_star: 2, four_star: 0, three_star: 0, two_star: 0, one_star: 0 },
+    customer_reviews: [
+      {
+        id: 'rev-xinreeu-1',
+        author: 'طارق الدسوقي',
+        location: 'المنصورة',
+        rating: 5,
+        date: '2026-11-23',
+        title: 'الإطار المعدني شكله فخم جداً واللون البرتقالي تحفة',
+        comment: 'الجراب قوي وخاماته نظيفة جداً وحلقة المغناطيس ماسكة كويس قوي في شاحن العربية.',
+        images: [],
+        verified_purchase: true,
+        helpful_count: 2
+      }
+    ],
+    is_featured: true,
+    is_best_seller: false,
+    created_at: '2026-11-23'
+  },
+  {
+    id: 'prod-case-ipefet-leather-tan-ip17promax',
+    sku: 'CASE-IPEFET-LTHR-IP17PM-TAN',
+    model_name: 'iPefet Ostrich Leather Case (iPhone 17 Pro Max)',
+    name_ar: 'جراب كفر iPefet جلد طبيعي منقط فاخر مع إطار كاميرا عريض - آيفون 17 برو ماكس',
+    name_en: 'iPefet Luxury Ostrich Textured Leather Protective Case - iPhone 17 Pro Max',
+    brand: 'iPefet',
+    category: 'cases_protection',
+    condition: 'brand_new',
+    price: 350,
+    original_price: 480,
+    discount_percentage: 27,
+    cost_price: 240,
+    stock: 22,
+    in_stock: true,
+    warranty_months: 6,
+    bought_past_month: 24,
+    rating: 5.0,
+    reviews_count: 3,
+    color_ar: 'كونياك تان بني جلدي منقط',
+    color_en: 'Cognac Tan Ostrich Leather',
+    color_hex: '#9E5B32',
+    available_colors: [
+      { name_ar: 'كونياك تان بني جلدي منقط', name_en: 'Cognac Tan Ostrich Leather', hex: '#9E5B32' }
+    ],
+    available_storages: [],
+    images: [
+      '/product-images/case-ipefet-leather-tan-ip17promax.jpg',
+      '/product-images/case-ipefet-leather-tan-ip17promax-original.jpg'
+    ],
+    description_ar: 'جراب حماية فخم من iPefet مصنوع من جلد نباتي فاخر منقوش بنقشة جلد النعام المنقط (Ostrich Quill Dots) لهاتف آيفون 17 برو ماكس (iPhone 17 Pro Max). يتميز بإطار كاميرا معدني بارز بلون ذهبي تان، ووسائد هوائية Airbag Cushions في الزوايا لامتصاص الصدمات.',
+    description_en: 'Luxury iPefet protective case featuring premium ostrich-textured cognac tan leather, raised golden-tan metallic camera visor bezel, and airbag shockproof corner cushions for iPhone 17 Pro Max.',
+    specs: {
+      'الماركة (Brand)': 'iPefet Premium Protection',
+      'الموديل المتوافق': 'Apple iPhone 17 Pro Max (Camera Plateau)',
+      'الخامة': 'جلد فاخر منقوش بنقشة جلد النعام + إطار TPU متين',
+      'حماية الكاميرا': 'إطار معدني بارز لحماية منصة الكاميرات العريضة',
+      'مقاومة الصدمات': 'وسائد Airbag Cushions معتمدة لحماية الزوايا',
+      'الباركود': '1964406599881'
+    },
+    about_item: [
+      '[جلد منقوش بنقشة النعام]: ملمس بارز فاخر يمنح راحة وثباتاً استثنائياً في اليد ويقاوم التعرق.',
+      '[إطار كاميرا معدني ذهبي تان]: حماية أنيقة ومرتفعة لمنع احتكاك عدسات الكاميرا الثلاث بالأسطح.',
+      '[وسائد هوائية في الزوايا]: تقنية Airbag المدمجة لتشتيت الصدمات عند السقوط المفاجئ.',
+      '[شعار iPefet محفور بفخامة]: لمسة نهائية فاخرة بأسفل الجراب تعكس الأصالة والجودة.'
+    ],
+    feature_banners: [],
+    frequently_bought_together: [],
+    rating_breakdown: { five_star: 3, four_star: 0, three_star: 0, two_star: 0, one_star: 0 },
+    customer_reviews: [
+      {
+        id: 'rev-ipefet-1',
+        author: 'سامح الغندور',
+        location: 'طنطا',
+        rating: 5,
+        date: '2026-11-23',
+        title: 'الجلد ملمسه روعة ومختلف عن أي جراب عادي',
+        comment: 'النقشة المنقطة بتدي مسكة مريحة جداً في الإيد، والبروز اللي حول الكاميرا مظبوط بالمللي.',
+        images: [],
+        verified_purchase: true,
+        helpful_count: 4
+      }
+    ],
+    is_featured: true,
+    is_best_seller: false,
+    created_at: '2026-11-23'
+  },
+  {
+    id: 'prod-case-gear4-crystalex-clear-ip17promax',
+    sku: 'CASE-GEAR4-D3O-IP17PM-CLR',
+    model_name: 'Gear4 D3O Crystalex Clear Case (iPhone 17 Pro Max)',
+    name_ar: 'جراب كفر Gear4 D3O Crystalex شفاف ماج سيف ضد الصدمات والاصفرار - آيفون 17 برو ماكس',
+    name_en: 'Gear4 D3O Crystalex Clear MagSafe Shockproof Case - iPhone 17 Pro Max',
+    brand: 'Gear4',
+    category: 'cases_protection',
+    condition: 'brand_new',
+    price: 300,
+    original_price: 420,
+    discount_percentage: 29,
+    cost_price: 200,
+    stock: 30,
+    in_stock: true,
+    warranty_months: 12,
+    bought_past_month: 35,
+    rating: 5.0,
+    reviews_count: 4,
+    color_ar: 'شفاف كريستالي مع حلقة MagSafe بيضاء',
+    color_en: 'Crystal Clear with White MagSafe Ring',
+    color_hex: '#FFFFFF',
+    available_colors: [
+      { name_ar: 'شفاف كريستالي مع حلقة MagSafe بيضاء', name_en: 'Crystal Clear with White MagSafe Ring', hex: '#FFFFFF' }
+    ],
+    available_storages: [],
+    images: [
+      '/product-images/case-gear4-crystalex-clear-ip17promax.jpg',
+      '/product-images/case-gear4-crystalex-clear-ip17promax-original.jpg'
+    ],
+    description_ar: 'جراب شفاف فائق النقاء من Gear4 مدعوم بمادة D3O Crystalex المعتمدة عالمياً لمقاومة الصدمات لهاتف آيفون 17 برو ماكس (iPhone 17 Pro Max). يوفر مقاومة متطورة ضد الاصفرار مع إطار بارز مخصص لمنصة الكاميرات العريضة وحلقة MagSafe مدمجة.',
+    description_en: 'Gear4 Crystal Clear MagSafe protective case with world-leading D3O impact material for iPhone 17 Pro Max. Features anti-yellowing technology, raised camera plateau bezel, and ultra-durable shock protection.',
+    specs: {
+      'الماركة (Brand)': 'Gear4 (Protected by D3O)',
+      'الموديل المتوافق': 'Apple iPhone 17 Pro Max (Camera Plateau Edition)',
+      'الخامة': 'بولي كربونات نقي + مادة D3O Crystalex لامتصاص الصدمات',
+      'الشحن اللاسلكي': 'حلقة MagSafe مغناطيسية مدمجة',
+      'حماية الكاميرا': 'حواف بارزة مرتفعة لحماية شريط منصة الكاميرات والعدسات',
+      'الضمان': 'ضمان سنة ضد الاصفرار وتغير اللون',
+      'الباركود': '9120542813690'
+    },
+    about_item: [
+      '[حماية D3O المعتمدة عالمياً]: تشتيت فوري لقوة الصدمات لحماية الهاتف من أصعب السقطات.',
+      '[مقاومة فائقة للاصفرار Anti-Yellowing]: يحافظ على النقاء الكريستالي الشفاف لشهور طويلة.',
+      '[متوافق مع منصة Camera Plateau]: إطار بارز مصمم بدقة لحماية الكاميرات الخلفية الثلاث.',
+      '[دعم كامل لـ MagSafe]: حلقة مغناطيسية قوية تضمن التوافق الكامل مع جميع إكسسوارات الشحن.'
+    ],
+    feature_banners: [],
+    frequently_bought_together: [],
+    rating_breakdown: { five_star: 4, four_star: 0, three_star: 0, two_star: 0, one_star: 0 },
+    customer_reviews: [
+      {
+        id: 'rev-gear4-1',
+        author: 'م. يوسف النجار',
+        location: 'الجيزة',
+        rating: 5,
+        date: '2026-11-23',
+        title: 'شفافيته خرافية ومبين لون الموبايل الأصلي',
+        comment: 'الجراب تقيل ومحترم جداً وحواف الـ D3O باين عليها الحماية العالية ومفيهوش أي غلطة.',
+        images: [],
+        verified_purchase: true,
+        helpful_count: 3
+      }
+    ],
+    is_featured: true,
+    is_best_seller: true,
+    created_at: '2026-11-23'
   }
 ];
