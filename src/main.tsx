@@ -35,11 +35,10 @@ if (typeof window !== 'undefined') {
     } catch {}
   }
   try {
-    const ver = localStorage.getItem('joe_store_catalog_ver');
-    if (ver !== 'v12_live_hunter_cases_357') {
-      localStorage.removeItem('joe_store_products');
-      localStorage.setItem('joe_store_catalog_ver', 'v12_live_hunter_cases_357');
-    }
+    localStorage.removeItem('joe_store_products');
+    localStorage.removeItem('joe_store_product_deletions');
+    localStorage.removeItem('joe_store_catalog_ver');
+    sessionStorage.removeItem('joe_store_products');
   } catch {}
 }
 

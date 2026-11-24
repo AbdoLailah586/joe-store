@@ -169,18 +169,17 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user: account, sessionReady, adminSections: accountSections = [] } = useAuth();
   const accountAccessKey = `${account?.id || ''}:${account?.role || ''}:${accountSections.join(',')}`;
-  const CURRENT_VERSION = 'v12_live_hunter_cases_357';
+  const CURRENT_VERSION = 'v13_live_official_images_394';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
-  const [isOfflineCatalog,setIsOfflineCatalog]=useState(()=>!deviceIsOnline());
-  const [catalogSavedAt,setCatalogSavedAt]=useState<number|undefined>();
-  const [connectionVersion,setConnectionVersion]=useState(0);
+  const [isOfflineCatalog, setIsOfflineCatalog] = useState(() => !deviceIsOnline());
+  const [catalogSavedAt, setCatalogSavedAt] = useState<number | undefined>();
+  const [connectionVersion, setConnectionVersion] = useState(0);
   const locallyEditedIds = useRef(new Set<string>());
   const locallyDeletedIds = useRef(new Set(readStoredArray('joe_store_product_deletions',
     (value): value is string => typeof value === 'string')));
-  // The bundled catalog is already available offline. Cache only administrator edits,
-  // leaving browser storage available for carts, account preferences and orders.
+
   const [products, setProducts] = useState<Product[]>(() => {
     if (!deviceIsOnline()) return [];
     const savedVersion = readStorage('joe_store_catalog_ver');
@@ -304,30 +303,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const snapshot=await readOfflineCatalog();
       if(!cancelled){setProducts(snapshot?.products||[]);setCatalogSavedAt(snapshot?.savedAt);setIsOfflineCatalog(true)}
     };
-    // 1. Fetch live products from Neon
-    const catalogRequest=deviceIsOnline()?neonDb.getAllProducts({ includeHidden: true }):Promise.reject(new Error('Offline'));
+    // 1. Fetch live products from Neon directly without caching delays
+    const catalogRequest = deviceIsOnline() ? neonDb.getAllProducts({ includeHidden: true }) : Promise.reject(new Error('Offline'));
     catalogRequest.then(dbProds => {
       if (!cancelled && dbProds && dbProds.length > 0) {
-        setProducts(previous => {
-          const previousById = new Map(previous.map(product => [product.id, product]));
-          const dbIds = new Set(dbProds.map(product => product.id));
-          const sanitize = (p: Product): Product => ({
-            ...p,
-            images: normalizeProductImages(p.images)
-          });
-          return [
-            ...dbProds.filter(product => !locallyDeletedIds.current.has(product.id))
-              .map(product => locallyEditedIds.current.has(product.id)
-                ? previousById.get(product.id) || product : product)
-              .map(sanitize),
-            ...previous.filter(product => locallyEditedIds.current.has(product.id)
-              && !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id))
-              .map(sanitize)
-          ];
+        const sanitize = (p: Product): Product => ({
+          ...p,
+          images: normalizeProductImages(p.images)
         });
+        setProducts(dbProds.map(sanitize));
         setCatalogLoaded(true);
         setIsOfflineCatalog(false);
-        void saveOfflineCatalog(dbProds).then(saved=>{if(saved&&!cancelled)setCatalogSavedAt(Date.now())});
       }
     }).catch(offlineFallback).finally(() => { if (!cancelled) setIsCatalogLoading(false); });
 

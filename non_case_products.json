@@ -1,0 +1,780 @@
+[
+  {
+    "id": "prod-soundcore-r50i-earbuds",
+    "name_ar": "سماعة أنكر ساوندكور R50i اللاسلكية الأصلية صوت قوي وبطارية 30 ساعة",
+    "name_en": "Anker Soundcore R50i True Wireless Earbuds Powerful Sound 30H",
+    "brand": "Anker",
+    "category": "audio",
+    "specs": {
+      "التحكم": "تطبيق Soundcore لتخصيص 22 نمط EQ مختلف",
+      "الموديل": "Soundcore R50i",
+      "البطارية": "30 ساعة تشغيل إجمالي (10 ساعات للسماعة)",
+      "المحركات": "10mm Extra-bass Drivers",
+      "المقاومة": "IPX5 لمقاومة الماء والتعرق"
+    },
+    "images": [
+      "/product-images/soundcore-r50i-earbuds-box.jpg"
+    ]
+  },
+  {
+    "id": "prod-soundcore-r50i-nc",
+    "name_ar": "سماعة أنكر ساوندكور Soundcore R50i NC مع عزل الضوضاء النشط (ANC)",
+    "name_en": "Anker Soundcore R50i NC True Wireless Earbuds with Adaptive ANC",
+    "brand": "Anker",
+    "category": "audio",
+    "specs": {
+      "الموديل": "Soundcore R50i NC (A3959)",
+      "البطارية": "10 ساعات للسماعة و45 ساعة إجمالية مع الحافظة (30 ساعة مع تفعيل ANC)",
+      "المشغلات": "محركات صوتية 10 مم مع BassUp لتعزيز الباس فائق القوة",
+      "حامل مدمج": "علبة الشحن تتحول إلى ستاند وحامل لمشاهدة الفيديوهات على الهاتف",
+      "المكالمات": "4 ميكروفونات مدمجة مدعومة بالذكاء الاصطناعي لمكالمات فائقة النقاء",
+      "عزل الضوضاء": "تقنية عزل الضوضاء التكيفية الذكية حتى 42dB تخفض 90% من الضوضاء",
+      "مقاومة الماء": "معيار IP54 المقاوم للعرق ورذاذ المطر والغبار"
+    },
+    "images": [
+      "/product-images/soundcore-r50i-nc-box.jpg"
+    ]
+  },
+  {
+    "id": "prod-tasbih-beiqi-s7pro-smartring",
+    "name_ar": "خاتم تسبيح ذكي Bei Qi S7 Pro مع شاشة OLED واهتزاز عند الأرقام المميزة",
+    "name_en": "Bei Qi S7 Pro Smart Tasbih Zikr Ring 3-in-1 with OLED Display",
+    "brand": "Bei Qi",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "شاشة OLED واضحة تعرض عداد التسبيح والساعة وتنبيهات الأوقات",
+      "التطبيق": "متوافق مع تطبيقات Zikr و iQIBLA لحفظ السجلات وتحديد اتجاه القبلة",
+      "الموديل": "MODEL S7 Pro (3 in 1)",
+      "محرك الاهتزاز": "تنبيه اهتزازي خفيف ومميز عند الوصول إلى الأعداد 33 و 66 و 99 و 100",
+      "البطارية والشحن": "شحن مغناطيسي سريع يدوم حتى 3 إلى 5 أيام من الاستخدام المتواصل",
+      "المقاسات المرفقة": "يأتي في العلبة 3 مقاسات حلقة مختلفة (18 مم، 20 مم، 22 مم) ليناسب جميع الأصابع"
+    },
+    "images": [
+      "/product-images/tasbih-beiqi-s7pro-smartring.jpg",
+      "/product-images/tasbih-beiqi-s7pro-finger.jpg",
+      "/product-images/tasbih-beiqi-s7pro-palm.jpg",
+      "/product-images/tasbih-beiqi-s7pro-box-side.jpg"
+    ]
+  },
+  {
+    "id": "prod-car-jumpstarter-airpump",
+    "name_ar": "جهاز طوارئ السيارات 2 في 1: جامب ستارتر بطارية + منفاخ إطارات رقمي ذكي",
+    "name_en": "Earldom JS02 2-in-1 Car Emergency Jump Starter & Smart Air Compressor",
+    "brand": "Earldom",
+    "category": "accessories",
+    "specs": {
+      "الإضاءة": "كشاف LED طوارئ قوي مع أوضاع إضاءة عادية، SOS، وتحذيرية للطرق السريعة",
+      "الموديل": "Earldom JS02",
+      "باور بانك للطوارئ": "منافذ USB لشحن الهواتف والأجهزة الذكية في رحلات التخييم والطوارئ",
+      "وظيفة منفاخ الهواء": "كمبروسر هواء رقمي مدمج مع شاشة إلكترونية تفصل أوتوماتيكياً عند الوصول للضغط المطلوب",
+      "وظيفة الجامب ستارتر": "تيار بدء تشغيل فائق القوة لتشغيل محركات البنزين والديزل عند نفاد البطارية فوراً"
+    },
+    "images": [
+      "/product-images/car-jumpstarter-airpump.jpg"
+    ]
+  },
+  {
+    "id": "prod-k30-magnetic-car-mount",
+    "name_ar": "حامل هاتف مغناطيسي K30 بقوة شفط هوائي فراغي ودوران 360 درجة للسيارة والأسطح",
+    "name_en": "K30 Vacuum Suction Positioning Magnetic Phone Bracket 360 Rotation",
+    "brand": "Generic",
+    "category": "accessories",
+    "specs": {
+      "الموديل": "K30 Vacuum Suction Magnetic Bracket",
+      "المغناطيس": "حلقة مغناطيسية قوية بقوة جذب N52 متوافقة تماماً مع MagSafe",
+      "آلية التثبيت": "قاعدة شفط هوائي فراغي Vacuum Suction شديدة الثبات على الزجاج والتابلوه والمكاتب",
+      "زوايا الرؤية": "مفصل كروي يتيح تدوير الهاتف 360 درجة وزاوية ميلان متعددة لتسهيل استخدام خرائط GPS"
+    },
+    "images": [
+      "/product-images/k30-magnetic-car-mount.jpg"
+    ]
+  },
+  {
+    "id": "prod-m1-gimbal-stabilizer",
+    "name_ar": "مانع اهتزاز الهواتف ثلاثي المحاور M1 3-Axis Gimbal للتصوير السينمائي الاحترافي",
+    "name_en": "M1 3-Axis Handheld Smartphone Gimbal Stabilizer",
+    "brand": "Generic",
+    "category": "accessories",
+    "specs": {
+      "التوافق": "يعمل بسلاسة مع كافة هواتف آيفون وأندرويد عبر البلوتوث",
+      "المحاور": "تثبيت ميكانيكي كامل على 3 محاور لامتصاص كافة الاهتزازات أثناء المشي والجري",
+      "الموديل": "M1 3-Axis Handheld Stabilizer",
+      "أوضاع التصوير": "تتبع الوجه Face Tracking، وضع البانوراما، والتصوير الزمني Timelapse"
+    },
+    "images": [
+      "/product-images/m1-3axis-gimbal-stabilizer.jpg"
+    ]
+  },
+  {
+    "id": "prod-strap-alpine-loop-g-hook",
+    "name_ar": "سوار ألبين لوب تيتانيوم لساعات آبل وهاينو تيكو Alpine Loop Watch Strap",
+    "name_en": "Alpine Loop Titanium G-Hook Watch Strap for Apple Watch & Smartwatches",
+    "brand": "Generic",
+    "category": "accessories",
+    "specs": {
+      "المشبك": "مشبك حرف G مصنوع من سبائك التيتانيوم الخفيف والمقاوم للصدأ",
+      "النسيج": "نسيج قماشي مزدوج عالي المرونة والتحمل ومريح في المعصم طوال اليوم",
+      "التوافق": "متوافق مع مقاسات 42/44/45/49 مم لساعات Apple Watch Ultra وجميع الساعات الذكية"
+    },
+    "images": [
+      "/product-images/strap-alpine-loop-titanium-ghook-4colors.jpg"
+    ]
+  },
+  {
+    "id": "prod-x9-pro2-amoled-smartwatch",
+    "name_ar": "ساعة ذكية إكس 9 برو 2 بشاشة أموليد وتصميم فائق الأناقة X9 Pro 2 AMOLED",
+    "name_en": "X9 Pro 2 AMOLED Smartwatch with Always-on Display & Health Tracking",
+    "brand": "Generic",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "شاشة AMOLED بمعدل تحديث سلس وألوان غنية",
+      "الموديل": "X9 Pro 2",
+      "الميزات": "إشعارات البرامج، مكالمات بلوتوث، وتتبع نبضات القلب والنشاط الرياضي"
+    },
+    "images": [
+      "/product-images/smartwatch-x9-pro2-amoled.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-16",
+    "name_ar": "ساعة هاينو تيكو 16 سوبر سليم رفيعة جداً Haino Teko-16 Super Slim شاشة AMOLED",
+    "name_en": "Haino Teko-16 Super Slim AMOLED 7-Day Battery Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "AMOLED ملونة",
+      "الهيكل": "سماكة فائقة النحافة Super Slim مريحة جداً في اليد",
+      "الموديل": "HainoTeko-16 Super Slim",
+      "البطارية": "7 أيام استخدام مع مكالمات بلوتوث و3 أحزمة"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-16-superslim.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-25",
+    "name_ar": "ساعة هاينو تيكو 25 شاشة أموليد وبطارية 15 يوم Haino Teko-25 مع 3 أحزمة",
+    "name_en": "Haino Teko-25 AMOLED 15-Day Battery Waterproof Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "AMOLED مع 3 سترابات",
+      "الموديل": "HainoTeko-25",
+      "البطارية": "15 DAYS Normal Use",
+      "المكالمات": "BT Call مع إمكانية الرد والاتصال المباشر"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-25-amoled.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-26",
+    "name_ar": "ساعة هاينو تيكو 26 بطارية 15 يوم شاشة أموليد ومقاومة للماء مع 3 أحزمة",
+    "name_en": "Haino Teko-26 AMOLED 15-Day Battery Waterproof Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "شاشة AMOLED نقية",
+      "الموديل": "HainoTeko-26 Germany",
+      "البطارية": "15 يوماً من الاستخدام الفعلي 15 DAYS of Normal Use",
+      "الملحقات": "3 أزواج أحزمة",
+      "المكالمات": "BT Call ومقاومة للماء Waterproof"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-26-amoled.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-29",
+    "name_ar": "ساعة هاينو تيكو 29 بطارية 7 أيام شاشة أموليد مع 3 أحزمة Haino Teko-29",
+    "name_en": "Haino Teko-29 AMOLED 7-Day Battery Waterproof Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الموديل": "HainoTeko-29 Germany",
+      "البطارية": "7 DAYS Normal Use",
+      "المكالمات": "BT Call مع مقاومة للماء و3 أحزمة"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-29-amoled.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-32",
+    "name_ar": "ساعة هاينو تيكو 32 شاشة أموليد وبطارية 15 يوم ومقاومة للماء Haino Teko-32",
+    "name_en": "Haino Teko-32 AMOLED 15-Day Battery Waterproof Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "AMOLED مقاومة للماء والخدش",
+      "الموديل": "HainoTeko-32 Germany",
+      "البطارية": "15 يوماً استخدام معتاد",
+      "الملحقات": "3 أزواج ستراب"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-32-amoled.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-33",
+    "name_ar": "ساعة هاينو تيكو 33 أموليد مع مكالمات وبطارية 15 يوم Haino Teko-33",
+    "name_en": "Haino Teko-33 AMOLED 15-Day Battery BT Call Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الموديل": "HainoTeko-33 Germany",
+      "الميزات": "AMOLED، بطارية 15 يوم، BT Call، و 3 أحزمة فاخرة"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-33-amoled.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-5-super-slim",
+    "name_ar": "ساعة هاينو تيكو 5 سوبر سليم شاشة أموليد ومقاومة للماء Haino Teko-5",
+    "name_en": "Haino Teko-5 Super Slim AMOLED Waterproof Smartwatch 3 Straps",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "السماكة": "نحافة فائقة وراحة قصوى أثناء الارتداء والنوم",
+      "الموديل": "HainoTeko-5 Super Slim",
+      "الملحقات": "3 أزواج أحزمة ومقاومة للماء"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-5-superslim.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-ai-robot-ultra3",
+    "name_ar": "ساعة هاينو تيكو ألترا 3 بالذكاء الاصطناعي Haino Teko AI Translation Robot Ultra 3",
+    "name_en": "Haino Teko AI Translation Robot Ultra 3 AMOLED Smartwatch SIFLI-3",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الموديل": "AI Translation Robot Ultra 3 (SIFLI-3)",
+      "البطارية": "تدوم حتى 20 يوماً من الاستخدام المعتاد (20 DAYS Battery Power)",
+      "الميزات الحصرية": "ترجمة فورية بالذكاء الاصطناعي AI Translation ومساعد ذكي AI Robot",
+      "الذاكرة والتخزين": "ذاكرة داخلية 1GB لتخزين الصور والموسيقى",
+      "الشاشة والسترابات": "شاشة AMOLED كبيرة مع 3 أزواج أحزمة فاخرة"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-ai-robot-ultra3.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-cs4",
+    "name_ar": "ساعة هاينو تيكو بطارية شهر كامل Haino Teko CS-4 تدوم 30 يوماً ومقاومة للماء",
+    "name_en": "Haino Teko CS-4 30-Day Battery Power Waterproof Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الأحزمة": "3 أزواج ستراب مرفقة",
+      "الموديل": "CS-4 Waterproof",
+      "المكالمات": "BT Call مع مايكروفون نقي",
+      "البطارية الخارقة": "30 يوماً من الاستخدام 30 DAYS of Normal Use Battery Power"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-cs4.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-fg11-5g-android",
+    "name_ar": "ساعة هاينو تيكو أندرويد 5G طراز FG-11 شاشة أموليد تدعم أي تطبيق ومتجر Google Play",
+    "name_en": "Haino Teko FG-11 5G Android Smartwatch Google Play Any App Support",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "شاشة AMOLED كبيرة فائقة الوضوح",
+      "الموديل": "FG-11 Android 5G",
+      "النظام والبرامج": "نظام أندرويد كامل، كاميرا، واي فاي، ومتجر جوجل بلاي"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-fg11-5g-android.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-fg8-5g-android",
+    "name_ar": "ساعة أندرويد ذكية هاينو تيكو Haino Teko FG-8 تدعم 5G وتنزيل التطبيقات ومتجر Google Play",
+    "name_en": "Haino Teko FG-8 5G Android Smartwatch with Google Play & TikTok",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "Real AMOLED لمس كامل",
+      "النظام": "نظام أندرويد كامل مستقل مع متجر Google Play لتنزيل كافة التطبيقات (WhatsApp, TikTok, Facebook)",
+      "الاتصال": "شريحة اتصال 5G / 4G و Wi-Fi و GPS",
+      "الموديل": "FG-8 Android 5G"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-fg8-5g-android.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-g15-mini",
+    "name_ar": "ساعة هاينو تيكو جي 15 ميني سيريس 10 Haino Teko G15 Mini Series 10 مع 3 أحزمة",
+    "name_en": "Haino Teko G15 Mini Series 10 Smartwatch with 3 Pairs Strap",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "إطار فائق النحافة مستوحى من أحدث إصدارات الساعات الذكية",
+      "الأحزمة": "3 أحزمة مرفقة",
+      "الموديل": "G15 mini · Series 10"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-g15-mini.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-g19-mini",
+    "name_ar": "ساعة هاينو تيكو جي 19 ميني Haino Teko G19 Mini شاشة AMOLED ومكالمات",
+    "name_en": "Haino Teko G19 Mini AMOLED BT Call Smartwatch with 3 Straps",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الحجم": "تصميم ميني عصري خفيف الوزن",
+      "الشاشة": "AMOLED مع 3 أحزمة متنوعة",
+      "الموديل": "G19 Mini"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-g19-mini.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-richard-m10",
+    "name_ar": "ساعة هاينو تيكو الفاخرة بتصميم ريتشارد ميل Haino Teko Richard M10",
+    "name_en": "Haino Teko Richard M10 Luxury Tonneau Curved Smartwatch 3 Straps",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "التصميم": "هيكل قوسي Tonneau انسيابي مستوحى من أفخم الساعات السويسرية",
+      "الموديل": "Richard M10 Germany",
+      "الميزات": "إشعارات كاملة، قياس المؤشرات الحيوية، والتحكم بالموسيقى",
+      "الملحقات": "3 أزواج أحزمة فاخرة"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-richard-m10.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-rw78",
+    "name_ar": "ساعة هاينو تيكو الألمانية Haino Teko RW-78 شاشة AMOLED ومكالمات مع 3 أحزمة",
+    "name_en": "Haino Teko RW-78 / KW-78 AMOLED Waterproof Smartwatch with BT Call",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "شاشة AMOLED دائرية كلاسيكية فائقة النقاء",
+      "الأحزمة": "3 أحزمة متنوعة مرفقة بالعلبة",
+      "الموديل": "RW-78 / KW-78 Germany",
+      "البطارية": "10 أيام استخدام متواصل 10 Days Use",
+      "المكالمات": "سماعة ومايكروفون عالي الوضوح لمكالمات الهاتف"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-rw78.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-sq17-mini",
+    "name_ar": "ساعة هاينو تيكو ميني Haino Teko SQ-17 Mini شاشة AMOLED مع 3 أزواج ستراب",
+    "name_en": "Haino Teko SQ-17 Mini AMOLED Compact Smartwatch with 3 Pairs Strap",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الشاشة": "AMOLED نابضة بالحياة",
+      "التصميم": "حجم مدمج وأنيق يناسب معاصم اليد الرفيعة والمتوسطة",
+      "الموديل": "SQ-17 Mini",
+      "الملحقات": "3 أزواج ستراب مرفقة بالعلبة"
+    },
+    "images": [
+      "/product-images/smartwatch-haino-teko-sq17-mini-1.jpg",
+      "/product-images/smartwatch-haino-teko-sq17-mini-2.jpg"
+    ]
+  },
+  {
+    "id": "prod-haino-teko-sq18-amoled",
+    "name_ar": "ساعة هاينو تيكو ألماني Haino Teko SQ-18 شاشة AMOLED مع 3 أحزمة ومكالمات بلوتوث",
+    "name_en": "Haino Teko SQ-18 German AMOLED Smartwatch with BT Call & 3 Pairs Strap",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "specs": {
+      "الموديل": "Haino Teko SQ-18 (Germany)",
+      "المكالمات": "تدعم إجراء واستقبال المكالمات بوضوح عبر مكبر صوت ومايكروفون عالي النقاء",
+      "نوع الشاشة": "AMOLED فائقة السطوع وألوان حقيقية مع خاصية Always-on Display",
+      "مقاومة الماء": "معيار 1ATM Waterproof للاستخدام اليومي ومقاومة رذاذ الماء",
+      "الأحزمة المرفقة": "تأتي بـ 3 أحزمة مختلفة في العلبة (سيليكون رياضي + جلد كلاسيكي + قماش أنيق)",
+      "المستشعرات الصحية": "قياس معدل ضربات القلب، قياس الأكسجين بالدم SpO2، وتتبع الأنشطة الرياضية"
+    },
+    "images": [
+      "/product-images/haino-teko-sq18-amoled-box.jpg"
+    ]
+  },
+  {
+    "id": "prod-hollyland-lark-wireless-mic",
+    "name_ar": "مايك لاسلكي احترافي هوليلاند Hollyland Lark M2 لصناع المحتوى والفيديو",
+    "name_en": "Hollyland Lark M2 Wireless Lavalier Microphone System",
+    "brand": "Hollyland",
+    "category": "audio",
+    "specs": {
+      "الوزن": "وزن ريشة 9 جرام فقط للمايك بدون إثقال الملابس",
+      "التوافق": "متوافق مع آيفون وأندرويد وأجهزة اللابتوب عبر موصلات Lightning و Type-C",
+      "الموديل": "Lark M2 (Mobile Version)",
+      "جودة الصوت": "صوت عالي الدقة 48kHz / 24-bit بنقاء استوديو Hi-Fi",
+      "عزل الضوضاء": "تقنية عزل الضوضاء البيئية ENC بضغطة زر واحدة",
+      "عمر البطارية": "حتى 10 ساعات استخدام متواصل، و40 ساعة مع علبة الشحن المتنقلة",
+      "المدى اللاسلكي": "نقل مستقر حتى مسافة 300 متر بموجة 2.4GHz"
+    },
+    "images": [
+      "/product-images/hollyland-lark-wireless-mic-box.jpg"
+    ]
+  },
+  {
+    "id": "prod-hunter-ai-gan-45w",
+    "name_ar": "شاحن هنتر الذكي 45 واط Hunter AI GaN بأوامر صوتية وتحكم باللمس",
+    "name_en": "Hunter AI GaN 45W Dual USB-C Charger with Voice Command & Touch Control",
+    "brand": "Hunter",
+    "category": "chargers_cables",
+    "specs": {
+      "القدرة": "45 واط PD بتقنية GaN مع رقاقة الذكاء الاصطناعي Hunter AI Chip",
+      "المنافذ": "منفذين USB-C للشحن المتزامن فائق السرعة",
+      "الموديل": "Hu-A1 / Hu-A7",
+      "التقنية الحصرية": "أول شاحن ذكي يدعم الأوامر الصوتية Voice Command والتحكم التفاعلي باللمس Touch Control",
+      "توزيع الطاقة الذكي": "يتعرف تلقائياً على الجهاز ويمنحه الجهد والتيار الأمثل دون ارتفاع الحرارة"
+    },
+    "images": [
+      "/product-images/hunter-ai-45w-gan-box.jpg"
+    ]
+  },
+  {
+    "id": "prod-hunter-desktop-gan-90w",
+    "name_ar": "منصة شحن مكتبية هنتر 90 واط Hunter Desktop GaN متعددة المنافذ",
+    "name_en": "Hunter 90W Desktop GaN Multi-Port Fast Charging Station",
+    "brand": "Hunter",
+    "category": "chargers_cables",
+    "specs": {
+      "المنافذ": "منافذ متعددة لشحن اللابتوب، الهاتف، والتابلت في آن واحد",
+      "الاستقرار": "تنظيم جهد فائق التطور للمكاتب وبيئات العمل الاحترافية",
+      "القدرة القصوى": "90 واط GaN"
+    },
+    "images": [
+      "/product-images/hunter-90w-gan-desktop-box.jpg"
+    ]
+  },
+  {
+    "id": "prod-hunter-gan-20w-mini",
+    "name_ar": "شاحن هنتر ميني جان 20 واط فائق الصغر Hunter 20W GaN Mini Charger",
+    "name_en": "Hunter 20W GaN Mini Fast Charger HU-C0102 Total Safety",
+    "brand": "Hunter",
+    "category": "chargers_cables",
+    "specs": {
+      "القدرة": "20 واط GaN فائق السرعة والصغر",
+      "الميزة": "حجم أصغر بنسبة 50% مع حرارة منخفضة جداً وثبات كهربائي 100%",
+      "الموديل": "HU-C0102"
+    },
+    "images": [
+      "/product-images/hunter-20w-gan-mini-box.jpg"
+    ]
+  },
+  {
+    "id": "prod-hunter-gan-45w",
+    "name_ar": "شاحن هنتر 45 واط سوبر فاست Hunter 45W PD + QC3.0 بمنفذ Type-C و USB-A",
+    "name_en": "Hunter 45W Super Fast Charger Dual Output PD + QC3.0",
+    "brand": "Hunter",
+    "category": "chargers_cables",
+    "specs": {
+      "التوافق": "يدعم هواتف سامسونج Super Fast Charging 2.0 وهواتف آيفون PD بأعلى سرعة",
+      "المنافذ": "منفذ USB-C Power Delivery + منفذ USB-A Quick Charge 3.0",
+      "الموديل": "HU-C0101",
+      "أنظمة الحماية": "دائرة حماية خماسية لحماية بطارية هاتفك من الإجهاد",
+      "القدرة الإجمالية": "45 واط شحن فائق السرعة Super Fast Charging"
+    },
+    "images": [
+      "/product-images/hunter-45w-gan-box.jpg"
+    ]
+  },
+  {
+    "id": "prod-hunter-gan-67w",
+    "name_ar": "شاحن هنتر 67 واط جان فائق السرعة Hunter 67W GaN بمنفذي تايب سي مع إضاءة LED",
+    "name_en": "Hunter 67W GaN Dual USB-C Fast Charger with Running LED Light",
+    "brand": "Hunter",
+    "category": "chargers_cables",
+    "specs": {
+      "الأمان": "نظام حماية متعدد ضد التيار الزائد، الجهد العالي، وارتفاع الحرارة",
+      "المنافذ": "منفذين USB-C يدعمان بروتوكول PD25W و PD67W فائق السرعة",
+      "الموديل": "HU-C0100",
+      "أقصى قدرة": "67 واط بتقنية نيتريد الغاليوم (GaN III Pro)",
+      "إضاءة التشغيل": "شريط LED تفاعلي جذاب يوضح سريان الشحن السريع",
+      "التوافق الشامل": "يشحن أجهزة اللابتوب (MacBook)، هواتف iPhone، Samsung، وiPad بأقصى كفاءة"
+    },
+    "images": [
+      "/product-images/hunter-67w-gan-box.jpg",
+      "/product-images/banner-hunter-charging-series.jpg"
+    ]
+  },
+  {
+    "id": "prod-hunter-laptop-stand",
+    "name_ar": "حامل لابتوب وتابلت ألومنيوم قابل للطي ومريح للرقبة من هنتر Hunter Laptop Stand",
+    "name_en": "Hunter Adjustable Foldable Aluminum Laptop & Tablet Stand",
+    "brand": "Hunter",
+    "category": "accessories",
+    "specs": {
+      "الخامة": "سبائك ألومنيوم مع وسادات سيليكون مانعة للانزلاق والخدش",
+      "التوافق": "يدعم كافة أجهزة اللابتوب والماك بوك من 10 إلى 17 بوصة",
+      "المستويات": "زوايا ارتفاع قابلة للتعديل لتحسين زاوية النظر وتبريد الجهاز"
+    },
+    "images": [
+      "/product-images/hunter-aluminum-laptop-stand.jpg"
+    ]
+  },
+  {
+    "id": "prod-hunter-magnetic-tripod",
+    "name_ar": "ترايبود وحامل مغناطيسي مكتبي قابل للطي من هنتر Hunter MagSafe Tripod",
+    "name_en": "Hunter Foldable Magnetic Desktop Tripod / MagSafe Stand",
+    "brand": "Hunter",
+    "category": "accessories",
+    "specs": {
+      "الخامة": "ألومنيوم مقوى مع مفاصل متينة قابلة للطي",
+      "الاستخدام": "ترايبود مكتبي للبث المباشر ومكالمات الفيديو وصناعة المحتوى",
+      "المغناطيس": "رأس MagSafe دائري فائق القوة"
+    },
+    "images": [
+      "/product-images/hunter-magnetic-desktop-tripod.jpg"
+    ]
+  },
+  {
+    "id": "prod-hunter-pd-25w",
+    "name_ar": "رأس شاحن هنتر 25 واط تايب سي سريع Hunter 25W PD Adapter",
+    "name_en": "Hunter 25W USB-C PD Fast Charging Adapter Safe & Reliable",
+    "brand": "Hunter",
+    "category": "chargers_cables",
+    "specs": {
+      "الحجم": "تصميم مدمج وسهل الحمل أثناء السفر والتنقل",
+      "الأمان": "معايير أمان معتمدة ضد تقلبات الجهد الكهربائي",
+      "القدرة": "25 واط Power Delivery (PD)",
+      "المنفذ": "منفذ تايب سي Type-C فائق الاستقرار",
+      "الموديل": "HU-C0103"
+    },
+    "images": [
+      "/product-images/hunter-25w-pd-box.jpg"
+    ]
+  },
+  {
+    "id": "prod-lito-ai-wireless-mic",
+    "name_ar": "مايك ليتو لاسلكي Lito AI عالي النقاء 48kHz مع علبة شحن ذكية",
+    "name_en": "Lito AI Wireless Lapel Microphone 48kHz 24-bit with Charging Case",
+    "brand": "Lito",
+    "category": "audio",
+    "specs": {
+      "العلبة": "علبة شحن مدمجة ببطارية طويلة الأمد",
+      "التوافق": "مباشر للهواتف الذكية مع استجابة فورية بدون تأخير",
+      "دقة الصوت": "48kHz / 24bit معالج صوتي رقمي استوديو",
+      "تقنية الذكاء الاصطناعي": "عزل ذكي لتشويش الرياح وضوضاء الخلفية"
+    },
+    "images": [
+      "/product-images/lito-ai-wireless-mic.jpg"
+    ]
+  },
+  {
+    "id": "prod-lito-wireless-powerbank-10k",
+    "name_ar": "باور بانك ليتو لاسلكي Lito المغناطيسي 10000 مللي أمبير بقوة 15 واط",
+    "name_en": "Lito 10000mAh 15W Magnetic Wireless Fast Power Bank",
+    "brand": "Lito",
+    "category": "powerbanks",
+    "specs": {
+      "السعة": "10,000 مللي أمبير حقيقية عالية الكثافة",
+      "التصميم": "سمك نحيف للغاية (15.7 مم) وخامات ألومنيوم متميزة لا تسخن أثناء الشحن",
+      "المؤشرات": "مؤشر LED ذكي يوضح نسبة الشحن المتبقية بدقة",
+      "الشحن السلكي": "منفذ Type-C يدعم بروتوكول PD بقوة تصل إلى 20 واط",
+      "الشحن اللاسلكي": "شحن مغناطيسي MagSafe متوافق بقوة 15 واط"
+    },
+    "images": [
+      "/product-images/lito-wireless-powerbank-10k.jpg"
+    ]
+  },
+  {
+    "id": "prod-lito-wireless-powerbank-5k",
+    "name_ar": "باور بانك ليتو مغناطيسي فائق الصغر 5000 مللي أمبير Lito 15W MagSafe",
+    "name_en": "Lito 5000mAh 15W Ultra Compact Magnetic Wireless Power Bank",
+    "brand": "Lito",
+    "category": "powerbanks",
+    "specs": {
+      "السعة": "5,000 مللي أمبير",
+      "الميزة": "حجم فائق الصغر More Small More Power لا يتجاوز حجم البطاقة الائتمانية",
+      "الشحن اللاسلكي": "15W MagSafe قوي التثبيت"
+    },
+    "images": [
+      "/product-images/lito-wireless-powerbank-5k.jpg"
+    ]
+  },
+  {
+    "id": "prod-onmust-zolo-30w-1006",
+    "name_ar": "شاحن جداري سريع ONMUST Zolo 30W بتقنية GaN ومنفذ تايب سي",
+    "name_en": "ONMUST Zolo 30W GaN Super Fast Charger USB-C Power Delivery",
+    "brand": "ONMUST",
+    "category": "chargers_cables",
+    "specs": {
+      "القدرة": "30 واط كحد أقصى بتقنية GaN III",
+      "التوافق": "آيفون 16/17 برو ماكس وسامسونج وآيباد",
+      "الحماية": "حماية ذكية ضد الحرارة والشحن الزائد",
+      "المنافذ": "منفذ Type-C PD 3.0"
+    },
+    "images": [
+      "/product-images/onmust-zolo-30w-studio.jpg",
+      "/product-images/onmust-zolo-30w-box-clean.png"
+    ]
+  },
+  {
+    "id": "prod-oraimo-freepods-3c",
+    "name_ar": "سماعة أوريمو بلوتوث Oraimo FreePods 3C صوت نقي وباس عميق",
+    "name_en": "Oraimo FreePods 3C True Wireless Earbuds HavyBass",
+    "brand": "Oraimo",
+    "category": "audio",
+    "specs": {
+      "التحكم": "لمس ذكي مع تخصيص الصوت عبر تطبيق Oraimo Sound",
+      "الموديل": "OEB-E104DC",
+      "شحن سريع": "10 دقائق شحن تعطي 140 دقيقة تشغيل",
+      "تقنية الصوت": "HavyBass مع خوارزمية إلغاء الضوضاء أثناء المكالمات 4-mic ENC",
+      "عمر البطارية": "36 ساعة تشغيل إجمالي (8 ساعات في السماعة + 28 ساعة في العلبة)",
+      "مقاومة الماء": "IPX5 مقاومة للعرق ورذاذ الماء",
+      "إصدار البلوتوث": "Bluetooth 5.3 سريع ومستقر"
+    },
+    "images": [
+      "/product-images/oraimo-freepods-3c-box.jpg",
+      "/product-images/oraimo-freepods-3c-features.jpg"
+    ]
+  },
+  {
+    "id": "prod-oraimo-necklace-lite",
+    "name_ar": "سماعة رقبة لاسلكية أوريمو نكلاس لايت Oraimo Necklace Lite بطارية 30 ساعة",
+    "name_en": "Oraimo Necklace Lite OEB-E3111 30-Hour Wireless Neckband Earphones",
+    "brand": "Oraimo",
+    "category": "audio",
+    "specs": {
+      "التصميم": "طوق رقبة مريح وخفيف الوزن مع مغناطيس مدمج بالسماعات",
+      "الموديل": "OEB-E3111",
+      "البطارية": "30 ساعة تشغيل متواصل فائقة التحمل",
+      "تقنية الاهتزاز": "تنبيه بالاهتزاز عند ورود المكالمات",
+      "شحن فائق السرعة": "شحن 10 دقائق يمنح 10 ساعات تشغيل"
+    },
+    "images": [
+      "/product-images/oraimo-necklace-lite-e3111.jpg"
+    ]
+  },
+  {
+    "id": "prod-oraimo-spacebuds-lite",
+    "name_ar": "سماعة أوريمو سبيس بودز لايت Oraimo SpaceBuds Lite OTW-324 باس قوي",
+    "name_en": "Oraimo SpaceBuds Lite OTW-324 Powerful Bass True Wireless Earbuds",
+    "brand": "Oraimo",
+    "category": "audio",
+    "specs": {
+      "الصوت": "HavyBass Powerful Bass Pure Immersion",
+      "الضمان": "ضمان أوريمو الرسمي 365 يوم",
+      "الاتصال": "Bluetooth 5.3 منخفض التأخير للألعاب",
+      "الموديل": "OTW-324",
+      "البطارية": "حتى 30 ساعة تشغيل"
+    },
+    "images": [
+      "/product-images/oraimo-spacebuds-lite-otw324.jpg"
+    ]
+  },
+  {
+    "id": "prod-oraimo-spacebuds-n",
+    "name_ar": "سماعة أوريمو سبيس بودز إن Oraimo SpaceBuds N OTW-626N صوت نقي وعزل ضوضاء",
+    "name_en": "Oraimo SpaceBuds N OTW-626N ANC Pure Sound & Crisp Call Earbuds",
+    "brand": "Oraimo",
+    "category": "audio",
+    "specs": {
+      "الميزة": "Pure Sound, Crisp Call بتقنية HavyBass المتطورة",
+      "الاتصال": "Bluetooth 5.3",
+      "الموديل": "OTW-626N",
+      "عزل الضوضاء": "Active Noise Cancellation ANC"
+    },
+    "images": [
+      "/product-images/oraimo-spacebuds-n-otw626n-1.jpg",
+      "/product-images/oraimo-spacebuds-n-otw626n-2.jpg"
+    ]
+  },
+  {
+    "id": "prod-oraimo-spacebuds-z",
+    "name_ar": "سماعة أوريمو سبيس بودز زد Oraimo SpaceBuds Z OTW-425 مع عزل الضوضاء النشط ANC",
+    "name_en": "Oraimo SpaceBuds Z OTW-425 Active Noise Cancellation ANC Earbuds",
+    "brand": "Oraimo",
+    "category": "audio",
+    "specs": {
+      "الموديل": "OTW-425",
+      "عزل الضوضاء": "Active Noise Cancellation (ANC) حتى 30dB",
+      "عمر البطارية": "حتى 32 ساعة مع الحافظة",
+      "وضعية الشفافية": "Transparency Mode لسماع الأصوات المحيطة بوضوح",
+      "تقنية الميكروفون": "4 ميكروفونات مع تقنية تقليل الضوضاء للمكالمات"
+    },
+    "images": [
+      "/product-images/oraimo-spacebuds-z-otw425.jpg"
+    ]
+  },
+  {
+    "id": "prod-telzeal-s11-ultra3-robot",
+    "name_ar": "ساعة تيلزيل الذكية Telzeal S11 Ultra 3 Robot شاشة AMOLED ومكتبة قراءة وذاكرة صوتية",
+    "name_en": "Telzeal S11 Ultra 3 Robot AMOLED Smartwatch with Ebook & Local Music",
+    "brand": "Telzeal",
+    "category": "smartwatches",
+    "specs": {
+      "الموديل": "Telzeal S11 Ultra 3 Robot",
+      "الميزات": "تشغيل الموسيقى المستقلة Local Music، قارئ الكتب الإلكترونية wrist Ebook، وخلفيات ذكاء اصطناعي AI Watch Face",
+      "الشحن والأحزمة": "شحن لاسلكي Wireless Charging مع 3 أزواج ستراب مرفقة"
+    },
+    "images": [
+      "/product-images/smartwatch-telzeal-s11-ultra3-robot.jpg"
+    ]
+  },
+  {
+    "id": "prod-wo-x10-ultra-smartwatch",
+    "name_ar": "ساعة ذكية دبليو آند أو إكس 10 ألترا W&O X10 Ultra بنظام Wearfit Pro",
+    "name_en": "W&O X10 Ultra AMOLED Smartwatch with Wearfit OS",
+    "brand": "W&O",
+    "category": "smartwatches",
+    "specs": {
+      "النظام": "Wearfit OS فائق الاستجابة",
+      "التصميم": "هيكل ألترا قوي بحواف مرتفعة لحماية الشاشة من الصدمات",
+      "الموديل": "X10 Ultra"
+    },
+    "images": [
+      "/product-images/smartwatch-wo-x10-ultra.jpg"
+    ]
+  },
+  {
+    "id": "prod-world-tag-apple-findmy",
+    "name_ar": "ميدالية تتبع ذكية Smart World Tag متوافقة مع تطبيق Apple Find My",
+    "name_en": "Smart World Tag Location Tracker Works with Apple Find My",
+    "brand": "WorldTag",
+    "category": "accessories",
+    "specs": {
+      "التوافق": "يعمل مباشرة مع تطبيق Find My (تحديد الموقع) المدمج في نظام iOS",
+      "الموديل": "World Tag",
+      "البطارية": "بطارية عملة CR2032 تدوم لأكثر من عام كامل وقابلة للاستبدال بسهولة",
+      "المكبر الصوتي": "جرس مدمج عالي الصوت للبحث عن المفاتيح والشنط والمقتنيات المفقودة بسهولة",
+      "بدون اشتراكات": "لا يحتاج إلى شريحة SIM أو رسوم شهرية، يستفيد من شبكة Apple العالمية المشفرة"
+    },
+    "images": [
+      "/product-images/world-tag-apple-findmy.jpg"
+    ]
+  },
+  {
+    "id": "prod-nabi-kids-smartwatch-gps",
+    "name_ar": "ساعة أطفال ذكية nabi Kids بشريحة اتصال 5G وتحديد موقع GPS ومكالمات فيديو",
+    "name_en": "nabi Kids 5G GPS Smartwatch with Video Call & SOS",
+    "brand": "nabi",
+    "category": "smartwatches",
+    "specs": {
+      "الموديل": "WatchNabi Org Z17",
+      "الكاميرا": "كاميرا عالية الوضوح HD لمكالمات الفيديو المباشرة والاطمئنان على الطفل",
+      "تحديد الموقع": "نظام GPS + LBS + Wi-Fi ثلاثي لتتبع دقيق لمكان طفلك وتحديد سياج جغرافي آمن",
+      "مقاومة الماء": "معيار حماية كامل ضد الماء لمقاومة غسيل اليدين واللعب",
+      "زر الاستغاثة SOS": "زر مخصص للطوارئ يتصل فوراً بهواتف الوالدين المسجلة عند الضغط المطول",
+      "الاتصال والشبكة": "تدعم شريحة Nano SIM مع شبكات الجيل الخامس 5G LTE ومكالمات هاتفية مباشرة"
+    },
+    "images": [
+      "/product-images/nabi-kids-smartwatch-gps-box.jpg",
+      "/product-images/nabi-kids-smartwatch-final.jpg",
+      "/product-images/nabi-kids-smartwatch-side.jpg",
+      "/product-images/nabi-kids-smartwatch-angle.jpg",
+      "/product-images/nabi-kids-smartwatch-back.jpg"
+    ]
+  }
+]
