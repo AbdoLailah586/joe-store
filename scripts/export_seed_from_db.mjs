@@ -30,7 +30,24 @@ async function exportSeed() {
       }
     }
 
-    const colors = Array.isArray(r.colors) ? r.colors : (details.available_colors || []);
+    const rawColors = Array.isArray(r.colors) ? r.colors : (details.available_colors || []);
+    const colors = rawColors.map(c => {
+      if (typeof c === 'string') {
+        const hexMap = {
+          'أسود': '#000000',
+          'أبيض': '#FFFFFF',
+          'رمادي': '#808080',
+          'فضي': '#C0C0C0',
+          'ذهبي': '#FFD700',
+          'أزرق': '#1E3A8A',
+          'وردي': '#F472B6',
+          'أحمر': '#DC2626',
+          'برتقالي': '#EA580C'
+        };
+        return { name_ar: c, name_en: c, hex: hexMap[c] || '#475569' };
+      }
+      return c;
+    });
     const storageOptions = Array.isArray(r.storage_options) ? r.storage_options : (details.available_storages || []);
     const images = Array.isArray(r.images) && r.images.length > 0 ? r.images : (details.images || ['/product-images/default.jpg']);
 

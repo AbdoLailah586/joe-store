@@ -38,8 +38,13 @@ catalog_intake/incoming/*
 !catalog_intake/incoming/.gitkeep
 scratch_grids/
 جرابات/
+WhatsApp Unknown*/
+catalog_intake_cases.json
+catalog_intake_whatsapp.json
+whatsapp_rapidocr_results.json
 scripts/check_neon_prod.mjs
 scripts/update_neon_prod.mjs
 scripts/process_bmw_images.py
+
 
 
