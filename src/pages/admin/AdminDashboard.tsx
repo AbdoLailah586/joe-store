@@ -166,7 +166,8 @@ export const AdminDashboard: React.FC = () => {
   const [bannerProductSearch, setBannerProductSearch] = useState<string>('');
   const [isBannerSearchOpen, setIsBannerSearchOpen] = useState<boolean>(false);
   const [newSlide, setNewSlide] = useState<Partial<HeroSlide>>({
-    badge: 'عرض حصري جديد',
+    slide_type: 'banner',
+    badge: 'جديد وحصري 🔥',
     title_ar: '',
     title_en: '',
     subtitle_ar: '',
@@ -175,9 +176,11 @@ export const AdminDashboard: React.FC = () => {
     oldPrice: '',
     tag: 'متوفر بالمحل',
     image: '',
-    cat: 'smartphones',
+    cat: 'chargers_cables',
     linked_product_id: '',
-    product_id: ''
+    product_id: '',
+    link_type: 'search',
+    link_target: 'HUNTER'
   });
 
   const filteredBannerProducts = useMemo(() => {
@@ -197,18 +200,21 @@ export const AdminDashboard: React.FC = () => {
     if (!newSlide.title_ar || !newSlide.image) return;
     const slideItem: HeroSlide = {
       id: `slide-${Date.now()}`,
-      badge: newSlide.badge || 'عرض خاص',
+      slide_type: newSlide.slide_type || 'banner',
+      badge: newSlide.badge || '',
       title_ar: newSlide.title_ar,
       title_en: newSlide.title_en || newSlide.title_ar,
       subtitle_ar: newSlide.subtitle_ar || '',
       subtitle_en: newSlide.subtitle_en || '',
-      price: newSlide.price || '0',
+      price: newSlide.price || '',
       oldPrice: newSlide.oldPrice || '',
       tag: newSlide.tag || '',
       image: newSlide.image,
-      cat: (newSlide.cat as CategoryKey) || 'smartphones',
+      cat: (newSlide.cat as CategoryKey) || 'chargers_cables',
       linked_product_id: newSlide.linked_product_id || newSlide.product_id || selectedBannerProduct?.id,
-      product_id: newSlide.product_id || newSlide.linked_product_id || selectedBannerProduct?.id
+      product_id: newSlide.product_id || newSlide.linked_product_id || selectedBannerProduct?.id,
+      link_type: newSlide.link_type || 'search',
+      link_target: newSlide.link_target || ''
     };
     const currentSlides = settings.hero_slides || [];
     updateSettings({ hero_slides: [...currentSlides, slideItem] });
@@ -217,7 +223,8 @@ export const AdminDashboard: React.FC = () => {
     setBannerProductSearch('');
     setIsBannerSearchOpen(false);
     setNewSlide({
-      badge: 'عرض حصري جديد',
+      slide_type: 'banner',
+      badge: 'جديد وحصري 🔥',
       title_ar: '',
       title_en: '',
       subtitle_ar: '',
@@ -226,9 +233,11 @@ export const AdminDashboard: React.FC = () => {
       oldPrice: '',
       tag: 'متوفر بالمحل',
       image: '',
-      cat: 'smartphones',
+      cat: 'chargers_cables',
       linked_product_id: '',
-      product_id: ''
+      product_id: '',
+      link_type: 'search',
+      link_target: 'HUNTER'
     });
   };
 
@@ -1570,268 +1579,534 @@ export const AdminDashboard: React.FC = () => {
             {/* Slide Creation Form */}
             {showSlideForm && (
               <form onSubmit={handleAddSlide} className="p-5 rounded-2xl bg-slate-50 border border-amber-500/40 space-y-4 text-xs font-cairo">
-                <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
-                  <h4 className="font-bold text-amber-700 text-sm">{language === 'ar' ? 'بيانات الشريحة / البانر الجديد' : 'New Banner Slide Details'}</h4>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-amber-500/20 pb-3 gap-2">
+                  <h4 className="font-bold text-amber-700 text-sm">
+                    {language === 'ar' ? 'إضافة بانر أو شريحة جديدة للواجهة الرئيسية' : 'Add New Hero Banner / Slide'}
+                  </h4>
+
+                  {/* Slide Type Switcher */}
+                  <div className="flex items-center gap-1.5 p-1 bg-white border border-slate-200 rounded-xl shadow-xs">
+                    <button
+                      type="button"
+                      onClick={() => setNewSlide(prev => ({ ...prev, slide_type: 'banner' }))}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                        newSlide.slide_type === 'banner'
+                          ? 'bg-amber-500 text-slate-950 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      <span>{language === 'ar' ? 'صورة بانر دعائي مخصص (كامل العرض)' : 'Full Promotional Banner'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNewSlide(prev => ({ ...prev, slide_type: 'product' }))}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                        newSlide.slide_type === 'product'
+                          ? 'bg-amber-500 text-slate-950 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <Layers className="w-3.5 h-3.5" />
+                      <span>{language === 'ar' ? 'عرض منتج تفصيلي (سعر ومواصفات)' : 'Single Product Slide'}</span>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Instant Store Product Picker - Auto Fill Banner Details */}
-                <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2.5">
-                  <label className="block text-slate-800 font-bold text-xs flex items-center justify-between">
-                    <span className="flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                      <span>{language === 'ar' ? 'بحث واختيار منتج من المتجر لتعبئة بيانات البانر:' : 'Search & pick product to auto-fill banner:'}</span>
-                    </span>
-                    <span className="text-[10px] text-slate-500 font-normal">
-                      ({products.length} {language === 'ar' ? 'منتج متاح' : 'products'})
-                    </span>
-                  </label>
+                {newSlide.slide_type === 'banner' ? (
+                  /* =======================================================
+                     FULL PROMOTIONAL BANNER CONFIGURATION
+                     ======================================================= */
+                  <div className="space-y-4">
+                    <div className="p-3 bg-amber-50 rounded-xl border border-amber-200/60 text-slate-700 space-y-1">
+                      <span className="font-bold text-amber-900 block flex items-center gap-1.5">
+                        <Sparkles className="w-4 h-4 text-amber-600" />
+                        {language === 'ar' ? 'بانر دعائي مخصص بصورة جاهزة:' : 'Full Promotional Banner Image:'}
+                      </span>
+                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                        {language === 'ar'
+                          ? 'يمكنك رفع تصميم إعلاني كامل (مثل بانر سلسلة شواحن هنتر أو عروض الكفرات) وتحديد إلى أين ينتقل العميل عند الضغط على الصورة (ماركة، قسم، أو منتج).'
+                          : 'Upload a ready promotional design banner and configure where customers are redirected upon clicking.'}
+                      </p>
+                    </div>
 
-                  <div className="relative">
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder={language === 'ar' ? 'ابحث باسم المنتج أو الموديل أو الماركة (مثال: شاحن، آيفون، 1006)...' : 'Search by name, model, brand...'}
-                        value={bannerProductSearch}
-                        onChange={(e) => {
-                          setBannerProductSearch(e.target.value);
-                          setIsBannerSearchOpen(true);
-                        }}
-                        onFocus={() => setIsBannerSearchOpen(true)}
-                        className="w-full bg-white border border-amber-500/40 focus:border-amber-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 pr-9 focus:outline-none focus:ring-2 focus:ring-amber-500/30 font-cairo shadow-inner"
-                      />
-                      <Search className="w-4 h-4 text-amber-600 absolute right-3 top-2.5 pointer-events-none" />
-                      {bannerProductSearch && (
+                    {/* Banner Image Upload & URL */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 font-bold mb-1">
+                        {language === 'ar' ? 'صورة البانر (رفع من اللاب توب أو لصق رابط) *:' : 'Banner Image *:'}
+                      </label>
+                      <div className="flex flex-col sm:flex-row gap-2.5 items-center">
+                        <input
+                          type="text"
+                          required
+                          value={newSlide.image}
+                          onChange={(e) => setNewSlide({ ...newSlide, image: e.target.value })}
+                          placeholder={language === 'ar' ? 'مثال: /product-images/banner-hunter-charging-series.jpg' : 'Paste image URL or upload'}
+                          className="flex-1 w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono text-xs"
+                        />
+                        <label className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-sm transition-all whitespace-nowrap self-stretch sm:self-auto justify-center">
+                          <Upload className="w-4 h-4 text-amber-400" />
+                          <span>رفع صورة البانر من اللاب توب</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => handleFileUpload(e, (url) => setNewSlide(prev => ({ ...prev, image: url })))}
+                          />
+                        </label>
+                      </div>
+
+                      {/* Quick Banner Presets from store inventory */}
+                      <div className="flex items-center gap-2 pt-1 flex-wrap">
+                        <span className="text-[11px] text-slate-500 font-semibold">بانرات جاهزة مقترحة:</span>
                         <button
                           type="button"
-                          onClick={() => {
-                            setBannerProductSearch('');
-                            setSelectedBannerProduct(null);
-                          }}
-                          className="absolute left-3 top-2.5 text-slate-400 hover:text-slate-600"
+                          onClick={() => setNewSlide(prev => ({
+                            ...prev,
+                            image: '/product-images/banner-hunter-charging-series.jpg',
+                            title_ar: 'سلسلة شواحن هنتر الأصلية HUNTER Series',
+                            link_type: 'search',
+                            link_target: 'HUNTER',
+                            badge: 'جديد وحصري 🔥'
+                          }))}
+                          className="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-800 text-[11px] font-bold border border-amber-300 transition-colors"
                         >
-                          <X className="w-3.5 h-3.5" />
+                          بانر سلسلة شواحن HUNTER
                         </button>
+                      </div>
+
+                      {newSlide.image && (
+                        <div className="p-3 bg-white rounded-xl border border-slate-200 mt-2 space-y-1.5">
+                          <span className="text-[11px] text-emerald-700 font-bold block">معاينة صورة البانر المرفوعة ✓</span>
+                          <img
+                            src={newSlide.image}
+                            alt=""
+                            className="w-full max-h-48 object-contain rounded-lg bg-slate-900 border"
+                          />
+                        </div>
                       )}
                     </div>
 
-                    {isBannerSearchOpen && (
-                      <div className="absolute z-30 mt-1.5 w-full bg-white border border-slate-300 rounded-2xl shadow-2xl max-h-60 overflow-y-auto p-1.5 space-y-1">
-                        <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-100 text-[11px] text-slate-500 font-bold">
-                          <span>{language === 'ar' ? `نتائج البحث (${filteredBannerProducts.length})` : `Results (${filteredBannerProducts.length})`}</span>
-                          <button
-                            type="button"
-                            onClick={() => setIsBannerSearchOpen(false)}
-                            className="text-amber-700 hover:underline"
-                          >
-                            {language === 'ar' ? 'إغلاق' : 'Close'}
-                          </button>
-                        </div>
-                        {filteredBannerProducts.length === 0 ? (
-                          <div className="p-3 text-center text-slate-500 text-xs">
-                            {language === 'ar' ? `لا يوجد منتج يطابق بحثك "${bannerProductSearch}"` : 'No matching products'}
-                          </div>
-                        ) : (
-                          filteredBannerProducts.map(prod => (
-                            <button
-                              key={prod.id}
-                              type="button"
-                              onClick={() => {
-                                setNewSlide({
-                                  ...newSlide,
-                                  title_ar: prod.name_ar,
-                                  title_en: prod.name_en || prod.name_ar,
-                                  price: String(prod.price),
-                                  oldPrice: prod.original_price ? String(prod.original_price) : String(Math.round(prod.price * 1.2)),
-                                  cat: prod.category || 'smartphones',
-                                  badge: '',
-                                  subtitle_ar: prod.description_ar ? prod.description_ar.slice(0, 110) : `متوفر الآن بحالة ${prod.condition === 'mint' ? 'كسر زيرو ممتاز' : 'جديد'} مع ضمان جو ستور المعتمد`,
-                                  image: prod.images?.[0] || '/product-placeholder.svg',
-                                  linked_product_id: prod.id,
-                                  product_id: prod.id
-                                });
-                                setSelectedBannerProduct(prod);
-                                setBannerProductSearch(prod.name_ar);
-                                setIsBannerSearchOpen(false);
-                              }}
-                              className="w-full text-right p-2 rounded-xl hover:bg-amber-500/10 flex items-center gap-3 transition-colors text-xs cursor-pointer border border-transparent hover:border-amber-200"
-                            >
-                              <img
-                                src={prod.images?.[0] || '/product-placeholder.svg'}
-                                alt={prod.name_ar}
-                                className="w-10 h-10 object-contain rounded-lg border border-slate-200 bg-white flex-shrink-0"
-                              />
-                              <div className="flex-1 min-w-0">
-                                <strong className="block text-slate-900 truncate font-cairo">{prod.name_ar}</strong>
-                                <div className="flex items-center gap-2 text-[11px] text-slate-500 font-outfit">
-                                  <span className="text-amber-700 font-bold">{prod.price} ج.م</span>
-                                  <span>•</span>
-                                  <span>{prod.brand || 'عام'}</span>
-                                  <span>•</span>
-                                  <span>كود: {prod.sku || prod.id}</span>
-                                </div>
-                              </div>
-                              <span className="text-[11px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md flex-shrink-0">
-                                اختيار
-                              </span>
-                            </button>
-                          ))
-                        )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-slate-600 mb-1">
+                          {language === 'ar' ? 'اسم الحملة الإعلانية / العنوان (عربي) *:' : 'Banner Title (AR) *:'}
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={newSlide.title_ar}
+                          onChange={(e) => setNewSlide({ ...newSlide, title_ar: e.target.value })}
+                          placeholder="مثال: سلسلة شواحن هنتر الأصلية HUNTER"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                        />
                       </div>
-                    )}
-                  </div>
 
-                  {selectedBannerProduct && (
-                    <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-2.5">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-emerald-600" />
-                        <span className="text-emerald-900 font-bold text-xs">
-                          تم ربط البانر بالمنتج: {selectedBannerProduct.name_ar}
-                        </span>
+                      <div>
+                        <label className="block text-slate-600 mb-1">
+                          {language === 'ar' ? 'نص الشارة العلوية (Badge):' : 'Badge Tag:'}
+                        </label>
+                        <input
+                          type="text"
+                          value={newSlide.badge}
+                          onChange={(e) => setNewSlide({ ...newSlide, badge: e.target.value })}
+                          placeholder="مثال: جديد وحصري 🔥 أو عرض خاص"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                        />
                       </div>
-                      <span className="text-emerald-700 font-bold text-xs">
-                        {selectedBannerProduct.price} ج.م
-                      </span>
                     </div>
-                  )}
 
-                  {/* Thumbnail Photo Selector if product has photos */}
-                  {selectedBannerProduct && (selectedBannerProduct.images?.length > 1) && (
-                    <div className="pt-2 border-t border-amber-500/20 space-y-1.5">
-                      <span className="text-[11px] font-semibold text-slate-700 block">
-                        اختر أي صورة من صور هذا المنتج لتكون صورة البانر الرئيسية:
-                      </span>
-                      <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                        {selectedBannerProduct.images.map((img, i) => (
+                    {/* Banner Click Action (Destination) */}
+                    <div className="p-3.5 rounded-xl bg-slate-100 border border-slate-300 space-y-3">
+                      <label className="block text-slate-900 font-bold text-xs flex items-center gap-1.5">
+                        <ExternalLink className="w-4 h-4 text-amber-600" />
+                        <span>{language === 'ar' ? 'عندما يضغط العميل على البانر ينقله إلى:' : 'When customer clicks banner, redirect to:'}</span>
+                      </label>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {[
+                          { id: 'search', label: 'بحث عن ماركة / اسم', desc: 'مثل HUNTER أو Apple' },
+                          { id: 'category', label: 'قسم كامل بالمتجر', desc: 'مثل الشواحن أو الكفرات' },
+                          { id: 'product', label: 'صفحة منتج محدد', desc: 'اختيار منتج معين' },
+                          { id: 'url', label: 'رابط مخصص', desc: 'رابط صفحة أو خارجي' },
+                        ].map(opt => (
                           <button
-                            key={i}
+                            key={opt.id}
                             type="button"
-                            onClick={() => setNewSlide(prev => ({ ...prev, image: img }))}
-                            className={`p-1 rounded-lg border transition-all flex-shrink-0 bg-white ${
-                              newSlide.image === img ? 'border-amber-500 ring-2 ring-amber-400/40 shadow-sm' : 'border-slate-200 hover:border-slate-300'
+                            onClick={() => setNewSlide(prev => ({ ...prev, link_type: opt.id as any }))}
+                            className={`p-2.5 rounded-xl border text-right transition-all cursor-pointer ${
+                              (newSlide.link_type || 'search') === opt.id
+                                ? 'bg-amber-500/15 border-amber-500 font-bold text-amber-900 ring-1 ring-amber-400'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                             }`}
                           >
-                            <img src={img} alt="" className="w-12 h-12 object-contain rounded" />
+                            <span className="block text-xs">{opt.label}</span>
+                            <span className="block text-[10px] text-slate-500 mt-0.5">{opt.desc}</span>
                           </button>
                         ))}
                       </div>
+
+                      {/* Destination Target Input based on link_type */}
+                      {(newSlide.link_type === 'search' || !newSlide.link_type || newSlide.link_type === 'brand') && (
+                        <div className="space-y-1.5">
+                          <label className="block text-slate-600">
+                            {language === 'ar' ? 'كلمة البحث أو اسم الماركة (ينقل العميل لنتائج البحث عنها):' : 'Brand or search keyword:'}
+                          </label>
+                          <input
+                            type="text"
+                            value={newSlide.link_target || ''}
+                            onChange={(e) => setNewSlide({ ...newSlide, link_target: e.target.value })}
+                            placeholder="مثال: HUNTER أو BMW أو كفر"
+                            className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold"
+                          />
+                          <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                            <span className="text-[10px] text-slate-500">اختصارات سريعة:</span>
+                            {['HUNTER', 'BMW', 'Apple', 'Anker', 'Oraimo', 'Lito'].map(b => (
+                              <button
+                                key={b}
+                                type="button"
+                                onClick={() => setNewSlide(prev => ({ ...prev, link_target: b }))}
+                                className="px-2 py-0.5 rounded bg-white border border-slate-200 hover:border-amber-400 text-[10px] text-slate-700 font-bold"
+                              >
+                                {b}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {newSlide.link_type === 'category' && (
+                        <div className="space-y-1.5">
+                          <label className="block text-slate-600">
+                            {language === 'ar' ? 'اختر القسم الذي ينقل العميل إليه:' : 'Select Category:'}
+                          </label>
+                          <select
+                            value={newSlide.link_target || newSlide.cat || 'chargers_cables'}
+                            onChange={(e) => setNewSlide({ ...newSlide, link_target: e.target.value, cat: e.target.value as CategoryKey })}
+                            className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold"
+                          >
+                            {currentCategories.map(cat => (
+                              <option key={cat.key} value={cat.key}>
+                                {cat.name_ar} ({cat.key})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+
+                      {newSlide.link_type === 'product' && (
+                        <div className="space-y-1.5">
+                          <label className="block text-slate-600">
+                            {language === 'ar' ? 'اختر المنتج من القائمة:' : 'Select Product:'}
+                          </label>
+                          <select
+                            value={newSlide.link_target || newSlide.product_id || ''}
+                            onChange={(e) => {
+                              const p = products.find(prod => prod.id === e.target.value);
+                              setNewSlide({
+                                ...newSlide,
+                                link_target: e.target.value,
+                                product_id: e.target.value,
+                                linked_product_id: e.target.value,
+                                title_ar: newSlide.title_ar || p?.name_ar || ''
+                              });
+                            }}
+                            className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                          >
+                            <option value="">-- اختر المنتج المرتبط --</option>
+                            {products.slice(0, 100).map(p => (
+                              <option key={p.id} value={p.id}>
+                                {p.name_ar} ({p.price} ج.م)
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+
+                      {newSlide.link_type === 'url' && (
+                        <div className="space-y-1.5">
+                          <label className="block text-slate-600">
+                            {language === 'ar' ? 'الرابط المخصص:' : 'Custom URL:'}
+                          </label>
+                          <input
+                            type="text"
+                            value={newSlide.link_target || ''}
+                            onChange={(e) => setNewSlide({ ...newSlide, link_target: e.target.value })}
+                            placeholder="https://... أو /catalog"
+                            className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono text-xs"
+                          />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'عنوان العرض (عربي) *:' : 'Title (AR) *:'}</label>
-                    <input
-                      type="text"
-                      required
-                      value={newSlide.title_ar}
-                      onChange={(e) => setNewSlide({ ...newSlide, title_ar: e.target.value })}
-                      placeholder="مثال: خصومات حصرية على الآيفون 14 برو"
-                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
-                    />
                   </div>
-
-                  <div>
-                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'عنوان العرض (إنجليزي):' : 'Title (EN):'}</label>
-                    <input
-                      type="text"
-                      value={newSlide.title_en}
-                      onChange={(e) => setNewSlide({ ...newSlide, title_en: e.target.value })}
-                      placeholder="e.g. Exclusive Deals on iPhone 14 Pro"
-                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'نص الشارة العلوية (Badge):' : 'Badge Tag:'}</label>
-                    <input
-                      type="text"
-                      value={newSlide.badge}
-                      onChange={(e) => setNewSlide({ ...newSlide, badge: e.target.value })}
-                      placeholder="عرض حصري في المنصورة"
-                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'القسم المرتبط:' : 'Linked Category:'}</label>
-                    <select
-                      value={newSlide.cat}
-                      onChange={(e) => setNewSlide({ ...newSlide, cat: e.target.value as CategoryKey })}
-                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
-                    >
-                      {currentCategories.map(cat => (
-                        <option key={cat.key} value={cat.key}>
-                          {cat.name_ar}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'السعر المعروض:' : 'Displayed Price:'}</label>
-                    <input
-                      type="text"
-                      value={newSlide.price}
-                      onChange={(e) => setNewSlide({ ...newSlide, price: e.target.value })}
-                      placeholder="24,500"
-                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'السعر قبل الخصم:' : 'Old Price:'}</label>
-                    <input
-                      type="text"
-                      value={newSlide.oldPrice}
-                      onChange={(e) => setNewSlide({ ...newSlide, oldPrice: e.target.value })}
-                      placeholder="27,000"
-                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
-                    />
-                  </div>
-
-                  {/* Banner Image URL + Laptop Upload */}
-                  <div className="sm:col-span-2 space-y-1.5">
-                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'صورة البانر (رابط أو رفع من اللاب توب) *:' : 'Banner Image *:'}</label>
-                    <div className="flex flex-col sm:flex-row gap-2.5 items-center">
-                      <input
-                        type="text"
-                        required
-                        value={newSlide.image}
-                        onChange={(e) => setNewSlide({ ...newSlide, image: e.target.value })}
-                        placeholder="الصق رابط الصورة أو ارفعها من جهازك"
-                        className="flex-1 w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono text-xs"
-                      />
-                      <label className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-sm transition-all whitespace-nowrap self-stretch sm:self-auto justify-center">
-                        <Upload className="w-4 h-4 text-amber-400" />
-                        <span>رفع صورة من اللاب توب</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => handleFileUpload(e, (url) => setNewSlide(prev => ({ ...prev, image: url })))}
-                        />
+                ) : (
+                  /* =======================================================
+                     SINGLE PRODUCT SLIDE CONFIGURATION
+                     ======================================================= */
+                  <>
+                    {/* Instant Store Product Picker - Auto Fill Banner Details */}
+                    <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2.5">
+                      <label className="block text-slate-800 font-bold text-xs flex items-center justify-between">
+                        <span className="flex items-center gap-1.5">
+                          <Sparkles className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                          <span>{language === 'ar' ? 'بحث واختيار منتج من المتجر لتعبئة بيانات البانر:' : 'Search & pick product to auto-fill banner:'}</span>
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-normal">
+                          ({products.length} {language === 'ar' ? 'منتج متاح' : 'products'})
+                        </span>
                       </label>
-                    </div>
-                    {newSlide.image && (
-                      <div className="flex items-center gap-3 p-2 bg-white rounded-xl border border-slate-200 w-fit mt-1">
-                        <img src={newSlide.image} alt="" className="w-12 h-12 object-contain rounded-lg bg-slate-50 border" />
-                        <span className="text-[11px] text-emerald-700 font-bold">معاينة صورة البانر ✓</span>
-                      </div>
-                    )}
-                  </div>
 
-                  <div className="sm:col-span-2">
-                    <label className="block text-slate-600 mb-1">{language === 'ar' ? 'الوصف الفرعي (عربي):' : 'Subtitle (AR):'}</label>
-                    <textarea
-                      rows={2}
-                      value={newSlide.subtitle_ar}
-                      onChange={(e) => setNewSlide({ ...newSlide, subtitle_ar: e.target.value })}
-                      placeholder="أجهزة كسر زيرو ببطارية 90%+ مع شاحن أصلي وضمان استبدال رسمي"
-                      className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
-                    />
-                  </div>
-                </div>
+                      <div className="relative">
+                        <div className="relative">
+                          <input
+                            type="text"
+                            placeholder={language === 'ar' ? 'ابحث باسم المنتج أو الموديل أو الماركة (مثال: شاحن، آيفون، 1006)...' : 'Search by name, model, brand...'}
+                            value={bannerProductSearch}
+                            onChange={(e) => {
+                              setBannerProductSearch(e.target.value);
+                              setIsBannerSearchOpen(true);
+                            }}
+                            onFocus={() => setIsBannerSearchOpen(true)}
+                            className="w-full bg-white border border-amber-500/40 focus:border-amber-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 pr-9 focus:outline-none focus:ring-2 focus:ring-amber-500/30 font-cairo shadow-inner"
+                          />
+                          <Search className="w-4 h-4 text-amber-600 absolute right-3 top-2.5 pointer-events-none" />
+                          {bannerProductSearch && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setBannerProductSearch('');
+                                setSelectedBannerProduct(null);
+                              }}
+                              className="absolute left-3 top-2.5 text-slate-400 hover:text-slate-600"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+
+                        {isBannerSearchOpen && (
+                          <div className="absolute z-30 mt-1.5 w-full bg-white border border-slate-300 rounded-2xl shadow-2xl max-h-60 overflow-y-auto p-1.5 space-y-1">
+                            <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-100 text-[11px] text-slate-500 font-bold">
+                              <span>{language === 'ar' ? `نتائج البحث (${filteredBannerProducts.length})` : `Results (${filteredBannerProducts.length})`}</span>
+                              <button
+                                type="button"
+                                onClick={() => setIsBannerSearchOpen(false)}
+                                className="text-amber-700 hover:underline"
+                              >
+                                {language === 'ar' ? 'إغلاق' : 'Close'}
+                              </button>
+                            </div>
+                            {filteredBannerProducts.length === 0 ? (
+                              <div className="p-3 text-center text-slate-500 text-xs">
+                                {language === 'ar' ? `لا يوجد منتج يطابق بحثك "${bannerProductSearch}"` : 'No matching products'}
+                              </div>
+                            ) : (
+                              filteredBannerProducts.map(prod => (
+                                <button
+                                  key={prod.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setNewSlide({
+                                      ...newSlide,
+                                      slide_type: 'product',
+                                      title_ar: prod.name_ar,
+                                      title_en: prod.name_en || prod.name_ar,
+                                      price: String(prod.price),
+                                      oldPrice: prod.original_price ? String(prod.original_price) : String(Math.round(prod.price * 1.2)),
+                                      cat: prod.category || 'smartphones',
+                                      badge: 'الأكثر طلباً ⚡',
+                                      subtitle_ar: prod.description_ar ? prod.description_ar.slice(0, 110) : `متوفر الآن بحالة ${prod.condition === 'mint' ? 'كسر زيرو ممتاز' : 'جديد'} مع ضمان جو ستور المعتمد`,
+                                      image: prod.images?.[0] || '/product-placeholder.svg',
+                                      linked_product_id: prod.id,
+                                      product_id: prod.id,
+                                      link_type: 'product',
+                                      link_target: prod.id
+                                    });
+                                    setSelectedBannerProduct(prod);
+                                    setBannerProductSearch(prod.name_ar);
+                                    setIsBannerSearchOpen(false);
+                                  }}
+                                  className="w-full text-right p-2 rounded-xl hover:bg-amber-500/10 flex items-center gap-3 transition-colors text-xs cursor-pointer border border-transparent hover:border-amber-200"
+                                >
+                                  <img
+                                    src={prod.images?.[0] || '/product-placeholder.svg'}
+                                    alt={prod.name_ar}
+                                    className="w-10 h-10 object-contain rounded-lg border border-slate-200 bg-white flex-shrink-0"
+                                  />
+                                  <div className="flex-1 min-w-0">
+                                    <strong className="block text-slate-900 truncate font-cairo">{prod.name_ar}</strong>
+                                    <div className="flex items-center gap-2 text-[11px] text-slate-500 font-outfit">
+                                      <span className="text-amber-700 font-bold">{prod.price} ج.م</span>
+                                      <span>•</span>
+                                      <span>{prod.brand || 'عام'}</span>
+                                      <span>•</span>
+                                      <span>كود: {prod.sku || prod.id}</span>
+                                    </div>
+                                  </div>
+                                  <span className="text-[11px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md flex-shrink-0">
+                                    اختيار
+                                  </span>
+                                </button>
+                              ))
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {selectedBannerProduct && (
+                        <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-2.5">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-emerald-600" />
+                            <span className="text-emerald-900 font-bold text-xs">
+                              تم ربط البانر بالمنتج: {selectedBannerProduct.name_ar}
+                            </span>
+                          </div>
+                          <span className="text-emerald-700 font-bold text-xs">
+                            {selectedBannerProduct.price} ج.م
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Thumbnail Photo Selector if product has photos */}
+                      {selectedBannerProduct && (selectedBannerProduct.images?.length > 1) && (
+                        <div className="pt-2 border-t border-amber-500/20 space-y-1.5">
+                          <span className="text-[11px] font-semibold text-slate-700 block">
+                            اختر أي صورة من صور هذا المنتج لتكون صورة البانر الرئيسية:
+                          </span>
+                          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                            {selectedBannerProduct.images.map((img, i) => (
+                              <button
+                                key={i}
+                                type="button"
+                                onClick={() => setNewSlide(prev => ({ ...prev, image: img }))}
+                                className={`p-1 rounded-lg border transition-all flex-shrink-0 bg-white ${
+                                  newSlide.image === img ? 'border-amber-500 ring-2 ring-amber-400/40 shadow-sm' : 'border-slate-200 hover:border-slate-300'
+                                }`}
+                              >
+                                <img src={img} alt="" className="w-12 h-12 object-contain rounded" />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-slate-600 mb-1">{language === 'ar' ? 'عنوان العرض (عربي) *:' : 'Title (AR) *:'}</label>
+                        <input
+                          type="text"
+                          required
+                          value={newSlide.title_ar}
+                          onChange={(e) => setNewSlide({ ...newSlide, title_ar: e.target.value })}
+                          placeholder="مثال: خصومات حصرية على الآيفون 14 برو"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-slate-600 mb-1">{language === 'ar' ? 'عنوان العرض (إنجليزي):' : 'Title (EN):'}</label>
+                        <input
+                          type="text"
+                          value={newSlide.title_en}
+                          onChange={(e) => setNewSlide({ ...newSlide, title_en: e.target.value })}
+                          placeholder="e.g. Exclusive Deals on iPhone 14 Pro"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-slate-600 mb-1">{language === 'ar' ? 'نص الشارة العلوية (Badge):' : 'Badge Tag:'}</label>
+                        <input
+                          type="text"
+                          value={newSlide.badge}
+                          onChange={(e) => setNewSlide({ ...newSlide, badge: e.target.value })}
+                          placeholder="عرض حصري في المنصورة"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-slate-600 mb-1">{language === 'ar' ? 'القسم المرتبط:' : 'Linked Category:'}</label>
+                        <select
+                          value={newSlide.cat}
+                          onChange={(e) => setNewSlide({ ...newSlide, cat: e.target.value as CategoryKey })}
+                          className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                        >
+                          {currentCategories.map(cat => (
+                            <option key={cat.key} value={cat.key}>
+                              {cat.name_ar}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-slate-600 mb-1">{language === 'ar' ? 'السعر المعروض:' : 'Displayed Price:'}</label>
+                        <input
+                          type="text"
+                          value={newSlide.price}
+                          onChange={(e) => setNewSlide({ ...newSlide, price: e.target.value })}
+                          placeholder="24,500"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-slate-600 mb-1">{language === 'ar' ? 'السعر قبل الخصم:' : 'Old Price:'}</label>
+                        <input
+                          type="text"
+                          value={newSlide.oldPrice}
+                          onChange={(e) => setNewSlide({ ...newSlide, oldPrice: e.target.value })}
+                          placeholder="27,000"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-outfit"
+                        />
+                      </div>
+
+                      {/* Banner Image URL + Laptop Upload */}
+                      <div className="sm:col-span-2 space-y-1.5">
+                        <label className="block text-slate-600 mb-1">{language === 'ar' ? 'صورة المنتج المعروض *:' : 'Product Image *:'}</label>
+                        <div className="flex flex-col sm:flex-row gap-2.5 items-center">
+                          <input
+                            type="text"
+                            required
+                            value={newSlide.image}
+                            onChange={(e) => setNewSlide({ ...newSlide, image: e.target.value })}
+                            placeholder="الصق رابط الصورة أو ارفعها من جهازك"
+                            className="flex-1 w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono text-xs"
+                          />
+                          <label className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-sm transition-all whitespace-nowrap self-stretch sm:self-auto justify-center">
+                            <Upload className="w-4 h-4 text-amber-400" />
+                            <span>رفع صورة من اللاب توب</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => handleFileUpload(e, (url) => setNewSlide(prev => ({ ...prev, image: url })))}
+                            />
+                          </label>
+                        </div>
+                        {newSlide.image && (
+                          <div className="flex items-center gap-3 p-2 bg-white rounded-xl border border-slate-200 w-fit mt-1">
+                            <img src={newSlide.image} alt="" className="w-12 h-12 object-contain rounded-lg bg-slate-50 border" />
+                            <span className="text-[11px] text-emerald-700 font-bold">معاينة الصورة ✓</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="sm:col-span-2">
+                        <label className="block text-slate-600 mb-1">{language === 'ar' ? 'الوصف الفرعي (عربي):' : 'Subtitle (AR):'}</label>
+                        <textarea
+                          rows={2}
+                          value={newSlide.subtitle_ar}
+                          onChange={(e) => setNewSlide({ ...newSlide, subtitle_ar: e.target.value })}
+                          placeholder="أجهزة كسر زيرو ببطارية 90%+ مع شاحن أصلي وضمان استبدال رسمي"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className="flex justify-end gap-2 pt-2">
                   <button
@@ -1853,27 +2128,51 @@ export const AdminDashboard: React.FC = () => {
 
             {/* Existing Slides List */}
             <div className="space-y-3">
-              {(settings.hero_slides || []).map((slide, index) => (
+              {(settings.hero_slides || []).map((slide) => (
                 <div key={slide.id} className="p-4 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-cairo">
                   <div className="flex items-center gap-3 w-full sm:w-auto">
                     <img
                       src={slide.image}
                       alt=""
-                      className="w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-200 flex-shrink-0"
+                      className="w-20 h-14 rounded-xl object-cover bg-slate-950 border border-slate-300 flex-shrink-0"
                     />
                     <div>
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-700 text-[10px] font-bold">
-                          {slide.badge}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          slide.slide_type === 'banner'
+                            ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                            : 'bg-blue-100 text-blue-800 border border-blue-200'
+                        }`}>
+                          {slide.slide_type === 'banner' ? 'بانر دعائي كامل' : 'منتج فردي'}
                         </span>
+                        {slide.badge && (
+                          <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-700 text-[10px] font-bold">
+                            {slide.badge}
+                          </span>
+                        )}
                         <strong className="text-slate-900 text-sm">{language === 'ar' ? slide.title_ar : slide.title_en}</strong>
                       </div>
-                      <p className="text-slate-600 text-[11px] mt-1 max-w-md line-clamp-1">
-                        {language === 'ar' ? slide.subtitle_ar : slide.subtitle_en}
-                      </p>
-                      <span className="text-amber-700 font-outfit font-bold mt-1 inline-block">
-                        {slide.price} EGP
-                      </span>
+                      {slide.subtitle_ar && (
+                        <p className="text-slate-600 text-[11px] mt-1 max-w-md line-clamp-1">
+                          {language === 'ar' ? slide.subtitle_ar : slide.subtitle_en}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-2 mt-1">
+                        {slide.link_type && (
+                          <span className="text-[11px] text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60">
+                            {slide.link_type === 'search' && `يوجه لبحث: "${slide.link_target}"`}
+                            {slide.link_type === 'brand' && `يوجه لماركة: "${slide.link_target}"`}
+                            {slide.link_type === 'category' && `يوجه لقسم: ${slide.link_target}`}
+                            {slide.link_type === 'product' && `يوجه للمنتج: ${slide.link_target}`}
+                            {slide.link_type === 'url' && `يوجه لرابط: ${slide.link_target}`}
+                          </span>
+                        )}
+                        {slide.price && (
+                          <span className="text-slate-700 font-outfit font-bold">
+                            {slide.price} EGP
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 

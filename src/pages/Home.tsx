@@ -89,58 +89,67 @@ const dubaiCategories: {
 ];
 
 // Default high-converting slides if none configured in admin dashboard
-const defaultHeroSlides = [
+const defaultHeroSlides: HeroSlide[] = [
   {
-    id: "slide-1",
-    badge: "عرض حصري في المنصورة",
-    title_ar: "آيفون 13 و 15 برو ماكس كسر زيرو ومتبرشم",
-    title_en: "iPhone 13 & 15 Pro Max Mint & Sealed",
-    subtitle_ar: "أجهزة مفحوصة 100% مع ضمان استبدال رسمي وبطاريات أصلية حتى 98%",
-    subtitle_en: "100% tested with official warranty and original battery health up to 98%",
-    price: "19,800",
-    oldPrice: "23,500",
-    tag: "ضمان جو ستور المعتمد",
-    image: "/product-images/15c3630cb4bb430b367edd7f.webp",
-    cat: "smartphones" as CategoryKey,
+    id: "slide-hunter-banner",
+    slide_type: "banner",
+    badge: "جديد وحصري في جو ستور 🔥",
+    title_ar: "سلسلة شواحن هنتر الأصلية HUNTER Fast Charging Series",
+    title_en: "HUNTER Fast Charging Series (GaN 67W / 45W / 90W Desktop)",
+    subtitle_ar: "تقنيات شحن ذكية GaN III فائقة السرعة مع ضمان استبدال رسمي 12 شهر",
+    subtitle_en: "Next-gen GaN III ultra-fast charging with 12-month official replacement warranty",
+    price: "260",
+    oldPrice: "350",
+    tag: "شواحن هنتر الأصلية",
+    image: "/product-images/banner-hunter-charging-series.jpg",
+    cat: "chargers_cables" as CategoryKey,
+    link_type: "search",
+    link_target: "HUNTER",
   },
   {
-    id: "slide-2",
+    id: "slide-case-bmw",
+    slide_type: "product",
+    badge: "الأكثر طلباً ومبيعاً ⚡",
+    title_ar: "جراب كفر BMW M Power جلد طبيعي فاخر - آيفون 17 برو ماكس",
+    title_en: "BMW M Power Luxury Real Leather Case - iPhone 17 Pro Max",
+    subtitle_ar: "جلد طبيعي مثقب عالي الجودة مع شريط سباقات M وشعار معدني ثلاثي الأبعاد",
+    subtitle_en: "Premium perforated leather with iconic BMW M tri-color racing stripes",
+    price: "75",
+    oldPrice: "100",
+    tag: "جلد طبيعي فاخر",
+    image: "/product-images/case-bmw-m-ip17promax-isolated.png",
+    product_id: "prod-case-bmw-m-ip17promax",
+    cat: "cases_protection" as CategoryKey,
+  },
+  {
+    id: "slide-onmust-30w",
+    slide_type: "product",
     badge: "تقنية الشحن فائق السرعة",
-    title_ar: "رؤوس شواحن ONMUST وAnker السريعة 30W PD",
-    title_en: "ONMUST & Anker 30W Fast PD Chargers",
+    title_ar: "رأس شاحن ONMUST الأصلي 30W بتقنية PD و Zolo",
+    title_en: "Original ONMUST 30W PD Fast Charger (Zolo Series)",
     subtitle_ar: "شحن 60% في 30 دقيقة بتقنية التبريد الذكي وحماية البطارية",
     subtitle_en: "60% charge in 30 mins with smart low-temperature battery protection",
     price: "350",
     oldPrice: "450",
     tag: "منفذ تايب سي فائق السرعة",
     image: "/product-images/onmust-zolo-30w-studio.jpg",
+    product_id: "prod-onmust-zolo-30w-1006",
     cat: "chargers_cables" as CategoryKey,
   },
   {
-    id: "slide-3",
-    badge: "صوت سينمائي ونقاء استثنائي",
-    title_ar: "تشكيلة سماعات Apple وJoyroom اللاسلكية",
-    title_en: "Apple & Joyroom Wireless Earbuds Collection",
-    subtitle_ar: "عزل ضوضاء فائق، ميكروفونات عالية الدقة للمكالمات، وبطارية تدوم طوال اليوم",
-    subtitle_en: "Active noise cancellation, crystal clear mic, and all-day battery life",
-    price: "1,250",
-    oldPrice: "1,600",
-    tag: "صوت نقي وباس عميق",
-    image: "/product-images/f6427a20c128ea77c56bc426.webp",
+    id: "slide-oraimo-freepods",
+    slide_type: "product",
+    badge: "صوت نقي وباس عميق",
+    title_ar: "سماعة أوريمو Oraimo FreePods 3C اللاسلكية الأصلية",
+    title_en: "Oraimo FreePods 3C True Wireless Earbuds",
+    subtitle_ar: "عمر بطارية 36 ساعة مع علبة الشحن وميكروفونات عزل الضوضاء ENC",
+    subtitle_en: "36-hour total battery life, 4-mic ENC noise reduction",
+    price: "750",
+    oldPrice: "950",
+    tag: "بلوتوث 5.3 رسمي",
+    image: "/product-images/oraimo-freepods-3c-box.jpg",
+    product_id: "prod-oraimo-freepods-3c",
     cat: "audio" as CategoryKey,
-  },
-  {
-    id: "slide-4",
-    badge: "أناقة وتقنية في معصمك",
-    title_ar: "ساعات ذكية متوافقة مع آيفون وأندرويد",
-    title_en: "Smartwatches for iPhone & Android",
-    subtitle_ar: "شاشات AMOLED فائقة الوضوح، تتبع النبض والأنشطة الرياضية، وتنبيهات المكالمات",
-    subtitle_en: "Vibrant AMOLED display, fitness tracking, and call notifications",
-    price: "1,850",
-    oldPrice: "2,300",
-    tag: "أحدث إصدارات 2026",
-    image: "/product-images/3f4452f62308aae22858b473.webp",
-    cat: "smartwatches" as CategoryKey,
   },
 ];
 
@@ -185,14 +194,41 @@ export const Home: React.FC = () => {
   const shop = (category: CategoryKey = "all") =>
     navigate("catalog", undefined, { category, search: "" });
 
-  // Navigate directly to the product represented in the slide
+  // Navigate directly to the product or banner target represented in the slide
   const handleSlideClick = (slide: HeroSlide) => {
+    // 1. Explicit link type if configured (e.g. brand, category, search, product, or custom URL)
+    if (slide.link_type === 'brand') {
+      navigate("catalog", undefined, { category: "all", search: slide.link_target || "" });
+      return;
+    }
+    if (slide.link_type === 'category') {
+      navigate("catalog", undefined, { category: (slide.link_target as CategoryKey) || "all", search: "" });
+      return;
+    }
+    if (slide.link_type === 'search') {
+      navigate("catalog", undefined, { category: "all", search: slide.link_target || "" });
+      return;
+    }
+    if (slide.link_type === 'product' && slide.link_target) {
+      navigate("product", slide.link_target);
+      return;
+    }
+    if (slide.link_type === 'url' && slide.link_target) {
+      if (slide.link_target.startsWith('http')) {
+        window.open(slide.link_target, '_blank');
+      } else {
+        window.location.href = slide.link_target;
+      }
+      return;
+    }
+
+    // 2. Direct product ID
     const targetId = slide.product_id || slide.linked_product_id;
     if (targetId) {
       navigate("product", targetId);
       return;
     }
-    // Match by title or image in product catalog
+    // 3. Match by title or image in product catalog
     const matched = products.find(p =>
       p.name_ar === slide.title_ar ||
       p.name_en === slide.title_en ||
@@ -392,84 +428,110 @@ export const Home: React.FC = () => {
           onTouchEnd={handleTouchEnd}
           className="relative w-full max-w-7xl mx-auto overflow-hidden bg-transparent text-slate-900"
         >
-          {/* Main Slide Content: Always Landscape/Horizontal Banner (بالعرض ممتد وكبير) */}
-          <div className="relative min-h-[220px] xs:min-h-[250px] sm:min-h-[320px] md:min-h-[420px] flex flex-row items-center justify-between px-4 py-5 xs:px-6 xs:py-6 sm:px-10 sm:py-10 md:px-14 md:py-14 gap-3 sm:gap-8 select-none">
-            {/* Left/Start: Promotional Text & Action */}
-            <div className="w-[58%] sm:w-[58%] md:w-3/5 space-y-2 xs:space-y-2.5 sm:space-y-4 z-10 text-start">
-              {/* Title */}
-              <h2
-                onClick={() => handleSlideClick(currentSlide)}
-                className="text-sm xs:text-base sm:text-2xl md:text-4xl font-black font-cairo text-slate-900 leading-snug sm:leading-tight line-clamp-2 cursor-pointer hover:text-amber-700 transition-colors"
-              >
-                {ar ? currentSlide.title_ar : currentSlide.title_en}
-              </h2>
-
-              {/* Subtitle */}
-              <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed line-clamp-1 sm:line-clamp-2 hidden xs:block">
-                {ar ? currentSlide.subtitle_ar : currentSlide.subtitle_en}
-              </p>
-
-              {/* Price & Tag Box */}
-              <div className="flex items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1 flex-wrap">
-                {currentSlide.price && (
-                  <div className="flex items-baseline gap-1.5 sm:gap-2">
-                    <strong className="text-sm xs:text-base sm:text-2xl md:text-3xl font-black text-slate-950 font-outfit">
-                      {currentSlide.price} {ar ? "ج.م" : "EGP"}
-                    </strong>
-                    {currentSlide.oldPrice && (
-                      <del className="text-[10px] xs:text-xs sm:text-sm md:text-base text-slate-400 font-outfit">
-                        {currentSlide.oldPrice} {ar ? "ج.م" : "EGP"}
-                      </del>
-                    )}
-                  </div>
-                )}
-                {currentSlide.tag && (
-                  <span className="hidden sm:inline-block px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
-                    {currentSlide.tag}
+          {/* Main Slide Content */}
+          {currentSlide.slide_type === 'banner' ? (
+            /* Full Landscape Promotional Banner */
+            <div
+              onClick={() => handleSlideClick(currentSlide)}
+              className="relative w-full cursor-pointer group overflow-hidden flex items-center justify-center select-none bg-slate-950 min-h-[180px] xs:min-h-[220px] sm:min-h-[300px] md:min-h-[380px]"
+            >
+              <img
+                src={currentSlide.image}
+                alt={ar ? currentSlide.title_ar : currentSlide.title_en}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "/product-placeholder.svg";
+                }}
+                className="w-full h-auto max-h-[260px] xs:max-h-[320px] sm:max-h-[420px] md:max-h-[480px] object-cover sm:object-contain mx-auto transition-transform duration-500 group-hover:scale-[1.01]"
+              />
+              {currentSlide.badge && (
+                <div className="absolute top-3 start-4 sm:top-5 sm:start-8 z-10 pointer-events-none">
+                  <span className="px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-amber-400 text-xs sm:text-sm font-black shadow-lg border border-amber-400/40 font-cairo">
+                    {currentSlide.badge}
                   </span>
-                )}
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Standard Split Product Card Banner */
+            <div className="relative min-h-[220px] xs:min-h-[250px] sm:min-h-[320px] md:min-h-[420px] flex flex-row items-center justify-between px-4 py-5 xs:px-6 xs:py-6 sm:px-10 sm:py-10 md:px-14 md:py-14 gap-3 sm:gap-8 select-none">
+              {/* Left/Start: Promotional Text & Action */}
+              <div className="w-[58%] sm:w-[58%] md:w-3/5 space-y-2 xs:space-y-2.5 sm:space-y-4 z-10 text-start">
+                {/* Title */}
+                <h2
+                  onClick={() => handleSlideClick(currentSlide)}
+                  className="text-sm xs:text-base sm:text-2xl md:text-4xl font-black font-cairo text-slate-900 leading-snug sm:leading-tight line-clamp-2 cursor-pointer hover:text-amber-700 transition-colors"
+                >
+                  {ar ? currentSlide.title_ar : currentSlide.title_en}
+                </h2>
+
+                {/* Subtitle */}
+                <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed line-clamp-1 sm:line-clamp-2 hidden xs:block">
+                  {ar ? currentSlide.subtitle_ar : currentSlide.subtitle_en}
+                </p>
+
+                {/* Price & Tag Box */}
+                <div className="flex items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1 flex-wrap">
+                  {currentSlide.price && (
+                    <div className="flex items-baseline gap-1.5 sm:gap-2">
+                      <strong className="text-sm xs:text-base sm:text-2xl md:text-3xl font-black text-slate-950 font-outfit">
+                        {currentSlide.price} {ar ? "ج.م" : "EGP"}
+                      </strong>
+                      {currentSlide.oldPrice && (
+                        <del className="text-[10px] xs:text-xs sm:text-sm md:text-base text-slate-400 font-outfit">
+                          {currentSlide.oldPrice} {ar ? "ج.م" : "EGP"}
+                        </del>
+                      )}
+                    </div>
+                  )}
+                  {currentSlide.tag && (
+                    <span className="hidden sm:inline-block px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
+                      {currentSlide.tag}
+                    </span>
+                  )}
+                </div>
+
+                {/* CTA Action Buttons */}
+                <div className="flex items-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSlideClick(currentSlide)}
+                    className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm md:text-base flex items-center gap-1.5 sm:gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
+                  >
+                    <span>{ar ? "تسوق العرض" : "Shop Offer"}</span>
+                    <Arrow size={14} className="sm:w-4 sm:h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => shop()}
+                    className="hidden md:flex px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm items-center gap-2 border border-slate-200 transition-all cursor-pointer"
+                  >
+                    <span>{ar ? "اكتشف الكتالوج" : "Explore Catalog"}</span>
+                    <DiagonalArrow size={16} />
+                  </button>
+                </div>
               </div>
 
-              {/* CTA Action Buttons */}
-              <div className="flex items-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
+              {/* Right/End: Large Prominent Product Cutout Image */}
+              <div className="w-[42%] sm:w-[42%] md:w-2/5 flex items-center justify-center z-10 shrink-0">
                 <button
                   type="button"
                   onClick={() => handleSlideClick(currentSlide)}
-                  className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm md:text-base flex items-center gap-1.5 sm:gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
+                  className="relative group cursor-pointer focus:outline-none flex items-center justify-center p-1 sm:p-2"
                 >
-                  <span>{ar ? "تسوق العرض" : "Shop Offer"}</span>
-                  <Arrow size={14} className="sm:w-4 sm:h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => shop()}
-                  className="hidden md:flex px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm items-center gap-2 border border-slate-200 transition-all cursor-pointer"
-                >
-                  <span>{ar ? "اكتشف الكتالوج" : "Explore Catalog"}</span>
-                  <DiagonalArrow size={16} />
+                  <img
+                    src={currentSlide.image}
+                    alt={ar ? currentSlide.title_ar : currentSlide.title_en}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/product-placeholder.svg";
+                    }}
+                    className="max-h-[160px] xs:max-h-[190px] sm:max-h-[270px] md:max-h-[360px] w-auto object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
+                  />
                 </button>
               </div>
             </div>
-
-            {/* Right/End: Large Prominent Product Cutout Image */}
-            <div className="w-[42%] sm:w-[42%] md:w-2/5 flex items-center justify-center z-10 shrink-0">
-              <button
-                type="button"
-                onClick={() => handleSlideClick(currentSlide)}
-                className="relative group cursor-pointer focus:outline-none flex items-center justify-center p-1 sm:p-2"
-              >
-                <img
-                  src={currentSlide.image}
-                  alt={ar ? currentSlide.title_ar : currentSlide.title_en}
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = "/product-placeholder.svg";
-                  }}
-                  className="max-h-[160px] xs:max-h-[190px] sm:max-h-[270px] md:max-h-[360px] w-auto object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
-                />
-              </button>
-            </div>
-          </div>
+          )}
 
           {/* Dots Pagination (No arrows) */}
           {slides.length > 1 && (

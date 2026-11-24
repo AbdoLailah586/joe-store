@@ -230,18 +230,21 @@ export interface CustomCity {
 
 export interface HeroSlide {
   id: string;
+  slide_type?: 'product' | 'banner';
   badge: string;
   title_ar: string;
   title_en: string;
   subtitle_ar: string;
   subtitle_en: string;
-  price: string;
-  oldPrice: string;
-  tag: string;
+  price?: string;
+  oldPrice?: string;
+  tag?: string;
   image: string;
-  cat: CategoryKey;
+  cat?: CategoryKey;
   linked_product_id?: string;
   product_id?: string;
+  link_type?: 'brand' | 'category' | 'search' | 'product' | 'url';
+  link_target?: string;
 }
 
 export interface StoreSettings {

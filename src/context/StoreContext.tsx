@@ -169,7 +169,7 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user: account, sessionReady, adminSections: accountSections = [] } = useAuth();
   const accountAccessKey = `${account?.id || ''}:${account?.role || ''}:${accountSections.join(',')}`;
-  const CURRENT_VERSION = 'v11_live_gpt_render_no_stale_cache';
+  const CURRENT_VERSION = 'v12_live_hunter_cases_357';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
@@ -322,8 +322,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               .map(sanitize),
             ...previous.filter(product => locallyEditedIds.current.has(product.id)
               && !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id))
-              .map(sanitize),
-            ...initialProducts.filter(product => !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id))
               .map(sanitize)
           ];
         });
