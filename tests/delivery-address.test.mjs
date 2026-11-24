@@ -65,6 +65,7 @@ test('a failed order save keeps the cart and avoids success state changes', asyn
   globalThis.window = { location: { pathname: '/', search: '' } };
   const { StoreProvider } = compile('src/context/StoreContext.tsx', {
     '../services/offlineCatalog': {deviceIsOnline:()=>true,readOfflineCatalog:async()=>null,saveOfflineCatalog:async()=>false},
+    '../utils/imageUrl': { normalizeProductImage: x => x || '/product-placeholder.svg', normalizeProductImages: x => x || [] },
     react, '../data/seedProducts': { initialProducts: [product] }, '../utils/browserStorage': storage,
     '../utils/whatsappService': whatsapp, '../services/neonDb': { neonDb: { createOrder: async () => { events.push('persist'); return false; } } },
     './AuthContext': { useAuth: () => ({ user: null }) }
@@ -81,6 +82,7 @@ test('offline checkout refuses before any order write, stock change or cart muta
   globalThis.window={location:{pathname:'/checkout',search:''}};
   const {StoreProvider}=compile('src/context/StoreContext.tsx',{
     react,'../services/offlineCatalog':{deviceIsOnline:()=>false},'../data/seedProducts':{initialProducts:[]},
+    '../utils/imageUrl': { normalizeProductImage: x => x || '/product-placeholder.svg', normalizeProductImages: x => x || [] },
     '../utils/browserStorage':{readStorage:()=>null,readStoredArray:()=>[],readStoredSettings:()=>({}),writeStorage(){},writeStoredJson:()=>true},
     '../utils/whatsappService':{defaultSettings:{},getWhatsAppLogs:()=>[]},'./AuthContext':{useAuth:()=>({user:null})},
     '../services/neonDb':{neonDb:{createOrder:async()=>{events.push('network');return true}}}

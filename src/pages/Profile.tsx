@@ -36,6 +36,7 @@ import { egyptianGovernorates } from '../data/governorates';
 import { orderBelongsToAccount } from '../utils/storeExpansion';
 import { InfoButton, useDetails } from '../components/DetailsDialog';
 import { orderDetail, productDetail } from '../utils/detailModels';
+import { normalizeProductImage } from '../utils/imageUrl';
 
 const PRESET_AVATARS = [
   'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80',
@@ -419,7 +420,7 @@ export const Profile: React.FC = () => {
                   {ord.items.map((it, i) => (
                     <div key={i} className="flex items-center justify-between text-xs text-slate-600">
                       <div className="flex items-center gap-2">
-                        <img src={it.product.images[0]} alt="" className="w-10 h-10 rounded-lg object-cover bg-slate-100" />
+                        <img src={normalizeProductImage(it.product.images[0])} alt="" className="w-10 h-10 rounded-lg object-cover bg-slate-100" />
                         <div>
                           <button type="button" className="detail-info-button text-start font-bold text-slate-900 block" onClick={() => openDetails(productDetail(it.product, language, formatPrice))}>{it.product.name_ar}</button>
                           <span className="text-[10px] text-slate-600">{it.selected_storage || it.product.storage} • {it.selected_color || it.product.color_ar}</span>

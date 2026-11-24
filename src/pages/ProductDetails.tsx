@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { AnimateStorefront } from '../components/motion/AnimateStorefront';
+import { normalizeProductImage } from '../utils/imageUrl';
 import {
   ShieldCheck,
   BatteryMedium,
@@ -545,7 +546,7 @@ export const ProductDetails: React.FC = () => {
                         : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-500'
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img src={normalizeProductImage(img)} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -564,7 +565,7 @@ export const ProductDetails: React.FC = () => {
                   className="joe-detail-gallery aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative cursor-crosshair group select-none shadow-xl touch-pan-y"
                 >
                   <img
-                    src={product.images[selectedImage] || product.images[0] || '/product-placeholder.svg'}
+                    src={normalizeProductImage(product.images[selectedImage] || product.images[0])}
                     onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
                     alt={product.name_ar}
                     className={`w-full h-full object-contain p-4 transition-transform duration-200 ${
@@ -1292,7 +1293,7 @@ export const ProductDetails: React.FC = () => {
                       />
                     </label>
                     <img
-                      src={product.images[0]}
+                      src={normalizeProductImage(product.images[0])}
                       alt={product.name_ar}
                       className={`max-w-full max-h-28 sm:max-h-36 object-contain transition-opacity ${bundleSelected[product.id] ? 'opacity-100' : 'opacity-40'}`}
                     />
@@ -1456,7 +1457,7 @@ export const ProductDetails: React.FC = () => {
                     <th className="p-4 text-center min-w-[180px] bg-amber-500/10 border-x border-amber-500/20">
                       <div className="space-y-2">
                         <div className="w-16 h-16 mx-auto rounded-lg overflow-hidden bg-slate-100 p-1">
-                          <img src={product.images[0]} alt="" className="w-full h-full object-contain" />
+                          <img src={normalizeProductImage(product.images[0])} alt="" className="w-full h-full object-contain" />
                         </div>
                         <span className="text-amber-700 font-bold block truncate max-w-[160px]">{product.name_ar}</span>
                         <span className="px-2 py-0.5 rounded-full bg-amber-500 text-black font-extrabold text-[10px]">المنتج الحالي</span>
@@ -1864,7 +1865,7 @@ export const ProductDetails: React.FC = () => {
           {/* Main big image */}
           <div className="flex-1 flex items-center justify-center p-4 overflow-hidden">
             <img
-              src={product.images[selectedImage]}
+              src={normalizeProductImage(product.images[selectedImage] || product.images[0])}
               alt=""
               className="max-h-[75vh] max-w-full object-contain drop-shadow-2xl"
             />
@@ -1880,7 +1881,7 @@ export const ProductDetails: React.FC = () => {
                   selectedImage === idx ? 'border-amber-400 scale-105 shadow-glow-gold' : 'border-slate-200 opacity-50 hover:opacity-100'
                 }`}
               >
-                <img src={img} alt="" className="w-full h-full object-cover" />
+                <img src={normalizeProductImage(img)} alt="" className="w-full h-full object-cover" />
               </button>
             ))}
           </div>

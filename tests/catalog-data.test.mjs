@@ -139,7 +139,7 @@ const noop = () => {};
 const placeholderModules = Object.fromEntries([
   '../../components/ExcelImportModal', '../../utils/excelParser', '../../utils/whatsappService', '../../services/neonDb',
   './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab', './AdminShell',
-  './SecurityPanel', './FulfillmentPanel', './SupportPanel', './SupplierQuotesPanel', './OverviewPanel', './ReviewsModerationPanel', '../../utils/detailModels'
+  './SecurityPanel', './FulfillmentPanel', './SupportPanel', './SupplierQuotesPanel', './OverviewPanel', './ReviewsModerationPanel', '../../utils/detailModels', '../../utils/imageUrl'
 ].map(id => [id, new Proxy({}, { get: () => noop })]));
 const { AdminDashboard } = compile('src/pages/admin/AdminDashboard.tsx', {
   ...placeholderModules, 'lucide-react': icons,

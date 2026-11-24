@@ -4,6 +4,7 @@ import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { InfoButton } from './DetailsDialog';
 import { productDetail } from '../utils/detailModels';
+import { normalizeProductImage } from '../utils/imageUrl';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -118,7 +119,7 @@ export const CartDrawer: React.FC = () => {
               cart.map((item, idx) => (
                 <div key={`${item.product.id}-${idx}`} className="pt-3 flex gap-3 items-center">
                   <img
-                    src={item.product.images[0]}
+                    src={normalizeProductImage(item.product.images[0])}
                     alt={item.product.name_ar}
                     className="w-16 h-16 object-cover rounded-xl bg-slate-100 flex-shrink-0 border border-slate-200"
                   />

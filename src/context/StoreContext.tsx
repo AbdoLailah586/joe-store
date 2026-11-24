@@ -28,6 +28,7 @@ import {
   readStorage, writeStorage, removeStorage, writeStoredJson, readStoredArray, readStoredSettings,
   isStoredProduct, isStoredCartItem, isStoredOrder
 } from '../utils/browserStorage';
+import { normalizeProductImages } from '../utils/imageUrl';
 
 export type AppTab =
   | 'home'
@@ -310,13 +311,20 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setProducts(previous => {
           const previousById = new Map(previous.map(product => [product.id, product]));
           const dbIds = new Set(dbProds.map(product => product.id));
+          const sanitize = (p: Product): Product => ({
+            ...p,
+            images: normalizeProductImages(p.images)
+          });
           return [
             ...dbProds.filter(product => !locallyDeletedIds.current.has(product.id))
               .map(product => locallyEditedIds.current.has(product.id)
-                ? previousById.get(product.id) || product : product),
+                ? previousById.get(product.id) || product : product)
+              .map(sanitize),
             ...previous.filter(product => locallyEditedIds.current.has(product.id)
-              && !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id)),
+              && !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id))
+              .map(sanitize),
             ...initialProducts.filter(product => !dbIds.has(product.id) && !locallyDeletedIds.current.has(product.id))
+              .map(sanitize)
           ];
         });
         setCatalogLoaded(true);
@@ -579,9 +587,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateProduct = (id: string, updated: Partial<Product>) => {
     if (!accountSections.includes('products')) return;
+    const sanitizedImages = Array.isArray(updated.images) ? normalizeProductImages(updated.images) : undefined;
     const changes = { ...updated,
+      ...(sanitizedImages ? { images: sanitizedImages } : {}),
       ...(typeof updated.stock === 'number' ? { recorded_stock: updated.stock } : {}),
-      ...(Array.isArray(updated.images) ? { recorded_images: updated.images.filter(url => typeof url === 'string' && url.trim()) } : {}) };
+      ...(sanitizedImages ? { recorded_images: sanitizedImages } : {}) };
     productCacheDirty.current = true;
     locallyEditedIds.current.add(id);
     setProducts(prev => prev.map(p => p.id === id ? { ...p, ...changes } : p));

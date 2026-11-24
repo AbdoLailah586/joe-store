@@ -108,6 +108,7 @@ test('report readiness waits for the full catalog, independently of cart synchro
   const storage = { readStorage: () => null, readStoredArray: () => [], readStoredSettings: () => ({}), writeStorage() {}, writeStoredJson: () => true, removeStorage() {} };
   const { StoreProvider } = compile('src/context/StoreContext.tsx', {
     '../services/offlineCatalog': {deviceIsOnline:()=>true,readOfflineCatalog:async()=>null,saveOfflineCatalog:async()=>false},
+    '../utils/imageUrl': { normalizeProductImage: x => x || '/product-placeholder.svg', normalizeProductImages: x => x || [] },
     './AuthContext': { useAuth: () => ({user:{id:'test-admin',role:'admin'},sessionReady:true,adminSections:['products','inventory']}) },
     react, '../data/seedProducts': { initialProducts: [] }, '../utils/browserStorage': storage,
     '../utils/whatsappService': { defaultSettings: {}, getWhatsAppLogs: () => [] },

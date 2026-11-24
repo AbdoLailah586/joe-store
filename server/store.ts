@@ -299,8 +299,17 @@ export const neonDb = {
           }
         }
         if (product.images) {
+          const sanitizedImages = (Array.isArray(product.images) ? product.images : [])
+            .filter((url: any) => typeof url === 'string' && url.trim())
+            .map((url: string) => {
+              let u = url.trim().replace(/\/+$/, '');
+              if (!/^(https?:|data:|blob:)/i.test(u) && !u.startsWith('/')) {
+                u = '/' + u;
+              }
+              return u;
+            });
           setParts.push(`images = $${pIdx++}::jsonb`);
-          params.push(JSON.stringify(product.images));
+          params.push(JSON.stringify(sanitizedImages));
         }
         const details = Object.fromEntries(Object.entries(product).filter(([key]) =>
           !['id', 'price', 'stock', 'specs', 'images'].includes(key)));

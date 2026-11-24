@@ -20,6 +20,7 @@ import {
   priceLabel,
 } from "../utils/amazonEnricher";
 import { useProductInfo } from "./useProductInfo";
+import { normalizeProductImage } from "../utils/imageUrl";
 
 export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const {
@@ -60,7 +61,7 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
           aria-label={ar ? `عرض ${name}` : `View ${name}`}
         >
           <img
-            src={product.images[0] || "/product-placeholder.svg"}
+            src={normalizeProductImage(product.images[0])}
             onError={(e) => {
               e.currentTarget.onerror = null;
               e.currentTarget.src = "/product-placeholder.svg";

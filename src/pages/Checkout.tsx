@@ -33,6 +33,7 @@ import confetti from 'canvas-confetti';
 import { DetailedAddressFields } from '../components/DetailedAddressFields';
 import { InfoButton, useDetails } from '../components/DetailsDialog';
 import { productDetail } from '../utils/detailModels';
+import { normalizeProductImage } from '../utils/imageUrl';
 import { buildAddressDetails, formatDeliveryAddress, pickDeliveryFields, normalizeDigits, normalizePhone, isEgyptianPhone, isGoogleMapsUrl } from '../utils/deliveryAddress';
 
 export const Checkout: React.FC = () => {
@@ -972,7 +973,7 @@ export const Checkout: React.FC = () => {
               {cart.map((item, idx) => (
                 <div key={idx} className="pt-2 flex items-center gap-3">
                   <img
-                    src={item.product.images[0]}
+                    src={normalizeProductImage(item.product.images[0])}
                     alt=""
                     className="w-12 h-12 rounded-xl object-cover bg-slate-100 border border-slate-200 flex-shrink-0"
                   />

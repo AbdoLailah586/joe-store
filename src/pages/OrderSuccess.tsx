@@ -1,4 +1,5 @@
 import { formatDeliveryAddress } from '../utils/deliveryAddress';
+import { normalizeProductImage } from '../utils/imageUrl';
 import React from 'react';
 import {
   CheckCircle,
@@ -119,7 +120,7 @@ export const OrderSuccess: React.FC = () => {
             <div key={idx} className="pt-2 flex items-center justify-between gap-4 text-xs">
               <div className="flex items-center gap-3">
                 <img
-                  src={item.product.images[0]}
+                  src={normalizeProductImage(item.product.images[0])}
                   alt=""
                   className="w-12 h-12 rounded-xl object-cover bg-slate-100 border border-slate-200"
                 />

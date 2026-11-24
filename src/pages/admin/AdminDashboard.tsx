@@ -1,4 +1,5 @@
 import { formatDeliveryAddress } from '../../utils/deliveryAddress';
+import { normalizeProductImage, normalizeProductImages, compressImageFile } from '../../utils/imageUrl';
 import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { AdminShell, AdminSection, initialAdminSection } from './AdminShell';
 const AdminTools = lazy(() => import('./AdminTools').then(m => ({ default: m.AdminTools })));
@@ -462,10 +463,62 @@ export const AdminDashboard: React.FC = () => {
   const handleOpenEditProduct = (prod: Product) => {
     if (!canAccessSection('products')) return;
     setEditingProduct(prod);
-    setProdForm({ ...prod, is_featured: !!prod.is_featured });
+    setProdForm({
+      ...prod,
+      is_featured: !!prod.is_featured,
+      images: normalizeProductImages(prod.images)
+    });
     setSpecsInput(JSON.stringify(prod.specs || {}, null, 2));
     setProductSaveError('');
     setIsAddProductModalOpen(true);
+  };
+
+  const handleProductImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    try {
+      const newImages: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const compressed = await compressImageFile(file, 1200, 0.85);
+        if (compressed) {
+          newImages.push(compressed);
+        }
+      }
+      if (newImages.length > 0) {
+        setProdForm(prev => ({
+          ...prev,
+          images: [...(prev.images || []).filter(Boolean), ...newImages]
+        }));
+      }
+    } catch (err: any) {
+      setProductSaveError(err.message || 'حدث خطأ أثناء قراءة الصور من الجهاز');
+    } finally {
+      e.target.value = '';
+    }
+  };
+
+  const handleSetPrimaryImage = (indexToMakePrimary: number) => {
+    setProdForm(prev => {
+      const current = [...(prev.images || []).filter(Boolean)];
+      if (indexToMakePrimary < 0 || indexToMakePrimary >= current.length) return prev;
+      const [selected] = current.splice(indexToMakePrimary, 1);
+      return {
+        ...prev,
+        images: [selected, ...current]
+      };
+    });
+  };
+
+  const handleRemoveProductImage = (indexToRemove: number) => {
+    setProdForm(prev => {
+      const current = [...(prev.images || []).filter(Boolean)];
+      current.splice(indexToRemove, 1);
+      return {
+        ...prev,
+        images: current
+      };
+    });
   };
 
   const handleSaveProduct = (e: React.FormEvent) => {
@@ -482,7 +535,11 @@ export const AdminDashboard: React.FC = () => {
       setProductSaveError('اكتب المواصفات بصيغة JSON، باستخدام اسم المواصفة وقيمتها كنصوص.');
       return;
     }
-    const saved = { ...prodForm, specs, quick_specs: specs,
+    const cleanedImages = normalizeProductImages(prodForm.images);
+    const saved = { ...prodForm,
+      images: cleanedImages,
+      recorded_images: cleanedImages,
+      specs, quick_specs: specs,
       is_featured: !!prodForm.is_featured,
       in_stock: (prodForm.stock ?? 0) > 0 && (prodForm.price ?? 0) > 0 && prodForm.is_active !== false };
 
@@ -2629,14 +2686,100 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-slate-600 mb-1">روابط الصور (رابط في كل سطر)</label>
-                <textarea
-                  rows={3}
-                  value={prodForm.images?.join('\n') || ''}
-                  onChange={(e) => setProdForm({ ...prodForm, images: e.target.value.split('\n') })}
-                  className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-mono"
-                />
+              <div className="space-y-3 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <label className="block text-slate-800 font-bold text-sm">
+                      صور المنتج ({prodForm.images?.filter(Boolean).length || 0})
+                    </label>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      يمكنك رفع صورة أو أكثر مباشرة من اللابتوب أو تعديل الروابط. الصورة الأولى هي الصورة الرئيسية.
+                    </p>
+                  </div>
+                  <label className="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-sm transition-all hover:scale-105 active:scale-95">
+                    <Upload className="w-4 h-4" />
+                    <span>رفع صورة من اللابتوب</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={handleProductImageUpload}
+                    />
+                  </label>
+                </div>
+
+                {/* Image Previews / Gallery */}
+                {prodForm.images && prodForm.images.filter(Boolean).length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+                    {prodForm.images.filter(Boolean).map((imgUrl, idx) => (
+                      <div
+                        key={idx}
+                        className={`group relative rounded-xl overflow-hidden border-2 bg-white flex flex-col items-center justify-between p-2 shadow-sm ${
+                          idx === 0 ? 'border-amber-400 bg-amber-50/20 ring-2 ring-amber-200' : 'border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="w-full aspect-square rounded-lg overflow-hidden bg-slate-100 mb-2 relative flex items-center justify-center">
+                          <img
+                            src={normalizeProductImage(imgUrl)}
+                            alt=""
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = '/product-placeholder.svg';
+                            }}
+                          />
+                          {idx === 0 && (
+                            <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded-md bg-amber-500 text-slate-950 font-black text-[10px] shadow">
+                              الرئيسية
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="w-full flex items-center justify-between gap-1 text-[11px]">
+                          {idx !== 0 ? (
+                            <button
+                              type="button"
+                              onClick={() => handleSetPrimaryImage(idx)}
+                              className="px-2 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 font-bold text-[10px] transition-colors"
+                              title="جعل هذه الصورة هي الصورة الرئيسية الأولى للمنتج"
+                            >
+                              تعيين كرئيسية
+                            </button>
+                          ) : (
+                            <span className="text-[10px] text-amber-800 font-extrabold">صورة الغلاف</span>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveProductImage(idx)}
+                            className="p-1 rounded-lg text-rose-600 hover:bg-rose-50 transition-colors"
+                            title="حذف هذه الصورة"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Textarea for manual URLs */}
+                <div>
+                  <label className="block text-slate-600 text-xs mb-1">
+                    أو تعديل الروابط يدوياً (رابط في كل سطر):
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={prodForm.images?.join('\n') || ''}
+                    onChange={(e) => {
+                      const lines = e.target.value.split('\n');
+                      setProdForm({ ...prodForm, images: lines });
+                    }}
+                    placeholder="/product-images/example.png"
+                    className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 font-mono focus:border-amber-400 focus:outline-none"
+                  />
+                </div>
               </div>
 
               <div>

@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
 import { canPurchaseProduct, productNotice, priceLabel } from '../utils/amazonEnricher';
 import { useProductInfo } from './useProductInfo';
+import { normalizeProductImage } from '../utils/imageUrl';
 
 export const QuickViewModal: React.FC = () => {
   const {
@@ -81,7 +82,7 @@ export const QuickViewModal: React.FC = () => {
         <div className="md:w-1/2 p-6 bg-slate-100/60 flex flex-col items-center justify-between border-b md:border-b-0 md:border-l border-slate-200">
           <div className="w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 mb-4 relative">
             <img
-              src={product.images[selectedImage] || product.images[0] || '/product-placeholder.svg'}
+              src={normalizeProductImage(product.images[selectedImage] || product.images[0])}
               onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
               alt={product.name_ar}
               className="w-full h-full object-cover object-center"
@@ -105,7 +106,7 @@ export const QuickViewModal: React.FC = () => {
                     selectedImage === i ? 'border-amber-400 scale-105' : 'border-transparent opacity-60 hover:opacity-100'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={normalizeProductImage(img)} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
