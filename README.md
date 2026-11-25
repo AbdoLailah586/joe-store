@@ -1,219 +1,214 @@
-# 📱 JOE Store — Enterprise E-Commerce Platform
+# JOE Store — Full-Stack E-Commerce & Inventory Platform
 
 <p align="center">
-  <img src="public/logo.png" alt="JOE Store Logo" width="120" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);" />
+  <img src="public/logo.png" alt="JOE Store Logo" width="120" />
 </p>
 
 <p align="center">
-  <strong>A premium, modern e-commerce platform and certified pre-owned smartphone hub.</strong><br>
-  Built with React 18, TypeScript, Tailwind CSS, multi-theme customization, bulk Excel catalog management, and automated WhatsApp notifications.
-</p>
-
-<p align="center">
-  <a href="#-key-features">Key Features</a> •
-  <a href="#-tech-stack">Tech Stack</a> •
-  <a href="#-architecture--structure">Architecture</a> •
-  <a href="#-getting-started">Getting Started</a> •
-  <a href="#-vercel-deployment">Deployment</a> •
-  <a href="#-contributing">Contributing</a>
+  <strong>Production e-commerce storefront, back-office ERP/CRM, and installable PWA for smartphones, accessories, covers, and certified pre-owned devices.</strong>
 </p>
 
 <p align="center">
   <a href="https://joe-store-2026.vercel.app" target="_blank">
-    <img src="https://img.shields.io/badge/🌐_Live_Store-joe--store--2026.vercel.app-F59E0B?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+    <img src="https://img.shields.io/badge/Live_Store-joe--store--2026.vercel.app-F59E0B?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Store" />
   </a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 18" />
+  <img src="https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 18" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Vite-6.1-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
+  <img src="https://img.shields.io/badge/Neon-PostgreSQL-00E599?style=for-the-badge&logo=postgresql&logoColor=black" alt="Neon PostgreSQL" />
+  <img src="https://img.shields.io/badge/Vercel-Serverless_&_Edge-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
 </p>
 
 ---
 
-## 🌟 Overview
+## Architecture & Layers
 
-**JOE Store** is a production-ready, full-featured retail and certified pre-owned smartphone web application crafted with high-end aesthetics inspired by Apple, Noon, and Amazon. 
+JOE Store is structured into clear, isolated application layers with a strict server-side security boundary:
 
-Engineered specifically for electronics retail and certified device sales (iPhone pre-owned units with certified battery health 85%–97%), it pairs a lightning-fast client experience with deep back-office control: Excel catalog bulk-importing, custom theme switching, live order tracking, and seamless WhatsApp automation for receipts and dispatch alerts.
-
----
-
-## 🚀 Key Features
-
-### 1. 🎨 Luxury Aesthetics & Dynamic Multi-Theme Engine
-- **Triple Colorway Engine**:
-  - 👑 **Royal Gold** (Default): Iconic midnight obsidian with champagne metallic accents.
-  - ⚡ **Titanium Blue**: Inspired by iPhone Pro natural titanium finishes.
-  - 🌿 **Emerald Tech**: Futuristic cyber-emerald palette.
-- **Flawless Light & Dark Modes**: Clean luxury silver/white mode and deep obsidian dark mode, completely reactive with zero color collisions.
-- **Hero Slider Customizer**: Admin-controllable hero banner carousel with responsive touch gestures, custom badges, and instant discount highlights.
-- **Glassmorphism & Micro-animations**: Subtle backdrop blurs, glow highlights, active state scales, and celebratory confetti upon purchase.
-
-### 2. 📱 Certified Pre-Owned Apple Device Hub
-- Tailored section for certified pre-owned devices.
-- **Certified Battery Health Transparency**: Explicit battery percentages displayed on every device (85%–97%).
-- **Digital Warranty Cards**: Detailed warranty and inspection certificates stamped with serial numbers and exchange guarantees.
-
-### 3. 🌐 Full Bilingual & Bidirectional Engine (Arabic RTL / English LTR)
-- Instant one-click language toggle between **العربية (RTL)** and **English (LTR)**.
-- Precision typography pairing: Google Fonts **Cairo** for Arabic and **Outfit** for English numbers and headers.
-- Persistent language state across client sessions.
-
-### 4. 📦 Advanced Catalog Management (Manual & Bulk Excel Import/Export)
-- **Interactive Admin Modal**: Add and modify products with image URLs, stock, storage sizes, colors, battery health, and warranty terms.
-- **Bulk Excel / CSV Sync**:
-  - One-click template download (`JOE_Store_Products_Template.xlsx`).
-  - Drag-and-drop file upload with live field parsing and client-side validation.
-  - Pre-commit interactive preview table before importing into live state.
-- **Catalog Export**: Export complete live inventory to Excel at any time.
-- **One-Click Duplication**: Duplicate existing products to quickly list variations in storage and colors.
-
-### 5. 💬 Automated WhatsApp Notification Integration
-- Connected to the `whatsapp-pro-automation` API for real-time customer messaging.
-- Triggers automatic SMS/WhatsApp alerts for:
-  1. **Order Placed**: Complete digital invoice with product list, shipping address, and order ID.
-  2. **Payment Confirmation**: Instant verification for digital wallet & InstaPay transfers.
-  3. **Dispatched to Courier**: Courier name and tracking bill-of-lading.
-  4. **Out for Delivery**: Notification when courier is arriving.
-  5. **Order Delivered**: Device delivery congratulations with warranty activation link.
-  6. **Automated Review Request**: Feedback survey sent post-delivery.
-- Floating WhatsApp quick-chat widget for direct customer support.
-
-### 6. 💳 Localized Payment Methods & Shipping Calculator
-- **Cash on Delivery (COD)**: Allows device inspection before payment.
-- **InstaPay Instant Transfer**: Official handle and reference validation.
-- **Vodafone Cash & Mobile Wallets**: Direct merchant wallet payments with transaction proof.
-- **Bank Cards**: Visa / MasterCard integration ready.
-- **Dynamic Egypt Shipping Rates**: Automated calculation covering all Egyptian governorates with same-day express delivery in Mansoura.
-
-### 7. 🔐 User Account & Order Tracking Hub
-- Instant guest browsing; authentication only required during checkout.
-- **Customer Dashboard**:
-  - Order history with live milestone tracking (Received ➔ Confirmed ➔ Shipping ➔ Delivered).
-  - Saved multi-address notebook.
-  - Certified digital warranty cards.
-  - Direct order lookup by tracking code without logging in.
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ 1. Presentation Layer (src/pages/, src/components/)                      │
+│    React 18 + Tailwind CSS + GSAP + Bilingual RTL/LTR (Arabic / English) │
+├──────────────────────────────────────────────────────────────────────────┤
+│ 2. Client State & Offline Layer (src/context/, src/services/, pwa/)      │
+│    AuthContext, StoreContext, LanguageContext, IndexedDB offline catalog │
+│    & Service Worker shell/image cache (dist/sw.js)                       │
+├──────────────────────────────────────────────────────────────────────────┤
+│ 3. Edge CDN & Middleware Layer (vercel.json, middleware.js)              │
+│    • Vercel Edge CDN caches public GET catalog/settings (s-maxage=30,    │
+│      stale-while-revalidate=120)                                         │
+│    • Edge Middleware rewrites crawler /product/:id traffic to OG tags    │
+├──────────────────────────────────────────────────────────────────────────┤
+│ 4. Serverless API Boundary (api/*.ts, api/*.js)                          │
+│    • /api/store — Public GET (catalog/settings) + authenticated POST RPC │
+│    • /api/google-auth, /api/send-otp, /api/verify-otp                    │
+│    • /api/totp-*, /api/og-product, /api/health                           │
+├──────────────────────────────────────────────────────────────────────────┤
+│ 5. Domain, Security & Persistence Layer (server/, lib/, migrations/)     │
+│    • Session tokens (opaque 256-bit SHA-256 hashed HttpOnly cookies)     │
+│    • Salted scrypt password hashing + TOTP 2FA verification              │
+│    • 22-section RBAC authorization allowlist (lib/access.js)             │
+│    • Atomic order creation & stock locking (server/orderWrites.ts)       │
+├──────────────────────────────────────────────────────────────────────────┤
+│ 6. Database & Operations Layer (Neon PostgreSQL + scripts/)              │
+│    • @neondatabase/serverless driver over pooled Postgres                │
+│    • Automated Google Drive ZIP backups, limit monitoring & DB migration │
+└──────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 🛠️ Tech Stack
+## Key Features & Platform Updates
 
-| Technology | Purpose |
+### Performance & Edge CDN Caching
+- **CDN-Cached Public Reads (`GET /api/store`)**: Public storefront reads (`getProducts` and `getStoreSettings`) execute as canonical `GET` requests cached at Vercel Edge CDN (`Cache-Control: public, max-age=0, s-maxage=30, stale-while-revalidate=120`), eliminating redundant Neon database queries under concurrent traffic spikes.
+- **Strict Public/Admin Isolation**: Public `GET` requests never read session cookies, never expose hidden products (`includeHidden: false`), strip internal fields (`cost_price`, `source_name`, `source_row`, `source_item_code`, `raw_source_stock`), and fall back to `Cache-Control: no-store` on empty/error responses.
+- **Live Admin Bypass**: Staff with product/inventory permissions automatically fetch live uncached data (`POST /api/store`, `no-store`) to see hidden items, wholesale costs, and instant edits.
+
+### Storefront, Catalog & Checkout
+- **Bilingual RTL/LTR Engine**: Instant Arabic/English switching (`Cairo` + `Outfit` typography), Royal Gold / Titanium Blue / Emerald Tech themes, and responsive mobile-first layouts.
+- **Certified Pre-Owned & Retail Catalog**: Supports 2,000+ SKUs, variant selection (storage & color), battery health badges, product reviews with shadow moderation (`pending` visible to author, `approved` public), and social OpenGraph previews (`/api/og-product`).
+- **Atomic Checkout & Order Tracking**: Server-side transactional `saveOrder` locks product rows (`FOR UPDATE`), validates live prices and stock before inserting orders, and deducts inventory atomically. Cancellation (`cancelOrder`) restocks items safely on first transition.
+- **Installable PWA & Offline Browsing**: Custom service worker generated at build time (`scripts/build_pwa.mjs` from `pwa/service-worker.template.js`) with bounded image caching (`100` images, `2 MB` max), IndexedDB public catalog snapshots, and offline-safe guards (offline mode blocks checkout and admin mutations).
+
+### Security, Authentication & 22-Section RBAC Admin Hub
+- **Authentication**: Google Sign-In (`google-auth-library`), Email/Password (`scrypt` salted hashes), Email OTP verification (`Nodemailer` Gmail SMTP / `Brevo` / `Resend`), and TOTP 2FA (`/api/totp-*`).
+- **Session Security**: Random opaque `HttpOnly`, `SameSite=Lax` cookies (`joe_session`) stored hashed in `app_sessions` with `sameOrigin` request validation.
+- **22-Section Delegated RBAC (`lib/access.js`)**: Granular staff permissions across `overview`, `analytics`, `products`, `inventory`, `quality`, `stocktake`, `reorder`, `suppliers`, `orders`, `fulfillment`, `support`, `crm`, `users`, `emails`, `whatsapp`, `screens`, `covers`, `pricing`, `labels`, `tools`, `security`, and `settings`.
+- **Specialized Back-Office Tools**:
+  - **Cover Finder & Screen Finder**: Indexed phone cover and screen protector catalogs with override persistence and manual additions.
+  - **Fulfillment & Packing**: Picking lists, packing verification, courier dispatch, and refusal history tracking.
+  - **Inventory Reports & Bulk Excel**: Exportable CSV/XLSX valuation and stock reports (with spreadsheet formula-injection protection) plus bulk Excel product import (`xlsx`).
+  - **Support Tickets & CRM**: Possession-cookie-bound customer support threads, abandoned cart tracking, and supplier price quotes.
+
+### Database Backup, Migration & Quota Automation
+- **`scripts/backup_neon_to_drive.mjs`** (or `run_backup.bat`): Exports all Neon tables as SQL (`dump.sql`) + JSON (`tables/*.json`) + `manifest.json`, compresses into a ZIP archive (`archiver`), uploads to Google Drive (`googleapis`), and sends a WhatsApp summary report.
+- **`scripts/monitor_neon_limits.mjs`** (or `run_neon_monitor.bat`): Queries the Neon v2 API for egress, compute CU-hours, and storage usage; triggers an automatic backup and sends a WhatsApp alert when usage crosses `NEON_ALERT_THRESHOLD_PCT` (default `80%`).
+- **`scripts/migrate_neon_db.mjs`**: Full schema, sequence, constraint, index, and row-verified database migrator between Neon PostgreSQL instances.
+
+---
+
+## Tech Stack
+
+| Layer | Technologies |
 | :--- | :--- |
-| **React 18.3** | Component-driven UI runtime |
-| **TypeScript 5.7** | Strict static typing and code reliability |
-| **Vite 6.1** | Lightning-fast development & optimized ES production bundles |
-| **Tailwind CSS 3.4** | Utility-first responsive design and custom design token system |
-| **Lucide React** | Ultra-crisp iconography |
-| **XLSX (SheetJS)** | Client-side spreadsheet parsing and Excel export |
-| **Canvas Confetti** | Delightful micro-interaction on order success |
-| **Vercel** | Edge CDN deployment and asset caching |
+| **Frontend UI** | React 18.3, TypeScript 5.7, Tailwind CSS 3.4, GSAP 3.15, Lucide React, Canvas Confetti |
+| **Build & Tooling** | Vite 6.1 (manual chunk splitting + dev API middleware), custom PWA SW builder |
+| **API & Edge** | Vercel Serverless Functions (`api/`), Vercel Edge Middleware (`middleware.js`), Vercel CDN Caching |
+| **Database** | Neon PostgreSQL (`@neondatabase/serverless`), SQL migrations (`migrations/`) |
+| **Auth & Security** | `node:crypto` (`scrypt`, SHA-256, TOTP RFC 6238), `google-auth-library` |
+| **Messaging & Email** | Nodemailer (Gmail SMTP), Brevo API, Resend API, WhatsApp Pro CRM webhook integration |
+| **Data & Ops** | SheetJS (`xlsx`), `archiver`, `googleapis` (Drive v3), `sharp` |
+| **Testing** | Node.js native test runner (`node --test`), React SSR test rendering, TypeScript compiler API |
 
 ---
 
-## 📁 Architecture & Structure
+## Project Structure
 
-```
+```text
 joe-store/
-├── public/                 # Static assets, logos, and web manifest
+├── api/                         # Vercel serverless endpoints (store, auth, otp, totp, og-product, health)
+├── server/                      # Server DB queries (store.ts) and atomic order writes (orderWrites.ts)
+├── lib/                         # Shared auth, RBAC policy, session, and TOTP helpers
+├── migrations/                  # PostgreSQL schema migrations
+├── middleware.js                # Edge middleware for product crawler OG redirects
+├── pwa/                         # Service worker template
+├── public/                      # Static assets, manifest, icons, product/cover/screen images
+├── scripts/                     # PWA builder, Neon backup/monitor/migration, QA servers
 ├── src/
-│   ├── components/         # Reusable presentation components
-│   │   ├── Navbar.tsx      # Main navigation, search bar, language/theme selectors
-│   │   ├── Footer.tsx      # Policy modals, store locations, verified social links
-│   │   ├── JoeStoreLogo.tsx# Responsive branded SVG logo
-│   │   ├── ProductCard.tsx # Glassmorphic product showcase card
-│   │   ├── CartDrawer.tsx  # Slide-over shopping cart with live subtotal
-│   │   ├── AuthModal.tsx   # Sign-in & registration modal
-│   │   └── ...
-│   ├── context/            # React Context state management
-│   │   ├── StoreContext.tsx# Products, cart, orders, and persistent theme settings
-│   │   ├── LanguageContext.tsx # Localization and RTL/LTR direction controller
-│   │   └── AuthContext.tsx # User session and authentication state
-│   ├── data/               # Seed data, governorates list, and mock products
-│   ├── pages/              # Application views
-│   │   ├── Home.tsx        # Dynamic hero slider, pre-owned highlights, flash sales
-│   │   ├── Catalog.tsx     # Filterable product grid with category pills
-│   │   ├── Checkout.tsx    # Multi-step checkout with governorate shipping calculation
-│   │   ├── OrderTracking.tsx# Live order status and tracking milestones
-│   │   ├── Profile.tsx     # User profile, past orders, and digital warranties
-│   │   └── admin/          # Comprehensive back-office dashboard
-│   ├── types/              # TypeScript interfaces and domain models
-│   ├── utils/              # Helper functions (WhatsApp service, Excel parser)
-│   ├── App.tsx             # Root route switcher and layout wrapper
-│   └── main.tsx            # Application entry point
-├── push_to_github.bat      # One-click Windows script to push updates to GitHub
-├── vercel.json             # Vercel SPA rewrites and asset caching rules
-└── vite.config.ts          # Vite build optimizations & chunk splitting
+│   ├── components/              # Storefront & shared UI components
+│   ├── context/                 # AuthContext, StoreContext, LanguageContext
+│   ├── data/                    # Governorates, cover/screen datasets, seed fallback
+│   ├── pages/                   # Storefront pages & admin/ (22-section ERP dashboard)
+│   ├── services/                # Client API boundary (neonDb.ts), offlineCatalog.ts, pwa.ts
+│   ├── types/                   # TypeScript domain types
+│   └── utils/                   # Delivery formatting, Excel parser, inventory reports, storage
+├── tests/                       # Automated unit, security, caching, PWA, and UI tests
+├── vercel.json                  # SPA rewrites and Edge/asset cache headers
+└── vite.config.ts               # Vite config + local /api/* dev middleware
 ```
 
 ---
 
-## ⚡ Getting Started
+## Getting Started
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (version 18 or newer)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/) v20+
+- A [Neon](https://neon.tech/) PostgreSQL database
 
-### Installation
+### Setup & Local Development
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/<your-username>/joe-store.git
-   cd joe-store
-   ```
-
-2. **Install dependencies**:
+1. **Install dependencies**:
    ```bash
    npm install
    ```
 
-3. **Start the local development server**:
+2. **Configure environment variables**:
+   Copy `.env.example` to `.env` and fill in your server credentials:
+   ```bash
+   cp .env.example .env
+   ```
+   - `DATABASE_URL` (server-only; never expose with `VITE_` in production client code)
+   - `VITE_GOOGLE_CLIENT_ID`
+   - Email provider (`SMTP_*`, `BREVO_API_KEY`, or `RESEND_API_KEY`)
+   - Optional backup/monitor variables (`NEON_API_KEY`, `NEON_PROJECT_ID`, `WHATSAPP_CRM_*`, `GOOGLE_DRIVE_*`)
+
+3. **Run development server**:
    ```bash
    npm run dev
    ```
-   The application will run locally at `http://localhost:5174/`.
-
-4. **Build for production**:
-   ```bash
-   npm run build
-   ```
-   The optimized production bundle will be generated in `dist/`.
+   Runs locally on `http://localhost:5174/` with Vite's `/api/*` middleware enabled.
 
 ---
 
-## 🚀 Vercel Deployment
+## Verification & Testing
 
-This project is pre-configured for seamless deployment to **Vercel**:
+Run the full automated test suite and TypeScript type check:
 
-1. Push your repository to **GitHub**.
-2. Go to [Vercel Dashboard](https://vercel.com/) and click **"Add New Project"**.
-3. Import your `joe-store` repository.
-4. Vercel automatically detects Vite:
-   - **Framework Preset**: `Vite`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-5. Click **Deploy**.
+```bash
+node --test tests/*.test.mjs
+npx tsc --noEmit
+```
 
-> 💡 The included [`vercel.json`](file:///c:/Users/abdol/OneDrive/Desktop/task/joe-store/vercel.json) automatically handles single-page application (SPA) routing redirects to `/index.html` and sets long-term cache headers for assets.
+Build the production bundle and generate the PWA service worker (`dist/`):
 
----
-
-## 🔄 Automated GitHub Push Script
-
-For rapid iteration, a dedicated Windows batch utility is included:
-- **`push_to_github.bat`**: Double-click or run from terminal:
-  ```cmd
-  push_to_github.bat "Your commit message"
-  ```
-  This automatically stages all changes, creates a commit, and pushes to the `main` branch, triggering an automatic redeployment on Vercel.
+```bash
+npm run build
+```
 
 ---
 
-## 📄 License
+## Backup & Monitoring Commands
 
-This project is proprietary and developed for **JOE Store (Mansoura, Egypt)**. All rights reserved.
+All credentials are read strictly from `.env` or environment variables:
+
+```bash
+# Full Neon SQL + JSON backup compressed to ZIP and uploaded to Google Drive
+node scripts/backup_neon_to_drive.mjs
+
+# Check Neon free-tier egress, compute, and storage usage (auto-backs up & alerts >= 80%)
+node scripts/monitor_neon_limits.mjs
+
+# Migrate schema + data + sequences + constraints to another Neon database
+node scripts/migrate_neon_db.mjs "<TARGET_DATABASE_URL>"
+```
+
+---
+
+## Deployment
+
+Configured for **Vercel**:
+- **Framework Preset**: `Vite`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Required Env Vars in Vercel**: `DATABASE_URL`, `VITE_GOOGLE_CLIENT_ID`, and your email delivery keys (`SMTP_*` / `BREVO_API_KEY` / `RESEND_API_KEY`).
+
+---
+
+## License
+
+Proprietary — developed for **JOE Store (Mansoura, Egypt)**. All rights reserved.

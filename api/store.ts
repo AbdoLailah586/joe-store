@@ -289,14 +289,57 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
   }
   throw fail(400,'الإجراء غير مدعوم.');
 }
-export default async function handler(req:any,res:any) {
+const PUBLIC_GET_METHODS = new Set(['getProducts', 'getStoreSettings']);
+const PUBLIC_CACHE_HEADER = 'public, max-age=0, s-maxage=30, stale-while-revalidate=120';
+
+function parsePublicGetRequest(rawUrl: string) {
+  const url = new URL(rawUrl || '/api/store', 'http://localhost');
+  const method = url.searchParams.get('method') || '';
+  if (!PUBLIC_GET_METHODS.has(method)) return null;
+  if (method === 'getStoreSettings') return { method, args: [] as any[] };
+  const params: Record<string, any> = { includeHidden: false };
+  const limitRaw = url.searchParams.get('limit');
+  const offsetRaw = url.searchParams.get('offset');
+  const category = url.searchParams.get('category');
+  const search = url.searchParams.get('search');
+  if (limitRaw !== null && limitRaw !== '') {
+    const limitNum = Number(limitRaw);
+    if (Number.isFinite(limitNum)) params.limit = limitNum;
+  }
+  if (offsetRaw !== null && offsetRaw !== '') {
+    const offsetNum = Number(offsetRaw);
+    if (Number.isFinite(offsetNum)) params.offset = offsetNum;
+  }
+  if (category) params.category = category;
+  if (search) params.search = search;
+  return { method, args: [params] };
+}
+
+export default async function handler(req:any,res:any,deps?:any) {
   res.setHeader('Cache-Control','no-store');
-  if(req.method!=='POST') return res.status(405).json({error:'Method Not Allowed'});
   if(!sameOrigin(req)) return res.status(403).json({error:'الطلب يجب أن يأتي من المتجر نفسه.'});
+  if(req.method==='GET') {
+    const parsed=parsePublicGetRequest(req.url);
+    if(!parsed) return res.status(405).json({error:'Method Not Allowed'});
+    try {
+      // Public GET endpoints never inspect session cookies or return privileged fields.
+      const result=await execute(req,res,parsed,{...(deps||{}),user:null});
+      const cacheable=parsed.method==='getProducts'
+        ? Boolean(result&&typeof result.total==='number'&&result.total>0)
+        : Boolean(result&&typeof result==='object');
+      if(cacheable) res.setHeader('Cache-Control',PUBLIC_CACHE_HEADER);
+      return res.status(200).json({result:result??null});
+    } catch(error:any) {
+      res.setHeader('Cache-Control','no-store');
+      console.error('[store]',error.status||500,error.code||error.message?.slice(0,100));
+      return res.status(error.status||500).json({error:error.status?error.message:'تعذر تنفيذ الطلب في الخادم. حاول مرة أخرى.',code:error.status?error.code:undefined});
+    }
+  }
+  if(req.method!=='POST') return res.status(405).json({error:'Method Not Allowed'});
   try {
     const body=typeof req.body==='string'?JSON.parse(req.body):req.body;
     if(JSON.stringify(body).length>3_000_000) return res.status(413).json({error:'حجم الطلب أكبر من المسموح.'});
-    return res.status(200).json({result:(await execute(req,res,body))??null});
+    return res.status(200).json({result:(await execute(req,res,body,deps))??null});
   } catch(error:any) {
     console.error('[store]',error.status||500,error.code||error.message?.slice(0,100));
     return res.status(error.status||500).json({error:error.status?error.message:'تعذر تنفيذ الطلب في الخادم. حاول مرة أخرى.',code:error.status?error.code:undefined});

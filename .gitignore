@@ -33,6 +33,10 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # Backups and intake raw photos
+*credentials*.json
+*secret*.json
+token.json
+data/
 backups/
 catalog_intake/incoming/*
 !catalog_intake/incoming/.gitkeep

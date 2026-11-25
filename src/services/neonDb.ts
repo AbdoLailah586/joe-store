@@ -9,6 +9,17 @@ async function callStore(method: string, args: any[] = []) {
   return data.result;
 }
 
+async function callPublicStoreGet(method: string, query: Record<string, string | number | undefined> = {}) {
+  const searchParams = new URLSearchParams({ method });
+  for (const [key, value] of Object.entries(query)) {
+    if (value !== undefined && value !== '') searchParams.set(key, String(value));
+  }
+  const response = await fetch(`/api/store?${searchParams.toString()}`, { method: 'GET', credentials: 'same-origin' });
+  const data = await response.json();
+  if (!response.ok) throw Object.assign(new Error(data.error || 'تعذر تنفيذ الطلب. راجع صلاحية حسابك.'),{code:data.code});
+  return data.result;
+}
+
 async function callAction(method: string,args: any[] = []) {try{return await callStore(method,args)}catch(e:any){return {success:false,error:e.message,code:e.code}}}
 export interface ActiveCartRecord {
   session_id: string;
@@ -205,7 +216,17 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
     limit?: number;
     offset?: number;
     includeHidden?: boolean;
-  }): Promise<{ products: Product[]; total: number }> { return await callStore('getProducts', [params]); },
+  }): Promise<{ products: Product[]; total: number }> {
+    if (params?.includeHidden) {
+      return await callStore('getProducts', [params]);
+    }
+    return await callPublicStoreGet('getProducts', {
+      limit: Math.max(1, Math.min(300, Number(params?.limit) || 50)),
+      offset: Math.max(0, Number(params?.offset) || 0),
+      category: params?.category && params.category !== 'all' ? params.category : undefined,
+      search: params?.search?.trim() || undefined
+    });
+  },
 
   /**
    * 2. Toggle Product Visibility (Show / Hide in catalog)
@@ -344,9 +365,12 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
 
   async changePassword(userId: string, oldPass: string, newPass: string): Promise<{ success: boolean; error?: string }> { return await callStore('changePassword', [userId,oldPass,newPass]); },
 
-  async getStoreSettings(): Promise<any> {
+  async getStoreSettings(options?: { bypassCache?: boolean }): Promise<any> {
     try {
-      return await callStore('getStoreSettings', []);
+      if (options?.bypassCache) {
+        return await callStore('getStoreSettings', []);
+      }
+      return await callPublicStoreGet('getStoreSettings');
     } catch {
       return null;
     }

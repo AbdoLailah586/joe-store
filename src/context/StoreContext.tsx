@@ -303,8 +303,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const snapshot=await readOfflineCatalog();
       if(!cancelled){setProducts(snapshot?.products||[]);setCatalogSavedAt(snapshot?.savedAt);setIsOfflineCatalog(true)}
     };
-    // 1. Fetch live products from Neon directly without caching delays
-    const catalogRequest = deviceIsOnline() ? neonDb.getAllProducts({ includeHidden: true }) : Promise.reject(new Error('Offline'));
+    // 1. Fetch public catalog via CDN-cacheable GET; staff with product access fetch live uncached rows via POST
+    const canViewHiddenProducts = ['products', 'inventory', 'quality', 'stocktake', 'reorder', 'labels', 'suppliers']
+      .some(section => accountSections.includes(section));
+    const catalogRequest = deviceIsOnline()
+      ? neonDb.getAllProducts({ includeHidden: canViewHiddenProducts })
+      : Promise.reject(new Error('Offline'));
     catalogRequest.then(dbProds => {
       if (!cancelled && dbProds && dbProds.length > 0) {
         const sanitize = (p: Product): Product => ({
@@ -317,8 +321,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     }).catch(offlineFallback).finally(() => { if (!cancelled) setIsCatalogLoading(false); });
 
-    // 2. Fetch live orders from Neon
-    if(deviceIsOnline()) neonDb.getOrders().then(dbOrders => {
+    // 2. Fetch live orders from Neon only for signed-in users
+    if(deviceIsOnline() && account) neonDb.getOrders().then(dbOrders => {
       if (!cancelled && dbOrders) {
         setOrders(dbOrders);
       }
