@@ -21,6 +21,7 @@ import { AuthModal } from './components/AuthModal';
 import { ShoppingPages } from './pages/ShoppingPages';
 import { PolicyPage } from './pages/PolicyPage';
 import { PwaStatus } from './components/PwaControls';
+import { CookieBanner } from './components/CookieBanner';
 
 export const App: React.FC = () => {
   const { currentTab, isOfflineCatalog } = useStore();
@@ -61,7 +62,10 @@ export const App: React.FC = () => {
       {/* 5. Mobile Bottom Dock */}
       {currentTab !== 'admin' && <MobileBottomNav />}
 
-      {/* 6. Enterprise Footer */}
+      {/* 6. First-Visit Cookie Consent Banner */}
+      {currentTab !== 'admin' && <CookieBanner />}
+
+      {/* 7. Enterprise Footer */}
       {currentTab !== 'admin' && <Footer />}
     </div>
   );

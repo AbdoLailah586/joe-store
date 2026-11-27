@@ -536,3 +536,25 @@ test('AuthModal and Checkout require explicit acceptance of Store Policies, Term
   assert.match(checkoutSrc, /navigate\('terms'\)/);
   assert.match(checkoutSrc, /navigate\('privacy'\)/);
 });
+
+test('CookieBanner shows only on first visit per device and persists consent across subsequent visits', () => {
+  const iconsMod = new Proxy({}, { get: (_, name) => name === '__esModule' ? true : () => React.createElement('svg') });
+  const storeMap = new Map();
+  const fakeStorage = {
+    readStorage: (k) => storeMap.get(k) ?? null,
+    writeStorage: (k, v) => { storeMap.set(k, v); return true; }
+  };
+  const cookieMod = compile('src/components/CookieBanner.tsx', {
+    'lucide-react': iconsMod,
+    '../context/StoreContext': { useStore: () => ({ navigate: () => {} }) },
+    '../context/LanguageContext': { useLanguage: () => ({ language: 'ar' }) },
+    '../utils/browserStorage': fakeStorage
+  });
+
+  assert.equal(cookieMod.hasCookieConsent(), false);
+  assert.equal(cookieMod.saveCookieConsent('accepted'), true);
+  assert.equal(cookieMod.hasCookieConsent(), true);
+
+  const appSrc = fs.readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8');
+  assert.match(appSrc, /CookieBanner/);
+});
