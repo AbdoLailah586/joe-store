@@ -276,20 +276,26 @@ export const Checkout: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!customerPhone.trim() && !customerName.trim()) return;
+    if (!customerPhone.trim() && !customerName.trim() && !customerEmail.trim()) return;
     const timer = window.setTimeout(() => {
+      const gov = egyptianGovernorates.find(g => g.id === selectedGovId);
       neonDb.syncActiveCart({
         sessionId,
         customerId: user?.id,
         customerName: customerName.trim() || undefined,
         customerPhone: customerPhone.trim() || undefined,
+        customerEmail: customerEmail.trim() || undefined,
         items: cart,
         subtotal: cartSubtotal,
-        attribution: getOrCaptureVisitorAttribution()
+        attribution: {
+          ...getOrCaptureVisitorAttribution(),
+          ...(gov?.name_ar ? { governorate: gov.name_ar } : {}),
+          ...(selectedCity.trim() ? { city: selectedCity.trim() } : {})
+        }
       }).catch(() => {});
     }, 900);
     return () => window.clearTimeout(timer);
-  }, [customerName, customerPhone, sessionId, user?.id, cart, cartSubtotal]);
+  }, [customerName, customerPhone, customerEmail, selectedGovId, selectedCity, sessionId, user?.id, cart, cartSubtotal]);
 
   const applySelectedCoordinates = async (lat: number, lng: number, source: 'gps' | 'map') => {
     const url = coordsToGoogleMapsUrl(lat, lng);

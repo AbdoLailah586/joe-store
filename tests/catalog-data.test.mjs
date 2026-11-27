@@ -138,7 +138,7 @@ const icons = new Proxy({}, { get: () => props => React.createElement('svg', { c
 const noop = () => {};
 const placeholderModules = Object.fromEntries([
   '../../components/ExcelImportModal', '../../utils/excelParser', '../../utils/whatsappService', '../../services/neonDb',
-  './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab', './AdminShell',
+  './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab', './GuestVisitorsTab', './AdminShell',
   './WhatsAppCrmAdminSection', './PaymentGatewaySettingsCard', './MarketingAdToolsCard', './PolicyPagesEditorCard',
   './SecurityPanel', './FulfillmentPanel', './SupportPanel', './SupplierQuotesPanel', './OverviewPanel', './ReviewsModerationPanel', '../../utils/detailModels', '../../utils/imageUrl'
 ].map(id => [id, new Proxy({}, { get: () => noop })]));

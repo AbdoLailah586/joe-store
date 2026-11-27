@@ -35,12 +35,20 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     setSelectedCategory,
     searchQuery,
     setSearchQuery,
+    trackActivity,
     settings
   } = useStore();
 
   const { t, language, formatPrice } = useLanguage();
   const { openDetails } = useDetails();
   const isAr = language === 'ar';
+  const lastTrackedCategory = useRef<string>('');
+  useEffect(() => {
+    if (mode === 'catalog' && selectedCategory && selectedCategory !== 'all' && lastTrackedCategory.current !== selectedCategory) {
+      lastTrackedCategory.current = selectedCategory;
+      trackActivity?.('view_category', selectedCategory, { category: selectedCategory });
+    }
+  }, [mode, selectedCategory]);
 
   const initialQuery = useRef(new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search));
   const catalogTitle = useRef<HTMLHeadingElement>(null);

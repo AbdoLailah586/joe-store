@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Package, Layers, ShoppingBag, Users, Mail, Settings, Smartphone, Calculator, ClipboardList, TrendingUp, Tags, ShieldCheck, Wrench, ArrowUpRight, MessageCircle, Truck, Headset, Lock, Moon, Sun, Boxes, Shapes } from 'lucide-react';
+import { LayoutDashboard, Package, Layers, ShoppingBag, Users, UserX, Mail, Settings, Smartphone, Calculator, ClipboardList, TrendingUp, Tags, ShieldCheck, Wrench, ArrowUpRight, MessageCircle, Truck, Headset, Lock, Moon, Sun, Boxes, Shapes } from 'lucide-react';
 export const adminSections = [
   ['overview', 'نظرة عامة', LayoutDashboard, 'الإدارة'], ['analytics', 'تحليلات المبيعات', TrendingUp, 'الإدارة'],
   ['products', 'المنتجات', Package, 'الكتالوج والمخزون'], ['inventory', 'المخزون والتقارير', Layers, 'الكتالوج والمخزون'],
@@ -7,7 +7,7 @@ export const adminSections = [
   ['reorder', 'خطة إعادة الطلب', TrendingUp, 'الكتالوج والمخزون'], ['suppliers', 'عروض الموردين', Boxes, 'الكتالوج والمخزون'],
   ['orders', 'الطلبات والمبيعات', ShoppingBag, 'العملاء والتواصل'],
   ['fulfillment', 'التجهيز والشحن', Truck, 'العملاء والتواصل'], ['support', 'الدعم الفني', Headset, 'العملاء والتواصل'],
-  ['crm', 'العملاء والسلات', Users, 'العملاء والتواصل'], ['users', 'المستخدمون والصلاحيات', ShieldCheck, 'العملاء والتواصل'],
+  ['crm', 'العملاء والسلات', Users, 'العملاء والتواصل'], ['guests', 'زوار بدون حساب', UserX, 'العملاء والتواصل'], ['users', 'المستخدمون والصلاحيات', ShieldCheck, 'العملاء والتواصل'],
   ['emails', 'رسائل البريد', Mail, 'العملاء والتواصل'], ['whatsapp', 'إعدادات واتساب', MessageCircle, 'العملاء والتواصل'],
   ['screens', 'فاحص الاسكرينات', Smartphone, 'أدوات المحل'], ['covers', 'دليل الكفرات', Shapes, 'أدوات المحل'], ['pricing', 'حاسبة التسعير والربح', Calculator, 'أدوات المحل'],
   ['labels', 'بطاقات الأسعار والطباعة', Tags, 'أدوات المحل'], ['tools', 'مركز الأدوات', Wrench, 'أدوات المحل'],

@@ -256,7 +256,7 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
   async trackActivity(activity: {
     sessionId: string;
     customerId?: string;
-    actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit';
+    actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit' | 'wishlist';
     targetId?: string;
     metadata?: Record<string, any>;
   }): Promise<void> { return await callStore('trackActivity', [activity]); },
@@ -269,6 +269,7 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
     customerId?: string;
     customerName?: string;
     customerPhone?: string;
+    customerEmail?: string;
     items: any[];
     subtotal: number;
     attribution?: Record<string, any>;

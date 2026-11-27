@@ -20,7 +20,7 @@ export function saveCookieConsent(choice: CookieConsentChoice): boolean {
 }
 
 export const CookieBanner: React.FC = () => {
-  const { navigate } = useStore();
+  const { navigate, trackActivity } = useStore();
   const { language } = useLanguage();
   const [visible, setVisible] = useState(false);
 
@@ -36,6 +36,9 @@ export const CookieBanner: React.FC = () => {
 
   const handleChoice = (choice: CookieConsentChoice) => {
     saveCookieConsent(choice);
+    if (typeof trackActivity === 'function') {
+      trackActivity('visit', undefined, { cookie_consent: choice });
+    }
     setVisible(false);
   };
 

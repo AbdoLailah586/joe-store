@@ -47,6 +47,7 @@ export async function ensureUserCrmColumns(): Promise<void> {
                 customer_id TEXT,
                 customer_name TEXT,
                 customer_phone TEXT,
+                customer_email TEXT,
                 source_channel TEXT,
                 source_label TEXT,
                 referrer TEXT,
@@ -60,10 +61,21 @@ export async function ensureUserCrmColumns(): Promise<void> {
                 click_id TEXT,
                 device_type TEXT,
                 user_agent TEXT,
+                metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
                 first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 visit_count INTEGER NOT NULL DEFAULT 1
               );
+            `);
+            await sql.query(`
+              ALTER TABLE visitor_sessions
+                ADD COLUMN IF NOT EXISTS customer_email TEXT,
+                ADD COLUMN IF NOT EXISTS utm_content TEXT,
+                ADD COLUMN IF NOT EXISTS utm_term TEXT,
+                ADD COLUMN IF NOT EXISTS click_id TEXT,
+                ADD COLUMN IF NOT EXISTS user_agent TEXT,
+                ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+                ADD COLUMN IF NOT EXISTS visit_count INTEGER NOT NULL DEFAULT 1;
             `);
         })().catch(err => {
             crmSchemaReady = null;
@@ -470,7 +482,7 @@ export const neonDb = {
     async trackActivity(activity: {
         sessionId: string;
         customerId?: string;
-        actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit';
+        actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit' | 'wishlist';
         targetId?: string;
         metadata?: Record<string, any>;
     }): Promise<void> {
@@ -478,12 +490,22 @@ export const neonDb = {
             await ensureUserCrmColumns().catch(() => {});
             const meta = activity.metadata && typeof activity.metadata === 'object' ? activity.metadata : {};
             const sessionId = String(activity.sessionId || '').trim();
+            const sessionMeta: Record<string, any> = {};
+            for (const key of [
+                'ip_address', 'geo_country', 'geo_region', 'geo_city',
+                'screen_size', 'viewport', 'browser_lang', 'timezone',
+                'cookie_consent', 'app_language', 'governorate', 'city'
+            ]) {
+                if (meta[key] !== undefined && meta[key] !== null && meta[key] !== '') {
+                    sessionMeta[key] = String(meta[key]).slice(0, 200);
+                }
+            }
             if (sessionId) {
                 await sql`
                   INSERT INTO visitor_sessions (
                     session_id, customer_id, source_channel, source_label, referrer,
                     landing_path, last_path, utm_source, utm_medium, utm_campaign,
-                    utm_content, utm_term, click_id, device_type, user_agent,
+                    utm_content, utm_term, click_id, device_type, user_agent, metadata,
                     first_seen_at, last_seen_at, visit_count
                   )
                   VALUES (
@@ -501,7 +523,8 @@ export const neonDb = {
                     ${meta.utm_term || null},
                     ${meta.click_id || null},
                     ${meta.device_type || null},
-                    ${meta.user_agent || null},
+                    ${meta.user_agent || meta.server_user_agent || null},
+                    ${JSON.stringify(sessionMeta)}::jsonb,
                     NOW(), NOW(), 1
                   )
                   ON CONFLICT (session_id) DO UPDATE SET
@@ -519,6 +542,7 @@ export const neonDb = {
                     click_id = COALESCE(visitor_sessions.click_id, EXCLUDED.click_id),
                     device_type = COALESCE(EXCLUDED.device_type, visitor_sessions.device_type),
                     user_agent = COALESCE(EXCLUDED.user_agent, visitor_sessions.user_agent),
+                    metadata = COALESCE(visitor_sessions.metadata, '{}'::jsonb) || EXCLUDED.metadata,
                     last_seen_at = NOW(),
                     visit_count = visitor_sessions.visit_count + CASE WHEN ${activity.actionType} = 'visit' THEN 1 ELSE 0 END;
                 `.catch(() => {});
@@ -551,6 +575,7 @@ export const neonDb = {
         customerId?: string;
         customerName?: string;
         customerPhone?: string;
+        customerEmail?: string;
         items: any[];
         subtotal: number;
         attribution?: Record<string, any>;
@@ -560,26 +585,35 @@ export const neonDb = {
             const attr = cart.attribution && typeof cart.attribution === 'object' ? cart.attribution : {};
             const cleanName = cart.customerName?.trim() || null;
             const cleanPhone = cart.customerPhone?.trim() || null;
-            if (cart.sessionId && (cleanName || cleanPhone || cart.customerId || attr.source_channel || attr.landing_path)) {
+            const cleanEmail = cart.customerEmail?.trim().toLowerCase() || null;
+            const sessionMeta: Record<string, any> = {};
+            for (const key of ['ip_address', 'geo_country', 'geo_region', 'geo_city', 'governorate', 'city']) {
+                if (attr[key] !== undefined && attr[key] !== null && attr[key] !== '') {
+                    sessionMeta[key] = String(attr[key]).slice(0, 200);
+                }
+            }
+            if (cart.sessionId && (cleanName || cleanPhone || cleanEmail || cart.customerId || attr.source_channel || attr.landing_path)) {
                 await sql`
                   INSERT INTO visitor_sessions (
-                    session_id, customer_id, customer_name, customer_phone,
+                    session_id, customer_id, customer_name, customer_phone, customer_email,
                     source_channel, source_label, referrer, landing_path, last_path,
-                    utm_source, utm_medium, utm_campaign, utm_content, utm_term, click_id, device_type,
+                    utm_source, utm_medium, utm_campaign, utm_content, utm_term, click_id, device_type, user_agent, metadata,
                     first_seen_at, last_seen_at, visit_count
                   )
                   VALUES (
-                    ${cart.sessionId}, ${cart.customerId || null}, ${cleanName}, ${cleanPhone},
+                    ${cart.sessionId}, ${cart.customerId || null}, ${cleanName}, ${cleanPhone}, ${cleanEmail},
                     ${attr.source_channel || null}, ${attr.source_label || null}, ${attr.referrer || null},
                     ${attr.landing_path || null}, ${attr.last_path || attr.landing_path || null},
                     ${attr.utm_source || null}, ${attr.utm_medium || null}, ${attr.utm_campaign || null},
-                    ${attr.utm_content || null}, ${attr.utm_term || null}, ${attr.click_id || null}, ${attr.device_type || null},
+                    ${attr.utm_content || null}, ${attr.utm_term || null}, ${attr.click_id || null},
+                    ${attr.device_type || null}, ${attr.server_user_agent || null}, ${JSON.stringify(sessionMeta)}::jsonb,
                     NOW(), NOW(), 1
                   )
                   ON CONFLICT (session_id) DO UPDATE SET
                     customer_id = COALESCE(EXCLUDED.customer_id, visitor_sessions.customer_id),
                     customer_name = COALESCE(EXCLUDED.customer_name, visitor_sessions.customer_name),
                     customer_phone = COALESCE(EXCLUDED.customer_phone, visitor_sessions.customer_phone),
+                    customer_email = COALESCE(EXCLUDED.customer_email, visitor_sessions.customer_email),
                     source_channel = COALESCE(visitor_sessions.source_channel, EXCLUDED.source_channel),
                     source_label = COALESCE(visitor_sessions.source_label, EXCLUDED.source_label),
                     referrer = COALESCE(visitor_sessions.referrer, EXCLUDED.referrer),
@@ -588,7 +622,12 @@ export const neonDb = {
                     utm_source = COALESCE(visitor_sessions.utm_source, EXCLUDED.utm_source),
                     utm_medium = COALESCE(visitor_sessions.utm_medium, EXCLUDED.utm_medium),
                     utm_campaign = COALESCE(visitor_sessions.utm_campaign, EXCLUDED.utm_campaign),
+                    utm_content = COALESCE(visitor_sessions.utm_content, EXCLUDED.utm_content),
+                    utm_term = COALESCE(visitor_sessions.utm_term, EXCLUDED.utm_term),
+                    click_id = COALESCE(visitor_sessions.click_id, EXCLUDED.click_id),
                     device_type = COALESCE(EXCLUDED.device_type, visitor_sessions.device_type),
+                    user_agent = COALESCE(visitor_sessions.user_agent, EXCLUDED.user_agent),
+                    metadata = COALESCE(visitor_sessions.metadata, '{}'::jsonb) || EXCLUDED.metadata,
                     last_seen_at = NOW();
                 `.catch(() => {});
             }
@@ -786,8 +825,10 @@ export const neonDb = {
           COALESCE(ord.completed_orders_count, 0)::int AS completed_orders_count,
           COALESCE(ord.total_spent, 0)::numeric AS total_spent,
           COALESCE(act.views_count, 0)::int AS views_count,
+          COALESCE(act.searches_count, 0)::int AS searches_count,
           GREATEST(u.last_seen_at, vs.last_seen_at, act.last_activity_at, ord.last_order_at) AS last_activity_at,
-          vs.source_channel, vs.source_label, vs.utm_campaign, vs.device_type,
+          vs.source_channel, vs.source_label, vs.utm_source, vs.utm_medium, vs.utm_campaign,
+          vs.landing_path, vs.last_path, vs.device_type,
           COALESCE(cart.cart_items_count, 0)::int AS cart_items_count,
           COALESCE(cart.cart_subtotal, 0)::numeric AS cart_subtotal
         FROM users u
@@ -803,7 +844,7 @@ export const neonDb = {
                  AND REGEXP_REPLACE(COALESCE(o.customer_phone, ''), '\\D', '', 'g') = REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'))
         ) ord ON true
         LEFT JOIN LATERAL (
-          SELECT source_channel, source_label, utm_campaign, device_type, last_seen_at, session_id
+          SELECT source_channel, source_label, utm_source, utm_medium, utm_campaign, landing_path, last_path, device_type, last_seen_at, session_id
           FROM visitor_sessions vs0
           WHERE vs0.customer_id = u.id
              OR (NULLIF(REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'), '') IS NOT NULL
@@ -814,6 +855,7 @@ export const neonDb = {
         LEFT JOIN LATERAL (
           SELECT
             COUNT(*) FILTER (WHERE ca.action_type = 'view_product')::int AS views_count,
+            COUNT(*) FILTER (WHERE ca.action_type = 'search')::int AS searches_count,
             MAX(ca.created_at) AS last_activity_at
           FROM customer_activity ca
           WHERE ca.customer_id = u.id OR (vs.session_id IS NOT NULL AND ca.session_id = vs.session_id)
@@ -904,10 +946,23 @@ export const neonDb = {
             const activeOrders = orders.filter((o: any) => o.order_status !== 'cancelled');
             const totalSpent = activeOrders.reduce((s: number, o: any) => s + Number(o.total || 0), 0);
 
+            const searches = await sql`
+              SELECT COALESCE(NULLIF(target_id, ''), metadata->>'query') AS query,
+                     metadata->>'category' AS category,
+                     created_at
+              FROM customer_activity
+              WHERE action_type = 'search'
+                AND COALESCE(NULLIF(target_id, ''), metadata->>'query') IS NOT NULL
+                AND (customer_id = ${userId} OR session_id = ANY(${sessionIds}::text[]))
+              ORDER BY created_at DESC
+              LIMIT 20;
+            `.catch(() => []);
+
             return {
                 user: userRow,
                 sessions: sessionRows || [],
                 recent_views: recentViews,
+                searches: searches || [],
                 active_cart: cartRows[0] || null,
                 orders,
                 stats: {
@@ -915,7 +970,8 @@ export const neonDb = {
                     completed_orders: activeOrders.length,
                     cancelled_orders: orders.length - activeOrders.length,
                     total_spent: totalSpent,
-                    distinct_products_viewed: recentViews.length
+                    distinct_products_viewed: recentViews.length,
+                    searches_count: (searches || []).length
                 }
             };
         } catch (err) {
@@ -923,7 +979,7 @@ export const neonDb = {
             return null;
         }
     },
-    async getGuestVisitors(limit = 150): Promise<any[]> {
+    async getGuestVisitors(limit = 300): Promise<any[]> {
         try {
             await ensureUserCrmColumns().catch(() => {});
             const rows = await sql`
@@ -932,35 +988,89 @@ export const neonDb = {
                 vs.customer_id,
                 COALESCE(vs.customer_name, ac.customer_name) AS customer_name,
                 COALESCE(vs.customer_phone, ac.customer_phone) AS customer_phone,
+                vs.customer_email,
                 vs.source_channel, vs.source_label, vs.referrer, vs.landing_path, vs.last_path,
                 vs.utm_source, vs.utm_medium, vs.utm_campaign, vs.utm_content, vs.utm_term, vs.click_id,
-                vs.device_type, vs.first_seen_at, vs.last_seen_at, vs.visit_count,
+                vs.device_type, vs.user_agent, vs.metadata,
+                vs.first_seen_at, vs.last_seen_at, COALESCE(vs.visit_count, 1)::int AS visit_count,
                 ac.items AS cart_items,
+                COALESCE(
+                  (SELECT SUM(COALESCE((elem->>'quantity')::int, 1))
+                   FROM jsonb_array_elements(COALESCE(ac.items, '[]'::jsonb)) elem),
+                  0
+                )::int AS cart_items_count,
                 COALESCE(ac.subtotal, 0)::numeric AS cart_subtotal,
                 COALESCE(ac.is_abandoned, false) AS cart_abandoned,
                 ac.last_updated_at AS cart_updated_at,
                 COALESCE(act.views_count, 0)::int AS views_count,
                 COALESCE(act.searches_count, 0)::int AS searches_count,
+                COALESCE(act.add_to_cart_count, 0)::int AS add_to_cart_count,
+                COALESCE(act.category_views_count, 0)::int AS category_views_count,
+                COALESCE(act.wishlist_count, 0)::int AS wishlist_count,
+                COALESCE(act.total_events_count, 0)::int AS total_events_count,
+                act.last_search_query,
+                act.last_viewed_product_name,
                 COALESCE(ord.orders_count, 0)::int AS orders_count,
+                COALESCE(ord.completed_orders_count, 0)::int AS completed_orders_count,
+                COALESCE(ord.total_spent, 0)::numeric AS total_spent,
+                COALESCE(rev.reviews_count, 0)::int AS reviews_count,
+                COALESCE(tkt.tickets_count, 0)::int AS tickets_count,
                 (vs.customer_id IS NOT NULL) AS has_account
               FROM visitor_sessions vs
               LEFT JOIN active_carts ac ON ac.session_id = vs.session_id
               LEFT JOIN LATERAL (
                 SELECT
                   COUNT(*) FILTER (WHERE ca.action_type = 'view_product')::int AS views_count,
-                  COUNT(*) FILTER (WHERE ca.action_type = 'search')::int AS searches_count
+                  COUNT(*) FILTER (WHERE ca.action_type = 'search')::int AS searches_count,
+                  COUNT(*) FILTER (WHERE ca.action_type = 'add_to_cart')::int AS add_to_cart_count,
+                  COUNT(*) FILTER (WHERE ca.action_type = 'view_category')::int AS category_views_count,
+                  COUNT(*) FILTER (WHERE ca.action_type = 'wishlist')::int AS wishlist_count,
+                  COUNT(*)::int AS total_events_count,
+                  (SELECT COALESCE(NULLIF(ca2.target_id, ''), ca2.metadata->>'query')
+                   FROM customer_activity ca2
+                   WHERE ca2.session_id = vs.session_id
+                     AND ca2.action_type = 'search'
+                     AND COALESCE(NULLIF(ca2.target_id, ''), ca2.metadata->>'query') IS NOT NULL
+                   ORDER BY ca2.created_at DESC
+                   LIMIT 1) AS last_search_query,
+                  (SELECT COALESCE(p2.name_ar, ca3.metadata->>'product_name', ca3.target_id)
+                   FROM customer_activity ca3
+                   LEFT JOIN products p2 ON p2.id = ca3.target_id
+                   WHERE ca3.session_id = vs.session_id
+                     AND ca3.action_type = 'view_product'
+                   ORDER BY ca3.created_at DESC
+                   LIMIT 1) AS last_viewed_product_name
                 FROM customer_activity ca
                 WHERE ca.session_id = vs.session_id
               ) act ON true
               LEFT JOIN LATERAL (
-                SELECT COUNT(*)::int AS orders_count
+                SELECT
+                  COUNT(*)::int AS orders_count,
+                  COUNT(*) FILTER (WHERE o.status != 'cancelled')::int AS completed_orders_count,
+                  COALESCE(SUM(CASE WHEN o.status != 'cancelled' THEN o.total ELSE 0 END), 0) AS total_spent
                 FROM orders o
-                WHERE COALESCE(vs.customer_phone, ac.customer_phone) IS NOT NULL
+                WHERE (
+                  NULLIF(REGEXP_REPLACE(COALESCE(vs.customer_phone, ac.customer_phone, ''), '\\D', '', 'g'), '') IS NOT NULL
                   AND REGEXP_REPLACE(COALESCE(o.customer_phone, ''), '\\D', '', 'g') = REGEXP_REPLACE(COALESCE(vs.customer_phone, ac.customer_phone, ''), '\\D', '', 'g')
+                ) OR (
+                  vs.customer_email IS NOT NULL AND vs.customer_email <> ''
+                  AND LOWER(COALESCE(o.customer_email, '')) = LOWER(vs.customer_email)
+                )
               ) ord ON true
+              LEFT JOIN LATERAL (
+                SELECT COUNT(*)::int AS reviews_count
+                FROM product_reviews pr
+                WHERE pr.session_id = vs.session_id
+              ) rev ON true
+              LEFT JOIN LATERAL (
+                SELECT COUNT(*)::int AS tickets_count
+                FROM support_tickets st
+                WHERE NULLIF(REGEXP_REPLACE(COALESCE(vs.customer_phone, ac.customer_phone, ''), '\\D', '', 'g'), '') IS NOT NULL
+                  AND REGEXP_REPLACE(COALESCE(st.customer_phone, ''), '\\D', '', 'g') = REGEXP_REPLACE(COALESCE(vs.customer_phone, ac.customer_phone, ''), '\\D', '', 'g')
+              ) tkt ON true
               WHERE vs.customer_id IS NULL
               ORDER BY vs.last_seen_at DESC
-              LIMIT ${Math.min(300, Math.max(10, Number(limit) || 150))};
+              LIMIT ${Math.min(500, Math.max(10, Number(limit) || 300))};
             `;
             return rows || [];
         } catch (err) {
@@ -978,39 +1088,134 @@ export const neonDb = {
             const viewedRows = await sql`
               SELECT DISTINCT ON (ca.target_id)
                 ca.target_id AS product_id, ca.created_at AS viewed_at,
-                p.name_ar, p.name_en, p.brand, p.category, p.price, p.images
+                COALESCE(p.name_ar, ca.metadata->>'product_name') AS name_ar,
+                p.name_en,
+                COALESCE(p.brand, ca.metadata->>'brand') AS brand,
+                COALESCE(p.category, ca.metadata->>'category') AS category,
+                p.price, p.images
               FROM customer_activity ca
               LEFT JOIN products p ON p.id = ca.target_id
               WHERE ca.session_id = ${sessionId} AND ca.action_type = 'view_product' AND ca.target_id IS NOT NULL
               ORDER BY ca.target_id, ca.created_at DESC
-              LIMIT 50;
+              LIMIT 60;
             `.catch(() => []);
             const recentViews = [...viewedRows]
               .sort((a: any, b: any) => new Date(b.viewed_at).getTime() - new Date(a.viewed_at).getTime())
-              .slice(0, 15);
+              .slice(0, 30);
 
             const searches = await sql`
-              SELECT target_id AS query, created_at FROM customer_activity
-              WHERE session_id = ${sessionId} AND action_type = 'search' AND target_id IS NOT NULL
-              ORDER BY created_at DESC LIMIT 15;
+              SELECT COALESCE(NULLIF(target_id, ''), metadata->>'query') AS query,
+                     metadata->>'category' AS category,
+                     created_at
+              FROM customer_activity
+              WHERE session_id = ${sessionId}
+                AND action_type = 'search'
+                AND COALESCE(NULLIF(target_id, ''), metadata->>'query') IS NOT NULL
+              ORDER BY created_at DESC LIMIT 30;
+            `.catch(() => []);
+
+            const categoryViews = await sql`
+              SELECT COALESCE(NULLIF(target_id, ''), metadata->>'category') AS category,
+                     COUNT(*)::int AS count,
+                     MAX(created_at) AS last_viewed_at
+              FROM customer_activity
+              WHERE session_id = ${sessionId}
+                AND action_type = 'view_category'
+                AND COALESCE(NULLIF(target_id, ''), metadata->>'category') IS NOT NULL
+              GROUP BY 1
+              ORDER BY last_viewed_at DESC LIMIT 20;
+            `.catch(() => []);
+
+            const cartEvents = await sql`
+              SELECT ca.target_id AS product_id,
+                     COALESCE(p.name_ar, ca.metadata->>'product_name', ca.target_id) AS name_ar,
+                     p.price, p.brand,
+                     COALESCE((ca.metadata->>'quantity')::int, 1) AS quantity,
+                     ca.created_at
+              FROM customer_activity ca
+              LEFT JOIN products p ON p.id = ca.target_id
+              WHERE ca.session_id = ${sessionId} AND ca.action_type = 'add_to_cart'
+              ORDER BY ca.created_at DESC LIMIT 30;
+            `.catch(() => []);
+
+            const wishlistEvents = await sql`
+              SELECT DISTINCT ON (ca.target_id)
+                ca.target_id AS product_id,
+                COALESCE(p.name_ar, ca.metadata->>'product_name', ca.target_id) AS name_ar,
+                p.price, p.brand, p.images,
+                ca.created_at
+              FROM customer_activity ca
+              LEFT JOIN products p ON p.id = ca.target_id
+              WHERE ca.session_id = ${sessionId} AND ca.action_type = 'wishlist' AND ca.target_id IS NOT NULL
+              ORDER BY ca.target_id, ca.created_at DESC LIMIT 30;
+            `.catch(() => []);
+
+            const timeline = await sql`
+              SELECT ca.id, ca.action_type, ca.target_id, ca.metadata, ca.created_at,
+                     p.name_ar AS product_name_ar, p.price AS product_price
+              FROM customer_activity ca
+              LEFT JOIN products p ON p.id = ca.target_id AND ca.action_type IN ('view_product', 'add_to_cart', 'wishlist')
+              WHERE ca.session_id = ${sessionId}
+              ORDER BY ca.created_at DESC
+              LIMIT 60;
             `.catch(() => []);
 
             const cartRows = await sql`SELECT * FROM active_carts WHERE session_id = ${sessionId} LIMIT 1;`.catch(() => []);
             const normPhone = String(session.customer_phone || cartRows[0]?.customer_phone || '').replace(/\D/g, '');
-            const orderRows = normPhone
+            const cleanEmail = String(session.customer_email || '').trim().toLowerCase();
+            const orderRows = (normPhone || cleanEmail)
               ? await sql`
                   SELECT * FROM orders
-                  WHERE REGEXP_REPLACE(COALESCE(customer_phone, ''), '\\D', '', 'g') = ${normPhone}
+                  WHERE (${normPhone || null}::text IS NOT NULL AND REGEXP_REPLACE(COALESCE(customer_phone, ''), '\\D', '', 'g') = ${normPhone || null})
+                     OR (${cleanEmail || null}::text IS NOT NULL AND LOWER(COALESCE(customer_email, '')) = ${cleanEmail || null})
                   ORDER BY created_at DESC LIMIT 30;
                 `.catch(() => [])
               : [];
+
+            const reviewRows = await sql`
+              SELECT id, product_id, product_name_ar, author_name, author_phone, rating, comment, status, created_at
+              FROM product_reviews
+              WHERE session_id = ${sessionId}
+              ORDER BY created_at DESC LIMIT 20;
+            `.catch(() => []);
+
+            const ticketRows = normPhone
+              ? await sql`
+                  SELECT id, customer_phone, customer_name, subject, status, order_id, created_at, updated_at
+                  FROM support_tickets
+                  WHERE REGEXP_REPLACE(COALESCE(customer_phone, ''), '\\D', '', 'g') = ${normPhone}
+                  ORDER BY updated_at DESC LIMIT 20;
+                `.catch(() => [])
+              : [];
+
+            const mappedOrders = (orderRows || []).map(mapRowToOrder);
+            const activeOrders = mappedOrders.filter((o: any) => o.order_status !== 'cancelled');
+            const totalSpent = activeOrders.reduce((s: number, o: any) => s + Number(o.total || 0), 0);
 
             return {
                 visitor: session,
                 recent_views: recentViews,
                 searches: searches || [],
+                category_views: categoryViews || [],
+                cart_events: cartEvents || [],
+                wishlist_events: wishlistEvents || [],
+                timeline: timeline || [],
                 active_cart: cartRows[0] || null,
-                orders: (orderRows || []).map(mapRowToOrder)
+                orders: mappedOrders,
+                reviews: reviewRows || [],
+                support_tickets: ticketRows || [],
+                stats: {
+                    views_count: recentViews.length,
+                    searches_count: (searches || []).length,
+                    categories_count: (categoryViews || []).length,
+                    add_to_cart_count: (cartEvents || []).length,
+                    wishlist_count: (wishlistEvents || []).length,
+                    total_orders: mappedOrders.length,
+                    completed_orders: activeOrders.length,
+                    total_spent: totalSpent,
+                    reviews_count: (reviewRows || []).length,
+                    tickets_count: (ticketRows || []).length
+                }
             };
         } catch (err) {
             console.error('❌ neonDb.getGuestInsights error:', err);
@@ -1526,6 +1731,16 @@ async getWishlistGap(limit = 5): Promise<{ product_id: string; name_ar: string; 
         RETURNING *;
       `;
       const created = rows[0] ? { ...rows[0], images: Array.isArray(rows[0].images) ? rows[0].images : [] } : undefined;
+      if (review.session_id) {
+        await ensureUserCrmColumns().catch(() => {});
+        await sql`
+          UPDATE visitor_sessions
+          SET customer_name = COALESCE(${author.slice(0, 100)}, customer_name),
+              customer_phone = COALESCE(${review.author_phone ? String(review.author_phone).trim().slice(0, 30) : null}, customer_phone),
+              last_seen_at = NOW()
+          WHERE session_id = ${review.session_id};
+        `.catch(() => {});
+      }
       return { success: true, review: created };
     } catch (error: any) {
       console.error('❌ neonDb.submitProductReview error:', error);

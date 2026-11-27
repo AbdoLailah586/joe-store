@@ -4,6 +4,9 @@ export interface VisitorAttribution {
   utm_source: string;
   utm_medium: string;
   utm_campaign: string;
+  utm_content: string;
+  utm_term: string;
+  click_id: string;
   referrer: string;
   device_type: string;
   landing_path: string;
@@ -42,10 +45,13 @@ export function detectVisitorAttribution(input: {
   const utmSource = (sp.get('utm_source') || '').trim().toLowerCase();
   const utmMedium = (sp.get('utm_medium') || '').trim().toLowerCase();
   const utmCampaign = (sp.get('utm_campaign') || '').trim();
+  const utmContent = (sp.get('utm_content') || '').trim();
+  const utmTerm = (sp.get('utm_term') || '').trim();
   const fbclid = sp.get('fbclid');
   const ttclid = sp.get('ttclid');
   const igshid = sp.get('igshid');
   const gclid = sp.get('gclid') || sp.get('gad_source') || sp.get('wbraid') || sp.get('gbraid');
+  const clickId = (fbclid || ttclid || gclid || igshid || '').trim();
 
   const rawReferrer = String(input.referrer || '').trim();
   const refHost = getHostname(rawReferrer);
@@ -104,6 +110,9 @@ export function detectVisitorAttribution(input: {
     utm_source: utmSource,
     utm_medium: utmMedium,
     utm_campaign: utmCampaign,
+    utm_content: utmContent,
+    utm_term: utmTerm,
+    click_id: clickId,
     referrer: isExternalRef ? rawReferrer.slice(0, 300) : '',
     device_type: detectDeviceType(input.userAgent),
     landing_path: landingPath.slice(0, 300),

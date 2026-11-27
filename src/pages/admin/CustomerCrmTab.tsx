@@ -5,12 +5,11 @@ import {
   Clock,
   MessageCircle,
   RefreshCw,
-  Eye,
-  X,
   Trash2,
   Globe,
   Smartphone,
-  Sparkles
+  Sparkles,
+  UserX
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -18,11 +17,13 @@ import { useAuth } from '../../context/AuthContext';
 import { generateWhatsAppWebLink } from '../../utils/whatsappService';
 import { neonDb } from '../../services/neonDb';
 import { MetricCard, useDetails } from '../../components/DetailsDialog';
+import { GuestInsightsModal } from './GuestInsightsModal';
+import type { AdminSection } from './AdminShell';
 
-export const CustomerCrmTab: React.FC = () => {
+export const CustomerCrmTab: React.FC<{ onNavigateSection?: (section: AdminSection) => void }> = ({ onNavigateSection }) => {
   const { activeCarts, refreshActiveCarts } = useStore();
   const { formatPrice } = useLanguage();
-  const { isAdmin } = useAuth();
+  const { isAdmin, canAccessSection } = useAuth();
   const { openDetails } = useDetails();
 
   const [crmView, setCrmView] = useState<'carts' | 'guests'>('carts');
@@ -33,8 +34,6 @@ export const CustomerCrmTab: React.FC = () => {
   const [guestChannelFilter, setGuestChannelFilter] = useState<string>('all');
   const [guestSearch, setGuestSearch] = useState('');
   const [selectedGuest, setSelectedGuest] = useState<any | null>(null);
-  const [guestInsights, setGuestInsights] = useState<any | null>(null);
-  const [loadingGuestDetails, setLoadingGuestDetails] = useState(false);
 
   const handleRefresh = async () => {
     setIsLoading(true);
@@ -51,16 +50,8 @@ export const CustomerCrmTab: React.FC = () => {
     void handleRefresh();
   }, []);
 
-  const openGuestInsightsModal = async (g: any) => {
+  const openGuestInsightsModal = (g: any) => {
     setSelectedGuest(g);
-    setGuestInsights(null);
-    setLoadingGuestDetails(true);
-    try {
-      const data = await neonDb.getGuestInsights(g.session_id);
-      setGuestInsights(data);
-    } finally {
-      setLoadingGuestDetails(false);
-    }
   };
 
   const handleDeleteGuest = async (sessionId: string) => {
@@ -110,6 +101,16 @@ export const CustomerCrmTab: React.FC = () => {
             <Globe className="w-4 h-4" />
             <span>الزوار غير المسجلين ومصادر الإعلانات ({guests.length})</span>
           </button>
+          {onNavigateSection && canAccessSection?.('guests') && (
+            <button
+              type="button"
+              onClick={() => onNavigateSection('guests')}
+              className="px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 bg-amber-50 border border-amber-300 text-amber-900 hover:bg-amber-100"
+            >
+              <UserX className="w-4 h-4" />
+              <span>فتح صفحة الزوار الكاملة</span>
+            </button>
+          )}
         </div>
         <button
           type="button"
@@ -312,69 +313,10 @@ export const CustomerCrmTab: React.FC = () => {
         </div>
       )}
 
-      {/* Guest Insights Modal */}
-      {selectedGuest && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-4 text-xs">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <div>
-                <h3 className="font-black text-base text-slate-900">تحليلات الزائر: {selectedGuest.customer_name || selectedGuest.session_id}</h3>
-                <p className="text-slate-500">{selectedGuest.source_label || 'دخول مباشر'} {selectedGuest.device_type ? `• ${selectedGuest.device_type}` : ''}</p>
-              </div>
-              <button type="button" onClick={() => setSelectedGuest(null)}><X className="w-5 h-5" /></button>
-            </div>
-
-            {loadingGuestDetails ? (
-              <p className="py-10 text-center text-slate-500">جاري تحميل تحليلات الزائر...</p>
-            ) : !guestInsights ? (
-              <p className="py-10 text-center text-rose-600">تعذر تحميل تفاصيل الزائر.</p>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-1.5"><Eye className="w-4 h-4 text-amber-700" />آخر 15 منتجاً شاهدها</h4>
-                  {(guestInsights.recent_views || []).length === 0 ? (
-                    <p className="text-slate-500">لا توجد مشاهدات منتجات بعد.</p>
-                  ) : (
-                    <div className="space-y-1.5">
-                      {guestInsights.recent_views.map((v: any, idx: number) => (
-                        <div key={idx} className="p-2.5 rounded-xl bg-slate-50 flex justify-between">
-                          <span className="font-bold">{v.name_ar || v.product_id}</span>
-                          <span className="text-amber-700 font-outfit">{v.price ? `${Number(v.price).toLocaleString()} ج.م` : ''}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {(guestInsights.searches || []).length > 0 && (
-                  <div>
-                    <h4 className="font-bold text-slate-900 mb-2">عمليات البحث التي أجراها:</h4>
-                    <div className="flex flex-wrap gap-1.5">
-                      {guestInsights.searches.map((s: any, idx: number) => (
-                        <span key={idx} className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">{s.query}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {guestInsights.active_cart?.items?.length > 0 && (
-                  <div>
-                    <h4 className="font-bold text-slate-900 mb-2">السلة النشطة ({Number(guestInsights.active_cart.subtotal || 0).toLocaleString()} ج.م):</h4>
-                    <div className="space-y-1.5">
-                      {guestInsights.active_cart.items.map((it: any, idx: number) => (
-                        <div key={idx} className="p-2.5 rounded-xl bg-amber-50 flex justify-between">
-                          <span>{it.product?.name_ar || 'منتج'} × {it.quantity || 1}</span>
-                          <span>{Number((it.product?.price || 0) * (it.quantity || 1)).toLocaleString()} ج.م</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <GuestInsightsModal
+        guest={selectedGuest}
+        onClose={() => setSelectedGuest(null)}
+      />
     </div>
   );
 };

@@ -26,8 +26,23 @@ test('section grants never imply full admin or unrelated tools, and malformed va
  assert.equal(access.isFullAdmin(limited),false);assert.equal(access.canAccessSection(limited,'users'),false);
  assert.equal(access.canAccessSection({...limited,admin_permissions:['tools']},'covers'),false);
  assert.deepEqual(access.normalizePermissions(['covers','covers','__proto__','unknown']),['covers']);
- assert.deepEqual(access.normalizePermissions('*'),[]);assert.equal(access.permittedSections(admin).length,22);
+ assert.deepEqual(access.normalizePermissions('*'),[]);assert.equal(access.permittedSections(admin).length,23);
  assert.deepEqual(access.permittedSections(null),[]);
+});
+test('guests section permission controls guest visitor insights and protects deletion',async()=>{
+ const guestStaff={...limited,admin_permissions:['guests']};
+ let capturedLimit,capturedSession;
+ const store={
+  getGuestVisitors:async limit=>{capturedLimit=limit;return[{session_id:'sess-1'}];},
+  getGuestInsights:async sid=>{capturedSession=sid;return{visitor:{session_id:sid}};}
+ };
+ const list=await execute({},res,{method:'getGuestVisitors',args:[50]},{user:guestStaff,sql:denySql,store});
+ assert.equal(capturedLimit,50);assert.equal(list.length,1);
+ const details=await execute({},res,{method:'getGuestInsights',args:['sess-1']},{user:guestStaff,sql:denySql,store});
+ assert.equal(capturedSession,'sess-1');assert.equal(details.visitor.session_id,'sess-1');
+ await assert.rejects(execute({},res,{method:'getAllUsers',args:[]},{user:guestStaff,sql:denySql,store}),e=>e.status===403);
+ await assert.rejects(execute({},res,{method:'deleteGuestVisitor',args:['sess-1']},{user:guestStaff,sql:denySql,store}),e=>e.status===403);
+ await assert.rejects(execute({},res,{method:'getGuestVisitors',args:[]},{user:null,sql:denySql,store}),e=>e.status===403);
 });
 test('limited accounts and unauthenticated callers cannot run unrelated management operations',async()=>{
  for(const user of [null,limited])for(const method of ['getAllUsers','getActiveCarts','updateProduct','toggleProductVisibility','bulkInsertProducts','updateOrderState','updateUserAccess','getPickingList','getDeliveryBoard','confirmPacking','updateOrderStatus','recordDeliveryRefusal','getRefusalHistory','getAllRefusals','getAuditLog','getSupplierQuotes','addSupplierQuote','listSupportTickets','closeSupportTicket','escalateSupportTicket']){

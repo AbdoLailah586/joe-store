@@ -89,7 +89,7 @@ interface StoreContextType {
   // Analytics & Personalization
   sessionId: string;
   recentlyViewedIds: string[];
-  trackActivity: (actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit', targetId?: string, metadata?: Record<string, any>) => void;
+  trackActivity: (actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit' | 'wishlist', targetId?: string, metadata?: Record<string, any>) => void;
   activeCarts: ActiveCartRecord[];
   refreshActiveCarts: () => Promise<void>;
 
@@ -428,6 +428,30 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const lastPixelRouteRef = useRef<string>('');
   const lastVisitTrackedRef = useRef<string>('');
 
+  const readClientTelemetry = () => {
+    if (typeof window === 'undefined') return {};
+    let cookieConsent = '';
+    try {
+      const rawConsent = readStorage('joe_cookie_consent_v1');
+      if (rawConsent) {
+        cookieConsent = JSON.parse(rawConsent)?.choice || '';
+      }
+    } catch {}
+    let timezone = '';
+    try {
+      timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    } catch {}
+    return {
+      path: `${window.location.pathname}${window.location.search}`,
+      user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      screen_size: typeof window.screen !== 'undefined' ? `${window.screen.width}x${window.screen.height}` : '',
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+      browser_lang: typeof navigator !== 'undefined' ? navigator.language : '',
+      timezone,
+      cookie_consent: cookieConsent || 'pending'
+    };
+  };
+
   // Track attribution & visitor session on load and navigation
   useEffect(() => {
     if (!deviceIsOnline()) return;
@@ -441,8 +465,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       actionType: 'visit',
       metadata: {
         ...attr,
-        path: typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/',
-        user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : ''
+        ...readClientTelemetry()
       }
     }).catch(() => {});
   }, [sessionId, account?.id, currentTab, selectedProductId]);
@@ -717,7 +740,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const trackActivity = (
-    actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit',
+    actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit' | 'wishlist',
     targetId?: string,
     metadata?: Record<string, any>
   ) => {
@@ -727,7 +750,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       customerId: account?.id,
       actionType,
       targetId,
-      metadata: { ...attr, ...(metadata || {}) }
+      metadata: { ...attr, ...readClientTelemetry(), ...(metadata || {}) }
     });
   };
 
@@ -819,7 +842,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Wishlist
   const toggleWishlist = (productId: string) => {
-    if (!wishlist.includes(productId) && account) void neonDb.logWishlistEvent(account.id, productId).catch(console.warn);
+    if (!wishlist.includes(productId)) {
+      if (account) void neonDb.logWishlistEvent(account.id, productId).catch(console.warn);
+      const prod = products.find(p => p.id === productId);
+      trackActivity('wishlist', productId, { product_name: prod?.name_ar, brand: prod?.brand, category: prod?.category });
+    }
     setWishlist(prev =>
       prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
     );

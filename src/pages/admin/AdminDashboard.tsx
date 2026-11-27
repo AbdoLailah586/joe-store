@@ -61,6 +61,7 @@ import { InventoryTab } from './InventoryTab';
 import { CustomerCrmTab } from './CustomerCrmTab';
 import { EmailTemplatesTab } from './EmailTemplatesTab';
 import { UsersTab } from './UsersTab';
+import { GuestVisitorsTab } from './GuestVisitorsTab';
 import { WhatsAppCrmAdminSection } from './WhatsAppCrmAdminSection';
 import { PaymentGatewaySettingsCard } from './PaymentGatewaySettingsCard';
 import { MarketingAdToolsCard } from './MarketingAdToolsCard';
@@ -1184,7 +1185,11 @@ export const AdminDashboard: React.FC = () => {
 
       {/* TAB 5: CUSTOMER INTELLIGENCE & ABANDONED CARTS CRM */}
       {activeTab === 'crm' && (
-        <CustomerCrmTab />
+        <CustomerCrmTab onNavigateSection={setActiveTab} />
+      )}
+
+      {activeTab === 'guests' && (
+        <GuestVisitorsTab onNavigateSection={setActiveTab} />
       )}
 
       {/* TAB 6: EMAIL TEMPLATES & OTP CUSTOMIZATION STUDIO */}
@@ -2715,7 +2720,7 @@ export const AdminDashboard: React.FC = () => {
 
       {/* TAB 8: USERS & ROLES MANAGER (Promote/Demote Admins & Delete Accounts) */}
       {activeTab === 'users' && (
-        <UsersTab />
+        <UsersTab onNavigateSection={setActiveTab} />
       )}
 
       {/* MODAL 1: ADD / EDIT PRODUCT INTERACTIVE MODAL */}

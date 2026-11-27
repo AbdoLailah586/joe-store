@@ -22,7 +22,7 @@ const productSections=['products','inventory','quality','stocktake','reorder','l
 const orderSections=['overview','analytics','orders','crm'];
 const policies: Record<string,string[]> = {
   toggleProductVisibility:['products'],updateProduct:['products'],bulkInsertProducts:['products'],
-  getAllUsers:['users'],getUserInsights:['users'],getGuestVisitors:['users','crm'],getGuestInsights:['users','crm'],
+  getAllUsers:['users'],getUserInsights:['users'],getGuestVisitors:['users','crm','guests'],getGuestInsights:['users','crm','guests'],
   getActiveCarts:['crm'],updateOrderState:['orders'],
   getCoverOverrides:['covers'],saveCoverOverride:['covers'],addCoverEntry:['covers'],getCoverAdditions:['covers'],
   addScreenEntry:['screens'],getScreenAdditions:['screens'],
@@ -57,6 +57,29 @@ function safeProduct(product: any, privileged: boolean) {
   for (const key of ['cost_price','source_row','source_name','source_item_code','raw_source_stock']) delete p[key];
   return p;
 }
+function requestVisitorMeta(req: any): Record<string, string> {
+  try {
+    const h = req?.headers || {};
+    const rawForwarded = h['x-forwarded-for'] || h['x-real-ip'] || '';
+    const ip = String(Array.isArray(rawForwarded) ? rawForwarded[0] : rawForwarded).split(',')[0].trim().slice(0, 64);
+    const country = String(h['x-vercel-ip-country'] || '').trim().slice(0, 16);
+    const region = String(h['x-vercel-ip-country-region'] || '').trim().slice(0, 80);
+    const city = String(h['x-vercel-ip-city'] || '').trim().slice(0, 120);
+    const userAgent = String(h['user-agent'] || '').trim().slice(0, 400);
+    const out: Record<string, string> = {};
+    if (ip) out.ip_address = ip;
+    if (country) out.geo_country = country;
+    if (region) out.geo_region = region;
+    if (city) {
+      try { out.geo_city = decodeURIComponent(city); } catch { out.geo_city = city; }
+    }
+    if (userAgent) out.server_user_agent = userAgent;
+    return out;
+  } catch {
+    return {};
+  }
+}
+
 export async function execute(req: any,res: any,body: any,deps?: any) {
   const sql=deps?.sql || database();
   const store=deps?.store || neonDb;
@@ -194,9 +217,14 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
       cart_items_count: Number(u.cart_items_count || 0),
       cart_subtotal: Number(u.cart_subtotal || 0),
       views_count: Number(u.views_count || 0),
+      searches_count: Number(u.searches_count || 0),
       source_channel: u.source_channel || undefined,
       source_label: u.source_label || undefined,
+      utm_source: u.utm_source || undefined,
+      utm_medium: u.utm_medium || undefined,
       utm_campaign: u.utm_campaign || undefined,
+      landing_path: u.landing_path || undefined,
+      last_path: u.last_path || undefined,
       device_type: u.device_type || undefined
     }));
   }
@@ -513,10 +541,22 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
   if(policies[method]||['trackActivity','syncActiveCart','getPersonalizedRecommendations','getRecentlyViewedProductIds'].includes(method)) {
     if(typeof store[method]!=='function') throw fail(400,'الإجراء غير مدعوم.');
     if(method==='trackActivity'&&args[0]&&typeof args[0]==='object') {
-      args[0] = { ...args[0], customerId: user?.id || undefined };
+      const serverMeta = requestVisitorMeta(req);
+      const clientMeta = args[0].metadata && typeof args[0].metadata === 'object' ? args[0].metadata : {};
+      args[0] = {
+        ...args[0],
+        customerId: user?.id || undefined,
+        metadata: { ...serverMeta, ...clientMeta, ip_address: serverMeta.ip_address || clientMeta.ip_address }
+      };
     }
     if(method==='syncActiveCart'&&args[0]&&typeof args[0]==='object') {
-      args[0] = { ...args[0], customerId: user?.id || undefined };
+      const serverMeta = requestVisitorMeta(req);
+      const clientAttr = args[0].attribution && typeof args[0].attribution === 'object' ? args[0].attribution : {};
+      args[0] = {
+        ...args[0],
+        customerId: user?.id || undefined,
+        attribution: { ...serverMeta, ...clientAttr, ip_address: serverMeta.ip_address || clientAttr.ip_address }
+      };
     }
     if(method==='getRecentlyViewedProductIds') {
       args[1] = user?.id || null;
