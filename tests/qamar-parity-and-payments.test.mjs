@@ -522,3 +522,17 @@ test('smooth image and banner transitions are configured across Home hero, Produ
   const qvSrc = fs.readFileSync(new URL('../src/components/QuickViewModal.tsx', import.meta.url), 'utf8');
   assert.match(qvSrc, /cubic-bezier\(0\.22,1,0\.36,1\)/);
 });
+
+test('AuthModal and Checkout require explicit acceptance of Store Policies, Terms, Privacy, and Cookies', () => {
+  const authSrc = fs.readFileSync(new URL('../src/components/AuthModal.tsx', import.meta.url), 'utf8');
+  assert.match(authSrc, /auth-policy-checkbox/);
+  assert.match(authSrc, /Cookies/);
+  assert.match(authSrc, /if \(!acceptedPolicies\)/);
+
+  const checkoutSrc = fs.readFileSync(new URL('../src/pages/Checkout.tsx', import.meta.url), 'utf8');
+  assert.match(checkoutSrc, /checkout-policy-checkbox/);
+  assert.match(checkoutSrc, /Cookies/);
+  assert.match(checkoutSrc, /if \(!acceptedPolicies\)/);
+  assert.match(checkoutSrc, /navigate\('terms'\)/);
+  assert.match(checkoutSrc, /navigate\('privacy'\)/);
+});

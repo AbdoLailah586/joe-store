@@ -98,6 +98,8 @@ export const Checkout: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [acceptedPolicies, setAcceptedPolicies] = useState(false);
+  const [policyError, setPolicyError] = useState(false);
 
   // Pre-fill user data when user changes
   useEffect(() => {
@@ -423,6 +425,15 @@ export const Checkout: React.FC = () => {
     }
     if (!isGoogleMapsUrl(googleMapsUrl)) {
       setErrorMsg(language === 'ar' ? 'يرجى إدخال رابط صحيح من Google Maps.' : 'Please enter a valid Google Maps link.'); return;
+    }
+    if (!acceptedPolicies) {
+      setPolicyError(true);
+      setErrorMsg(
+        language === 'ar'
+          ? 'يجب الموافقة على جميع الشروط والسياسات وملفات تعريف الارتباط (Cookies) أولاً قبل تأكيد الطلب.'
+          : 'You must accept the terms, privacy, return/shipping policies, and cookies notice before placing your order.'
+      );
+      return;
     }
     if (paymentMethod === 'credit_card' && !gateway?.methods?.card) {
       setErrorMsg(language === 'ar' ? 'الدفع بالبطاقة البنكية أونلاين غير مفعل حالياً.' : 'Online card payment is currently unavailable.');
@@ -1254,6 +1265,69 @@ export const Checkout: React.FC = () => {
                 <span>{language === 'ar' ? 'الإجمالي النهائي المطلوب:' : 'Grand Total:'}</span>
                 <InfoButton className="font-outfit text-amber-700 text-xl" details={{ title: language === 'ar' ? 'تفاصيل الإجمالي' : 'Total breakdown', description: language === 'ar' ? 'الإجمالي = قيمة المنتجات + رسوم الشحن الحالية. فتح التفاصيل لا يرسل طلبًا.' : 'Total = basket subtotal + current shipping fee. Opening details does not place an order.', facts: [{ label: language === 'ar' ? 'المنتجات' : 'Products', value: formatPrice(cartSubtotal) }, { label: language === 'ar' ? 'الشحن' : 'Shipping', value: formatPrice(shippingFee) }, { label: language === 'ar' ? 'الإجمالي' : 'Total', value: formatPrice(grandTotal) }] }}>{formatPrice(grandTotal)}</InfoButton>
               </div>
+            </div>
+
+            {/* Policies, Terms & Cookies Consent */}
+            <div
+              data-testid="checkout-policy-consent"
+              className={`p-3.5 rounded-2xl border text-xs leading-relaxed font-cairo transition-colors ${
+                policyError && !acceptedPolicies
+                  ? 'bg-rose-50 border-rose-400 ring-2 ring-rose-300/60 text-slate-900'
+                  : acceptedPolicies
+                    ? 'bg-emerald-50/70 border-emerald-300 text-slate-900'
+                    : 'bg-amber-50/70 border-amber-300 text-slate-900'
+              }`}
+            >
+              <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  data-testid="checkout-policy-checkbox"
+                  checked={acceptedPolicies}
+                  onChange={(e) => {
+                    setAcceptedPolicies(e.target.checked);
+                    if (e.target.checked) {
+                      setPolicyError(false);
+                      if (errorMsg.includes('الموافقة') || errorMsg.includes('accept the terms')) setErrorMsg('');
+                    }
+                  }}
+                  className="mt-0.5 w-4 h-4 accent-amber-600 shrink-0"
+                />
+                <span>
+                  {language === 'ar' ? (
+                    <>
+                      أوافق على جميع{' '}
+                      <button type="button" onClick={() => navigate('terms')} className="text-amber-700 font-bold underline">
+                        شروط الاستخدام
+                      </button>
+                      ، و{' '}
+                      <button type="button" onClick={() => navigate('privacy')} className="text-amber-700 font-bold underline">
+                        سياسة الخصوصية
+                      </button>
+                      ، و{' '}
+                      <button type="button" onClick={() => navigate('refund')} className="text-amber-700 font-bold underline">
+                        الضمان والاسترجاع
+                      </button>
+                      ، و{' '}
+                      <button type="button" onClick={() => navigate('shipping')} className="text-amber-700 font-bold underline">
+                        سياسة الشحن والتوصيل
+                      </button>
+                      ، وجمع واستخدام ملفات تعريف الارتباط (<strong className="font-bold">Cookies</strong>) لإتمام الطلب.
+                    </>
+                  ) : (
+                    <>
+                      I agree to the{' '}
+                      <button type="button" onClick={() => navigate('terms')} className="text-amber-700 font-bold underline">Terms</button>
+                      ,{' '}
+                      <button type="button" onClick={() => navigate('privacy')} className="text-amber-700 font-bold underline">Privacy Policy</button>
+                      ,{' '}
+                      <button type="button" onClick={() => navigate('refund')} className="text-amber-700 font-bold underline">Warranty &amp; Returns</button>
+                      ,{' '}
+                      <button type="button" onClick={() => navigate('shipping')} className="text-amber-700 font-bold underline">Shipping Policy</button>
+                      , and Cookies collection for placing this order.
+                    </>
+                  )}
+                </span>
+              </label>
             </div>
 
             {/* Error banner if any */}
