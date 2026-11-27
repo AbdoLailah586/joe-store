@@ -210,6 +210,8 @@ export interface Order extends DeliveryAddressFields {
   session_id?: string;
   order_status: OrderStatus;
   courier_name?: string;
+  packed_at?: string;
+  packed_by?: string;
   tracking_number?: string;
   whatsapp_notification_sent: boolean;
   cancellation_reason?: string;
