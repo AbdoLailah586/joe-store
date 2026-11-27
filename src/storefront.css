@@ -790,10 +790,57 @@
   height: 100%;
   object-fit: contain;
   mix-blend-mode: multiply;
-  transition: transform 0.45s;
+  will-change: transform, opacity;
+  transition:
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.joe-product-image img.joe-secondary-img {
+  opacity: 0;
+  transform: scale(0.96);
 }
 .joe-product-card:hover .joe-product-image img {
+  transform: scale(1.06);
+}
+.joe-product-card.is-multi-img:hover .joe-product-image img.joe-primary-img {
+  opacity: 0;
+  transform: scale(1.04);
+}
+.joe-product-card.is-multi-img:hover .joe-product-image img.joe-secondary-img {
+  opacity: 1;
   transform: scale(1.055);
+}
+.joe-card-img-dots {
+  position: absolute;
+  bottom: 10px;
+  inset-inline-end: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 2;
+}
+.joe-card-img-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  transition: background-color 0.35s ease, transform 0.35s ease;
+}
+.joe-card-img-dots .dot-first {
+  background: #1e293b;
+}
+.joe-card-img-dots .dot-second {
+  background: #cbd5e1;
+}
+.joe-product-card.is-multi-img:hover .joe-card-img-dots .dot-first {
+  background: #cbd5e1;
+}
+.joe-product-card.is-multi-img:hover .joe-card-img-dots .dot-second {
+  background: #d97706;
+  transform: scale(1.2);
 }
 .joe-product-badges {
   position: absolute;
@@ -1793,8 +1840,16 @@
     transform: translate(-50%, 0);
     pointer-events: auto;
   }
-  .joe-product-card:hover .joe-product-image img {
+  .joe-product-card:hover .joe-product-image img,
+  .joe-product-card.is-multi-img:hover .joe-product-image img.joe-secondary-img {
     transform: none;
+  }
+  .joe-product-card.is-multi-img:hover .joe-product-image img.joe-primary-img {
+    opacity: 1;
+    transform: none;
+  }
+  .joe-product-card.is-multi-img:hover .joe-product-image img.joe-secondary-img {
+    opacity: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1806,6 +1861,10 @@
   .joe-product-card:hover .joe-product-image img,
   .joe-text-link:hover svg {
     transform: none;
+  }
+  .joe-product-image img,
+  .joe-gallery-slide {
+    transition: none !important;
   }
 }
 .joe-footer {

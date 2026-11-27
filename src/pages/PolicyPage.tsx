@@ -3,8 +3,16 @@ import { ShieldCheck, FileText, RotateCcw, Truck, ArrowRight, MessageCircle, Pho
 import { useStore, type AppTab } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
+import { POLICY_META, getDefaultPolicyDoc, parsePolicyBody, type PolicyKey } from '../utils/policyDefaults';
 
 export type PolicyPageTab = Extract<AppTab, 'terms' | 'privacy' | 'refund' | 'shipping'>;
+
+const POLICY_ICONS: Record<PolicyKey, typeof FileText> = {
+  terms: FileText,
+  privacy: ShieldCheck,
+  refund: RotateCcw,
+  shipping: Truck,
+};
 
 export const PolicyPage: React.FC<{ activePolicy: PolicyPageTab }> = ({ activePolicy }) => {
   const { settings, navigate } = useStore();
@@ -12,92 +20,24 @@ export const PolicyPage: React.FC<{ activePolicy: PolicyPageTab }> = ({ activePo
   const storeName = settings.store_name_ar || 'جو ستور - JOE Store';
   const freeThreshold = formatPrice(settings.free_shipping_threshold ?? 2500);
 
-  const docs = [
-    {
-      key: 'terms' as PolicyPageTab,
-      tabLabel: 'الشروط والأحكام',
-      heading: 'شروط وأحكام استخدام المتجر - جو ستور',
-      intro: `مرحباً بك في متجر ${storeName}. استخدامك للموقع أو إتمام أي طلب يعني موافقتك على الشروط والأحكام التالية لحماية حقوق العميل والمتجر.`,
-      icon: FileText,
-      sections: [
-        {
-          title: '1. صحة بيانات الطلب والتواصل',
-          points: [
-            'يجب تسجيل بيانات تواصل صحيحة (الاسم، الهاتف، الواتساب، وعنوان التوصيل أو موقع GPS) لضمان سرعة الشحن وتفعيل الضمان.',
-            'يتحمل المستخدم مسؤولية سرية حسابه، ويمكنه تعديل بياناته أو حذف حسابه في أي وقت من صفحة الملف الشخصي.'
-          ]
-        },
-        {
-          title: '2. الأسعار والضمان والطلبات',
-          points: [
-            'جميع الأسعار بالجنيه المصري (EGP)، ويُعرض إجمالي الطلب وتكلفة الشحن بوضوح قبل التأكيد.',
-            'يحق للعميل إلغاء الطلب مجاناً قبل خروجه مع شركة الشحن عبر حسابه أو عبر خدمة عملاء الواتساب.'
-          ]
-        }
-      ]
-    },
-    {
-      key: 'privacy' as PolicyPageTab,
-      tabLabel: 'سياسة الخصوصية',
-      heading: 'سياسة الخصوصية وحماية البيانات - جو ستور',
-      intro: `في ${storeName} نحترم خصوصيتك ونلتزم بحماية بياناتك الشخصية واستخدامها فقط في إتمام طلباتك وتفعيل ضمان أجهزتك.`,
-      icon: ShieldCheck,
-      sections: [
-        {
-          title: '1. البيانات التي نجمعها',
-          points: [
-            'بيانات الطلب والتوصيل: الاسم، رقم الهاتف والواتساب، البريد الإلكتروني، العنوان التفصيلي، وإحداثيات الموقع على الخريطة عند اختيارها.',
-            'سجل التصفح والسلة لتسهيل عودتك للمنتجات التي شاهدتها وتنبيهات التوفر.'
-          ]
-        },
-        {
-          title: '2. حماية الحسابات ومشاركة البيانات',
-          points: [
-            'تُحفظ كلمات المرور مشفرة والجلسات عبر Cookies آمنة، ولا يتم بيع أو مشاركة بيانات العملاء مع أي جهات تسويقية غير مصرح بها.',
-            'يمكنك تعديل بياناتك أو حذف حسابك نهائياً في أي وقت من تبويب «منطقة الخطر» في ملفك الشخصي.'
-          ]
-        }
-      ]
-    },
-    {
-      key: 'refund' as PolicyPageTab,
-      tabLabel: 'الضمان والاسترجاع',
-      heading: 'سياسة الضمان والاستبدال والاسترجاع - جو ستور',
-      intro: `يلتزم ${storeName} بتقديم أجهزة أصلية مفحوصة 100% مع حق المعاينة وضمان استبدال معتمد.`,
-      icon: RotateCcw,
-      sections: [
-        {
-          title: '1. الفحص والمعاينة + 14 يوم استبدال',
-          points: [
-            'يحق للعميل فحص الجهاز وسلامة البطاريات والكاميرات وFace ID مع المندوب قبل الدفع.',
-            'يحق الاستبدال خلال 14 يوماً من الاستلام لأي عيب صناعي غير ناتج عن سوء استخدام أو كسر أو سوائل.'
-          ]
-        },
-        {
-          title: '2. مدة الضمان المعتمد',
-          points: [
-            'ضمان 6 أشهر للأجهزة كسر زيرو وسنة كاملة للأجهزة الجديدة المتبرشمة وفق الفاتورة المعتمدة بالمتجر.'
-          ]
-        }
-      ]
-    },
-    {
-      key: 'shipping' as PolicyPageTab,
-      tabLabel: 'الشحن والتوصيل',
-      heading: 'سياسة الشحن ومواعيد التوصيل - جو ستور',
-      intro: `نشحن طلبات ${storeName} لجميع محافظات مصر من فرعنا الرئيسي بالمنصورة بسرعة وأمان.`,
-      icon: Truck,
-      sections: [
-        {
-          title: '1. مواعيد وتكلفة التوصيل',
-          points: [
-            `المنصورة والدقهلية: توصيل في نفس اليوم (3 إلى 6 ساعات). التوصيل مجاني تماماً للطلبات بدءاً من ${freeThreshold}.`,
-            'القاهرة والجيزة والإسكندرية: التوصيل خلال 24 - 48 ساعة، وباقي المحافظات خلال 48 - 72 ساعة.'
-          ]
-        }
-      ]
-    }
-  ];
+  const policyKeys: PolicyKey[] = ['terms', 'privacy', 'refund', 'shipping'];
+
+  const docs = policyKeys.map(key => {
+    const defaults = getDefaultPolicyDoc(key, { storeName, freeThreshold });
+    const custom = settings.policy_pages?.[key];
+    const heading = custom?.heading?.trim() || defaults.heading;
+    const intro = custom?.intro?.trim() || defaults.intro;
+    const rawBody = custom?.body?.trim() ? custom.body : defaults.body;
+    const sections = parsePolicyBody(rawBody);
+    return {
+      key: key as PolicyPageTab,
+      tabLabel: POLICY_META[key].tabLabel,
+      heading,
+      intro,
+      icon: POLICY_ICONS[key],
+      sections,
+    };
+  });
 
   const currentDoc = docs.find(d => d.key === activePolicy) || docs[0];
   const ActiveIcon = currentDoc.icon;
@@ -146,12 +86,21 @@ export const PolicyPage: React.FC<{ activePolicy: PolicyPageTab }> = ({ activePo
         <div className="space-y-6">
           {currentDoc.sections.map((sec, idx) => (
             <section key={idx} className="space-y-2.5">
-              <h2 className="text-sm md:text-base font-extrabold text-slate-900">{sec.title}</h2>
-              <ul className="space-y-2 pr-4 list-disc text-xs md:text-sm text-slate-600 leading-7">
-                {sec.points.map((pt, i) => (
-                  <li key={i}>{pt}</li>
-                ))}
-              </ul>
+              {sec.title && (
+                <h2 className="text-sm md:text-base font-extrabold text-slate-900">{sec.title}</h2>
+              )}
+              {sec.paragraphs.map((p, i) => (
+                <p key={`p-${i}`} className="text-xs md:text-sm text-slate-600 leading-7">
+                  {p}
+                </p>
+              ))}
+              {sec.bullets.length > 0 && (
+                <ul className="space-y-2 pr-4 list-disc text-xs md:text-sm text-slate-600 leading-7">
+                  {sec.bullets.map((pt, i) => (
+                    <li key={`b-${i}`}>{pt}</li>
+                  ))}
+                </ul>
+              )}
             </section>
           ))}
         </div>

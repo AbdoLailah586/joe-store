@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, ShoppingCart, MessageCircle, Heart, ShieldCheck, BatteryMedium, Star, Check } from 'lucide-react';
+import { X, ShoppingCart, MessageCircle, Heart, ShieldCheck, BatteryMedium, Star, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
@@ -80,15 +80,48 @@ export const QuickViewModal: React.FC = () => {
 
         {/* Product Images Side */}
         <div className="md:w-1/2 p-6 bg-slate-100/60 flex flex-col items-center justify-between border-b md:border-b-0 md:border-l border-slate-200">
-          <div className="w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 mb-4 relative">
-            <img
-              src={normalizeProductImage(product.images[selectedImage] || product.images[0])}
-              onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
-              alt={product.name_ar}
-              className="w-full h-full object-cover object-center"
-            />
+          <div className="w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 mb-4 relative group">
+            {product.images.map((img, idx) => (
+              <div
+                key={`${product.id}-qv-${idx}`}
+                className={`absolute inset-0 flex items-center justify-center p-3 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  selectedImage === idx
+                    ? 'opacity-100 scale-100 translate-x-0 z-[1]'
+                    : idx < selectedImage
+                      ? 'opacity-0 scale-95 -translate-x-4 pointer-events-none z-0'
+                      : 'opacity-0 scale-95 translate-x-4 pointer-events-none z-0'
+                }`}
+              >
+                <img
+                  src={normalizeProductImage(img)}
+                  onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
+                  alt={selectedImage === idx ? product.name_ar : ''}
+                  className="w-full h-full object-contain mix-blend-multiply"
+                />
+              </div>
+            ))}
+            {product.images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setSelectedImage(prev => (prev - 1 + product.images.length) % product.images.length)}
+                  aria-label="الصورة السابقة"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 text-slate-900 shadow-md flex items-center justify-center z-10 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedImage(prev => (prev + 1) % product.images.length)}
+                  aria-label="الصورة التالية"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 text-slate-900 shadow-md flex items-center justify-center z-10 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </>
+            )}
             {product.battery_health > 0 && (
-              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-emerald-950/90 text-emerald-700 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 backdrop-blur-md">
+              <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-lg bg-emerald-950/90 text-emerald-700 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 backdrop-blur-md">
                 <BatteryMedium className="w-4 h-4 text-emerald-700" />
                 <span>{language === 'ar' ? `صحة البطارية: ${product.battery_health}%` : `Battery: ${product.battery_health}%`}</span>
               </div>

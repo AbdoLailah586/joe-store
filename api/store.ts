@@ -170,7 +170,9 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
         'payment_gateway_enable_instapay',
         'admin_alert_whatsapp_number',
         'auto_alert_admin_on_order',
-        'whatsapp_templates'
+        'whatsapp_templates',
+        'whatsapp_auto_triggers',
+        'policy_pages'
       ]) {
         if (incoming[cfgKey] === undefined && current[cfgKey] !== undefined) {
           incoming[cfgKey] = current[cfgKey];
@@ -331,16 +333,23 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     try {
       const settings = store.getStoreSettings ? await store.getStoreSettings() : null;
       const crm = resolveCrmConfig(settings);
-      if (crm.configured && crm.autoSendOnStatusChange) {
-        const type = changes.payment_status === 'verified' ? 'payment_verified' : changes.order_status;
-        if (type && ['payment_verified', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'].includes(type)) {
-          const rows = await sql`SELECT * FROM orders WHERE id=${args[0]} OR order_number=${args[0]} LIMIT 1`;
-          if (rows[0]) {
-            const ord = mapRowToOrder(rows[0]);
-            const recipient = ord.customer_whatsapp || ord.customer_phone;
-            const text = buildServerOrderWhatsAppMessage(type as any, ord, settings);
-            await dispatchWhatsAppViaCrm(sql, { recipient, text, type: type as any, orderId: ord.id, orderNumber: ord.order_number, settings });
-          }
+      const rawType = changes.payment_status === 'verified'
+        ? 'payment_verified'
+        : changes.order_status === 'confirmed'
+          ? 'order_confirmed'
+          : changes.order_status;
+      if (
+        crm.configured &&
+        rawType &&
+        ['order_confirmed', 'payment_verified', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'].includes(rawType) &&
+        crm.shouldAutoSend(rawType as any)
+      ) {
+        const rows = await sql`SELECT * FROM orders WHERE id=${args[0]} OR order_number=${args[0]} LIMIT 1`;
+        if (rows[0]) {
+          const ord = mapRowToOrder(rows[0]);
+          const recipient = ord.customer_whatsapp || ord.customer_phone;
+          const text = buildServerOrderWhatsAppMessage(rawType as any, ord, settings);
+          await dispatchWhatsAppViaCrm(sql, { recipient, text, type: rawType as any, orderId: ord.id, orderNumber: ord.order_number, settings });
         }
       }
     } catch {}
@@ -396,7 +405,7 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
       }
       try {
         const crm = resolveCrmConfig(orderSettings);
-        if (crm.configured && crm.autoAlertAdminOnOrder && crm.adminAlertRecipients.length) {
+        if (crm.configured && crm.shouldAutoSend('admin_new_order') && crm.adminAlertRecipients.length) {
           const adminMsg = buildServerOrderWhatsAppMessage('admin_new_order', fullOrder, orderSettings);
           await Promise.allSettled(
             crm.adminAlertRecipients.map((adminPhone: string) =>
@@ -429,7 +438,7 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
       if (crm.configured) {
         const jobs: Promise<any>[] = [];
         const recipient = fullOrder.customer_whatsapp || phone;
-        if (crm.autoSendOnOrder && recipient) {
+        if (crm.shouldAutoSend('order_confirmed') && recipient) {
           const customerMsg = buildServerOrderWhatsAppMessage('order_confirmed', fullOrder, orderSettings);
           jobs.push(
             dispatchWhatsAppViaCrm(sql, {
@@ -442,7 +451,7 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
             })
           );
         }
-        if (crm.autoAlertAdminOnOrder && crm.adminAlertRecipients.length) {
+        if (crm.shouldAutoSend('admin_new_order') && crm.adminAlertRecipients.length) {
           const adminMsg = buildServerOrderWhatsAppMessage('admin_new_order', fullOrder, orderSettings);
           for (const adminPhone of crm.adminAlertRecipients) {
             jobs.push(

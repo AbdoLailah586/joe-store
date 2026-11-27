@@ -64,6 +64,7 @@ import { UsersTab } from './UsersTab';
 import { WhatsAppCrmAdminSection } from './WhatsAppCrmAdminSection';
 import { PaymentGatewaySettingsCard } from './PaymentGatewaySettingsCard';
 import { MarketingAdToolsCard } from './MarketingAdToolsCard';
+import { PolicyPagesEditorCard } from './PolicyPagesEditorCard';
 import { neonDb } from '../../services/neonDb';
 import { SecurityPanel } from './SecurityPanel';
 import { FulfillmentPanel } from './FulfillmentPanel';
@@ -1199,9 +1200,10 @@ export const AdminDashboard: React.FC = () => {
       {/* TAB 5: STORE SETTINGS */}
       {activeTab === 'settings' && (
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Gateway & Meta Marketing Cards */}
+          {/* Gateway, Meta Marketing & Policy Pages Cards */}
           <PaymentGatewaySettingsCard />
           <MarketingAdToolsCard settings={settings} updateSettings={updateSettings} />
+          <PolicyPagesEditorCard settings={settings} updateSettings={updateSettings} />
 
           {/* Section 1: Store Info & Socials */}
           <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-6">
@@ -3067,6 +3069,7 @@ export const AdminDashboard: React.FC = () => {
                 >
                   <option value="order_confirmed">تأكيد الطلب والفاتورة (Order Placed)</option>
                   <option value="payment_verified">تأكيد استلام الدفع (Payment Verified)</option>
+                  <option value="processing">تم التجهيز والتسليم لشركة الشحن (Processing)</option>
                   <option value="shipped">تسليم للشحن ورقم البوليصة (Shipped)</option>
                   <option value="out_for_delivery">خروج الشحنة مع المندوب (Out for Delivery)</option>
                   <option value="delivered">تم التوصيل بنجاح (Delivered)</option>

@@ -242,10 +242,11 @@ export const Home: React.FC = () => {
     shop(slide.cat || "all");
   };
 
-  // Auto-play hero slider every 5 seconds
+  // Auto-play hero slider every 5 seconds (pauses gently while hovering)
   useEffect(() => {
     if (slides.length <= 1) return;
     const interval = setInterval(() => {
+      if (root.current?.querySelector('section:first-of-type:hover')) return;
       setSlideIndex((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(interval);
@@ -427,114 +428,154 @@ export const Home: React.FC = () => {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="relative w-full max-w-7xl mx-auto overflow-hidden bg-transparent text-slate-900"
+          className="relative group/hero w-full max-w-7xl mx-auto overflow-hidden bg-transparent text-slate-900"
         >
-          {/* Main Slide Content */}
-          {currentSlide.slide_type === 'banner' ? (
-            /* Full Landscape Promotional Banner */
-            <div
-              onClick={() => handleSlideClick(currentSlide)}
-              className="relative w-full cursor-pointer group overflow-hidden flex items-center justify-center select-none bg-slate-950 min-h-[180px] xs:min-h-[220px] sm:min-h-[300px] md:min-h-[380px]"
-            >
-              <img
-                src={currentSlide.image}
-                alt={ar ? currentSlide.title_ar : currentSlide.title_en}
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = "/product-placeholder.svg";
-                }}
-                className="w-full h-auto max-h-[260px] xs:max-h-[320px] sm:max-h-[420px] md:max-h-[480px] object-cover sm:object-contain mx-auto transition-transform duration-500 group-hover:scale-[1.01]"
-              />
-              {currentSlide.badge && (
-                <div className="absolute top-3 start-4 sm:top-5 sm:start-8 z-10 pointer-events-none">
-                  <span className="px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-amber-400 text-xs sm:text-sm font-black shadow-lg border border-amber-400/40 font-cairo">
-                    {currentSlide.badge}
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            /* Standard Split Product Card Banner */
-            <div className="relative min-h-[220px] xs:min-h-[250px] sm:min-h-[320px] md:min-h-[420px] flex flex-row items-center justify-between px-4 py-5 xs:px-6 xs:py-6 sm:px-10 sm:py-10 md:px-14 md:py-14 gap-3 sm:gap-8 select-none">
-              {/* Left/Start: Promotional Text & Action */}
-              <div className="w-[58%] sm:w-[58%] md:w-3/5 space-y-2 xs:space-y-2.5 sm:space-y-4 z-10 text-start">
-                {/* Title */}
-                <h2
-                  onClick={() => handleSlideClick(currentSlide)}
-                  className="text-sm xs:text-base sm:text-2xl md:text-4xl font-black font-cairo text-slate-900 leading-snug sm:leading-tight line-clamp-2 cursor-pointer hover:text-amber-700 transition-colors"
+          {/* Smooth Layered Hero Banner Stack */}
+          <div className="grid">
+            {slides.map((slide, idx) => {
+              const activeIdx = slideIndex % slides.length;
+              const isActive = idx === activeIdx;
+              const isBefore = idx < activeIdx;
+              return (
+                <div
+                  key={slide.id || idx}
+                  aria-hidden={!isActive}
+                  style={{ gridArea: "1 / 1" }}
+                  className={`transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${
+                    isActive
+                      ? "opacity-100 scale-100 translate-x-0 z-10 pointer-events-auto"
+                      : isBefore
+                        ? "opacity-0 scale-[0.985] -translate-x-8 z-0 pointer-events-none"
+                        : "opacity-0 scale-[0.985] translate-x-8 z-0 pointer-events-none"
+                  }`}
                 >
-                  {ar ? currentSlide.title_ar : currentSlide.title_en}
-                </h2>
-
-                {/* Subtitle */}
-                <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed line-clamp-1 sm:line-clamp-2 hidden xs:block">
-                  {ar ? currentSlide.subtitle_ar : currentSlide.subtitle_en}
-                </p>
-
-                {/* Price & Tag Box */}
-                <div className="flex items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1 flex-wrap">
-                  {currentSlide.price && (
-                    <div className="flex items-baseline gap-1.5 sm:gap-2">
-                      <strong className="text-sm xs:text-base sm:text-2xl md:text-3xl font-black text-slate-950 font-outfit">
-                        {currentSlide.price} {ar ? "ج.م" : "EGP"}
-                      </strong>
-                      {currentSlide.oldPrice && (
-                        <del className="text-[10px] xs:text-xs sm:text-sm md:text-base text-slate-400 font-outfit">
-                          {currentSlide.oldPrice} {ar ? "ج.م" : "EGP"}
-                        </del>
+                  {slide.slide_type === "banner" ? (
+                    <div
+                      onClick={() => isActive && handleSlideClick(slide)}
+                      className="relative w-full cursor-pointer group overflow-hidden flex items-center justify-center select-none bg-slate-950 min-h-[180px] xs:min-h-[220px] sm:min-h-[300px] md:min-h-[380px]"
+                    >
+                      <img
+                        src={slide.image}
+                        alt={ar ? slide.title_ar : slide.title_en}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "/product-placeholder.svg";
+                        }}
+                        className="w-full h-auto max-h-[260px] xs:max-h-[320px] sm:max-h-[420px] md:max-h-[480px] object-cover sm:object-contain mx-auto transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]"
+                      />
+                      {slide.badge && (
+                        <div className="absolute top-3 start-4 sm:top-5 sm:start-8 z-10 pointer-events-none">
+                          <span className="px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-amber-400 text-xs sm:text-sm font-black shadow-lg border border-amber-400/40 font-cairo">
+                            {slide.badge}
+                          </span>
+                        </div>
                       )}
                     </div>
-                  )}
-                  {currentSlide.tag && (
-                    <span className="hidden sm:inline-block px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
-                      {currentSlide.tag}
-                    </span>
+                  ) : (
+                    <div className="relative min-h-[220px] xs:min-h-[250px] sm:min-h-[320px] md:min-h-[420px] flex flex-row items-center justify-between px-4 py-5 xs:px-6 xs:py-6 sm:px-10 sm:py-10 md:px-14 md:py-14 gap-3 sm:gap-8 select-none">
+                      {/* Left/Start: Promotional Text & Action */}
+                      <div className="w-[58%] sm:w-[58%] md:w-3/5 space-y-2 xs:space-y-2.5 sm:space-y-4 z-10 text-start">
+                        <h2
+                          onClick={() => isActive && handleSlideClick(slide)}
+                          className="text-sm xs:text-base sm:text-2xl md:text-4xl font-black font-cairo text-slate-900 leading-snug sm:leading-tight line-clamp-2 cursor-pointer hover:text-amber-700 transition-colors"
+                        >
+                          {ar ? slide.title_ar : slide.title_en}
+                        </h2>
+
+                        <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed line-clamp-1 sm:line-clamp-2 hidden xs:block">
+                          {ar ? slide.subtitle_ar : slide.subtitle_en}
+                        </p>
+
+                        <div className="flex items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1 flex-wrap">
+                          {slide.price && (
+                            <div className="flex items-baseline gap-1.5 sm:gap-2">
+                              <strong className="text-sm xs:text-base sm:text-2xl md:text-3xl font-black text-slate-950 font-outfit">
+                                {slide.price} {ar ? "ج.م" : "EGP"}
+                              </strong>
+                              {slide.oldPrice && (
+                                <del className="text-[10px] xs:text-xs sm:text-sm md:text-base text-slate-400 font-outfit">
+                                  {slide.oldPrice} {ar ? "ج.م" : "EGP"}
+                                </del>
+                              )}
+                            </div>
+                          )}
+                          {slide.tag && (
+                            <span className="hidden sm:inline-block px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
+                              {slide.tag}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
+                          <button
+                            type="button"
+                            onClick={() => isActive && handleSlideClick(slide)}
+                            className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm md:text-base flex items-center gap-1.5 sm:gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
+                          >
+                            <span>{ar ? "تسوق العرض" : "Shop Offer"}</span>
+                            <Arrow size={14} className="sm:w-4 sm:h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => shop()}
+                            className="hidden md:flex px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm items-center gap-2 border border-slate-200 transition-all cursor-pointer"
+                          >
+                            <span>{ar ? "اكتشف الكتالوج" : "Explore Catalog"}</span>
+                            <DiagonalArrow size={16} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Right/End: Large Prominent Product Cutout Image */}
+                      <div className="w-[42%] sm:w-[42%] md:w-2/5 flex items-center justify-center z-10 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => isActive && handleSlideClick(slide)}
+                          className="relative group cursor-pointer focus:outline-none flex items-center justify-center p-1 sm:p-2"
+                        >
+                          <img
+                            src={slide.image}
+                            alt={ar ? slide.title_ar : slide.title_en}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = "/product-placeholder.svg";
+                            }}
+                            className={`max-h-[160px] xs:max-h-[190px] sm:max-h-[270px] md:max-h-[360px] w-auto object-contain transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] drop-shadow-md ${
+                              isActive ? "scale-100 group-hover:scale-105" : "scale-95"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </div>
                   )}
                 </div>
+              );
+            })}
+          </div>
 
-                {/* CTA Action Buttons */}
-                <div className="flex items-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
-                  <button
-                    type="button"
-                    onClick={() => handleSlideClick(currentSlide)}
-                    className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm md:text-base flex items-center gap-1.5 sm:gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
-                  >
-                    <span>{ar ? "تسوق العرض" : "Shop Offer"}</span>
-                    <Arrow size={14} className="sm:w-4 sm:h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => shop()}
-                    className="hidden md:flex px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm items-center gap-2 border border-slate-200 transition-all cursor-pointer"
-                  >
-                    <span>{ar ? "اكتشف الكتالوج" : "Explore Catalog"}</span>
-                    <DiagonalArrow size={16} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Right/End: Large Prominent Product Cutout Image */}
-              <div className="w-[42%] sm:w-[42%] md:w-2/5 flex items-center justify-center z-10 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => handleSlideClick(currentSlide)}
-                  className="relative group cursor-pointer focus:outline-none flex items-center justify-center p-1 sm:p-2"
-                >
-                  <img
-                    src={currentSlide.image}
-                    alt={ar ? currentSlide.title_ar : currentSlide.title_en}
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = "/product-placeholder.svg";
-                    }}
-                    className="max-h-[160px] xs:max-h-[190px] sm:max-h-[270px] md:max-h-[360px] w-auto object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
-                  />
-                </button>
-              </div>
-            </div>
+          {/* Subtle Desktop Prev/Next Banner Controls */}
+          {slides.length > 1 && (
+            <>
+              <button
+                type="button"
+                aria-label={ar ? "البانر السابق" : "Previous banner"}
+                onClick={() => setSlideIndex((prev) => (prev - 1 + slides.length) % slides.length)}
+                className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/85 hover:bg-white text-slate-900 backdrop-blur-md border border-slate-200/80 shadow-md items-center justify-center z-20 opacity-0 group-hover/hero:opacity-100 transition-all duration-300 hover:scale-105 active:scale-95"
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <button
+                type="button"
+                aria-label={ar ? "البانر التالي" : "Next banner"}
+                onClick={() => setSlideIndex((prev) => (prev + 1) % slides.length)}
+                className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/85 hover:bg-white text-slate-900 backdrop-blur-md border border-slate-200/80 shadow-md items-center justify-center z-20 opacity-0 group-hover/hero:opacity-100 transition-all duration-300 hover:scale-105 active:scale-95"
+              >
+                <ArrowRight size={18} />
+              </button>
+            </>
           )}
 
-          {/* Dots Pagination (No arrows) */}
+          {/* Dots Pagination */}
           {slides.length > 1 && (
             <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-20 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-200/60 shadow-xs">
               {slides.map((_, idx) => (
@@ -543,7 +584,7 @@ export const Home: React.FC = () => {
                   type="button"
                   aria-label={`انتقل إلى العرض ${idx + 1}`}
                   onClick={() => setSlideIndex(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`h-2 rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     (slideIndex % slides.length) === idx
                       ? "w-6 bg-slate-900"
                       : "w-2 bg-slate-300 hover:bg-slate-400"

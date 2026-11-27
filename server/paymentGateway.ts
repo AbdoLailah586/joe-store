@@ -543,7 +543,7 @@ export async function processPaymentGatewayCallback(params: {
 
       const crm = resolveCrmConfig(params.settings);
       const ord = storeHelpers?.mapRowToOrder ? storeHelpers.mapRowToOrder(updatedOrder) : updatedOrder;
-      if (crm.configured && crm.autoSendOnStatusChange && (ord.customer_whatsapp || ord.customer_phone)) {
+      if (crm.configured && crm.shouldAutoSend('payment_verified') && (ord.customer_whatsapp || ord.customer_phone)) {
         const dispatch = params.dispatchWhatsApp || dispatchWhatsAppViaCrm;
         await dispatch(params.sql, {
           recipient: ord.customer_whatsapp || ord.customer_phone,

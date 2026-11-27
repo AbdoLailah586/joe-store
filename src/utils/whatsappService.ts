@@ -16,9 +16,19 @@ export const defaultSettings: StoreSettings = {
   whatsapp_automation_email: '',
   whatsapp_automation_pass: '',
   whatsapp_automation_token: '',
-  auto_send_on_order: true,
-  auto_send_on_status_change: true,
-  auto_alert_admin_on_order: true,
+  auto_send_on_order: false,
+  auto_send_on_status_change: false,
+  auto_alert_admin_on_order: false,
+  whatsapp_auto_triggers: {
+    admin_new_order: false,
+    order_confirmed: false,
+    payment_verified: false,
+    processing: false,
+    shipped: false,
+    out_for_delivery: false,
+    delivered: false,
+    cancelled: false,
+  },
   admin_alert_whatsapp_number: '201554826209',
   shipping_fee_default: 35,
   free_shipping_threshold: 2500,
@@ -290,6 +300,13 @@ export const buildPaymentConfirmedMessage = (order: Order, settings: StoreSettin
 شكراً لثقتك في جو ستور.`;
 };
 
+export const buildProcessingMessage = (order: Order): string => {
+  return `*تم تجهيز طلبك وجاري تسليمه لشركة الشحن - جو ستور (JOE Store)*
+
+عزيزنا *${order.customer_name}*،
+تم الانتهاء من تجهيز وتغليف طلبك رقم *#${order.order_number}* بنجاح، وجاري الآن تسليمه لشركة الشحن المختارة.`;
+};
+
 export const buildShippedMessage = (order: Order, courierName: string = 'مندوب جو ستور السريع', trackingNumber: string = ''): string => {
   return `*شحنتك في الطريق إليك - جو ستور (JOE Store)*
 
@@ -346,6 +363,7 @@ export const buildDefaultWhatsAppMessage = (
 ): string => {
   if (type === 'order_confirmed') return buildOrderConfirmationMessage(order, settings);
   if (type === 'payment_verified') return buildPaymentConfirmedMessage(order, settings);
+  if (type === 'processing') return buildProcessingMessage(order);
   if (type === 'shipped') return buildShippedMessage(order, courierName, trackingNumber);
   if (type === 'out_for_delivery') return buildOutForDeliveryMessage(order);
   if (type === 'delivered') return buildDeliveredMessage(order);

@@ -48,11 +48,15 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     unknown: ar ? "الحالة تحتاج تأكيد" : "Confirm condition",
   }[product.condition];
   const initialImg = normalizeProductImage(product.images?.[0]);
+  const rawSecond = product.images?.[1] ? normalizeProductImage(product.images[1]) : null;
+  const secondaryImg = rawSecond && rawSecond !== initialImg && rawSecond !== "/product-placeholder.svg" ? rawSecond : null;
   const [imgSrc, setImgSrc] = useState(initialImg);
+  const [secondOk, setSecondOk] = useState(true);
   const retryRef = useRef(0);
 
   useEffect(() => {
     setImgSrc(normalizeProductImage(product.images?.[0]));
+    setSecondOk(true);
     retryRef.current = 0;
   }, [product.images]);
 
@@ -72,23 +76,45 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     `مرحباً جو ستور، أود الاستفسار عن: ${product.name_ar} (السعر: ${displayedPrice})`,
   );
   const Arrow = isRTL ? ArrowUpLeft : ArrowUpRight;
+  const hasSecondary = Boolean(secondaryImg && secondOk);
   return (
-    <article className="joe-product-card">
+    <article className={`joe-product-card group ${hasSecondary ? "is-multi-img" : ""}`}>
       <div className="joe-product-media">
         <button
-          className="joe-product-image"
+          className="joe-product-image block"
           onClick={() => navigate("product", product.id)}
           aria-label={ar ? `عرض ${name}` : `View ${name}`}
         >
-          <img
-            src={imgSrc}
-            onError={handleImageError}
-            alt={name}
-            loading="lazy"
-            width="400"
-            height="400"
-          />
+          <span className="relative block w-full h-full">
+            <img
+              src={imgSrc}
+              onError={handleImageError}
+              alt={name}
+              loading="lazy"
+              width="400"
+              height="400"
+              className="joe-primary-img absolute inset-0 w-full h-full object-contain"
+            />
+            {hasSecondary && (
+              <img
+                src={secondaryImg!}
+                onError={() => setSecondOk(false)}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                width="400"
+                height="400"
+                className="joe-secondary-img absolute inset-0 w-full h-full object-contain"
+              />
+            )}
+          </span>
         </button>
+        {hasSecondary && (
+          <div className="joe-card-img-dots pointer-events-none" aria-hidden="true">
+            <span className="dot-first" />
+            <span className="dot-second" />
+          </div>
+        )}
         <div className="joe-product-badges">
           {product.discount_percentage > 0 ? (
             <button type="button" onClick={showPrice} className="joe-discount" aria-label={ar ? "تفاصيل الخصم" : "Discount details"}>−{product.discount_percentage}%</button>

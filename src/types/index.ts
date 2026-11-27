@@ -225,6 +225,7 @@ export type WhatsAppNotificationType =
   | 'order_confirmed'
   | 'admin_new_order'
   | 'payment_verified'
+  | 'processing'
   | 'shipped'
   | 'out_for_delivery'
   | 'delivered'
@@ -236,12 +237,32 @@ export interface WhatsAppTemplates {
   order_confirmed?: string;
   admin_new_order?: string;
   payment_verified?: string;
+  processing?: string;
   shipped?: string;
   out_for_delivery?: string;
   delivered?: string;
   cancelled?: string;
   review_request?: string;
 }
+
+export interface WhatsAppAutoTriggers {
+  admin_new_order?: boolean;
+  order_confirmed?: boolean;
+  payment_verified?: boolean;
+  processing?: boolean;
+  shipped?: boolean;
+  out_for_delivery?: boolean;
+  delivered?: boolean;
+  cancelled?: boolean;
+}
+
+export interface PolicyPageCustomDoc {
+  heading?: string;
+  intro?: string;
+  body?: string;
+}
+
+export type PolicyPagesConfig = Partial<Record<'terms' | 'privacy' | 'refund' | 'shipping', PolicyPageCustomDoc>>;
 
 export interface WhatsAppNotification {
   id: string;
@@ -309,6 +330,8 @@ export interface StoreSettings {
   auto_alert_admin_on_order?: boolean;
   admin_alert_whatsapp_number?: string;
   whatsapp_templates?: WhatsAppTemplates;
+  whatsapp_auto_triggers?: WhatsAppAutoTriggers;
+  policy_pages?: PolicyPagesConfig;
   meta_pixel_id?: string;
   meta_pixel_enabled?: boolean;
   payment_gateway_provider?: PaymentGatewayProvider;

@@ -9,6 +9,7 @@ import {
     dispatchWhatsAppViaCrm,
     ensureWhatsAppNotificationsTable,
     resolveCrmConfig,
+    resolveWhatsAppAutoTriggers,
     testWhatsAppCrmConnection
 } from './whatsappCrm.js';
 import { toAdminPaymentGatewayState, resolvePaymentGatewayConfig } from './paymentGateway.js';
@@ -1139,16 +1140,18 @@ async updateOrderStatus(
       try {
         const settings = await this.getStoreSettings();
         const crm = resolveCrmConfig(settings);
-        if (crm.autoSendOnStatusChange && ['shipped', 'out_for_delivery', 'delivered', 'cancelled'].includes(status)) {
+        const triggerKey = status === 'confirmed' ? 'order_confirmed' : status;
+        if (crm.shouldAutoSend(triggerKey as any) && ['confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'].includes(status)) {
           const orderRows = await sql`SELECT * FROM orders WHERE id = ${orderId} OR order_number = ${orderId} LIMIT 1;`;
           if (orderRows[0]) {
             const mappedOrder = mapRowToOrder(orderRows[0]);
             const recipient = mappedOrder.customer_whatsapp || mappedOrder.customer_phone;
-            const msgText = buildServerOrderWhatsAppMessage(status as any, mappedOrder, settings);
+            const msgType = status === 'confirmed' ? 'order_confirmed' : status;
+            const msgText = buildServerOrderWhatsAppMessage(msgType as any, mappedOrder, settings);
             await dispatchWhatsAppViaCrm(sql, {
               recipient,
               text: msgText,
-              type: status as any,
+              type: msgType as any,
               orderId: mappedOrder.id,
               orderNumber: mappedOrder.order_number,
               settings
@@ -1691,6 +1694,7 @@ async getWishlistGap(limit = 5): Promise<{ product_id: string; name_ar: string; 
       auto_send_on_order: crm.autoSendOnOrder,
       auto_send_on_status_change: crm.autoSendOnStatusChange,
       auto_alert_admin_on_order: crm.autoAlertAdminOnOrder,
+      whatsapp_auto_triggers: crm.triggers,
       admin_alert_whatsapp_number: settings.admin_alert_whatsapp_number || '',
       admin_alert_recipients: crm.adminAlertRecipients,
       whatsapp_templates: {
@@ -1713,14 +1717,34 @@ async getWishlistGap(limit = 5): Promise<{ product_id: string; name_ar: string; 
       if (typeof config.whatsapp_automation_pass === 'string' && config.whatsapp_automation_pass.trim()) {
         next.whatsapp_automation_pass = config.whatsapp_automation_pass;
       }
-      if (config.auto_send_on_order !== undefined) {
-        next.auto_send_on_order = Boolean(config.auto_send_on_order);
-      }
-      if (config.auto_send_on_status_change !== undefined) {
-        next.auto_send_on_status_change = Boolean(config.auto_send_on_status_change);
-      }
-      if (config.auto_alert_admin_on_order !== undefined) {
-        next.auto_alert_admin_on_order = Boolean(config.auto_alert_admin_on_order);
+      if (config.whatsapp_auto_triggers && typeof config.whatsapp_auto_triggers === 'object') {
+        const sanitizedTriggers = resolveWhatsAppAutoTriggers({
+          whatsapp_auto_triggers: {
+            ...resolveWhatsAppAutoTriggers(current),
+            ...config.whatsapp_auto_triggers
+          }
+        });
+        next.whatsapp_auto_triggers = sanitizedTriggers;
+        next.auto_alert_admin_on_order = sanitizedTriggers.admin_new_order;
+        next.auto_send_on_order = sanitizedTriggers.order_confirmed;
+        next.auto_send_on_status_change = Boolean(
+          sanitizedTriggers.payment_verified ||
+          sanitizedTriggers.processing ||
+          sanitizedTriggers.shipped ||
+          sanitizedTriggers.out_for_delivery ||
+          sanitizedTriggers.delivered ||
+          sanitizedTriggers.cancelled
+        );
+      } else {
+        if (config.auto_send_on_order !== undefined) {
+          next.auto_send_on_order = Boolean(config.auto_send_on_order);
+        }
+        if (config.auto_send_on_status_change !== undefined) {
+          next.auto_send_on_status_change = Boolean(config.auto_send_on_status_change);
+        }
+        if (config.auto_alert_admin_on_order !== undefined) {
+          next.auto_alert_admin_on_order = Boolean(config.auto_alert_admin_on_order);
+        }
       }
       if (config.admin_alert_whatsapp_number !== undefined) {
         next.admin_alert_whatsapp_number = String(config.admin_alert_whatsapp_number || '').trim();

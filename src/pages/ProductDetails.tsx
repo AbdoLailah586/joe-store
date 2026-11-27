@@ -578,21 +578,34 @@ export const ProductDetails: React.FC = () => {
                   onClick={() => setLightboxOpen(true)}
                   className="joe-detail-gallery aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative cursor-crosshair group select-none shadow-xl touch-pan-y"
                 >
-                  <img
-                    src={normalizeProductImage(product.images[selectedImage] || product.images[0])}
-                    onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
-                    alt={product.name_ar}
-                    className={`w-full h-full object-contain p-4 transition-transform duration-200 ${
-                      isZooming ? 'scale-125' : 'scale-100'
-                    }`}
-                    style={
-                      isZooming
-                        ? {
-                            transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
-                          }
-                        : undefined
-                    }
-                  />
+                  {product.images.map((img, idx) => (
+                    <div
+                      key={`${product.id}-main-${idx}`}
+                      className={`joe-gallery-slide absolute inset-0 flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        selectedImage === idx
+                          ? 'opacity-100 scale-100 translate-x-0 z-[1]'
+                          : idx < selectedImage
+                            ? 'opacity-0 scale-[0.96] -translate-x-5 pointer-events-none z-0'
+                            : 'opacity-0 scale-[0.96] translate-x-5 pointer-events-none z-0'
+                      }`}
+                    >
+                      <img
+                        src={normalizeProductImage(img)}
+                        onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
+                        alt={selectedImage === idx ? product.name_ar : ''}
+                        className={`w-full h-full object-contain p-4 mix-blend-multiply transition-transform duration-200 will-change-transform ${
+                          selectedImage === idx && isZooming ? 'scale-125' : 'scale-100'
+                        }`}
+                        style={
+                          selectedImage === idx && isZooming
+                            ? {
+                                transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+                              }
+                            : undefined
+                        }
+                      />
+                    </div>
+                  ))}
 
                   {/* Badges on Main Image */}
                   <div className="absolute top-3 right-3 flex flex-col gap-1.5 pointer-events-none z-10">
@@ -616,7 +629,7 @@ export const ProductDetails: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Mobile Navigation Arrows */}
+                  {/* Gallery Navigation Arrows (Mobile always visible + Desktop gentle reveal on hover) */}
                   {product.images.length > 1 && (
                     <>
                       <button
@@ -626,7 +639,7 @@ export const ProductDetails: React.FC = () => {
                           setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length);
                         }}
                         aria-label="الصورة السابقة"
-                        className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 text-slate-800 shadow-md flex items-center justify-center z-10 transition-transform active:scale-90"
+                        className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-md flex items-center justify-center z-10 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 active:scale-90"
                       >
                         <ChevronLeft className="w-5 h-5" />
                       </button>
@@ -637,7 +650,7 @@ export const ProductDetails: React.FC = () => {
                           setSelectedImage((prev) => (prev + 1) % product.images.length);
                         }}
                         aria-label="الصورة التالية"
-                        className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 text-slate-800 shadow-md flex items-center justify-center z-10 transition-transform active:scale-90"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-md flex items-center justify-center z-10 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 active:scale-90"
                       >
                         <ChevronRight className="w-5 h-5" />
                       </button>
@@ -664,7 +677,7 @@ export const ProductDetails: React.FC = () => {
                       e.stopPropagation();
                       setLightboxOpen(true);
                     }}
-                    className="hidden md:flex absolute bottom-3 left-3 p-2 rounded-xl bg-white/95 hover:bg-white text-slate-900 backdrop-blur-md border border-slate-200 transition-all opacity-80 group-hover:opacity-100"
+                    className="hidden md:flex absolute bottom-3 left-3 p-2 rounded-xl bg-white/95 hover:bg-white text-slate-900 backdrop-blur-md border border-slate-200 transition-all opacity-80 group-hover:opacity-100 z-10"
                     title="تكبير الصورة بالحجم الكامل"
                   >
                     <Maximize2 className="w-4 h-4" />
@@ -1906,13 +1919,46 @@ export const ProductDetails: React.FC = () => {
             </button>
           </div>
 
-          {/* Main big image */}
-          <div className="flex-1 flex items-center justify-center p-4 overflow-hidden">
-            <img
-              src={normalizeProductImage(product.images[selectedImage] || product.images[0])}
-              alt=""
-              className="max-h-[75vh] max-w-full object-contain drop-shadow-2xl"
-            />
+          {/* Main big image with smooth transitions */}
+          <div className="flex-1 flex items-center justify-center p-4 overflow-hidden relative group">
+            {product.images.map((img, idx) => (
+              <div
+                key={`${product.id}-lb-${idx}`}
+                className={`absolute inset-4 flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  selectedImage === idx
+                    ? 'opacity-100 scale-100 translate-x-0 z-[1]'
+                    : idx < selectedImage
+                      ? 'opacity-0 scale-95 -translate-x-6 pointer-events-none z-0'
+                      : 'opacity-0 scale-95 translate-x-6 pointer-events-none z-0'
+                }`}
+              >
+                <img
+                  src={normalizeProductImage(img)}
+                  alt=""
+                  className="max-h-[75vh] max-w-full object-contain drop-shadow-2xl"
+                />
+              </div>
+            ))}
+            {product.images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length)}
+                  aria-label="الصورة السابقة"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-900 shadow-lg flex items-center justify-center z-10 transition-transform active:scale-90"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedImage((prev) => (prev + 1) % product.images.length)}
+                  aria-label="الصورة التالية"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-900 shadow-lg flex items-center justify-center z-10 transition-transform active:scale-90"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Bottom Thumbnails */}

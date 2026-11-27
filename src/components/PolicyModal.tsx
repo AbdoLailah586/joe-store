@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { X, ShieldCheck, FileText, Truck, Lock, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useStore } from '../context/StoreContext';
+import type { PolicyKey } from '../utils/policyDefaults';
 
 export type PolicyType = 'warranty' | 'privacy' | 'terms' | 'shipping' | null;
 
@@ -11,6 +13,7 @@ interface PolicyModalProps {
 
 export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => {
   const { language } = useLanguage();
+  const { settings } = useStore();
 
   useEffect(() => {
     if (!policy) return;
@@ -142,6 +145,21 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
     }
   }[policy];
 
+  const mappedKey: PolicyKey = policy === 'warranty' ? 'refund' : policy;
+  const customDoc = settings?.policy_pages?.[mappedKey];
+  const displayTitle =
+    language === 'ar' && customDoc?.heading?.trim()
+      ? customDoc.heading.trim()
+      : language === 'ar'
+        ? content.title_ar
+        : content.title_en;
+  const displayBody =
+    language === 'ar' && customDoc?.body?.trim()
+      ? [customDoc.intro?.trim(), customDoc.body.trim()].filter(Boolean).join('\n\n')
+      : language === 'ar'
+        ? content.text_ar
+        : content.text_en;
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
       <div
@@ -161,7 +179,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
           </div>
           <div>
             <h2 className="text-lg font-bold text-slate-900 leading-snug">
-              {language === 'ar' ? content.title_ar : content.title_en}
+              {displayTitle}
             </h2>
             <p className="text-xs text-amber-700 font-semibold mt-0.5">
               متجر جو ستور (JOE Store) - المنصورة
@@ -170,7 +188,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
         </div>
 
         <div className="text-xs text-slate-600 leading-relaxed max-h-[60vh] overflow-y-auto whitespace-pre-wrap pr-1 space-y-2">
-          {language === 'ar' ? content.text_ar : content.text_en}
+          {displayBody}
         </div>
 
         <div className="pt-4 border-t border-slate-200 flex justify-end">

@@ -12,11 +12,71 @@ import {
 } from 'lucide-react';
 import { neonDb } from '../../services/neonDb';
 import { generateWhatsAppWebLink } from '../../utils/whatsappService';
+import type { WhatsAppAutoTriggers } from '../../types';
+
+const AUTO_TRIGGER_OPTIONS: Array<{
+  key: keyof WhatsAppAutoTriggers;
+  title: string;
+  desc: string;
+}> = [
+  {
+    key: 'admin_new_order',
+    title: 'تنبيه الإدارة عند وصول طلب جديد (للأدمن)',
+    desc: 'يرسل رسالة فورية لأرقام الإدارة فور تسجيل طلب جديد.'
+  },
+  {
+    key: 'order_confirmed',
+    title: 'تأكيد الأوردر للعميل (Confirm Order)',
+    desc: 'يرسل للعميل رسالة تأكيد استلام/اعتماد الطلب.'
+  },
+  {
+    key: 'payment_verified',
+    title: 'تأكيد الدفع للعميل (Payment Confirmed)',
+    desc: 'يرسل للعميل رسالة تأكيد الدفع عند مراجعته أو سداده.'
+  },
+  {
+    key: 'processing',
+    title: 'تسليم الطلب لشركة الشحن (Processing)',
+    desc: 'يرسل للعميل عند تجهيز المحل للطلب وتحويله لشركة الشحن.'
+  },
+  {
+    key: 'shipped',
+    title: 'تم شحن الطلب مع الشركة (Shipped)',
+    desc: 'يرسل للعميل عند تأكيد شحن الأوردر مع شركة الشحن.'
+  },
+  {
+    key: 'out_for_delivery',
+    title: 'خرج للتوصيل اليوم (Out for Delivery)',
+    desc: 'يرسل للعميل عند خروج الشحنة مع المندوب اليوم.'
+  },
+  {
+    key: 'delivered',
+    title: 'تم التوصيل بنجاح (Delivered)',
+    desc: 'يرسل للعميل رسالة التسليم وتفعيل الضمان.'
+  },
+  {
+    key: 'cancelled',
+    title: 'إلغاء الطلب (Cancelled)',
+    desc: 'يرسل للعميل إشعاراً عند إلغاء الطلب.'
+  }
+];
+
+const DEFAULT_TRIGGERS_STATE: WhatsAppAutoTriggers = {
+  admin_new_order: false,
+  order_confirmed: false,
+  payment_verified: false,
+  processing: false,
+  shipped: false,
+  out_for_delivery: false,
+  delivered: false,
+  cancelled: false,
+};
 
 const TEMPLATE_LABELS: Array<{ key: string; title: string; varsHint: string }> = [
   { key: 'admin_new_order', title: 'تنبيه الإدارة الفوري عند وصول طلب جديد (للأدمن)', varsHint: '{order_number} {customer_name} {customer_phone} {customer_wa_link} {items} {total} {payment_method}' },
   { key: 'order_confirmed', title: 'رسالة تأكيد استلام الطلب (للعميل)', varsHint: '{customer_name} {order_number} {items} {shipping_fee} {total} {payment_method} {address}' },
   { key: 'payment_verified', title: 'رسالة تأكيد استلام ومراجعة الدفع', varsHint: '{customer_name} {order_number} {total}' },
+  { key: 'processing', title: 'رسالة تجهيز الطلب وتسليمه لشركة الشحن', varsHint: '{customer_name} {order_number} {courier_name} {governorate}' },
   { key: 'shipped', title: 'رسالة خروج الطلب للشحن', varsHint: '{customer_name} {order_number} {courier_name} {governorate} {cod_due}' },
   { key: 'out_for_delivery', title: 'رسالة خرج للتوصيل اليوم مع المندوب', varsHint: '{customer_name} {order_number} {cod_due}' },
   { key: 'delivered', title: 'رسالة تم التسليم بنجاح + تفعيل الضمان', varsHint: '{customer_name} {order_number}' },
@@ -30,9 +90,7 @@ export const WhatsAppCrmAdminSection: React.FC = () => {
   const [password, setPassword] = useState('');
   const [hasPassword, setHasPassword] = useState(false);
   const [configured, setConfigured] = useState(false);
-  const [autoOrder, setAutoOrder] = useState(true);
-  const [autoStatus, setAutoStatus] = useState(true);
-  const [autoAlertAdmin, setAutoAlertAdmin] = useState(true);
+  const [triggers, setTriggers] = useState<WhatsAppAutoTriggers>(DEFAULT_TRIGGERS_STATE);
   const [adminNumbers, setAdminNumbers] = useState('');
   const [templates, setTemplates] = useState<Record<string, string>>({});
   const [logs, setLogs] = useState<any[]>([]);
@@ -53,9 +111,20 @@ export const WhatsAppCrmAdminSection: React.FC = () => {
         setEmail(cfg.whatsapp_automation_email || '');
         setHasPassword(Boolean(cfg.has_password));
         setConfigured(Boolean(cfg.configured));
-        setAutoOrder(cfg.auto_send_on_order !== false);
-        setAutoStatus(cfg.auto_send_on_status_change !== false);
-        setAutoAlertAdmin(cfg.auto_alert_admin_on_order !== false);
+        if (cfg.whatsapp_auto_triggers && typeof cfg.whatsapp_auto_triggers === 'object') {
+          setTriggers({ ...DEFAULT_TRIGGERS_STATE, ...cfg.whatsapp_auto_triggers });
+        } else {
+          setTriggers({
+            admin_new_order: cfg.auto_alert_admin_on_order === true,
+            order_confirmed: cfg.auto_send_on_order === true,
+            payment_verified: cfg.auto_send_on_status_change === true,
+            processing: cfg.auto_send_on_status_change === true,
+            shipped: cfg.auto_send_on_status_change === true,
+            out_for_delivery: cfg.auto_send_on_status_change === true,
+            delivered: cfg.auto_send_on_status_change === true,
+            cancelled: cfg.auto_send_on_status_change === true,
+          });
+        }
         setAdminNumbers(cfg.admin_alert_whatsapp_number || '');
         setTemplates(cfg.whatsapp_templates || {});
       }
@@ -67,6 +136,19 @@ export const WhatsAppCrmAdminSection: React.FC = () => {
     void loadAll();
   }, []);
 
+  const setAllTriggers = (enabled: boolean) => {
+    setTriggers({
+      admin_new_order: enabled,
+      order_confirmed: enabled,
+      payment_verified: enabled,
+      processing: enabled,
+      shipped: enabled,
+      out_for_delivery: enabled,
+      delivered: enabled,
+      cancelled: enabled,
+    });
+  };
+
   const handleSave = async () => {
     setBusy(true);
     setBanner(null);
@@ -75,9 +157,17 @@ export const WhatsAppCrmAdminSection: React.FC = () => {
         whatsapp_automation_url: url.trim(),
         whatsapp_automation_email: email.trim(),
         ...(password.trim() ? { whatsapp_automation_pass: password } : {}),
-        auto_send_on_order: autoOrder,
-        auto_send_on_status_change: autoStatus,
-        auto_alert_admin_on_order: autoAlertAdmin,
+        whatsapp_auto_triggers: triggers,
+        auto_send_on_order: triggers.order_confirmed,
+        auto_send_on_status_change: Boolean(
+          triggers.payment_verified ||
+          triggers.processing ||
+          triggers.shipped ||
+          triggers.out_for_delivery ||
+          triggers.delivered ||
+          triggers.cancelled
+        ),
+        auto_alert_admin_on_order: triggers.admin_new_order,
         admin_alert_whatsapp_number: adminNumbers.trim(),
         whatsapp_templates: templates
       });
@@ -193,22 +283,13 @@ export const WhatsAppCrmAdminSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Admin Instant Order Alert Setting */}
-        <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-3 text-xs">
+        {/* Admin Instant Order Alert Number + Per-Event Checkboxes */}
+        <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2.5 text-xs">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <strong className="text-amber-950 font-black flex items-center gap-1.5">
               <BellRing className="w-4 h-4 text-amber-700" />
-              <span>أرقام واتساب الإدارة لاستلام تنبيه فوري عند أي أوردر جديد</span>
+              <span>أرقام واتساب الإدارة لاستلام تنبيه الطلب الجديد (اختياري)</span>
             </strong>
-            <label className="flex items-center gap-2 cursor-pointer font-bold text-slate-800">
-              <input
-                type="checkbox"
-                checked={autoAlertAdmin}
-                onChange={e => setAutoAlertAdmin(e.target.checked)}
-                className="accent-amber-600"
-              />
-              <span>إرسال رسالة واتساب للأدمن مع كل أوردر جديد</span>
-            </label>
           </div>
           <input
             type="text"
@@ -219,31 +300,75 @@ export const WhatsAppCrmAdminSection: React.FC = () => {
             className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 font-mono text-slate-900"
           />
           <p className="text-[11px] text-amber-900">
-            تصل الرسالة لرقم الأدمن متضمنة اسم العميل وهاتفه والمنتجات والعنوان وطريقة الدفع ورابط محادثة مباشر للعميل للتواصل والتأكيد فوراً.
+            تصل الرسالة لأرقام الإدارة عند تفعيل مربع «تنبيه الإدارة عند وصول طلب جديد» أدناه.
           </p>
         </div>
 
-        {/* Automation Toggles */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <label className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 cursor-pointer">
-            <input type="checkbox" checked={autoOrder} onChange={e => setAutoOrder(e.target.checked)} className="accent-amber-600" />
+        {/* Granular Per-Event Auto-Send Checkboxes */}
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <strong className="text-slate-900 block">إرسال تأكيد تلقائي للعميل عند الطلب</strong>
-              <span className="text-[11px] text-slate-600">يرسل فاتورة الطلب وخريطة الموقع فور تسجيل الطلب.</span>
+              <strong className="text-slate-900 text-sm font-black block">
+                التحكم الفردي في الإرسال التلقائي عبر واتساب (هل يتعمل ولا ميتعملش؟)
+              </strong>
+              <p className="text-[11px] text-slate-600 mt-0.5">
+                أي مربع غير محدد يعني لن يتم إرسال رسالته تلقائياً، ويمكنك إرسالها يدوياً من نافذة الطلب وقتما تشاء.
+              </p>
             </div>
-          </label>
-          <label className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 cursor-pointer">
-            <input type="checkbox" checked={autoStatus} onChange={e => setAutoStatus(e.target.checked)} className="accent-amber-600" />
-            <div>
-              <strong className="text-slate-900 block">إرسال إشعار تلقائي عند تغيّر الحالة أو تأكيد الدفع</strong>
-              <span className="text-[11px] text-slate-600">تأكيد الدفع، الشحن، التوصيل اليوم، الإلغاء، أو التسليم.</span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setAllTriggers(true)}
+                className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-[11px]"
+              >
+                تفعيل الكل تلقائياً
+              </button>
+              <button
+                type="button"
+                onClick={() => setAllTriggers(false)}
+                className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-[11px]"
+              >
+                إيقاف التلقائي للكل (يدوي فقط)
+              </button>
             </div>
-          </label>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            {AUTO_TRIGGER_OPTIONS.map(opt => {
+              const checked = Boolean(triggers[opt.key]);
+              return (
+                <label
+                  key={opt.key}
+                  className={`flex items-start gap-3 p-3 rounded-2xl border cursor-pointer transition ${
+                    checked
+                      ? 'bg-emerald-50/70 border-emerald-300'
+                      : 'bg-white border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={e =>
+                      setTriggers(prev => ({
+                        ...prev,
+                        [opt.key]: e.target.checked
+                      }))
+                    }
+                    className="mt-0.5 w-4 h-4 accent-amber-600"
+                  />
+                  <div className="min-w-0">
+                    <strong className="text-slate-900 block leading-snug">{opt.title}</strong>
+                    <span className="text-[11px] text-slate-600 block mt-0.5">{opt.desc}</span>
+                  </div>
+                </label>
+              );
+            })}
+          </div>
         </div>
 
         {/* Templates */}
         <details className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 text-xs">
-          <summary className="cursor-pointer font-black text-slate-900">تخصيص قوالب رسائل الواتساب (8 قوالب)</summary>
+          <summary className="cursor-pointer font-black text-slate-900">تخصيص قوالب رسائل الواتساب (9 قوالب)</summary>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-4">
             {TEMPLATE_LABELS.map(tpl => (
               <div key={tpl.key} className="space-y-1.5 bg-white p-3 rounded-xl border border-slate-200">

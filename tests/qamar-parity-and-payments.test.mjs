@@ -35,6 +35,7 @@ const paymentGateway = compile('server/paymentGateway.ts', { './whatsappCrm.js':
 const visitorAttribution = compile('src/utils/visitorAttribution.ts');
 const adLinks = compile('src/utils/adLinks.ts');
 const metaPixel = compile('src/utils/metaPixel.ts');
+const policyDefaults = compile('src/utils/policyDefaults.ts');
 const whatsappClient = compile('src/utils/whatsappService.ts', { './browserStorage': { readStoredArray: () => [], writeStoredJson: () => true, isStoredNotification: () => true } });
 
 test('payment gateway strips secret keys and detects configuration cleanly', () => {
@@ -124,8 +125,8 @@ test('Kashier HMAC redirect verification and Paymob HMAC verification accept val
   assert.equal(paymentGateway.verifyPaymobHmac(paymobObj, validPaymobHmac, hmacSecret), true);
   assert.equal(paymentGateway.verifyPaymobHmac({ ...paymobObj, amount_cents: 1 }, validPaymobHmac, hmacSecret), false);
 
-  // Callback marks order paid and fires WhatsApp verification notice
-  const waSent = [];
+  // Callback marks order paid and fires WhatsApp ONLY when payment_verified trigger is checked
+  const waSkipped = [];
   const updatedOrders = [];
   const mockSql = Object.assign(
     async (strings) => {
@@ -140,7 +141,7 @@ test('Kashier HMAC redirect verification and Paymob HMAC verification accept val
     { query: async () => [] }
   );
 
-  const cb = await paymentGateway.processPaymentGatewayCallback({
+  const cbOff = await paymentGateway.processPaymentGatewayCallback({
     sql: mockSql,
     provider: 'kashier',
     method: 'GET',
@@ -156,14 +157,41 @@ test('Kashier HMAC redirect verification and Paymob HMAC verification accept val
       whatsapp_automation_pass: 'pass123'
     },
     dispatchWhatsApp: async (_sql, payload) => {
+      waSkipped.push(payload);
+      return { success: true, status: 'sent', waLink: 'https://wa.me/201012345678' };
+    }
+  });
+  assert.equal(cbOff.verified, true);
+  assert.equal(cbOff.paid, true);
+  assert.equal(waSkipped.length, 0);
+
+  const waSent = [];
+  const cbOn = await paymentGateway.processPaymentGatewayCallback({
+    sql: mockSql,
+    provider: 'kashier',
+    method: 'GET',
+    headers: {},
+    query: { ...queryParams, signature: validSig },
+    body: {},
+    settings: {
+      payment_gateway_provider: 'kashier',
+      payment_gateway_merchant_id: 'MID-1234',
+      payment_gateway_api_key: apiKey,
+      whatsapp_automation_url: 'https://crm.example.com',
+      whatsapp_automation_email: 'crm@example.com',
+      whatsapp_automation_pass: 'pass123',
+      whatsapp_auto_triggers: { payment_verified: true }
+    },
+    dispatchWhatsApp: async (_sql, payload) => {
       waSent.push(payload);
       return { success: true, status: 'sent', waLink: 'https://wa.me/201012345678' };
     }
   });
 
-  assert.equal(cb.verified, true);
-  assert.equal(cb.paid, true);
-  assert.equal(updatedOrders.length, 1);
+  assert.equal(cbOn.verified, true);
+  assert.equal(cbOn.paid, true);
+  assert.equal(updatedOrders.length, 2);
+  assert.equal(waSent.length, 1);
   assert.equal(waSent[0].type, 'payment_verified');
 });
 
@@ -302,22 +330,138 @@ test('Liquid Glass Floating Capsule Dock and Policy Pages render cleanly', () =>
   assert.match(navSrc, /bottom-\[max\(14px,env\(safe-area-inset-bottom\)\)\]/);
   assert.match(navSrc, /rounded-full/);
 
-  const policySrc = fs.readFileSync(new URL('../src/pages/PolicyPage.tsx', import.meta.url), 'utf8');
-  assert.match(policySrc, /الشروط والأحكام/);
-  assert.match(policySrc, /سياسة الخصوصية/);
-  assert.match(policySrc, /سياسة الضمان والاستبدال والاسترجاع/);
-  assert.match(policySrc, /سياسة الشحن ومواعيد التوصيل/);
+  const policyDefaultsSrc = fs.readFileSync(new URL('../src/utils/policyDefaults.ts', import.meta.url), 'utf8');
+  assert.match(policyDefaultsSrc, /الشروط والأحكام/);
+  assert.match(policyDefaultsSrc, /سياسة الخصوصية/);
+  assert.match(policyDefaultsSrc, /سياسة الضمان والاستبدال والاسترجاع/);
+  assert.match(policyDefaultsSrc, /سياسة الشحن ومواعيد التوصيل/);
 
   const iconsMod = new Proxy({}, { get: (_, name) => name === '__esModule' ? true : () => React.createElement('svg') });
   const { PolicyPage } = compile('src/pages/PolicyPage.tsx', {
     'lucide-react': iconsMod,
-    '../context/StoreContext': { useStore: () => ({ navigate: () => {}, settings: { store_phone: '01554826209', store_address_ar: 'المنصورة' } }) },
+    '../context/StoreContext': {
+      useStore: () => ({
+        navigate: () => {},
+        settings: {
+          store_phone: '01554826209',
+          store_address_ar: 'المنصورة',
+          policy_pages: {
+            terms: {
+              heading: 'شروط مخصصة من لوحة الإدارة',
+              intro: 'مقدمة محدثة للعميل',
+              body: '### بند مخصص\n- التزام كامل بالفحص قبل الاستلام'
+            }
+          }
+        }
+      })
+    },
     '../context/LanguageContext': { useLanguage: () => ({ language: 'ar', formatPrice: v => `${v} ج.م` }) },
-    '../utils/whatsappService': { generateWhatsAppWebLink: () => 'https://wa.me/201554826209' }
+    '../utils/whatsappService': { generateWhatsAppWebLink: () => 'https://wa.me/201554826209' },
+    '../utils/policyDefaults': policyDefaults
   });
   const html = renderToString(React.createElement(PolicyPage, { activePolicy: 'privacy' }));
   assert.match(html, /سياسة الخصوصية/);
   assert.match(html, /المنصورة/);
+  const customTermsHtml = renderToString(React.createElement(PolicyPage, { activePolicy: 'terms' }));
+  assert.match(customTermsHtml, /شروط مخصصة من لوحة الإدارة/);
+  assert.match(customTermsHtml, /مقدمة محدثة للعميل/);
+  assert.match(customTermsHtml, /التزام كامل بالفحص قبل الاستلام/);
+});
+
+test('WhatsApp per-event checkboxes default to disabled and gate createOrder & updateOrderState individually', async () => {
+  const defaultCfg = whatsappCrm.resolveCrmConfig({
+    whatsapp_automation_url: 'https://crm.example.com',
+    whatsapp_automation_email: 'crm@example.com',
+    whatsapp_automation_pass: 'pass123'
+  });
+  for (const key of ['admin_new_order', 'order_confirmed', 'payment_verified', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled']) {
+    assert.equal(defaultCfg.shouldAutoSend(key), false, `Expected ${key} to default to false`);
+  }
+
+  const dispatched = [];
+  const fakeCrm = {
+    ...whatsappCrm,
+    dispatchWhatsAppViaCrm: async (_sql, payload) => {
+      dispatched.push(payload.type);
+      return { success: true };
+    }
+  };
+  const { execute } = compile('api/store.ts', {
+    '../server/store.js': { neonDb: {}, mapRowToOrder: r => r, logAudit: async () => {} },
+    '../server/whatsappCrm.js': fakeCrm,
+    '../server/paymentGateway.js': paymentGateway,
+    '../lib/access.js': access,
+    '../src/utils/deliveryAddress.js': address,
+    '../server/orderWrites.js': { saveOrder: async () => true, cancelOrder: async () => true },
+    '../lib/totp.js': totp,
+    '../lib/session.js': { database: () => ({}), currentUser: () => null, passwordMatches, passwordHash, pendingSecondFactor: async () => null, issueSession: async () => {} }
+  });
+
+  const adminUser = { id: 'adm-1', role: 'admin', admin_sections: ['orders', 'whatsapp'] };
+  const sampleOrder = {
+    id: 'ord-wa-1',
+    order_number: 'JOE-77112',
+    customer_name: 'محمود عادل',
+    customer_phone: '01011223344',
+    customer_whatsapp: '01011223344',
+    address_details: 'المنصورة',
+    items: [{ product: { id: 'p1', name_ar: 'شاحن', price: 300 }, quantity: 1 }],
+    subtotal: 300,
+    shipping_fee: 35,
+    discount: 0,
+    total: 335,
+    payment_method: 'cod'
+  };
+  const mockSql = Object.assign(
+    async (strings) => (/SELECT \* FROM orders/i.test(strings.join('?')) ? [sampleOrder] : []),
+    { query: async () => [] }
+  );
+
+  // Checkboxes: only shipping & customer confirmation enabled; processing & delivered & admin alert disabled
+  const selectiveSettings = {
+    whatsapp_automation_url: 'https://crm.example.com',
+    whatsapp_automation_email: 'crm@example.com',
+    whatsapp_automation_pass: 'pass123',
+    admin_alert_whatsapp_number: '01554826209',
+    whatsapp_auto_triggers: {
+      admin_new_order: false,
+      order_confirmed: true,
+      payment_verified: false,
+      processing: false,
+      shipped: true,
+      out_for_delivery: false,
+      delivered: false,
+      cancelled: false
+    }
+  };
+
+  await execute({}, { setHeader() {} }, { method: 'createOrder', args: [sampleOrder] }, {
+    user: null,
+    sql: mockSql,
+    store: { getStoreSettings: async () => selectiveSettings }
+  });
+  await execute({}, { setHeader() {} }, { method: 'updateOrderState', args: ['JOE-77112', { payment_status: 'verified' }] }, {
+    user: adminUser,
+    sql: mockSql,
+    store: { getStoreSettings: async () => selectiveSettings }
+  });
+  await execute({}, { setHeader() {} }, { method: 'updateOrderState', args: ['JOE-77112', { order_status: 'processing' }] }, {
+    user: adminUser,
+    sql: mockSql,
+    store: { getStoreSettings: async () => selectiveSettings }
+  });
+  await execute({}, { setHeader() {} }, { method: 'updateOrderState', args: ['JOE-77112', { order_status: 'shipped' }] }, {
+    user: adminUser,
+    sql: mockSql,
+    store: { getStoreSettings: async () => selectiveSettings }
+  });
+  await execute({}, { setHeader() {} }, { method: 'updateOrderState', args: ['JOE-77112', { order_status: 'delivered' }] }, {
+    user: adminUser,
+    sql: mockSql,
+    store: { getStoreSettings: async () => selectiveSettings }
+  });
+
+  assert.deepEqual(dispatched, ['order_confirmed', 'shipped']);
 });
 
 test('consolidated feeds generate sitemap XML and Meta CSV/XML while keeping api/ within Hobby 12-function limit', async () => {
@@ -361,4 +505,20 @@ test('consolidated feeds generate sitemap XML and Meta CSV/XML while keeping api
   await feeds.handleMetaFeed({ url: '/meta-feed.csv?format=csv', headers: { host: 'joestore.eg' } }, csv.res, { products: sampleProducts });
   assert.match(csv.out.body, /55000\.00 EGP/);
   assert.match(csv.out.body, /https:\/\/joestore\.eg\/product\/prod-iphone-15/);
+});
+
+test('smooth image and banner transitions are configured across Home hero, ProductCard hover, QuickView, and ProductDetails', () => {
+  const homeSrc = fs.readFileSync(new URL('../src/pages/Home.tsx', import.meta.url), 'utf8');
+  assert.match(homeSrc, /cubic-bezier\(0\.22,1,0\.36,1\)/);
+  assert.match(homeSrc, /gridArea:\s*"1 \/ 1"/);
+
+  const cardSrc = fs.readFileSync(new URL('../src/components/ProductCard.tsx', import.meta.url), 'utf8');
+  assert.match(cardSrc, /joe-secondary-img/);
+  assert.match(cardSrc, /is-multi-img/);
+
+  const detailSrc = fs.readFileSync(new URL('../src/pages/ProductDetails.tsx', import.meta.url), 'utf8');
+  assert.match(detailSrc, /joe-gallery-slide/);
+
+  const qvSrc = fs.readFileSync(new URL('../src/components/QuickViewModal.tsx', import.meta.url), 'utf8');
+  assert.match(qvSrc, /cubic-bezier\(0\.22,1,0\.36,1\)/);
 });
