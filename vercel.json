@@ -6,15 +6,23 @@
     },
     {
       "source": "/sitemap.xml",
-      "destination": "/api/sitemap"
+      "destination": "/api/og-product?kind=sitemap"
+    },
+    {
+      "source": "/api/sitemap",
+      "destination": "/api/og-product?kind=sitemap"
     },
     {
       "source": "/meta-feed.csv",
-      "destination": "/api/meta-feed?format=csv"
+      "destination": "/api/og-product?kind=feed&format=csv"
     },
     {
       "source": "/meta-feed.xml",
-      "destination": "/api/meta-feed?format=xml"
+      "destination": "/api/og-product?kind=feed&format=xml"
+    },
+    {
+      "source": "/api/meta-feed",
+      "destination": "/api/og-product?kind=feed"
     }
   ],
   "headers": [

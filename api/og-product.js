@@ -1,4 +1,5 @@
 import { neon } from '@neondatabase/serverless';
+import { handleSitemap, handleMetaFeed } from '../server/feeds.js';
 
 // Instant in-memory fallback for key products to ensure 0ms latency and high reliability
 const FALLBACK_PRODUCTS = {
@@ -30,8 +31,13 @@ function escapeHtml(str) {
 }
 
 export default async function handler(req, res) {
-  const { id } = req.query;
-  const productId = (id || '').trim();
+  const reqUrl = new URL(req.url || '/api/og-product', 'http://localhost');
+  const kind = String(req.query?.kind || reqUrl.searchParams.get('kind') || '').trim().toLowerCase();
+  if (kind === 'sitemap') return handleSitemap(req, res);
+  if (kind === 'feed') return handleMetaFeed(req, res);
+
+  const { id } = req.query || {};
+  const productId = (id || reqUrl.searchParams.get('id') || '').trim();
 
   // Determine host and protocol
   const host = req.headers['x-forwarded-host'] || req.headers['host'] || 'joe-store-2026.vercel.app';

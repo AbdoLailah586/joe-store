@@ -8,8 +8,7 @@ import googleAuthHandler from './api/google-auth.js';
 import storeHandler from './api/store';
 import healthHandler from './api/health.js';
 import ogProductHandler from './api/og-product.js';
-import metaFeedHandler from './api/meta-feed.js';
-import sitemapHandler from './api/sitemap.js';
+import { handleMetaFeed as metaFeedHandler, handleSitemap as sitemapHandler } from './server/feeds.js';
 import paymentCallbackHandler from './api/payment-callback';
 
 // Ensure .env is populated into process.env in Vite Dev Server

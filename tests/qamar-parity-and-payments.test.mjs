@@ -319,3 +319,46 @@ test('Liquid Glass Floating Capsule Dock and Policy Pages render cleanly', () =>
   assert.match(html, /سياسة الخصوصية/);
   assert.match(html, /المنصورة/);
 });
+
+test('consolidated feeds generate sitemap XML and Meta CSV/XML while keeping api/ within Hobby 12-function limit', async () => {
+  const apiFiles = fs.readdirSync(new URL('../api', import.meta.url));
+  assert.ok(apiFiles.length <= 12, `Expected <= 12 Vercel api functions, found ${apiFiles.length}: ${apiFiles.join(', ')}`);
+
+  const feeds = await import('../server/feeds.js');
+  const sampleProducts = [
+    {
+      id: 'prod-iphone-15',
+      name_ar: 'آيفون 15 برو',
+      name_en: 'iPhone 15 Pro',
+      brand: 'Apple',
+      category: 'smartphones',
+      price: 55000,
+      stock_quantity: 5,
+      images: ['/product-images/iphone15.jpg'],
+      specs: { description_ar: 'جهاز أصلي' }
+    }
+  ];
+
+  const mkRes = () => {
+    const out = { headers: {}, statusCode: 200, body: '' };
+    return {
+      out,
+      res: {
+        setHeader(k, v) { out.headers[k] = v; },
+        status(code) { out.statusCode = code; return this; },
+        send(txt) { out.body = txt; return this; }
+      }
+    };
+  };
+
+  const s = mkRes();
+  await feeds.handleSitemap({ headers: { host: 'joestore.eg' } }, s.res, { products: sampleProducts });
+  assert.equal(s.out.statusCode, 200);
+  assert.match(s.out.body, /<loc>https:\/\/joestore\.eg\/privacy-policy<\/loc>/);
+  assert.match(s.out.body, /<loc>https:\/\/joestore\.eg\/product\/prod-iphone-15<\/loc>/);
+
+  const csv = mkRes();
+  await feeds.handleMetaFeed({ url: '/meta-feed.csv?format=csv', headers: { host: 'joestore.eg' } }, csv.res, { products: sampleProducts });
+  assert.match(csv.out.body, /55000\.00 EGP/);
+  assert.match(csv.out.body, /https:\/\/joestore\.eg\/product\/prod-iphone-15/);
+});
