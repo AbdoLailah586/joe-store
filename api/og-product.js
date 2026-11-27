@@ -61,9 +61,9 @@ export default async function handler(req, res) {
     }
   }
 
-  // Detect whether request is from a social crawler (WhatsApp, Facebook, Twitter, Telegram, etc.)
+  // Detect whether request is from a social crawler (WhatsApp, Facebook, Instagram, TikTok, Twitter, Telegram, etc.)
   const userAgent = req.headers['user-agent'] || '';
-  const isCrawler = /whatsapp|facebookexternalhit|facebot|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|applebot|bingbot|google-structured-data-testing-tool/i.test(userAgent);
+  const isCrawler = /whatsapp|facebookexternalhit|facebot|instagram|tiktok|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|applebot|bingbot|pinterest|google-structured-data-testing-tool/i.test(userAgent);
 
   // If a regular user/browser directly requested /api/og-product?id=..., redirect them to the real product page
   if (!isCrawler && req.url && req.url.startsWith('/api/')) {

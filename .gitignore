@@ -36,7 +36,7 @@ lerna-debug.log*
 *credentials*.json
 *secret*.json
 token.json
-data/
+/data/
 backups/
 catalog_intake/incoming/*
 !catalog_intake/incoming/.gitkeep

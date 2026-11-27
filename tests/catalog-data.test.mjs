@@ -23,7 +23,7 @@ function compile(relative, mocks, transform = value => value) {
   return module.exports;
 }
 const deliveryHelpers = compile('src/utils/deliveryAddress.ts', {});
-const { neonDb } = compile('server/store.ts', { './orderWrites.js': {}, '@neondatabase/serverless': { neon: () => sql } },
+const { neonDb } = compile('server/store.ts', { './orderWrites.js': {}, './whatsappCrm.js': {}, './paymentGateway.js': {}, '@neondatabase/serverless': { neon: () => sql } },
   source => source.replace(/const DB_URL\s*=[\s\S]*?const sql = neon\(DB_URL\);/, 'const sql = neon("mock://catalog");'));
 const row = (id = 'prod-pos-0', details = {}) => ({ id, name_ar: 'صنف', name_en: 'Item', category: 'audio',
   brand: 'Brand', price: '0', cost_price: '0', stock_quantity: 0, old_price: null,
@@ -139,6 +139,7 @@ const noop = () => {};
 const placeholderModules = Object.fromEntries([
   '../../components/ExcelImportModal', '../../utils/excelParser', '../../utils/whatsappService', '../../services/neonDb',
   './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab', './AdminShell',
+  './WhatsAppCrmAdminSection', './PaymentGatewaySettingsCard', './MarketingAdToolsCard',
   './SecurityPanel', './FulfillmentPanel', './SupportPanel', './SupplierQuotesPanel', './OverviewPanel', './ReviewsModerationPanel', '../../utils/detailModels', '../../utils/imageUrl'
 ].map(id => [id, new Proxy({}, { get: () => noop })]));
 const { AdminDashboard } = compile('src/pages/admin/AdminDashboard.tsx', {

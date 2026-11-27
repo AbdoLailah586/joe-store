@@ -154,7 +154,7 @@ const defaultHeroSlides: HeroSlide[] = [
 ];
 
 export const Home: React.FC = () => {
-  const { products: allProducts, navigate, settings, sessionId } = useStore();
+  const { products: allProducts, navigate, settings, sessionId, recentlyViewedIds } = useStore();
   const { language, isRTL, t } = useLanguage();
   const ar = language === "ar";
   const { openDetails } = useDetails();
@@ -291,11 +291,12 @@ export const Home: React.FC = () => {
     };
   }, [sessionId]);
 
-  // 1. User's recently viewed products from browser storage
+  // 1. User's recently viewed products synced with server DB + browser storage
   const [recentVersion, setRecentVersion] = useState(0);
   const recentProductIds = useMemo(() => {
-    return readStoredArray('joe_recent_products', (v): v is string => typeof v === 'string');
-  }, [recentVersion]);
+    const local = readStoredArray('joe_recent_products', (v): v is string => typeof v === 'string');
+    return Array.from(new Set([...(recentlyViewedIds || []), ...local]));
+  }, [recentVersion, recentlyViewedIds]);
 
   const recentlyViewed = useMemo(() => {
     if (!recentProductIds.length) return [];
@@ -905,7 +906,7 @@ export const Home: React.FC = () => {
           7.C. RECENTLY VIEWED (منتجات شاهدها العميل مؤخراً)
          ============================================================== */}
       {recentlyViewed.length > 0 && (
-        <section className="joe-container joe-section" data-reveal>
+        <section className="joe-container joe-section" data-testid="home-recently-viewed" data-reveal>
           <div className="joe-section-heading">
             <div>
               <span className="joe-eyebrow">

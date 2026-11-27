@@ -14,8 +14,9 @@ function compile(file,mocks={}){
  const module={exports:{}};new Function('require','module','exports',code)(id=>mocks[id]||require(id),module,module.exports);return module.exports;
 }
 const address=compile('src/utils/deliveryAddress.ts');
+const gw=compile('server/paymentGateway.ts',{'./whatsappCrm.js':{buildServerOrderWhatsAppMessage:()=>'',dispatchWhatsAppViaCrm:async()=>({}),resolveCrmConfig:()=>({configured:false})}});
 let pending=null,issued=0;
-const {execute}=compile('api/store.ts',{'../server/store.js':{neonDb:{},mapRowToOrder:r=>r},'../lib/access.js':access,'../src/utils/deliveryAddress.js':address,'../server/orderWrites.js':{},'../lib/totp.js':totp,'../lib/session.js':{database:()=>{throw new Error('Unexpected live database')},currentUser:()=>null,passwordMatches,passwordHash,pendingSecondFactor:async()=>pending,issueSession:async()=>{issued++}}});
+const {execute}=compile('api/store.ts',{'../server/store.js':{neonDb:{},mapRowToOrder:r=>r},'../server/whatsappCrm.js':{buildServerOrderWhatsAppMessage:()=>'',dispatchWhatsAppViaCrm:async()=>({}),resolveCrmConfig:()=>({configured:false})},'../server/paymentGateway.js':gw,'../lib/access.js':access,'../src/utils/deliveryAddress.js':address,'../server/orderWrites.js':{},'../lib/totp.js':totp,'../lib/session.js':{database:()=>{throw new Error('Unexpected live database')},currentUser:()=>null,passwordMatches,passwordHash,pendingSecondFactor:async()=>pending,issueSession:async()=>{issued++}}});
 const res={setHeader(){}};
 const limited={id:'limited',role:'customer',email:'staff@example.invalid',admin_permissions:['screens','covers','pricing']};
 const admin={id:'manager',email:'manager@example.invalid',role:'admin',admin_permissions:[]};

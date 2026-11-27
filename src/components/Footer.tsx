@@ -14,6 +14,7 @@ import { useStore } from "../context/StoreContext";
 import { useLanguage } from "../context/LanguageContext";
 import { JoeStoreLogo } from "./JoeStoreLogo";
 import { PolicyModal, PolicyType } from "./PolicyModal";
+import { SocialIconLinks } from "./SocialIcons";
 import { generateWhatsAppWebLink } from "../utils/whatsappService";
 import { InstallAppButton, OfflineReadyLabel } from "./PwaControls";
 import { CategoryKey } from "../types";
@@ -69,25 +70,7 @@ export const Footer: React.FC = () => {
                 ? "تفاصيل صغيرة بتعمل فرق كبير في يومك. موبايلات، صوتيات، وإكسسوارات… اختار اللي يناسبك من جو ستور."
                 : "Little things that make a big difference. Phones, audio and everyday accessories, picked your way at JOE Store."}
             </p>
-            <div>
-              <a href={whatsapp} target="_blank" rel="noopener noreferrer">
-                <MessageCircle size={17} />
-                WhatsApp
-                <Arrow size={14} />
-              </a>
-              <a
-                href={
-                  settings.tiktok_url?.includes("2026")
-                    ? settings.tiktok_url
-                    : "https://www.tiktok.com/@joestore2026"
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                TikTok
-                <Arrow size={14} />
-              </a>
-            </div>
+            <SocialIconLinks />
           </div>
           <div className="joe-footer-links">
             <h2>{ar ? "اكتشف التشكيلة" : "Explore the collection"}</h2>
@@ -104,11 +87,21 @@ export const Footer: React.FC = () => {
           </div>
           <div className="joe-footer-links">
             <h2>{ar ? "معاك في كل خطوة" : "Here to help"}</h2>
-            {policies.map(([key, a, en]) => (
-              <button key={key} onClick={() => setPolicy(key)}>
-                {ar ? a : en}
-              </button>
-            ))}
+            <button onClick={() => setPolicy("warranty")}>
+              {ar ? "الضمان والاستبدال" : "Warranty & returns"}
+            </button>
+            <button onClick={() => navigate("shipping")}>
+              {ar ? "سياسة الشحن والتوصيل" : "Shipping policy"}
+            </button>
+            <button onClick={() => navigate("refund")}>
+              {ar ? "سياسة الاسترجاع" : "Return policy"}
+            </button>
+            <button onClick={() => navigate("privacy")}>
+              {ar ? "سياسة الخصوصية" : "Privacy policy"}
+            </button>
+            <button onClick={() => navigate("terms")}>
+              {ar ? "الشروط والأحكام" : "Terms & conditions"}
+            </button>
             <button onClick={() => navigate("track-order")}>
               {ar ? "تتبع طلبك" : "Track your order"}
             </button>

@@ -20,8 +20,13 @@ function compile(file, mocks = {}) {
 }
 
 const address = compile('src/utils/deliveryAddress.ts');
+const gw = compile('server/paymentGateway.ts', {
+  './whatsappCrm.js': { buildServerOrderWhatsAppMessage: () => '', dispatchWhatsAppViaCrm: async () => ({}), resolveCrmConfig: () => ({ configured: false }) }
+});
 const { default: handler } = compile('api/store.ts', {
   '../server/store.js': { neonDb: {}, mapRowToOrder: r => r },
+  '../server/whatsappCrm.js': { buildServerOrderWhatsAppMessage: () => '', dispatchWhatsAppViaCrm: async () => ({}), resolveCrmConfig: () => ({ configured: false }) },
+  '../server/paymentGateway.js': gw,
   '../lib/access.js': access,
   '../src/utils/deliveryAddress.js': address,
   '../server/orderWrites.js': {},

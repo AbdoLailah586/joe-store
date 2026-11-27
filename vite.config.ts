@@ -6,6 +6,11 @@ import sendOtpHandler from './api/send-otp.js';
 import verifyOtpHandler from './api/verify-otp.js';
 import googleAuthHandler from './api/google-auth.js';
 import storeHandler from './api/store';
+import healthHandler from './api/health.js';
+import ogProductHandler from './api/og-product.js';
+import metaFeedHandler from './api/meta-feed.js';
+import sitemapHandler from './api/sitemap.js';
+import paymentCallbackHandler from './api/payment-callback';
 
 // Ensure .env is populated into process.env in Vite Dev Server
 const envPath = resolve(process.cwd(), '.env');
@@ -50,6 +55,8 @@ function devApiPlugin(): Plugin {
             }
           }
           (req as any).body = body;
+          const reqUrlObj = new URL(req.url || '/', 'http://localhost');
+          (req as any).query = Object.fromEntries(reqUrlObj.searchParams.entries());
 
           const mockRes = {
             statusCode: 200,
@@ -63,6 +70,10 @@ function devApiPlugin(): Plugin {
               res.setHeader('Content-Type', 'application/json');
               res.end(JSON.stringify(data));
             },
+            send: function (data: any) {
+              res.statusCode = this.statusCode;
+              res.end(typeof data === 'string' ? data : JSON.stringify(data));
+            },
             end: () => res.end()
           };
 
@@ -73,6 +84,16 @@ function devApiPlugin(): Plugin {
               await verifyOtpHandler(req, mockRes);
             } else if (url === '/api/google-auth') {
               await googleAuthHandler(req, mockRes);
+            } else if (url === '/api/health') {
+              await healthHandler(req, mockRes);
+            } else if (url === '/api/og-product') {
+              await ogProductHandler(req, mockRes);
+            } else if (url === '/api/meta-feed') {
+              await metaFeedHandler(req, mockRes);
+            } else if (url === '/api/sitemap') {
+              await sitemapHandler(req, mockRes);
+            } else if (url === '/api/payment-callback') {
+              await paymentCallbackHandler(req, mockRes);
             } else if (url === '/api/store') {
               await storeHandler(req, mockRes);
             } else {

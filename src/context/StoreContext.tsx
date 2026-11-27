@@ -29,6 +29,9 @@ import {
   isStoredProduct, isStoredCartItem, isStoredOrder
 } from '../utils/browserStorage';
 import { normalizeProductImages } from '../utils/imageUrl';
+import { getOrCaptureVisitorAttribution } from '../utils/visitorAttribution';
+import { applyPageSeo, buildProductJsonLd, buildStoreJsonLd } from '../utils/seo';
+import { initMetaPixel, trackMetaEvent } from '../utils/metaPixel';
 
 export type AppTab =
   | 'home'
@@ -40,6 +43,7 @@ export type AppTab =
   | 'track-order'
   | 'profile'
   | 'admin'
+  | 'terms' | 'privacy' | 'refund' | 'shipping'
   | 'wishlist' | 'deals' | 'recent' | 'brands' | 'finder' | 'help' | 'contact' | 'bundles';
 export type DiscoveryTab = 'wishlist' | 'deals' | 'recent' | 'brands' | 'finder' | 'help' | 'contact' | 'bundles';
 
@@ -84,7 +88,8 @@ interface StoreContextType {
 
   // Analytics & Personalization
   sessionId: string;
-  trackActivity: (actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart', targetId?: string, metadata?: Record<string, any>) => void;
+  recentlyViewedIds: string[];
+  trackActivity: (actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit', targetId?: string, metadata?: Record<string, any>) => void;
   activeCarts: ActiveCartRecord[];
   refreshActiveCarts: () => Promise<void>;
 
@@ -134,6 +139,12 @@ export const parseRouteFromLocation = (): ParsedRoute => {
   if (['/wishlist', '/deals', '/recent', '/brands', '/finder', '/help', '/contact', '/bundles'].includes(pathname)) {
     return { tab: pathname.slice(1) as AppTab, category: (searchParams.get('category') || 'all') as CategoryKey, search: searchParams.get('q') || '' };
   }
+
+  // Policy routes
+  if (pathname === '/terms') return { tab: 'terms' };
+  if (pathname === '/privacy-policy' || pathname === '/privacy') return { tab: 'privacy' };
+  if (pathname === '/return-policy' || pathname === '/refund') return { tab: 'refund' };
+  if (pathname === '/shipping-policy' || pathname === '/shipping') return { tab: 'shipping' };
 
   // 2. /catalog or /products or /shop
   if (pathname === '/catalog' || pathname === '/products' || pathname === '/shop') {
@@ -248,12 +259,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     writeStoredJson('joe_store_cart', cart);
     if (!deviceIsOnline()) return;
     const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+    const attribution = getOrCaptureVisitorAttribution();
     neonDb.syncActiveCart({
       sessionId,
+      customerId: account?.id,
+      customerName: account?.name,
+      customerPhone: account?.phone,
       items: cart,
-      subtotal
+      subtotal,
+      attribution
     }).catch(console.warn);
-  }, [cart, sessionId]);
+  }, [cart, sessionId, account?.id]);
 
   // Wishlist State
   const [wishlist, setWishlist] = useState<string[]>(() =>
@@ -406,12 +422,104 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [searchQuery, setSearchQuery] = useState(initialRoute.search || '');
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>(initialRoute.category || 'all');
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
+  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() =>
+    readStoredArray('joe_recent_products', (v): v is string => typeof v === 'string')
+  );
+  const lastPixelRouteRef = useRef<string>('');
+  const lastVisitTrackedRef = useRef<string>('');
 
+  // Track attribution & visitor session on load and navigation
+  useEffect(() => {
+    if (!deviceIsOnline()) return;
+    const attr = getOrCaptureVisitorAttribution();
+    const visitKey = `${sessionId}:${account?.id || 'guest'}:${currentTab}:${selectedProductId || ''}`;
+    if (lastVisitTrackedRef.current === visitKey) return;
+    lastVisitTrackedRef.current = visitKey;
+    neonDb.trackActivity({
+      sessionId,
+      customerId: account?.id,
+      actionType: 'visit',
+      metadata: {
+        ...attr,
+        path: typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/',
+        user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : ''
+      }
+    }).catch(() => {});
+  }, [sessionId, account?.id, currentTab, selectedProductId]);
+
+  // Merge recently viewed products from server DB
+  useEffect(() => {
+    if (!deviceIsOnline()) return;
+    let cancelled = false;
+    neonDb.getRecentlyViewedProductIds(sessionId, account?.id, 12).then(remoteIds => {
+      if (cancelled || !Array.isArray(remoteIds) || !remoteIds.length) return;
+      setRecentlyViewedIds(prev => {
+        const merged = Array.from(new Set([...prev, ...remoteIds])).slice(0, 24);
+        writeStoredJson('joe_recent_products', merged);
+        return merged;
+      });
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [sessionId, account?.id]);
+
+  // Record product view locally + remotely
   useEffect(() => {
     if (currentTab !== 'product' || !selectedProductId || isCatalogLoading || !products.some(p => p.id === selectedProductId && p.is_active !== false)) return;
-    const ids = readStoredArray('joe_recent_products', (v): v is string => typeof v === 'string');
-    writeStoredJson('joe_recent_products', [selectedProductId, ...ids.filter(id => id !== selectedProductId)].slice(0, 24));
-  }, [currentTab, selectedProductId, isCatalogLoading]);
+    setRecentlyViewedIds(prev => {
+      const next = [selectedProductId, ...prev.filter(id => id !== selectedProductId)].slice(0, 24);
+      writeStoredJson('joe_recent_products', next);
+      return next;
+    });
+  }, [currentTab, selectedProductId, isCatalogLoading, products]);
+
+  // Initialize Meta Pixel & track PageView + Dynamic SEO/JSON-LD
+  useEffect(() => {
+    initMetaPixel(settings.meta_pixel_id);
+    const routeKey = `${currentTab}:${selectedProductId || ''}:${selectedCategory || ''}:${searchQuery || ''}`;
+    if (lastPixelRouteRef.current !== routeKey) {
+      lastPixelRouteRef.current = routeKey;
+      trackMetaEvent('PageView');
+    }
+
+    if (typeof window === 'undefined') return;
+    const origin = window.location.origin;
+    const storeName = settings.store_name_ar || 'JOE Store | جو ستور';
+
+    if (currentTab === 'product' && selectedProductId) {
+      const prod = products.find(p => p.id === selectedProductId);
+      if (prod) {
+        applyPageSeo({
+          title: `${prod.name_ar} | ${storeName}`,
+          description: prod.description_ar || `اشترِ ${prod.name_ar} بأفضل سعر في مصر مع ضمان معتمد من جو ستور وتوصيل سريع لكافة المحافظات.`,
+          path: `/product/${encodeURIComponent(prod.id)}`,
+          image: prod.images?.[0],
+          type: 'product',
+          jsonLd: buildProductJsonLd(origin, prod, settings)
+        });
+        return;
+      }
+    }
+
+    const tabTitles: Partial<Record<AppTab, [string, string]>> = {
+      home: [storeName, 'متجر جو ستور بالمنصورة للإلكترونيات والأجهزة الذكية والآيفون والإكسسوارات الأصلية بضمان معتمد وتوصيل لكل محافظات مصر.'],
+      catalog: [`الكتالوج الشامل | ${storeName}`, 'تصفح أحدث الهواتف الذكية والسماعات والشواحن والساعات الذكية والكفرات الأصلية في جو ستور.'],
+      deals: [`العروض والخصومات | ${storeName}`, 'أقوى عروض وتخفيضات جو ستور على الهواتف والإكسسوارات الأصلية.'],
+      finder: [`دليل اختيار الجراب والإسكرينة | ${storeName}`, 'اعثر على الكفر والإسكرينة المناسبة لموبايلك في ثوانٍ في جو ستور.'],
+      'track-order': [`تتبع طلبك | ${storeName}`, 'تابع حالة شحنتك وطلبك لحظة بلحظة من جو ستور.'],
+      checkout: [`إتمام الطلب | ${storeName}`, 'أكمل طلبك مع تحديد موقعك بدقة والدفع عند الاستلام أو أونلاين بأمان.'],
+      terms: [`الشروط والأحكام | ${storeName}`, 'الشروط والأحكام المنظمة للتسوق والاستخدام في متجر جو ستور.'],
+      privacy: [`سياسة الخصوصية | ${storeName}`, 'كيف نحمي بياناتك وموقع التوصيل وسرية معاملاتك في جو ستور.'],
+      refund: [`سياسة الاسترجاع والاستبدال | ${storeName}`, 'شروط الاستبدال والاسترجاع والضمان لمنتجات جو ستور.'],
+      shipping: [`سياسة الشحن والتوصيل | ${storeName}`, 'مواعيد ورسوم التوصيل لجميع محافظات مصر من المنصورة.']
+    };
+    const [title, description] = tabTitles[currentTab] || [storeName, tabTitles.home![1]];
+    applyPageSeo({
+      title,
+      description,
+      path: `${window.location.pathname}${window.location.search}`,
+      jsonLd: currentTab === 'home' ? buildStoreJsonLd(origin, settings) : undefined
+    });
+  }, [currentTab, selectedProductId, selectedCategory, searchQuery, products, settings]);
 
   // Sync state when user clicks Browser Back/Forward buttons
   useEffect(() => {
@@ -472,6 +580,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       targetPath = options?.section ? `/profile?tab=${encodeURIComponent(options.section)}` : '/profile';
     } else if (tab === 'admin') {
       targetPath = '/admin';
+    } else if (tab === 'terms') {
+      targetPath = '/terms';
+    } else if (tab === 'privacy') {
+      targetPath = '/privacy-policy';
+    } else if (tab === 'refund') {
+      targetPath = '/return-policy';
+    } else if (tab === 'shipping') {
+      targetPath = '/shipping-policy';
     } else if (['brands', 'finder', 'help', 'contact', 'bundles'].includes(tab)) {
       targetPath = `/${tab}`;
     } else if (tab === 'cart') {
@@ -601,15 +717,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const trackActivity = (
-    actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart',
+    actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit',
     targetId?: string,
     metadata?: Record<string, any>
   ) => {
+    const attr = getOrCaptureVisitorAttribution();
     neonDb.trackActivity({
       sessionId,
+      customerId: account?.id,
       actionType,
       targetId,
-      metadata
+      metadata: { ...attr, ...(metadata || {}) }
     });
   };
 
@@ -659,6 +777,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           selected_color: color || product.color_ar
         }];
       }
+    });
+    trackActivity('add_to_cart', product.id, { quantity });
+    trackMetaEvent('AddToCart', {
+      content_ids: [product.id],
+      content_name: product.name_ar,
+      content_type: 'product',
+      value: product.price * quantity,
+      currency: 'EGP'
     });
     setIsCartOpen(true);
   };
@@ -729,8 +855,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       whatsapp_notification_sent: false
     };
 
-    const persisted = await neonDb.createOrder(newOrder);
-    if (!persisted) throw new Error('تعذّر حفظ الطلب. سلتك محفوظة، حاول مرة أخرى.');
+    const persisted: any = await neonDb.createOrder(newOrder);
+    if (!persisted || (typeof persisted === 'object' && persisted.success === false)) {
+      throw new Error('تعذّر حفظ الطلب. سلتك محفوظة، حاول مرة أخرى.');
+    }
+    if (typeof persisted === 'object') {
+      if (persisted.id) newOrder.id = persisted.id;
+      if (persisted.order_number) newOrder.order_number = persisted.order_number;
+      if (persisted.checkout_url) newOrder.checkout_url = persisted.checkout_url;
+    }
 
     // Deduct stock
     setProducts(prev => prev.map(p => {
@@ -742,33 +875,26 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return p;
     }));
 
-    // Trigger WhatsApp notification automatically if enabled
-    let sentNotice = false;
-    if (settings.auto_send_on_order && (newOrder.customer_whatsapp || newOrder.customer_phone)) {
-      const msgText = buildOrderConfirmationMessage(newOrder, settings);
-      const recipient = newOrder.customer_whatsapp || newOrder.customer_phone;
-      const res = await sendWhatsAppMessage(recipient, msgText, settings);
+    // Server handles automatic customer & admin WhatsApp notifications via WhatsApp Pro CRM
+    newOrder.whatsapp_notification_sent = true;
 
-      recordWhatsAppNotification({
-        id: `notif-${Date.now()}`,
-        order_id: newOrder.id,
-        phone: recipient,
-        type: 'order_confirmed',
-        text: msgText,
-        sent_at: new Date().toISOString(),
-        status: res.success ? 'sent' : res.simulated ? 'simulated' : 'failed',
-        error_message: res.error
-      });
-      refreshWhatsAppLogs();
-      sentNotice = true;
-    }
+    try {
+      if (typeof window !== 'undefined') {
+        window.sessionStorage.setItem('joe_last_order', JSON.stringify(newOrder));
+      }
+    } catch {}
 
-    newOrder.whatsapp_notification_sent = sentNotice;
+    trackMetaEvent('Purchase', {
+      value: newOrder.total,
+      currency: 'EGP',
+      content_ids: newOrder.items.map(i => i.product.id),
+      content_type: 'product',
+      num_items: newOrder.items.reduce((sum, i) => sum + i.quantity, 0)
+    });
 
     setOrders(prev => [newOrder, ...prev]);
     setCurrentOrder(newOrder);
     clearCart();
-
 
     return newOrder;
   };
@@ -814,87 +940,32 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (!accountSections.includes('orders')) throw new Error('هذا الإجراء يحتاج صلاحية الطلبات.');
     const persisted = await neonDb.updateOrderStatus(orderId,newStatus,{courierName:courier,override:override?.override,overrideReason:override?.overrideReason});
     if(!persisted.success) return persisted;
-    let targetOrder: Order | undefined;
 
     setOrders(prev => prev.map(o => {
       if (o.id === orderId) {
-        const updated: Order = {
+        return {
           ...o,
           order_status: newStatus,
           courier_name: courier || o.courier_name,
           tracking_number: trackingNo || o.tracking_number,
           updated_at: new Date().toISOString()
         };
-        targetOrder = updated;
-        return updated;
       }
       return o;
     }));
-
-    if (targetOrder && settings.auto_send_on_status_change) {
-      let msgText = '';
-      let notifType: WhatsAppNotification['type'] = 'custom';
-
-      if (newStatus === 'shipped') {
-        msgText = buildShippedMessage(targetOrder, courier, trackingNo);
-        notifType = 'shipped';
-      } else if (newStatus === 'out_for_delivery') {
-        msgText = buildOutForDeliveryMessage(targetOrder);
-        notifType = 'out_for_delivery';
-      } else if (newStatus === 'delivered') {
-        msgText = buildDeliveredMessage(targetOrder);
-        notifType = 'delivered';
-      }
-
-      if (msgText) {
-        const recipient = targetOrder.customer_whatsapp || targetOrder.customer_phone;
-        const res = await sendWhatsAppMessage(recipient, msgText, settings);
-        recordWhatsAppNotification({
-          id: `notif-${Date.now()}`,
-          order_id: targetOrder.id,
-          phone: recipient,
-          type: notifType,
-          text: msgText,
-          sent_at: new Date().toISOString(),
-          status: res.success ? 'sent' : res.simulated ? 'simulated' : 'failed',
-          error_message: res.error
-        });
-        refreshWhatsAppLogs();
-      }
-    }
     return {success:true};
   };
 
   const updatePaymentStatus = async (orderId: string, status: 'unpaid' | 'paid' | 'verified') => {
     if (!accountSections.includes('orders')) throw new Error('هذا الإجراء يحتاج صلاحية الطلبات.');
     await neonDb.updateOrderState(orderId, { payment_status: status });
-    let targetOrder: Order | undefined;
 
     setOrders(prev => prev.map(o => {
       if (o.id === orderId) {
-        const updated = { ...o, payment_status: status, updated_at: new Date().toISOString() };
-        targetOrder = updated;
-        return updated;
+        return { ...o, payment_status: status, updated_at: new Date().toISOString() };
       }
       return o;
     }));
-
-    if (targetOrder && status === 'verified' && settings.auto_send_on_status_change) {
-      const msgText = buildPaymentConfirmedMessage(targetOrder, settings);
-      const recipient = targetOrder.customer_whatsapp || targetOrder.customer_phone;
-      const res = await sendWhatsAppMessage(recipient, msgText, settings);
-      recordWhatsAppNotification({
-        id: `notif-${Date.now()}`,
-        order_id: targetOrder.id,
-        phone: recipient,
-        type: 'payment_verified',
-        text: msgText,
-        sent_at: new Date().toISOString(),
-        status: res.success ? 'sent' : res.simulated ? 'simulated' : 'failed',
-        error_message: res.error
-      });
-      refreshWhatsAppLogs();
-    }
   };
 
   const manualSendWhatsAppNotification = async (
@@ -902,30 +973,35 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     type: WhatsAppNotification['type'],
     customText?: string
   ) => {
-    let msgText = customText || '';
-    if (!msgText) {
-      if (type === 'order_confirmed') msgText = buildOrderConfirmationMessage(order, settings);
-      else if (type === 'payment_verified') msgText = buildPaymentConfirmedMessage(order, settings);
-      else if (type === 'shipped') msgText = buildShippedMessage(order, order.courier_name, order.tracking_number);
-      else if (type === 'out_for_delivery') msgText = buildOutForDeliveryMessage(order);
-      else if (type === 'delivered') msgText = buildDeliveredMessage(order);
-      else if (type === 'review_request') msgText = buildReviewRequestMessage(order);
+    let fallbackText = customText || '';
+    if (!fallbackText) {
+      if (type === 'order_confirmed') fallbackText = buildOrderConfirmationMessage(order, settings);
+      else if (type === 'payment_verified') fallbackText = buildPaymentConfirmedMessage(order, settings);
+      else if (type === 'shipped') fallbackText = buildShippedMessage(order, order.courier_name, order.tracking_number);
+      else if (type === 'out_for_delivery') fallbackText = buildOutForDeliveryMessage(order);
+      else if (type === 'delivered') fallbackText = buildDeliveredMessage(order);
+      else if (type === 'review_request') fallbackText = buildReviewRequestMessage(order);
     }
 
     const recipient = order.customer_whatsapp || order.customer_phone;
-    const res = await sendWhatsAppMessage(recipient, msgText, settings);
+    const res = await neonDb.sendOrderWhatsApp({
+      orderId: order.id,
+      type,
+      customText: fallbackText,
+      recipient
+    });
     recordWhatsAppNotification({
       id: `notif-${Date.now()}`,
       order_id: order.id,
       phone: recipient,
       type,
-      text: msgText,
+      text: fallbackText,
       sent_at: new Date().toISOString(),
-      status: res.success ? 'sent' : res.simulated ? 'simulated' : 'failed',
+      status: res.success ? 'sent' : 'failed',
       error_message: res.error
     });
     refreshWhatsAppLogs();
-    return res;
+    return { success: Boolean(res.success), simulated: !res.success, error: res.error };
   };
 
   const getOrderById = (idOrNumber: string): Order | undefined => {
@@ -972,6 +1048,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updatePaymentStatus,
         getOrderById,
         sessionId,
+        recentlyViewedIds,
         trackActivity,
         activeCarts,
         refreshActiveCarts,

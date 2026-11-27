@@ -5,25 +5,52 @@ import { randomBytes, createHash } from 'node:crypto';
 import { canAccessSection, isFullAdmin, normalizePermissions, publicUser, OWNER_EMAIL } from '../lib/access.js';
 import { normalizePhone } from '../src/utils/deliveryAddress.js';
 import { saveOrder, cancelOrder as cancelStoredOrder } from '../server/orderWrites.js';
-const fail = (status: number, message: string) => Object.assign(new Error(message), {status});
+import { buildServerOrderWhatsAppMessage, dispatchWhatsAppViaCrm, resolveCrmConfig } from '../server/whatsappCrm.js';
+import {
+  stripPaymentSecrets,
+  toPublicPaymentGatewayState,
+  hasGatewaySettingsMetadata,
+  shouldRouteOrderToGateway,
+  createGatewayCheckoutSession,
+  resolveRequestOrigin
+} from '../server/paymentGateway.js';
+
+const fail = (status: number, message: string, code?: string) => Object.assign(new Error(message), {status, code});
 const forbidden = () => fail(403,'هذا الإجراء غير متاح ضمن صلاحيات حسابك.');
 const hasAny = (user: any, sections: string[]) => sections.some(section=>canAccessSection(user,section));
 const productSections=['products','inventory','quality','stocktake','reorder','labels','suppliers'];
 const orderSections=['overview','analytics','orders','crm'];
 const policies: Record<string,string[]> = {
   toggleProductVisibility:['products'],updateProduct:['products'],bulkInsertProducts:['products'],
-  getAllUsers:['users'],getActiveCarts:['crm'],updateOrderState:['orders'],
+  getAllUsers:['users'],getUserInsights:['users'],getGuestVisitors:['users','crm'],getGuestInsights:['users','crm'],
+  getActiveCarts:['crm'],updateOrderState:['orders'],
   getCoverOverrides:['covers'],saveCoverOverride:['covers'],addCoverEntry:['covers'],getCoverAdditions:['covers'],
   addScreenEntry:['screens'],getScreenAdditions:['screens'],
   getAuditLog:['security'],getPickingList:['fulfillment'],getDeliveryBoard:['fulfillment'],
   updateOrderStatus:['orders','fulfillment'],confirmPacking:['fulfillment'],recordDeliveryRefusal:['fulfillment'],
   getRefusalHistory:['fulfillment'],getAllRefusals:['fulfillment'],addSupplierQuote:['suppliers'],getSupplierQuotes:['suppliers'],
   listSupportTickets:['support'],escalateSupportTicket:['support'],closeSupportTicket:['support'],getWishlistGap:['overview','analytics'],
-  updateStoreSettings:['overview','products'],
+  updateStoreSettings:['overview','products','settings'],
   getAllProductReviews:['overview','products'],
   updateProductReviewStatus:['overview','products'],
-  deleteProductReview:['overview','products']
+  deleteProductReview:['overview','products'],
+  getWhatsAppAdminConfig:['whatsapp','settings'],saveWhatsAppAdminConfig:['whatsapp','settings'],
+  testWhatsAppConnection:['whatsapp','settings'],getWhatsAppNotifications:['whatsapp','orders'],
+  sendOrderWhatsApp:['whatsapp','orders','fulfillment'],sendTestWhatsApp:['whatsapp','settings'],
+  getPaymentGatewayAdminConfig:['settings','overview'],savePaymentGatewayConfig:['settings','overview'],
+  testPaymentGatewayConfig:['settings','overview']
 };
+function safeSettings(settings: any) {
+  if (!settings || typeof settings !== 'object') return settings;
+  const copy: any = stripPaymentSecrets(settings);
+  delete copy.whatsapp_automation_url;
+  delete copy.whatsapp_automation_email;
+  delete copy.whatsapp_automation_pass;
+  if (hasGatewaySettingsMetadata(settings)) {
+    copy.payment_gateway_public = toPublicPaymentGatewayState(settings);
+  }
+  return copy;
+}
 function safeProduct(product: any, privileged: boolean) {
   if (privileged) return product;
   const p={...product};
@@ -111,13 +138,121 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     return rows.map(mapRowToOrder);
   }
   if(method==='getStoreSettings') {
-    return store.getStoreSettings ? store.getStoreSettings() : null;
+    const raw = store.getStoreSettings ? await store.getStoreSettings() : null;
+    return safeSettings(raw);
   }
   if(method==='updateStoreSettings') {
-    if(!isFullAdmin(user) && !hasAny(user,['overview','products','inventory'])) throw forbidden();
-    return store.updateStoreSettings ? store.updateStoreSettings(args[0]) : {success:true};
+    if(!isFullAdmin(user) && !hasAny(user,['overview','products','inventory','settings'])) throw forbidden();
+    const incoming = args[0] && typeof args[0] === 'object' ? { ...args[0] } : {};
+    try {
+      const current = store.getStoreSettings ? (await store.getStoreSettings()) || {} : {};
+      for (const secretKey of [
+        'whatsapp_automation_url',
+        'whatsapp_automation_email',
+        'whatsapp_automation_pass',
+        'payment_gateway_api_key',
+        'payment_gateway_secret_key',
+        'payment_gateway_hmac_secret'
+      ]) {
+        if (current[secretKey] !== undefined) incoming[secretKey] = current[secretKey];
+        else delete incoming[secretKey];
+      }
+      for (const cfgKey of [
+        'payment_gateway_provider',
+        'payment_gateway_mode',
+        'payment_gateway_merchant_id',
+        'payment_gateway_public_key',
+        'payment_gateway_card_integration_id',
+        'payment_gateway_wallet_integration_id',
+        'payment_gateway_instapay_integration_id',
+        'payment_gateway_enable_card',
+        'payment_gateway_enable_wallet',
+        'payment_gateway_enable_instapay',
+        'admin_alert_whatsapp_number',
+        'auto_alert_admin_on_order',
+        'whatsapp_templates'
+      ]) {
+        if (incoming[cfgKey] === undefined && current[cfgKey] !== undefined) {
+          incoming[cfgKey] = current[cfgKey];
+        }
+      }
+      delete incoming.payment_gateway_public;
+    } catch {}
+    return store.updateStoreSettings ? store.updateStoreSettings(incoming) : {success:true};
   }
-  if(method==='getAllUsers') return (await store.getAllUsers()).map(publicUser);
+  if(method==='getAllUsers') {
+    const users = await store.getAllUsers();
+    return users.map((u:any)=>({
+      ...publicUser(u),
+      last_seen_at: u.last_seen_at || u.last_activity_at || undefined,
+      last_activity_at: u.last_activity_at || undefined,
+      orders_count: Number(u.orders_count || 0),
+      completed_orders_count: Number(u.completed_orders_count || 0),
+      total_spent: Number(u.total_spent || 0),
+      cart_items_count: Number(u.cart_items_count || 0),
+      cart_subtotal: Number(u.cart_subtotal || 0),
+      views_count: Number(u.views_count || 0),
+      source_channel: u.source_channel || undefined,
+      source_label: u.source_label || undefined,
+      utm_campaign: u.utm_campaign || undefined,
+      device_type: u.device_type || undefined
+    }));
+  }
+  if(method==='adminCreateUser') {
+    if(!isFullAdmin(user)) throw forbidden();
+    const data=args[0]||{};
+    const name=String(data.name||'').trim();
+    const email=String(data.email||'').trim().toLowerCase();
+    const phone=data.phone?normalizePhone(String(data.phone)):'';
+    const password=String(data.password||'');
+    const role=data.role==='admin'?'admin':'customer';
+    const permissions=role==='admin'?normalizePermissions(Array.isArray(data.admin_permissions)?data.admin_permissions:[]):[];
+    if(!name||!email.includes('@')||password.length<6) throw fail(400,'أدخل الاسم والبريد الإلكتروني وكلمة مرور لا تقل عن 6 أحرف.');
+    const existing=await sql`SELECT id FROM users WHERE lower(email)=${email} LIMIT 1`;
+    if(existing[0]) throw fail(400,'يوجد حساب مسجل بهذا البريد الإلكتروني بالفعل.');
+    const id=`user-${Date.now()}-${randomBytes(3).toString('hex')}`;
+    const rows=await sql`
+      INSERT INTO users (id, name, email, phone, password_hash, role, provider, email_verified, admin_permissions, created_at, updated_at)
+      VALUES (${id}, ${name}, ${email}, ${phone||null}, ${passwordHash(password)}, ${role}, 'email', true, ${JSON.stringify(permissions)}::jsonb, NOW(), NOW())
+      RETURNING *
+    `;
+    if(!deps) await logAudit({actorId:user.id,actorName:user.name,action:'USER_CREATED_BY_ADMIN',entity:'user',entityId:id,after:{email,role,permissions}});
+    return {success:true,user:publicUser(rows[0])};
+  }
+  if(method==='getUserInsights') {
+    if(typeof args[0]!=='string'||!args[0].trim()) throw fail(400,'معرف المستخدم غير صالح.');
+    return store.getUserInsights(args[0].trim());
+  }
+  if(method==='getGuestVisitors') {
+    return store.getGuestVisitors(Math.min(300,Math.max(10,Number(args[0])||150)));
+  }
+  if(method==='getGuestInsights') {
+    if(typeof args[0]!=='string'||!args[0].trim()) throw fail(400,'معرف الجلسة غير صالح.');
+    return store.getGuestInsights(args[0].trim());
+  }
+  if(method==='deleteGuestVisitor') {
+    if(!isFullAdmin(user)) throw forbidden();
+    if(typeof args[0]!=='string'||!args[0].trim()) throw fail(400,'معرف الجلسة غير صالح.');
+    return store.deleteGuestVisitor(args[0].trim());
+  }
+  if(method==='savePaymentGatewayConfig') {
+    return store.savePaymentGatewayConfig(args[0] || {}, user ? { id: user.id, name: user.name } : undefined);
+  }
+  if(method==='getPaymentGatewayAdminConfig'||method==='testPaymentGatewayConfig'||method==='getWhatsAppAdminConfig'||method==='testWhatsAppConnection') {
+    return store[method]();
+  }
+  if(method==='saveWhatsAppAdminConfig') {
+    return store.saveWhatsAppAdminConfig(args[0] || {});
+  }
+  if(method==='getWhatsAppNotifications') {
+    return store.getWhatsAppNotifications(args[0]);
+  }
+  if(method==='sendOrderWhatsApp') {
+    return store.sendOrderWhatsApp(args[0] || {});
+  }
+  if(method==='sendTestWhatsApp') {
+    return store.sendTestWhatsApp(args[0] || {});
+  }
   if(method==='logWishlistEvent') {
     if(!user) throw forbidden();
     return store.logWishlistEvent(user.id,String(args[1]||'').slice(0,100));
@@ -192,7 +327,23 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     if(changes.order_status&&!statuses.includes(changes.order_status)) throw fail(400,'حالة الطلب غير صالحة.');
     if(changes.payment_status&&!['unpaid','paid','verified'].includes(changes.payment_status)) throw fail(400,'حالة الدفع غير صالحة.');
     if(changes.order_status==='cancelled') return cancelStoredOrder(sql,args[0],'إلغاء من لوحة الإدارة','admin');
-    await sql`UPDATE orders SET status=COALESCE(${changes.order_status||null},status),payment_status=COALESCE(${changes.payment_status||null},payment_status),updated_at=NOW() WHERE id=${args[0]}`;
+    await sql`UPDATE orders SET status=COALESCE(${changes.order_status||null},status),payment_status=COALESCE(${changes.payment_status||null},payment_status),updated_at=NOW() WHERE id=${args[0]} OR order_number=${args[0]}`;
+    try {
+      const settings = store.getStoreSettings ? await store.getStoreSettings() : null;
+      const crm = resolveCrmConfig(settings);
+      if (crm.configured && crm.autoSendOnStatusChange) {
+        const type = changes.payment_status === 'verified' ? 'payment_verified' : changes.order_status;
+        if (type && ['payment_verified', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'].includes(type)) {
+          const rows = await sql`SELECT * FROM orders WHERE id=${args[0]} OR order_number=${args[0]} LIMIT 1`;
+          if (rows[0]) {
+            const ord = mapRowToOrder(rows[0]);
+            const recipient = ord.customer_whatsapp || ord.customer_phone;
+            const text = buildServerOrderWhatsAppMessage(type as any, ord, settings);
+            await dispatchWhatsAppViaCrm(sql, { recipient, text, type: type as any, orderId: ord.id, orderNumber: ord.order_number, settings });
+          }
+        }
+      }
+    } catch {}
     return true;
   }
   if(method==='trackOrder') {
@@ -204,13 +355,112 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
   if(method==='createOrder') {
     const order=args[0];
     if(!order||!Array.isArray(order.items)||!order.items.length||order.items.length>100) throw fail(400,'الطلب غير صالح.');
-    if(!Number.isFinite(order.shipping_fee)||order.shipping_fee<0||!Number.isFinite(order.subtotal)||!Number.isFinite(order.total)||Math.abs(order.total-order.subtotal-order.shipping_fee)>0.011) throw fail(400,'إجمالي الطلب غير صالح.');
+    const discount = Number(order.discount || 0);
+    if(!Number.isFinite(order.shipping_fee)||order.shipping_fee<0||!Number.isFinite(order.subtotal)||!Number.isFinite(order.total)||!Number.isFinite(discount)||discount<0||discount>order.subtotal||Math.abs(order.total-(order.subtotal-discount+order.shipping_fee))>0.011) throw fail(400,'إجمالي الطلب غير صالح.');
     if(order.items.some((i:any)=>!i.product?.id||!Number.isInteger(i.quantity)||i.quantity<=0||i.quantity>1000||!Number.isFinite(i.product.price)||i.product.price<=0)) throw fail(400,'كميات أو أسعار الطلب غير صالحة.');
     const subtotal=order.items.reduce((sum:number,i:any)=>sum+i.product.price*i.quantity,0);
     if(Math.abs(subtotal-order.subtotal)>0.011) throw fail(400,'راجع إجمالي المنتجات في السلة.');
     const phone=normalizePhone(String(order.customer_phone||''));
-    if(phone.length!==11||!order.customer_name?.trim()||!order.address_details?.trim()||!['cod','instapay','vodafone_cash'].includes(order.payment_method)) throw fail(400,'راجع اسم العميل والهاتف والعنوان وطريقة الدفع.');
-    return saveOrder(sql,{...order,customer_phone:phone,customer_email:user?.email||null,payment_status:'unpaid',order_status:'pending'});
+    if(phone.length!==11||!order.customer_name?.trim()||!order.address_details?.trim()||!['cod','instapay','vodafone_cash','credit_card','card'].includes(order.payment_method)) throw fail(400,'راجع اسم العميل والهاتف والعنوان وطريقة الدفع.');
+    let orderSettings: any = null;
+    try { orderSettings = store.getStoreSettings ? await store.getStoreSettings() : null; } catch {}
+    const isCardMethod = order.payment_method === 'credit_card' || order.payment_method === 'card';
+    const gatewayActiveForOrder = shouldRouteOrderToGateway(order.payment_method, orderSettings);
+    if (isCardMethod && !gatewayActiveForOrder) {
+      throw fail(400, 'الدفع بالبطاقة البنكية أونلاين غير مفعل حالياً في إعدادات بوابة الدفع.');
+    }
+    const safeOrderId = String(order.id || `ord-${Date.now()}`);
+    const safeOrderNumber = String(order.order_number || `JOE-${Math.floor(10000 + Math.random() * 90000)}`);
+    const fullOrder = {
+      ...order,
+      id: safeOrderId,
+      order_number: safeOrderNumber,
+      customer_phone: phone,
+      customer_email: user?.email || null,
+      payment_status: 'unpaid',
+      order_status: 'pending'
+    };
+    const saved = await saveOrder(sql, fullOrder);
+    if (!saved) return saved;
+    if (gatewayActiveForOrder) {
+      let gatewaySession: any;
+      try {
+        gatewaySession = await createGatewayCheckoutSession(sql, {
+          order: fullOrder,
+          baseUrl: resolveRequestOrigin(req),
+          settings: orderSettings
+        });
+      } catch (gwErr: any) {
+        await cancelStoredOrder(sql, safeOrderId, 'تعذر تهيئة رابط بوابة الدفع الإلكتروني', 'admin').catch(() => {});
+        throw fail(502, gwErr?.message || 'تعذر الاتصال ببوابة الدفع الإلكتروني حالياً.');
+      }
+      try {
+        const crm = resolveCrmConfig(orderSettings);
+        if (crm.configured && crm.autoAlertAdminOnOrder && crm.adminAlertRecipients.length) {
+          const adminMsg = buildServerOrderWhatsAppMessage('admin_new_order', fullOrder, orderSettings);
+          await Promise.allSettled(
+            crm.adminAlertRecipients.map((adminPhone: string) =>
+              dispatchWhatsAppViaCrm(sql, {
+                recipient: adminPhone,
+                text: adminMsg,
+                type: 'admin_new_order',
+                orderId: safeOrderId,
+                orderNumber: safeOrderNumber,
+                settings: orderSettings
+              })
+            )
+          );
+        }
+      } catch {}
+      return {
+        success: true,
+        id: safeOrderId,
+        order_number: safeOrderNumber,
+        payment: {
+          provider: gatewaySession.provider,
+          mode: gatewaySession.mode,
+          transactionId: gatewaySession.transactionId
+        },
+        checkout_url: gatewaySession.checkoutUrl
+      };
+    }
+    try {
+      const crm = resolveCrmConfig(orderSettings);
+      if (crm.configured) {
+        const jobs: Promise<any>[] = [];
+        const recipient = fullOrder.customer_whatsapp || phone;
+        if (crm.autoSendOnOrder && recipient) {
+          const customerMsg = buildServerOrderWhatsAppMessage('order_confirmed', fullOrder, orderSettings);
+          jobs.push(
+            dispatchWhatsAppViaCrm(sql, {
+              recipient,
+              text: customerMsg,
+              type: 'order_confirmed',
+              orderId: safeOrderId,
+              orderNumber: safeOrderNumber,
+              settings: orderSettings
+            })
+          );
+        }
+        if (crm.autoAlertAdminOnOrder && crm.adminAlertRecipients.length) {
+          const adminMsg = buildServerOrderWhatsAppMessage('admin_new_order', fullOrder, orderSettings);
+          for (const adminPhone of crm.adminAlertRecipients) {
+            jobs.push(
+              dispatchWhatsAppViaCrm(sql, {
+                recipient: adminPhone,
+                text: adminMsg,
+                type: 'admin_new_order',
+                orderId: safeOrderId,
+                orderNumber: safeOrderNumber,
+                settings: orderSettings
+              })
+            );
+          }
+        }
+        if (jobs.length) await Promise.allSettled(jobs);
+      }
+    } catch {}
+    return saved;
   }
   if(method==='getCoverOverrides') {
     const rows=await sql`SELECT cover_id,data FROM cover_catalog_overrides`;
@@ -251,8 +501,17 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     if(!productId || typeof productId !== 'string') return [];
     return store.getProductReviews(productId, sessionId, user?.id);
   }
-  if(policies[method]||['trackActivity','syncActiveCart','getPersonalizedRecommendations'].includes(method)) {
+  if(policies[method]||['trackActivity','syncActiveCart','getPersonalizedRecommendations','getRecentlyViewedProductIds'].includes(method)) {
     if(typeof store[method]!=='function') throw fail(400,'الإجراء غير مدعوم.');
+    if(method==='trackActivity'&&args[0]&&typeof args[0]==='object') {
+      args[0] = { ...args[0], customerId: user?.id || undefined };
+    }
+    if(method==='syncActiveCart'&&args[0]&&typeof args[0]==='object') {
+      args[0] = { ...args[0], customerId: user?.id || undefined };
+    }
+    if(method==='getRecentlyViewedProductIds') {
+      args[1] = user?.id || null;
+    }
     const actor=user?{id:user.id,name:user.name}:undefined;
     if(method==='updateProduct')args[2]=actor;
     if(method==='updateProductReviewStatus')args[2]=actor;

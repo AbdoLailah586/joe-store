@@ -19,6 +19,7 @@ import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { Profile } from './pages/Profile';
 import { AuthModal } from './components/AuthModal';
 import { ShoppingPages } from './pages/ShoppingPages';
+import { PolicyPage } from './pages/PolicyPage';
 import { PwaStatus } from './components/PwaControls';
 
 export const App: React.FC = () => {
@@ -39,6 +40,7 @@ export const App: React.FC = () => {
         {currentTab === 'deals' && <Catalog mode="deals" />}
         {currentTab === 'recent' && <Catalog mode="recent" />}
         {(['brands', 'finder', 'help', 'contact', 'bundles'] as const).map(mode => currentTab === mode && <ShoppingPages key={mode} mode={mode} />)}
+        {(['terms', 'privacy', 'refund', 'shipping'] as const).map(policy => currentTab === policy && <PolicyPage key={policy} activePolicy={policy} />)}
         {currentTab === 'product' && <ProductDetails />}
         {currentTab === 'cart' && <Catalog />}
         {currentTab === 'checkout' && <Checkout />}

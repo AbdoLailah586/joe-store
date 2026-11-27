@@ -22,7 +22,10 @@ import {
   Tag,
   X,
   Gift,
-  ShoppingCart
+  ShoppingCart,
+  Map as MapIcon,
+  Navigation,
+  Wallet
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -34,13 +37,22 @@ import { DetailedAddressFields } from '../components/DetailedAddressFields';
 import { InfoButton, useDetails } from '../components/DetailsDialog';
 import { productDetail } from '../utils/detailModels';
 import { normalizeProductImage } from '../utils/imageUrl';
-import { buildAddressDetails, formatDeliveryAddress, pickDeliveryFields, normalizeDigits, normalizePhone, isEgyptianPhone, isGoogleMapsUrl } from '../utils/deliveryAddress';
+import { buildAddressDetails, formatDeliveryAddress, pickDeliveryFields, normalizeDigits, normalizePhone, isEgyptianPhone, isGoogleMapsUrl, coordsToGoogleMapsUrl } from '../utils/deliveryAddress';
+import { reverseGeocodeCoords } from '../utils/egyptLocation';
+import { trackMetaEvent } from '../utils/metaPixel';
+import { getOrCaptureVisitorAttribution } from '../utils/visitorAttribution';
+import { neonDb } from '../services/neonDb';
+
+const LocationPickerMap = React.lazy(() =>
+  import('../components/LocationPickerMap').then(m => ({ default: m.LocationPickerMap }))
+);
 
 export const Checkout: React.FC = () => {
-  const { cart, cartSubtotal, createOrder, navigate, settings, updateSettings, isOfflineCatalog } = useStore();
+  const { cart, cartSubtotal, createOrder, navigate, settings, updateSettings, isOfflineCatalog, sessionId } = useStore();
   const { t, language, formatPrice, isRTL } = useLanguage();
   const { openDetails } = useDetails();
   const { user, isAuthenticated, openAuthModal, addAddress } = useAuth();
+  const gateway = settings.payment_gateway_public;
 
   // Selected Address from profile or 'new'
   const [selectedAddressId, setSelectedAddressId] = useState<string>('new');
@@ -70,8 +82,11 @@ export const Checkout: React.FC = () => {
   const loadedAddressFor = useRef<string | null>(null);
   const [notes, setNotes] = useState('');
 
-  // Google Maps GPS Location States
+  // Google Maps GPS & Interactive Map Picker States
   const [googleMapsUrl, setGoogleMapsUrl] = useState('');
+  const [latitude, setLatitude] = useState<number | undefined>(undefined);
+  const [longitude, setLongitude] = useState<number | undefined>(undefined);
+  const [showMapPicker, setShowMapPicker] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [locationSuccess, setLocationSuccess] = useState('');
   const [locationError, setLocationError] = useState('');
@@ -246,10 +261,83 @@ export const Checkout: React.FC = () => {
     }
   };
 
-  // Free Google Maps GPS Location Fetcher
+  // Early guest/customer capture + InitiateCheckout Pixel
+  useEffect(() => {
+    if (cart.length > 0) {
+      trackMetaEvent('InitiateCheckout', {
+        value: cartSubtotal,
+        currency: 'EGP',
+        num_items: cart.reduce((s, i) => s + i.quantity, 0),
+        content_ids: cart.map(i => i.product.id)
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!customerPhone.trim() && !customerName.trim()) return;
+    const timer = window.setTimeout(() => {
+      neonDb.syncActiveCart({
+        sessionId,
+        customerId: user?.id,
+        customerName: customerName.trim() || undefined,
+        customerPhone: customerPhone.trim() || undefined,
+        items: cart,
+        subtotal: cartSubtotal,
+        attribution: getOrCaptureVisitorAttribution()
+      }).catch(() => {});
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [customerName, customerPhone, sessionId, user?.id, cart, cartSubtotal]);
+
+  const applySelectedCoordinates = async (lat: number, lng: number, source: 'gps' | 'map') => {
+    const url = coordsToGoogleMapsUrl(lat, lng);
+    setLatitude(lat);
+    setLongitude(lng);
+    setGoogleMapsUrl(url);
+    setLocationError('');
+    setLocationSuccess(
+      language === 'ar'
+        ? `${source === 'gps' ? 'تم التقاط موقعك تلقائياً' : 'تم تثبيت الدبوس على الخريطة'} (${lat.toFixed(4)}, ${lng.toFixed(4)})`
+        : `${source === 'gps' ? 'Location acquired automatically' : 'Map pin set'} (${lat.toFixed(4)}, ${lng.toFixed(4)})`
+    );
+
+    const rev = await reverseGeocodeCoords(lat, lng);
+    if (rev.governorate) {
+      setSelectedGovId(rev.governorate.id);
+      if (rev.city) {
+        const govCities = rev.governorate.cities || [];
+        const revCityLower = rev.city.toLowerCase();
+        const matchedCity = govCities.find(
+          c =>
+            c.name_ar.includes(rev.city!) ||
+            rev.city!.includes(c.name_ar) ||
+            (c.name_en && (c.name_en.toLowerCase().includes(revCityLower) || revCityLower.includes(c.name_en.toLowerCase())))
+        );
+        if (matchedCity) {
+          setSelectedCity(matchedCity.name_ar);
+          setCustomCity(false);
+        } else {
+          setSelectedCity(rev.city);
+          setCustomCity(true);
+        }
+      }
+    }
+    setDelivery(prev => ({
+      ...prev,
+      district: prev.district?.trim() ? prev.district : (rev.district || prev.district),
+      street: prev.street?.trim() ? prev.street : (rev.street || prev.street)
+    }));
+  };
+
+  // Free Google Maps GPS Location Fetcher (Auto GPS + Open Interactive Map Fallback)
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
-      setLocationError(language === 'ar' ? 'المتصفح لا يدعم تحديد الموقع الجغرافي' : 'Geolocation not supported by your browser');
+      setShowMapPicker(true);
+      setLocationError(
+        language === 'ar'
+          ? 'المتصفح لا يدعم GPS التلقائي — يمكنك تحديد موقعك يدوياً من الخريطة التفاعلية بالأسفل.'
+          : 'Geolocation unavailable — pin your location manually on the map below.'
+      );
       return;
     }
     setIsLocating(true);
@@ -259,22 +347,15 @@ export const Checkout: React.FC = () => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setIsLocating(false);
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const url = `https://www.google.com/maps?q=${lat},${lng}`;
-        setGoogleMapsUrl(url);
-        setLocationSuccess(
-          language === 'ar'
-            ? `تم تحديد موقعك بدقة! (إحداثيات: ${lat.toFixed(4)}, ${lng.toFixed(4)})`
-            : `Coordinates acquired! (${lat.toFixed(4)}, ${lng.toFixed(4)})`
-        );
+        void applySelectedCoordinates(pos.coords.latitude, pos.coords.longitude, 'gps');
       },
-      (err) => {
+      () => {
         setIsLocating(false);
+        setShowMapPicker(true);
         setLocationError(
           language === 'ar'
-            ? 'يرجى السماح بالوصول لموقعك من إعدادات المتصفح أو لصق الرابط يدوياً.'
-            : 'Please allow location permission in your browser or paste link manually.'
+            ? 'تعذر التقاط GPS تلقائياً — يمكنك الضغط مباشرة على الخريطة لتحديد مكان التوصيل بدقة.'
+            : 'Could not read GPS automatically — click directly on the map below to pin your location.'
         );
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -343,11 +424,16 @@ export const Checkout: React.FC = () => {
     if (!isGoogleMapsUrl(googleMapsUrl)) {
       setErrorMsg(language === 'ar' ? 'يرجى إدخال رابط صحيح من Google Maps.' : 'Please enter a valid Google Maps link.'); return;
     }
+    if (paymentMethod === 'credit_card' && !gateway?.methods?.card) {
+      setErrorMsg(language === 'ar' ? 'الدفع بالبطاقة البنكية أونلاين غير مفعل حالياً.' : 'Online card payment is currently unavailable.');
+      return;
+    }
     setIsSubmitting(true);
 
     try {
       if (saveAddress && selectedAddressId === 'new') {
         const saved = await addAddress({ ...delivery, extra_details: addressDetails, google_maps_url: googleMapsUrl || undefined,
+          latitude, longitude,
           title: delivery.address_type === 'work' ? 'العمل' : delivery.address_type === 'other' ? 'عنوان آخر' : 'المنزل',
           governorate: currentGov.name_ar, city: selectedCity, details: buildAddressDetails(delivery, addressDetails),
           isDefault: !user?.addresses?.length });
@@ -371,6 +457,9 @@ export const Checkout: React.FC = () => {
         apartment_no: apartmentNo || undefined,
         landmark: landmark || undefined,
         google_maps_url: googleMapsUrl || undefined,
+        latitude,
+        longitude,
+        session_id: sessionId,
         notes: notes || undefined,
         items: cart,
         subtotal: cartSubtotal,
@@ -399,6 +488,11 @@ export const Checkout: React.FC = () => {
           return cp;
         });
         updateSettings({ coupons: updatedCoupons });
+      }
+
+      if (order.checkout_url && typeof window !== 'undefined') {
+        window.location.assign(order.checkout_url);
+        return;
       }
 
       // Confetti celebration
@@ -717,38 +811,66 @@ export const Checkout: React.FC = () => {
                 {language === 'ar' ? 'احفظ هذا العنوان في حسابي للطلبات القادمة' : 'Save this address for future orders'}
               </label>}
 
-              {/* Google Maps Location Integration (100% Free GPS) */}
+              {/* Google Maps Location Integration (Auto GPS + Interactive Leaflet Map) */}
               <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50/40 via-slate-100 to-blue-50/20 border border-blue-500/30 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <span className="font-bold text-blue-700 text-xs flex items-center gap-1.5">
                       <MapPin className="w-4 h-4 text-blue-700" />
-                      <span>تحديد موقع التوصيل على خرائط جوجل (Google Maps)</span>
+                      <span>تحديد موقع التوصيل بدقة (GPS تلقائي أو اختيار من الخريطة)</span>
                     </span>
                     <p className="text-[11px] text-slate-600 mt-0.5">
-                      يساعد المندوب في الوصول لباب بيتك فوراً بدون الحاجة للاتصال بك للاستفسار عن المكان.
+                      حدّد مكان منزلك تلقائياً أو اضغط «تحديد من الخريطة يدوياً» لتحريك الدبوس إلى موقعك بالضبط.
                     </p>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={handleGetLocation}
-                    disabled={isLocating}
-                    className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-on-brand font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 disabled:opacity-50 flex-shrink-0"
-                  >
-                    {isLocating ? (
-                      <>
-                        <div className="w-3.5 h-3.5 border-2 border-slate-200 border-t-transparent rounded-full animate-spin" />
-                        <span>جاري التقاط الموقع...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Compass className="w-4 h-4 text-slate-900" />
-                        <span>حدد موقعي الحالي (GPS)</span>
-                      </>
-                    )}
-                  </button>
+                  <div className="flex flex-wrap gap-2 flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleGetLocation}
+                      disabled={isLocating}
+                      className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 disabled:opacity-50"
+                    >
+                      {isLocating ? (
+                        <>
+                          <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <span>جاري الالتقاط...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Navigation className="w-3.5 h-3.5" />
+                          <span>تحديد تلقائي (GPS)</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowMapPicker(prev => !prev)}
+                      className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-blue-300 text-blue-800 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                    >
+                      <MapIcon className="w-3.5 h-3.5" />
+                      <span>{showMapPicker ? 'إخفاء الخريطة' : 'تحديد من الخريطة يدوياً'}</span>
+                    </button>
+                  </div>
                 </div>
+
+                {showMapPicker && (
+                  <React.Suspense
+                    fallback={
+                      <div className="h-[260px] rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-xs text-slate-500">
+                        جاري تحميل الخريطة التفاعلية...
+                      </div>
+                    }
+                  >
+                    <LocationPickerMap
+                      governorate={currentGov.name_ar}
+                      latitude={latitude}
+                      longitude={longitude}
+                      onSelectCoords={(lat, lng) => void applySelectedCoordinates(lat, lng, 'map')}
+                    />
+                  </React.Suspense>
+                )}
 
                 {locationSuccess && (
                   <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 text-xs flex items-center justify-between">
@@ -842,6 +964,51 @@ export const Checkout: React.FC = () => {
                 </div>
               </label>
 
+              {/* Online Card Option (Kashier / Paymob) */}
+              <label
+                className={`flex items-start gap-3 p-4 rounded-2xl border transition-all ${
+                  !gateway?.methods?.card
+                    ? 'border-slate-200 bg-slate-50 opacity-75 cursor-not-allowed'
+                    : paymentMethod === 'credit_card'
+                      ? 'border-indigo-400 bg-indigo-500/10 shadow-md cursor-pointer'
+                      : 'border-slate-200 bg-slate-100/60 hover:bg-slate-100 cursor-pointer'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="payment"
+                  value="credit_card"
+                  disabled={!gateway?.methods?.card}
+                  checked={paymentMethod === 'credit_card'}
+                  onChange={() => gateway?.methods?.card && setPaymentMethod('credit_card')}
+                  className="mt-1 accent-indigo-600"
+                />
+                <div className="flex-1 text-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <strong className="text-slate-900 font-bold text-sm flex items-center gap-1.5">
+                      <CreditCard className="w-4 h-4 text-indigo-700" />
+                      <span>الدفع بالبطاقة البنكية (Visa / Mastercard / Meeza)</span>
+                    </strong>
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded font-bold ${
+                        gateway?.methods?.card
+                          ? 'bg-emerald-500/20 text-emerald-700'
+                          : 'bg-slate-200 text-slate-600'
+                      }`}
+                    >
+                      {gateway?.methods?.card
+                        ? `متاح أونلاين (${gateway.provider === 'paymob' ? 'Paymob' : 'Kashier'})`
+                        : 'قريباً — جاهز للتفعيل من لوحة الإدارة'}
+                    </span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] mt-1">
+                    {gateway?.methods?.card
+                      ? 'سيتم تحويلك إلى صفحة الدفع المشفرة لإدخال بيانات البطاقة وتأكيد العملية فوراً.'
+                      : 'بمجرد إضافة مفاتيح Kashier أو Paymob من الإعدادات، سيعمل الدفع بالبطاقات تلقائياً.'}
+                  </p>
+                </div>
+              </label>
+
               {/* InstaPay Option */}
               <label
                 className={`flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${
@@ -859,18 +1026,27 @@ export const Checkout: React.FC = () => {
                   className="mt-1 accent-purple-500"
                 />
                 <div className="flex-1 text-xs">
-                  <strong className="text-slate-900 font-bold text-sm block">
-                    تحويل لحظي عبر تطبيق إنستاباي (InstaPay)
-                  </strong>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <strong className="text-slate-900 font-bold text-sm block">
+                      تحويل لحظي عبر تطبيق إنستاباي (InstaPay)
+                    </strong>
+                    {gateway?.methods?.instapay && (
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 font-bold">
+                        متصل ببوابة الدفع
+                      </span>
+                    )}
+                  </div>
                   <p className="text-slate-600 text-[11px] mt-1">
-                    تحويل بنكي فوري بدون أي رسوم إضافية لحساب جو ستور الرسمي.
+                    {gateway?.methods?.instapay
+                      ? 'تحويل مباشر وآلي عبر بوابة الدفع الإلكتروني بدون إدخال رقم مرجع يدوياً.'
+                      : 'تحويل بنكي فوري بدون أي رسوم إضافية لحساب جو ستور الرسمي.'}
                   </p>
 
-                  {paymentMethod === 'instapay' && (
+                  {paymentMethod === 'instapay' && !gateway?.methods?.instapay && (
                     <div className="mt-3 p-3.5 rounded-xl bg-slate-100 border border-purple-500/30 space-y-2.5">
                       <div className="flex items-center justify-between text-[11px]">
                         <span className="text-slate-600">عنوان إنستاباي (IPA):</span>
-                        <strong className="text-purple-700 font-outfit text-xs bg-purple-900/50 px-2 py-0.5 rounded border border-purple-500/30">
+                        <strong className="text-purple-700 font-outfit text-xs bg-purple-100 px-2 py-0.5 rounded border border-purple-300">
                           {settings.instapay_address}
                         </strong>
                       </div>
@@ -881,7 +1057,6 @@ export const Checkout: React.FC = () => {
                         </strong>
                       </div>
 
-                      {/* Receipt Upload / Ref */}
                       <div className="pt-2 border-t border-slate-200 space-y-2">
                         <label className="block text-[11px] text-slate-600 font-semibold">
                           رقم العملية أو اسم الحساب المحول منه:
@@ -891,7 +1066,7 @@ export const Checkout: React.FC = () => {
                           value={paymentReference}
                           onChange={(e) => setPaymentReference(e.target.value)}
                           placeholder="مثال: تحويل من أحمد محمد / كود العملية 83719"
-                          className="w-full bg-slate-100 border border-slate-200 rounded-lg p-2 text-xs text-slate-900 placeholder-slate-500"
+                          className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-900 placeholder-slate-500"
                         />
                       </div>
                     </div>
@@ -916,18 +1091,27 @@ export const Checkout: React.FC = () => {
                   className="mt-1 accent-red-500"
                 />
                 <div className="flex-1 text-xs">
-                  <strong className="text-slate-900 font-bold text-sm block">
-                    فودافون كاش والمحافظ الإلكترونية (Orange / WE / Etisalat)
-                  </strong>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <strong className="text-slate-900 font-bold text-sm block">
+                      فودافون كاش والمحافظ الإلكترونية (Orange / WE / Etisalat)
+                    </strong>
+                    {gateway?.methods?.wallet && (
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 font-bold">
+                        متصل ببوابة الدفع
+                      </span>
+                    )}
+                  </div>
                   <p className="text-slate-600 text-[11px] mt-1">
-                    تحويل مباشر على رقم محفظة جو ستور الرسمية.
+                    {gateway?.methods?.wallet
+                      ? 'سيتم فتح بوابة المحفظة الإلكترونية لتأكيد الدفع تلقائياً.'
+                      : 'تحويل مباشر على رقم محفظة جو ستور الرسمية.'}
                   </p>
 
-                  {paymentMethod === 'vodafone_cash' && (
+                  {paymentMethod === 'vodafone_cash' && !gateway?.methods?.wallet && (
                     <div className="mt-3 p-3.5 rounded-xl bg-slate-100 border border-red-500/30 space-y-2.5">
                       <div className="flex items-center justify-between text-[11px]">
                         <span className="text-slate-600">رقم محفظة فودافون كاش:</span>
-                        <strong className="text-red-700 font-outfit text-sm bg-red-950/60 px-2 py-0.5 rounded border border-red-500/30">
+                        <strong className="text-red-700 font-outfit text-sm bg-red-100 px-2 py-0.5 rounded border border-red-300">
                           {settings.vodafone_cash_number}
                         </strong>
                       </div>
@@ -941,17 +1125,13 @@ export const Checkout: React.FC = () => {
                           value={paymentReference}
                           onChange={(e) => setPaymentReference(e.target.value)}
                           placeholder="مثال: تم التحويل من رقم 010XXXXXXXX"
-                          className="w-full bg-slate-100 border border-slate-200 rounded-lg p-2 text-xs text-slate-900 placeholder-slate-500"
+                          className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-900 placeholder-slate-500"
                         />
                       </div>
                     </div>
                   )}
                 </div>
               </label>
-
-              <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-600">
-                {language === 'ar' ? 'الدفع بالبطاقة غير متاح حاليًا. اختَر الدفع عند الاستلام أو أحد خيارات التحويل المتاحة.' : 'Card payment is currently unavailable. Choose cash on delivery or an available transfer option.'}
-              </div>
             </div>
           </div>
         </div>

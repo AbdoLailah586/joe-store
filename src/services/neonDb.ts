@@ -256,7 +256,7 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
   async trackActivity(activity: {
     sessionId: string;
     customerId?: string;
-    actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart';
+    actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit';
     targetId?: string;
     metadata?: Record<string, any>;
   }): Promise<void> { return await callStore('trackActivity', [activity]); },
@@ -266,10 +266,12 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
    */
   async syncActiveCart(cart: {
     sessionId: string;
+    customerId?: string;
     customerName?: string;
     customerPhone?: string;
     items: any[];
     subtotal: number;
+    attribution?: Record<string, any>;
   }): Promise<void> { return await callStore('syncActiveCart', [cart]); },
 
   /**
@@ -278,9 +280,11 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
   async getActiveCarts(): Promise<ActiveCartRecord[]> { return await callStore('getActiveCarts', []); },
 
   /**
-   * 8. Create Order in Neon & Auto-Deduct Stock
+   * 8. Create Order in Neon & Auto-Deduct Stock (optionally returns online gateway session)
    */
-  async createOrder(order: Order): Promise<boolean> { return await callStore('createOrder', [order]); },
+  async createOrder(order: Order): Promise<boolean | { success: boolean; id?: string; order_number?: string; payment?: any; checkout_url?: string }> {
+    return await callStore('createOrder', [order]);
+  },
 
   /**
    * 9. Cancel Order and Auto-Restock Inventory
@@ -355,6 +359,25 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
 
   async getAllUsers(): Promise<any[]> { return await callStore('getAllUsers', []); },
 
+  async adminCreateUser(data: { name: string; email: string; phone?: string; password: string; role?: 'admin' | 'customer'; admin_permissions?: string[] }): Promise<{ success: boolean; user?: any; error?: string }> { return await callStore('adminCreateUser', [data]); },
+
+  async getUserInsights(userId: string): Promise<any> { return await callStore('getUserInsights', [userId]); },
+
+  async getGuestVisitors(limit = 150): Promise<any[]> { return await callStore('getGuestVisitors', [limit]); },
+
+  async getGuestInsights(sessionId: string): Promise<any> { return await callStore('getGuestInsights', [sessionId]); },
+
+  async deleteGuestVisitor(sessionId: string): Promise<{ success: boolean }> { return await callStore('deleteGuestVisitor', [sessionId]); },
+
+  async getRecentlyViewedProductIds(sessionId: string, customerId?: string | null, limit = 12): Promise<string[]> {
+    try {
+      const res = await callStore('getRecentlyViewedProductIds', [sessionId, customerId, limit]);
+      return Array.isArray(res) ? res : [];
+    } catch {
+      return [];
+    }
+  },
+
   async getUserAccess(userId: string): Promise<{ success: boolean; exists?: boolean; role?: 'admin' | 'customer'; admin_permissions?: string[]; error?: string }> { return await callStore('getUserAccess', [userId]); },
 
   async updateUserRole(userId: string, newRole: 'admin' | 'customer'): Promise<{ success: boolean; error?: string }> { return await callStore('updateUserRole', [userId,newRole]); },
@@ -419,5 +442,45 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
 
   async deleteProductReview(reviewId: string): Promise<{ success: boolean; error?: string }> {
     return await callAction('deleteProductReview', [reviewId]);
+  },
+
+  async getWhatsAppAdminConfig(): Promise<any> {
+    return await callStore('getWhatsAppAdminConfig', []);
+  },
+
+  async saveWhatsAppAdminConfig(config: any): Promise<{ success: boolean; error?: string }> {
+    return await callAction('saveWhatsAppAdminConfig', [config]);
+  },
+
+  async testWhatsAppConnection(): Promise<{ success: boolean; configured?: boolean; message?: string; error?: string }> {
+    return await callAction('testWhatsAppConnection', []);
+  },
+
+  async getWhatsAppNotifications(limit = 60): Promise<any[]> {
+    try {
+      return await callStore('getWhatsAppNotifications', [limit]);
+    } catch {
+      return [];
+    }
+  },
+
+  async sendOrderWhatsApp(params: { orderId: string; type?: string; customText?: string; recipient?: string }): Promise<{ success: boolean; status?: string; error?: string; waLink?: string }> {
+    return await callAction('sendOrderWhatsApp', [params]);
+  },
+
+  async sendTestWhatsApp(params: { phone: string; text: string }): Promise<{ success: boolean; status?: string; error?: string; waLink?: string }> {
+    return await callAction('sendTestWhatsApp', [params]);
+  },
+
+  async getPaymentGatewayAdminConfig(): Promise<any> {
+    return await callStore('getPaymentGatewayAdminConfig', []);
+  },
+
+  async savePaymentGatewayConfig(config: any): Promise<{ success: boolean; error?: string; state?: any }> {
+    return await callAction('savePaymentGatewayConfig', [config]);
+  },
+
+  async testPaymentGatewayConfig(): Promise<{ success: boolean; message?: string; error?: string; state?: any }> {
+    return await callAction('testPaymentGatewayConfig', []);
   }
 };

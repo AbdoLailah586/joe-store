@@ -26,7 +26,7 @@ function mockSql() {
 }
 
 function loadNeonDb(sql) {
-  return compile('server/store.ts', { '@neondatabase/serverless': { neon: () => sql }, '../src/utils/deliveryAddress.js': {}, './orderWrites.js': {} });
+  return compile('server/store.ts', { '@neondatabase/serverless': { neon: () => sql }, '../src/utils/deliveryAddress.js': {}, '../src/utils/deliveryAddress': {}, './orderWrites.js': {}, './whatsappCrm.js': {}, './paymentGateway.js': {} });
 }
 
 test('addCoverEntry inserts a manual addition and returns the saved row', async () => {

@@ -61,6 +61,9 @@ import { InventoryTab } from './InventoryTab';
 import { CustomerCrmTab } from './CustomerCrmTab';
 import { EmailTemplatesTab } from './EmailTemplatesTab';
 import { UsersTab } from './UsersTab';
+import { WhatsAppCrmAdminSection } from './WhatsAppCrmAdminSection';
+import { PaymentGatewaySettingsCard } from './PaymentGatewaySettingsCard';
+import { MarketingAdToolsCard } from './MarketingAdToolsCard';
 import { neonDb } from '../../services/neonDb';
 import { SecurityPanel } from './SecurityPanel';
 import { FulfillmentPanel } from './FulfillmentPanel';
@@ -1190,150 +1193,16 @@ export const AdminDashboard: React.FC = () => {
 
       {/* TAB 7: WHATSAPP AUTOMATION HUB */}
       {activeTab === 'whatsapp' && (
-        <div className="space-y-6">
-          <div className="p-6 rounded-3xl bg-white border border-emerald-500/30 shadow-2xl space-y-4">
-            <div className="flex items-start justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-700 border border-emerald-500/30">
-                  <MessageCircle className="w-8 h-8" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-slate-900">
-                    ربط نظام واتساب برو الآلي (WhatsApp Pro Automation)
-                  </h3>
-                  <p className="text-xs text-slate-600">
-                    مرتبط بخادم مشروع <code className="text-emerald-700 font-mono">whatsapp-pro-automation</code> لإرسال الرسائل عبر رقم واتساب المحل الرسمي.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
-                <span className="text-xs font-bold text-emerald-700">النظام نشط وجاهز</span>
-              </div>
-            </div>
-
-            {/* Connection Settings */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-3 border-t border-slate-200 text-xs">
-              <div>
-                <label className="block text-slate-600 mb-1">رابط خادم واتساب برو:</label>
-                <input
-                  type="text"
-                  value={settings.whatsapp_automation_url}
-                  onChange={(e) => updateSettings({ whatsapp_automation_url: e.target.value })}
-                  className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-600 mb-1">البريد الإلكتروني / الحساب:</label>
-                <input
-                  type="text"
-                  value={settings.whatsapp_automation_email}
-                  onChange={(e) => updateSettings({ whatsapp_automation_email: e.target.value })}
-                  className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-600 mb-1">كلمة المرور:</label>
-                <input
-                  type="password"
-                  value={settings.whatsapp_automation_pass}
-                  onChange={(e) => updateSettings({ whatsapp_automation_pass: e.target.value })}
-                  className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono"
-                />
-              </div>
-            </div>
-
-            {/* Automation Toggles */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-200 text-xs">
-              <label className="flex items-center gap-3 p-3 rounded-2xl bg-slate-100 border border-slate-200 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.auto_send_on_order}
-                  onChange={(e) => updateSettings({ auto_send_on_order: e.target.checked })}
-                  className="accent-amber-500 rounded"
-                />
-                <div>
-                  <strong className="text-slate-900 block font-bold">إرسال إشعار فوري عند تسجيل طلب جديد</strong>
-                  <span className="text-[11px] text-slate-600">يتلقى العميل فاتورة الطلب كاملة فور الضغط على تأكيد الطلب.</span>
-                </div>
-              </label>
-
-              <label className="flex items-center gap-3 p-3 rounded-2xl bg-slate-100 border border-slate-200 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.auto_send_on_status_change}
-                  onChange={(e) => updateSettings({ auto_send_on_status_change: e.target.checked })}
-                  className="accent-amber-500 rounded"
-                />
-                <div>
-                  <strong className="text-slate-900 block font-bold">إرسال تحديثات عند تغيير حالة الطلب</strong>
-                  <span className="text-[11px] text-slate-600">إشعار العميل عند تأكيد الدفع، التسليم للشحن، أو التوصيل.</span>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          {/* WhatsApp Sent Logs */}
-          <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-slate-900">سجل الرسائل والإشعارات المرسلة ({whatsappLogs.length})</h3>
-              <button
-                onClick={refreshWhatsAppLogs}
-                className="text-xs text-amber-700 flex items-center gap-1 hover:underline"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>تحديث السجل</span>
-              </button>
-            </div>
-
-            {whatsappLogs.length === 0 ? (
-              <p className="text-xs text-slate-600 py-6 text-center">لا توجد رسائل مسجلة بعد.</p>
-            ) : (
-              <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
-                {whatsappLogs.map((log) => (
-                  <div key={log.id} className="p-4 rounded-2xl bg-slate-100 border border-slate-200 text-xs space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <strong className="text-emerald-700 font-outfit">{log.phone}</strong>
-                        <span className="px-2 py-0.2 rounded bg-slate-100 text-[10px] text-slate-600">
-                          {log.type}
-                        </span>
-                      </div>
-                      <span className="text-[11px] text-slate-500 font-outfit">
-                        {new Date(log.sent_at).toLocaleTimeString('ar-EG')}
-                      </span>
-                    </div>
-
-                    <pre className="text-[11px] text-slate-600 font-cairo whitespace-pre-wrap bg-slate-100/80 p-3 rounded-xl border border-slate-200">
-                      {log.text}
-                    </pre>
-
-                    <div className="flex items-center justify-between text-[10px] text-slate-600 pt-1">
-                      <span>الحالة: <strong className="text-emerald-700">{log.status}</strong></span>
-                      <a
-                        href={generateWhatsAppWebLink(log.phone, log.text)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-amber-700 hover:underline flex items-center gap-1"
-                      >
-                        <span>فتح الرابط في واتساب</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        <WhatsAppCrmAdminSection />
       )}
 
       {/* TAB 5: STORE SETTINGS */}
       {activeTab === 'settings' && (
         <div className="max-w-4xl mx-auto space-y-8">
+          {/* Gateway & Meta Marketing Cards */}
+          <PaymentGatewaySettingsCard />
+          <MarketingAdToolsCard settings={settings} updateSettings={updateSettings} />
+
           {/* Section 1: Store Info & Socials */}
           <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-6">
             <h3 className="font-bold text-base text-slate-900 border-b border-slate-200 pb-3 flex items-center gap-2">

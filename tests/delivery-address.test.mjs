@@ -13,7 +13,7 @@ function compile(file, mocks = {}, transform = x => x) {
 }
 const address = compile('src/utils/deliveryAddress.ts');
 const { mapRowToOrder } = compile('server/store.ts', {
-  './orderWrites.js': {}, '@neondatabase/serverless': { neon: () => () => {} }, '../src/utils/deliveryAddress.js': address
+  './orderWrites.js': {}, './whatsappCrm.js': {}, './paymentGateway.js': {}, '@neondatabase/serverless': { neon: () => () => {} }, '../src/utils/deliveryAddress.js': address
 }, s => s.replace(/const DB_URL\s*=[\s\S]*?const sql = neon\(DB_URL\);/, 'const sql = neon("mock://delivery");'));
 
 test('delivery details, correct city and separate contact numbers survive database reload', () => {
@@ -66,8 +66,11 @@ test('a failed order save keeps the cart and avoids success state changes', asyn
   const { StoreProvider } = compile('src/context/StoreContext.tsx', {
     '../services/offlineCatalog': {deviceIsOnline:()=>true,readOfflineCatalog:async()=>null,saveOfflineCatalog:async()=>false},
     '../utils/imageUrl': { normalizeProductImage: x => x || '/product-placeholder.svg', normalizeProductImages: x => x || [] },
+    '../utils/visitorAttribution': { getOrCaptureVisitorAttribution: () => ({}) },
+    '../utils/seo': { applyPageSeo() {}, buildProductJsonLd: () => [], buildStoreJsonLd: () => [] },
+    '../utils/metaPixel': { initMetaPixel: () => false, trackMetaEvent() {} },
     react, '../data/seedProducts': { initialProducts: [product] }, '../utils/browserStorage': storage,
-    '../utils/whatsappService': whatsapp, '../services/neonDb': { neonDb: { createOrder: async () => { events.push('persist'); return false; } } },
+    '../utils/whatsappService': whatsapp, '../services/neonDb': { neonDb: { createOrder: async () => { events.push('persist'); return false; }, getRecentlyViewedProductIds: async () => [] } },
     './AuthContext': { useAuth: () => ({ user: null }) }
   });
   const context = StoreProvider({ children: null }).props.value;
@@ -83,9 +86,12 @@ test('offline checkout refuses before any order write, stock change or cart muta
   const {StoreProvider}=compile('src/context/StoreContext.tsx',{
     react,'../services/offlineCatalog':{deviceIsOnline:()=>false},'../data/seedProducts':{initialProducts:[]},
     '../utils/imageUrl': { normalizeProductImage: x => x || '/product-placeholder.svg', normalizeProductImages: x => x || [] },
+    '../utils/visitorAttribution': { getOrCaptureVisitorAttribution: () => ({}) },
+    '../utils/seo': { applyPageSeo() {}, buildProductJsonLd: () => [], buildStoreJsonLd: () => [] },
+    '../utils/metaPixel': { initMetaPixel: () => false, trackMetaEvent() {} },
     '../utils/browserStorage':{readStorage:()=>null,readStoredArray:()=>[],readStoredSettings:()=>({}),writeStorage(){},writeStoredJson:()=>true},
     '../utils/whatsappService':{defaultSettings:{},getWhatsAppLogs:()=>[]},'./AuthContext':{useAuth:()=>({user:null})},
-    '../services/neonDb':{neonDb:{createOrder:async()=>{events.push('network');return true}}}
+    '../services/neonDb':{neonDb:{createOrder:async()=>{events.push('network');return true}, getRecentlyViewedProductIds: async () => []}}
   });
   const context=StoreProvider({children:null}).props.value;
   await assert.rejects(context.createOrder({items:[]}),/لن يتم إرسال الطلب تلقائيًا/);

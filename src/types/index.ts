@@ -137,8 +137,21 @@ export interface CartItem {
   selected_color?: string;
 }
 
-export type PaymentMethod = 'cod' | 'instapay' | 'vodafone_cash' | 'credit_card';
+export type PaymentMethod = 'cod' | 'instapay' | 'vodafone_cash' | 'credit_card' | 'card';
 export type PaymentStatus = 'unpaid' | 'paid' | 'verified';
+export type PaymentGatewayProvider = 'none' | 'kashier' | 'paymob';
+export type PaymentGatewayMode = 'test' | 'live';
+
+export interface PaymentGatewayPublicState {
+  provider: PaymentGatewayProvider;
+  mode: PaymentGatewayMode;
+  configured: boolean;
+  methods: {
+    card: boolean;
+    wallet: boolean;
+    instapay: boolean;
+  };
+}
 export type OrderStatus = 
   | 'pending'
   | 'confirmed'
@@ -160,6 +173,8 @@ export interface DeliveryAddressFields {
   delivery_instructions?: string;
   extra_details?: string;
   google_maps_url?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface Order extends DeliveryAddressFields {
@@ -191,6 +206,8 @@ export interface Order extends DeliveryAddressFields {
   payment_status: PaymentStatus;
   payment_receipt_url?: string;
   payment_reference?: string;
+  checkout_url?: string;
+  session_id?: string;
   order_status: OrderStatus;
   courier_name?: string;
   tracking_number?: string;
@@ -202,11 +219,34 @@ export interface Order extends DeliveryAddressFields {
   updated_at: string;
 }
 
+export type WhatsAppNotificationType =
+  | 'order_confirmed'
+  | 'admin_new_order'
+  | 'payment_verified'
+  | 'shipped'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'cancelled'
+  | 'review_request'
+  | 'custom';
+
+export interface WhatsAppTemplates {
+  order_confirmed?: string;
+  admin_new_order?: string;
+  payment_verified?: string;
+  shipped?: string;
+  out_for_delivery?: string;
+  delivered?: string;
+  cancelled?: string;
+  review_request?: string;
+}
+
 export interface WhatsAppNotification {
   id: string;
   order_id: string;
+  order_number?: string;
   phone: string;
-  type: 'order_confirmed' | 'payment_verified' | 'shipped' | 'out_for_delivery' | 'delivered' | 'review_request' | 'custom';
+  type: WhatsAppNotificationType;
   text: string;
   sent_at: string;
   status: 'sent' | 'simulated' | 'failed';
@@ -264,6 +304,14 @@ export interface StoreSettings {
   whatsapp_automation_token: string;
   auto_send_on_order: boolean;
   auto_send_on_status_change: boolean;
+  auto_alert_admin_on_order?: boolean;
+  admin_alert_whatsapp_number?: string;
+  whatsapp_templates?: WhatsAppTemplates;
+  meta_pixel_id?: string;
+  meta_pixel_enabled?: boolean;
+  payment_gateway_provider?: PaymentGatewayProvider;
+  payment_gateway_mode?: PaymentGatewayMode;
+  payment_gateway_public?: PaymentGatewayPublicState;
   shipping_fee_default: number;
   free_shipping_threshold: number;
   tiktok_url?: string;

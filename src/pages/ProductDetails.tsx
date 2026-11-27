@@ -45,6 +45,8 @@ import { enrichProductData, canPurchaseProduct, productNotice, priceLabel, publi
 import { sortCatalogProducts } from '../utils/productSorting';
 import { neonDb } from '../services/neonDb';
 import { Product } from '../types';
+import { buildProductAdUrl } from '../utils/adLinks';
+import { trackMetaEvent } from '../utils/metaPixel';
 
 function getClientSessionId(): string {
   try {
@@ -87,6 +89,7 @@ export const ProductDetails: React.FC = () => {
     isInWishlist,
     toggleWishlist,
     navigate,
+    trackActivity,
     settings
   } = useStore();
 
@@ -100,6 +103,7 @@ export const ProductDetails: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [addedToast, setAddedToast] = useState(false);
   const [shareToast, setShareToast] = useState(false);
+  const [adCopiedToast, setAdCopiedToast] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   // Zoom magnifier states
@@ -170,7 +174,7 @@ export const ProductDetails: React.FC = () => {
     return getCategoryComparisonRows(product, enriched.comparison_items, language);
   }, [product, enriched?.comparison_items, language]);
 
-  // Initialize bundle selection when product changes
+  // Initialize bundle selection when product changes + Track product view & Meta ViewContent
   useEffect(() => {
     if (product && enriched) {
       setSelectedImage(0);
@@ -178,6 +182,16 @@ export const ProductDetails: React.FC = () => {
       setSelectedStorage(product.available_storages?.[0] || product.storage || '');
       setSelectedColor(product.available_colors?.[0]?.name_ar || product.color_ar || '');
       document.title = `${enriched.detailed_title_ar.slice(0, 60)} | متجر جو ستور`;
+
+      trackActivity('view_product', product.id, { product_name: product.name_ar, brand: product.brand, category: product.category });
+      trackMetaEvent('ViewContent', {
+        content_ids: [product.id],
+        content_name: product.name_ar,
+        content_category: product.category,
+        content_type: 'product',
+        value: product.price,
+        currency: 'EGP'
+      });
 
       // Select all bundle items by default
       const initialBundleMap: { [id: string]: boolean } = { [product.id]: true };
@@ -860,6 +874,21 @@ export const ProductDetails: React.FC = () => {
                   <MessageCircle className="w-4 h-4" />
                   <span>{language === 'ar' ? 'استفسر عبر واتساب' : 'Ask on WhatsApp'}</span>
                 </a>
+
+                {/* Encoded Ad Link Copy (Meta / TikTok UTM) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const adUrl = buildProductAdUrl({ productId: product.id, source: 'facebook', medium: 'cpc' });
+                    navigator.clipboard?.writeText(adUrl).catch(() => {});
+                    setAdCopiedToast(true);
+                    window.setTimeout(() => setAdCopiedToast(false), 2500);
+                  }}
+                  className="w-full py-2 px-4 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 font-bold text-xs flex items-center justify-center gap-2 transition-all"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>{adCopiedToast ? '✓ تم نسخ رابط الإعلان المرمّز!' : 'نسخ رابط الإعلان المشفّر (Facebook / IG UTM)'}</span>
+                </button>
               </div>
 
               {/* Toast Alerts for Mobile */}
@@ -1228,6 +1257,21 @@ export const ProductDetails: React.FC = () => {
                   <MessageCircle className="w-4 h-4" />
                   <span>{language === 'ar' ? 'استفسر عبر واتساب' : 'Ask on WhatsApp'}</span>
                 </a>
+
+                {/* Encoded Ad Link Copy (Meta / TikTok UTM) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const adUrl = buildProductAdUrl({ productId: product.id, source: 'facebook', medium: 'cpc' });
+                    navigator.clipboard?.writeText(adUrl).catch(() => {});
+                    setAdCopiedToast(true);
+                    window.setTimeout(() => setAdCopiedToast(false), 2500);
+                  }}
+                  className="w-full py-2 px-4 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 font-bold text-xs flex items-center justify-center gap-2 transition-all"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>{adCopiedToast ? '✓ تم نسخ رابط الإعلان المرمّز!' : 'نسخ رابط الإعلان المشفّر (Facebook / IG UTM)'}</span>
+                </button>
               </div>
 
               {/* Guarantees & Seller info */}

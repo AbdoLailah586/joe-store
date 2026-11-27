@@ -12,12 +12,14 @@ export const defaultSettings: StoreSettings = {
   working_hours_en: 'Daily from 12:00 PM to 12:00 AM',
   instapay_address: 'joestore@instapay',
   vodafone_cash_number: '01554826209',
-  whatsapp_automation_url: 'http://localhost:5000',
-  whatsapp_automation_email: '01554826209@whatsapp.pro',
-  whatsapp_automation_pass: 'Abdo@2026',
+  whatsapp_automation_url: '',
+  whatsapp_automation_email: '',
+  whatsapp_automation_pass: '',
   whatsapp_automation_token: '',
   auto_send_on_order: true,
   auto_send_on_status_change: true,
+  auto_alert_admin_on_order: true,
+  admin_alert_whatsapp_number: '201554826209',
   shipping_fee_default: 35,
   free_shipping_threshold: 2500,
   tiktok_url: 'https://www.tiktok.com/@joestore2026',
@@ -178,33 +180,31 @@ export const loginToWhatsAppPro = async (baseUrl: string, email: string, pass: s
   }
 };
 
-// Send message via whatsapp-pro-automation API
+// Send message via WhatsApp Pro CRM (configured safely on server; browser only falls back to wa.me if URL explicitly set)
 export const sendWhatsAppMessage = async (
   recipientPhone: string,
   messageText: string,
   settings: StoreSettings = defaultSettings
 ): Promise<{ success: boolean; simulated?: boolean; error?: string }> => {
   const formattedPhone = formatPhoneForWhatsApp(recipientPhone);
-  const baseUrl = settings.whatsapp_automation_url || 'http://localhost:5000';
+  const baseUrl = String(settings.whatsapp_automation_url || '').trim();
+  const token = String(settings.whatsapp_automation_token || '').trim();
 
-  let token = settings.whatsapp_automation_token;
+  if (!baseUrl || !token) {
+    return {
+      success: false,
+      simulated: true,
+      error: 'يتم الإرسال عبر خادم WhatsApp CRM أو عبر رابط واتساب المباشر.'
+    };
+  }
 
   try {
-    // If no token stored, attempt login
-    if (!token && settings.whatsapp_automation_email && settings.whatsapp_automation_pass) {
-      token = (await loginToWhatsAppPro(baseUrl, settings.whatsapp_automation_email, settings.whatsapp_automation_pass)) || '';
-    }
-
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
     const res = await fetch(`${baseUrl.replace(/\/$/, '')}/api/send`, {
       method: 'POST',
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({
         to: formattedPhone,
         text: messageText,
@@ -212,17 +212,15 @@ export const sendWhatsAppMessage = async (
     });
 
     if (res.ok) {
-      const data = await res.json();
       return { success: true };
     } else {
       throw new Error(`Server returned ${res.status}`);
     }
   } catch (err: any) {
-    console.warn(`[WhatsApp API Notice] Could not connect to whatsapp-pro-automation on ${baseUrl} (${err.message}). Notification simulated & fallback link provided.`);
     return {
       success: false,
       simulated: true,
-      error: `تعذر الاتصال بخادم واتساب برو المحلي (${err.message}) - تم تجهيز رابط الإرسال المباشر.`,
+      error: `تعذر الاتصال بخادم واتساب برو (${err.message}) - تم تجهيز رابط الإرسال المباشر.`,
     };
   }
 };

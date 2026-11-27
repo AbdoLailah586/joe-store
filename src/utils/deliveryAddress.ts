@@ -34,6 +34,9 @@ export function isGoogleMapsUrl(value: string) {
     return ['google.com', 'www.google.com'].includes(url.hostname) && url.pathname.startsWith('/maps');
   } catch { return false; }
 }
+export function coordsToGoogleMapsUrl(lat: number, lng: number): string {
+  return `https://www.google.com/maps?q=${Number(lat).toFixed(6)},${Number(lng).toFixed(6)}`;
+}
 export function buildAddressDetails(value: DeliveryAddressFields, extra = '') {
   return [value.district, value.street, extra].map(part => part?.trim()).filter(Boolean).join('، ');
 }
@@ -52,10 +55,20 @@ export function formatDeliveryAddress(value: DeliveryAddressFields & { governora
 // Preserve structured delivery information in the existing notes column. Old
 // rows remain plain text; no schema migration or rewriting old orders is needed.
 export function encodeDeliveryNotes(order: Order) {
-  return JSON.stringify({ __joeDelivery: 1, delivery: {
-    ...pickDeliveryFields(order), city: order.city, address_details: order.address_details,
-    customer_whatsapp: order.customer_whatsapp, customer_secondary_phone: order.customer_secondary_phone
-  }, notes: order.notes || '' });
+  const delivery: Record<string, any> = {
+    ...pickDeliveryFields(order),
+    city: order.city,
+    address_details: order.address_details,
+    customer_whatsapp: order.customer_whatsapp,
+    customer_secondary_phone: order.customer_secondary_phone
+  };
+  if (typeof order.latitude === 'number' && Number.isFinite(order.latitude)) {
+    delivery.latitude = Number(order.latitude.toFixed(6));
+  }
+  if (typeof order.longitude === 'number' && Number.isFinite(order.longitude)) {
+    delivery.longitude = Number(order.longitude.toFixed(6));
+  }
+  return JSON.stringify({ __joeDelivery: 1, delivery, notes: order.notes || '' });
 }
 export function decodeDeliveryNotes(raw: unknown): Partial<Order> {
   const original = typeof raw === 'string' ? raw : '';
@@ -65,6 +78,12 @@ export function decodeDeliveryNotes(raw: unknown): Partial<Order> {
     const result: Partial<Order> = pickDeliveryFields(data.delivery);
     for (const key of ['city', 'address_details', 'customer_whatsapp', 'customer_secondary_phone'] as const) {
       if (typeof data.delivery[key] === 'string') result[key] = data.delivery[key];
+    }
+    if (typeof data.delivery.latitude === 'number' && Number.isFinite(data.delivery.latitude)) {
+      result.latitude = data.delivery.latitude;
+    }
+    if (typeof data.delivery.longitude === 'number' && Number.isFinite(data.delivery.longitude)) {
+      result.longitude = data.delivery.longitude;
     }
     result.notes = typeof data.notes === 'string' ? data.notes || undefined : undefined;
     return result;

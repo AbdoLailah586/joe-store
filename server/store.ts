@@ -2,7 +2,17 @@ import { cancelOrder as cancelStoredOrder } from './orderWrites.js';
 /// <reference types="vite/client" />
 import { neon } from '@neondatabase/serverless';
 import { decodeDeliveryNotes, encodeDeliveryNotes, formatDeliveryAddress } from '../src/utils/deliveryAddress.js';
-import type { Product, Order, CategoryKey, OrderStatus, PaymentMethod, PaymentStatus } from '../src/types.js';
+import type { Product, Order, CategoryKey, OrderStatus, PaymentMethod, PaymentStatus } from '../src/types/index.js';
+import {
+    DEFAULT_WHATSAPP_TEMPLATES,
+    buildServerOrderWhatsAppMessage,
+    dispatchWhatsAppViaCrm,
+    ensureWhatsAppNotificationsTable,
+    resolveCrmConfig,
+    testWhatsAppCrmConnection
+} from './whatsappCrm.js';
+import { toAdminPaymentGatewayState, resolvePaymentGatewayConfig } from './paymentGateway.js';
+
 // Read connection string strictly from environment variables
 // Dev configuration loads .env after imports. Resolve the server connection when
 // a query runs, so localhost and deployed functions use the same private setting.
@@ -10,6 +20,57 @@ const queryClient = () => neon(process.env.DATABASE_URL || process.env.VITE_DATA
 const sql: any = Object.assign((strings: any, ...values: any[]) => queryClient()(strings, ...values), {
     query: (...args: any[]) => (queryClient().query as any)(...args)
 });
+
+let crmSchemaReady: Promise<void> | null = null;
+export async function ensureUserCrmColumns(): Promise<void> {
+    if (!crmSchemaReady) {
+        crmSchemaReady = (async () => {
+            await sql.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS last_seen_at TIMESTAMPTZ;`);
+            await sql.query(`
+              ALTER TABLE active_carts
+                ADD COLUMN IF NOT EXISTS source_channel VARCHAR(80),
+                ADD COLUMN IF NOT EXISTS source_label VARCHAR(160),
+                ADD COLUMN IF NOT EXISTS referrer TEXT,
+                ADD COLUMN IF NOT EXISTS landing_path TEXT,
+                ADD COLUMN IF NOT EXISTS utm_source VARCHAR(120),
+                ADD COLUMN IF NOT EXISTS utm_medium VARCHAR(120),
+                ADD COLUMN IF NOT EXISTS utm_campaign VARCHAR(160),
+                ADD COLUMN IF NOT EXISTS utm_content VARCHAR(160),
+                ADD COLUMN IF NOT EXISTS utm_term VARCHAR(160),
+                ADD COLUMN IF NOT EXISTS click_id VARCHAR(200),
+                ADD COLUMN IF NOT EXISTS device_type VARCHAR(40);
+            `);
+            await sql.query(`
+              CREATE TABLE IF NOT EXISTS visitor_sessions (
+                session_id TEXT PRIMARY KEY,
+                customer_id TEXT,
+                customer_name TEXT,
+                customer_phone TEXT,
+                source_channel TEXT,
+                source_label TEXT,
+                referrer TEXT,
+                landing_path TEXT,
+                last_path TEXT,
+                utm_source TEXT,
+                utm_medium TEXT,
+                utm_campaign TEXT,
+                utm_content TEXT,
+                utm_term TEXT,
+                click_id TEXT,
+                device_type TEXT,
+                user_agent TEXT,
+                first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                visit_count INTEGER NOT NULL DEFAULT 1
+              );
+            `);
+        })().catch(err => {
+            crmSchemaReady = null;
+            throw err;
+        });
+    }
+    return crmSchemaReady;
+}
 export interface ActiveCartRecord {
     session_id: string;
     customer_name?: string;
@@ -408,21 +469,74 @@ export const neonDb = {
     async trackActivity(activity: {
         sessionId: string;
         customerId?: string;
-        actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart';
+        actionType: 'search' | 'view_product' | 'view_category' | 'add_to_cart' | 'visit';
         targetId?: string;
         metadata?: Record<string, any>;
     }): Promise<void> {
         try {
-            await sql `
-        INSERT INTO customer_activity (session_id, customer_id, action_type, target_id, metadata)
-        VALUES (
-          ${activity.sessionId},
-          ${activity.customerId || null},
-          ${activity.actionType},
-          ${activity.targetId || null},
-          ${JSON.stringify(activity.metadata || {})}::jsonb
-        );
-      `;
+            await ensureUserCrmColumns().catch(() => {});
+            const meta = activity.metadata && typeof activity.metadata === 'object' ? activity.metadata : {};
+            const sessionId = String(activity.sessionId || '').trim();
+            if (sessionId) {
+                await sql`
+                  INSERT INTO visitor_sessions (
+                    session_id, customer_id, source_channel, source_label, referrer,
+                    landing_path, last_path, utm_source, utm_medium, utm_campaign,
+                    utm_content, utm_term, click_id, device_type, user_agent,
+                    first_seen_at, last_seen_at, visit_count
+                  )
+                  VALUES (
+                    ${sessionId},
+                    ${activity.customerId || null},
+                    ${meta.source_channel || null},
+                    ${meta.source_label || null},
+                    ${meta.referrer || null},
+                    ${meta.landing_path || meta.path || null},
+                    ${meta.path || meta.landing_path || null},
+                    ${meta.utm_source || null},
+                    ${meta.utm_medium || null},
+                    ${meta.utm_campaign || null},
+                    ${meta.utm_content || null},
+                    ${meta.utm_term || null},
+                    ${meta.click_id || null},
+                    ${meta.device_type || null},
+                    ${meta.user_agent || null},
+                    NOW(), NOW(), 1
+                  )
+                  ON CONFLICT (session_id) DO UPDATE SET
+                    customer_id = COALESCE(EXCLUDED.customer_id, visitor_sessions.customer_id),
+                    source_channel = COALESCE(visitor_sessions.source_channel, EXCLUDED.source_channel),
+                    source_label = COALESCE(visitor_sessions.source_label, EXCLUDED.source_label),
+                    referrer = COALESCE(visitor_sessions.referrer, EXCLUDED.referrer),
+                    landing_path = COALESCE(visitor_sessions.landing_path, EXCLUDED.landing_path),
+                    last_path = COALESCE(EXCLUDED.last_path, visitor_sessions.last_path),
+                    utm_source = COALESCE(visitor_sessions.utm_source, EXCLUDED.utm_source),
+                    utm_medium = COALESCE(visitor_sessions.utm_medium, EXCLUDED.utm_medium),
+                    utm_campaign = COALESCE(visitor_sessions.utm_campaign, EXCLUDED.utm_campaign),
+                    utm_content = COALESCE(visitor_sessions.utm_content, EXCLUDED.utm_content),
+                    utm_term = COALESCE(visitor_sessions.utm_term, EXCLUDED.utm_term),
+                    click_id = COALESCE(visitor_sessions.click_id, EXCLUDED.click_id),
+                    device_type = COALESCE(EXCLUDED.device_type, visitor_sessions.device_type),
+                    user_agent = COALESCE(EXCLUDED.user_agent, visitor_sessions.user_agent),
+                    last_seen_at = NOW(),
+                    visit_count = visitor_sessions.visit_count + CASE WHEN ${activity.actionType} = 'visit' THEN 1 ELSE 0 END;
+                `.catch(() => {});
+            }
+            if (activity.customerId) {
+                await sql`UPDATE users SET last_seen_at = NOW() WHERE id = ${activity.customerId}`.catch(() => {});
+            }
+            if (activity.actionType !== 'visit') {
+                await sql`
+                  INSERT INTO customer_activity (session_id, customer_id, action_type, target_id, metadata)
+                  VALUES (
+                    ${sessionId},
+                    ${activity.customerId || null},
+                    ${activity.actionType},
+                    ${activity.targetId || null},
+                    ${JSON.stringify(meta)}::jsonb
+                  );
+                `;
+            }
         }
         catch (error) {
             console.warn('⚠️ Could not log customer activity:', error);
@@ -433,26 +547,71 @@ export const neonDb = {
      */
     async syncActiveCart(cart: {
         sessionId: string;
+        customerId?: string;
         customerName?: string;
         customerPhone?: string;
         items: any[];
         subtotal: number;
+        attribution?: Record<string, any>;
     }): Promise<void> {
         try {
+            await ensureUserCrmColumns().catch(() => {});
+            const attr = cart.attribution && typeof cart.attribution === 'object' ? cart.attribution : {};
+            const cleanName = cart.customerName?.trim() || null;
+            const cleanPhone = cart.customerPhone?.trim() || null;
+            if (cart.sessionId && (cleanName || cleanPhone || cart.customerId || attr.source_channel || attr.landing_path)) {
+                await sql`
+                  INSERT INTO visitor_sessions (
+                    session_id, customer_id, customer_name, customer_phone,
+                    source_channel, source_label, referrer, landing_path, last_path,
+                    utm_source, utm_medium, utm_campaign, utm_content, utm_term, click_id, device_type,
+                    first_seen_at, last_seen_at, visit_count
+                  )
+                  VALUES (
+                    ${cart.sessionId}, ${cart.customerId || null}, ${cleanName}, ${cleanPhone},
+                    ${attr.source_channel || null}, ${attr.source_label || null}, ${attr.referrer || null},
+                    ${attr.landing_path || null}, ${attr.last_path || attr.landing_path || null},
+                    ${attr.utm_source || null}, ${attr.utm_medium || null}, ${attr.utm_campaign || null},
+                    ${attr.utm_content || null}, ${attr.utm_term || null}, ${attr.click_id || null}, ${attr.device_type || null},
+                    NOW(), NOW(), 1
+                  )
+                  ON CONFLICT (session_id) DO UPDATE SET
+                    customer_id = COALESCE(EXCLUDED.customer_id, visitor_sessions.customer_id),
+                    customer_name = COALESCE(EXCLUDED.customer_name, visitor_sessions.customer_name),
+                    customer_phone = COALESCE(EXCLUDED.customer_phone, visitor_sessions.customer_phone),
+                    source_channel = COALESCE(visitor_sessions.source_channel, EXCLUDED.source_channel),
+                    source_label = COALESCE(visitor_sessions.source_label, EXCLUDED.source_label),
+                    referrer = COALESCE(visitor_sessions.referrer, EXCLUDED.referrer),
+                    landing_path = COALESCE(visitor_sessions.landing_path, EXCLUDED.landing_path),
+                    last_path = COALESCE(EXCLUDED.last_path, visitor_sessions.last_path),
+                    utm_source = COALESCE(visitor_sessions.utm_source, EXCLUDED.utm_source),
+                    utm_medium = COALESCE(visitor_sessions.utm_medium, EXCLUDED.utm_medium),
+                    utm_campaign = COALESCE(visitor_sessions.utm_campaign, EXCLUDED.utm_campaign),
+                    device_type = COALESCE(EXCLUDED.device_type, visitor_sessions.device_type),
+                    last_seen_at = NOW();
+                `.catch(() => {});
+            }
             if (!cart.items || cart.items.length === 0) {
-                await sql `DELETE FROM active_carts WHERE session_id = ${cart.sessionId};`;
+                await sql`DELETE FROM active_carts WHERE session_id = ${cart.sessionId};`;
                 return;
             }
-            await sql `
-        INSERT INTO active_carts (session_id, customer_name, customer_phone, items, subtotal, is_abandoned, last_updated_at)
+            await sql`
+        INSERT INTO active_carts (
+          session_id, customer_name, customer_phone, items, subtotal, is_abandoned, last_updated_at,
+          source_channel, source_label, referrer, landing_path, utm_source, utm_medium, utm_campaign, utm_content, utm_term, click_id, device_type
+        )
         VALUES (
           ${cart.sessionId},
-          ${cart.customerName || null},
-          ${cart.customerPhone || null},
+          ${cleanName},
+          ${cleanPhone},
           ${JSON.stringify(cart.items)}::jsonb,
           ${cart.subtotal},
           false,
-          NOW()
+          NOW(),
+          ${attr.source_channel || null}, ${attr.source_label || null}, ${attr.referrer || null},
+          ${attr.landing_path || null}, ${attr.utm_source || null}, ${attr.utm_medium || null},
+          ${attr.utm_campaign || null}, ${attr.utm_content || null}, ${attr.utm_term || null},
+          ${attr.click_id || null}, ${attr.device_type || null}
         )
         ON CONFLICT (session_id) DO UPDATE SET
           customer_name = COALESCE(EXCLUDED.customer_name, active_carts.customer_name),
@@ -460,7 +619,18 @@ export const neonDb = {
           items = EXCLUDED.items,
           subtotal = EXCLUDED.subtotal,
           is_abandoned = false,
-          last_updated_at = NOW();
+          last_updated_at = NOW(),
+          source_channel = COALESCE(active_carts.source_channel, EXCLUDED.source_channel),
+          source_label = COALESCE(active_carts.source_label, EXCLUDED.source_label),
+          referrer = COALESCE(active_carts.referrer, EXCLUDED.referrer),
+          landing_path = COALESCE(active_carts.landing_path, EXCLUDED.landing_path),
+          utm_source = COALESCE(active_carts.utm_source, EXCLUDED.utm_source),
+          utm_medium = COALESCE(active_carts.utm_medium, EXCLUDED.utm_medium),
+          utm_campaign = COALESCE(active_carts.utm_campaign, EXCLUDED.utm_campaign),
+          utm_content = COALESCE(active_carts.utm_content, EXCLUDED.utm_content),
+          utm_term = COALESCE(active_carts.utm_term, EXCLUDED.utm_term),
+          click_id = COALESCE(active_carts.click_id, EXCLUDED.click_id),
+          device_type = COALESCE(EXCLUDED.device_type, active_carts.device_type);
       `;
         }
         catch (error) {
@@ -606,15 +776,275 @@ export const neonDb = {
     },
     async getAllUsers(): Promise<any[]> {
         try {
-            const rows = await sql `
-        SELECT id, name, email, phone, avatar, role, provider, email_verified, addresses, created_at, admin_permissions
-        FROM users
-        ORDER BY created_at DESC;
+            await ensureUserCrmColumns().catch(() => {});
+            const rows = await sql`
+        SELECT
+          u.id, u.name, u.email, u.phone, u.avatar, u.role, u.provider,
+          u.email_verified, u.addresses, u.created_at, u.last_seen_at, u.admin_permissions,
+          COALESCE(ord.orders_count, 0)::int AS orders_count,
+          COALESCE(ord.completed_orders_count, 0)::int AS completed_orders_count,
+          COALESCE(ord.total_spent, 0)::numeric AS total_spent,
+          COALESCE(act.views_count, 0)::int AS views_count,
+          GREATEST(u.last_seen_at, vs.last_seen_at, act.last_activity_at, ord.last_order_at) AS last_activity_at,
+          vs.source_channel, vs.source_label, vs.utm_campaign, vs.device_type,
+          COALESCE(cart.cart_items_count, 0)::int AS cart_items_count,
+          COALESCE(cart.cart_subtotal, 0)::numeric AS cart_subtotal
+        FROM users u
+        LEFT JOIN LATERAL (
+          SELECT
+            COUNT(*)::int AS orders_count,
+            COUNT(*) FILTER (WHERE o.status != 'cancelled')::int AS completed_orders_count,
+            COALESCE(SUM(CASE WHEN o.status != 'cancelled' THEN o.total ELSE 0 END), 0) AS total_spent,
+            MAX(o.created_at) AS last_order_at
+          FROM orders o
+          WHERE (u.email IS NOT NULL AND LOWER(COALESCE(o.customer_email, '')) = LOWER(u.email))
+             OR (NULLIF(REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'), '') IS NOT NULL
+                 AND REGEXP_REPLACE(COALESCE(o.customer_phone, ''), '\\D', '', 'g') = REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'))
+        ) ord ON true
+        LEFT JOIN LATERAL (
+          SELECT source_channel, source_label, utm_campaign, device_type, last_seen_at, session_id
+          FROM visitor_sessions vs0
+          WHERE vs0.customer_id = u.id
+             OR (NULLIF(REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'), '') IS NOT NULL
+                 AND REGEXP_REPLACE(COALESCE(vs0.customer_phone, ''), '\\D', '', 'g') = REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'))
+          ORDER BY vs0.last_seen_at DESC
+          LIMIT 1
+        ) vs ON true
+        LEFT JOIN LATERAL (
+          SELECT
+            COUNT(*) FILTER (WHERE ca.action_type = 'view_product')::int AS views_count,
+            MAX(ca.created_at) AS last_activity_at
+          FROM customer_activity ca
+          WHERE ca.customer_id = u.id OR (vs.session_id IS NOT NULL AND ca.session_id = vs.session_id)
+        ) act ON true
+        LEFT JOIN LATERAL (
+          SELECT
+            COALESCE(SUM(COALESCE((elem->>'quantity')::int, 1)), 0)::int AS cart_items_count,
+            MAX(ac.subtotal) AS cart_subtotal
+          FROM active_carts ac
+          CROSS JOIN LATERAL jsonb_array_elements(COALESCE(ac.items, '[]'::jsonb)) elem
+          WHERE (vs.session_id IS NOT NULL AND ac.session_id = vs.session_id)
+             OR (NULLIF(REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'), '') IS NOT NULL
+                 AND REGEXP_REPLACE(COALESCE(ac.customer_phone, ''), '\\D', '', 'g') = REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'))
+        ) cart ON true
+        ORDER BY u.created_at DESC;
       `;
             return rows || [];
         }
         catch (err) {
             console.error('❌ neonDb.getAllUsers error:', err);
+            try {
+                const fallback = await sql`
+                  SELECT id, name, email, phone, avatar, role, provider, email_verified, addresses, created_at, admin_permissions
+                  FROM users ORDER BY created_at DESC;
+                `;
+                return fallback || [];
+            } catch {
+                return [];
+            }
+        }
+    },
+    async getUserInsights(userId: string): Promise<any> {
+        try {
+            await ensureUserCrmColumns().catch(() => {});
+            const uRows = await sql`
+              SELECT id, name, email, phone, avatar, role, provider, email_verified, addresses, created_at, last_seen_at
+              FROM users WHERE id = ${userId} LIMIT 1;
+            `;
+            const userRow = uRows[0];
+            if (!userRow) return null;
+
+            const normPhone = String(userRow.phone || '').replace(/\D/g, '');
+            const sessionRows = await sql`
+              SELECT session_id, source_channel, source_label, referrer, landing_path, last_path,
+                     utm_source, utm_medium, utm_campaign, device_type, first_seen_at, last_seen_at, visit_count
+              FROM visitor_sessions
+              WHERE customer_id = ${userId}
+                 OR (${normPhone || null}::text IS NOT NULL AND REGEXP_REPLACE(COALESCE(customer_phone, ''), '\\D', '', 'g') = ${normPhone || null})
+              ORDER BY last_seen_at DESC
+              LIMIT 10;
+            `;
+            const sessionIds = sessionRows.map((s: any) => s.session_id).filter(Boolean);
+
+            const viewedRows = await sql`
+              SELECT DISTINCT ON (ca.target_id)
+                ca.target_id AS product_id,
+                ca.created_at AS viewed_at,
+                p.name_ar, p.name_en, p.brand, p.category, p.price, p.images
+              FROM customer_activity ca
+              LEFT JOIN products p ON p.id = ca.target_id
+              WHERE ca.action_type = 'view_product'
+                AND ca.target_id IS NOT NULL
+                AND (ca.customer_id = ${userId} OR ca.session_id = ANY(${sessionIds}::text[]))
+              ORDER BY ca.target_id, ca.created_at DESC
+              LIMIT 50;
+            `.catch(() => []);
+            const recentViews = [...viewedRows]
+              .sort((a: any, b: any) => new Date(b.viewed_at).getTime() - new Date(a.viewed_at).getTime())
+              .slice(0, 15);
+
+            const cartRows = await sql`
+              SELECT session_id, items, subtotal, is_abandoned, last_updated_at
+              FROM active_carts
+              WHERE session_id = ANY(${sessionIds}::text[])
+                 OR (${normPhone || null}::text IS NOT NULL AND REGEXP_REPLACE(COALESCE(customer_phone, ''), '\\D', '', 'g') = ${normPhone || null})
+              ORDER BY last_updated_at DESC
+              LIMIT 1;
+            `.catch(() => []);
+
+            const orderRows = await sql`
+              SELECT * FROM orders
+              WHERE (LOWER(COALESCE(customer_email, '')) = LOWER(${userRow.email || ''}) AND ${userRow.email || null} IS NOT NULL)
+                 OR (${normPhone || null}::text IS NOT NULL AND REGEXP_REPLACE(COALESCE(customer_phone, ''), '\\D', '', 'g') = ${normPhone || null})
+              ORDER BY created_at DESC
+              LIMIT 100;
+            `.catch(() => []);
+            const orders = (orderRows || []).map(mapRowToOrder);
+            const activeOrders = orders.filter((o: any) => o.order_status !== 'cancelled');
+            const totalSpent = activeOrders.reduce((s: number, o: any) => s + Number(o.total || 0), 0);
+
+            return {
+                user: userRow,
+                sessions: sessionRows || [],
+                recent_views: recentViews,
+                active_cart: cartRows[0] || null,
+                orders,
+                stats: {
+                    total_orders: orders.length,
+                    completed_orders: activeOrders.length,
+                    cancelled_orders: orders.length - activeOrders.length,
+                    total_spent: totalSpent,
+                    distinct_products_viewed: recentViews.length
+                }
+            };
+        } catch (err) {
+            console.error('❌ neonDb.getUserInsights error:', err);
+            return null;
+        }
+    },
+    async getGuestVisitors(limit = 150): Promise<any[]> {
+        try {
+            await ensureUserCrmColumns().catch(() => {});
+            const rows = await sql`
+              SELECT
+                vs.session_id,
+                vs.customer_id,
+                COALESCE(vs.customer_name, ac.customer_name) AS customer_name,
+                COALESCE(vs.customer_phone, ac.customer_phone) AS customer_phone,
+                vs.source_channel, vs.source_label, vs.referrer, vs.landing_path, vs.last_path,
+                vs.utm_source, vs.utm_medium, vs.utm_campaign, vs.utm_content, vs.utm_term, vs.click_id,
+                vs.device_type, vs.first_seen_at, vs.last_seen_at, vs.visit_count,
+                ac.items AS cart_items,
+                COALESCE(ac.subtotal, 0)::numeric AS cart_subtotal,
+                COALESCE(ac.is_abandoned, false) AS cart_abandoned,
+                ac.last_updated_at AS cart_updated_at,
+                COALESCE(act.views_count, 0)::int AS views_count,
+                COALESCE(act.searches_count, 0)::int AS searches_count,
+                COALESCE(ord.orders_count, 0)::int AS orders_count,
+                (vs.customer_id IS NOT NULL) AS has_account
+              FROM visitor_sessions vs
+              LEFT JOIN active_carts ac ON ac.session_id = vs.session_id
+              LEFT JOIN LATERAL (
+                SELECT
+                  COUNT(*) FILTER (WHERE ca.action_type = 'view_product')::int AS views_count,
+                  COUNT(*) FILTER (WHERE ca.action_type = 'search')::int AS searches_count
+                FROM customer_activity ca
+                WHERE ca.session_id = vs.session_id
+              ) act ON true
+              LEFT JOIN LATERAL (
+                SELECT COUNT(*)::int AS orders_count
+                FROM orders o
+                WHERE COALESCE(vs.customer_phone, ac.customer_phone) IS NOT NULL
+                  AND REGEXP_REPLACE(COALESCE(o.customer_phone, ''), '\\D', '', 'g') = REGEXP_REPLACE(COALESCE(vs.customer_phone, ac.customer_phone, ''), '\\D', '', 'g')
+              ) ord ON true
+              WHERE vs.customer_id IS NULL
+              ORDER BY vs.last_seen_at DESC
+              LIMIT ${Math.min(300, Math.max(10, Number(limit) || 150))};
+            `;
+            return rows || [];
+        } catch (err) {
+            console.error('❌ neonDb.getGuestVisitors error:', err);
+            return [];
+        }
+    },
+    async getGuestInsights(sessionId: string): Promise<any> {
+        try {
+            await ensureUserCrmColumns().catch(() => {});
+            const sRows = await sql`SELECT * FROM visitor_sessions WHERE session_id = ${sessionId} LIMIT 1;`;
+            const session = sRows[0];
+            if (!session) return null;
+
+            const viewedRows = await sql`
+              SELECT DISTINCT ON (ca.target_id)
+                ca.target_id AS product_id, ca.created_at AS viewed_at,
+                p.name_ar, p.name_en, p.brand, p.category, p.price, p.images
+              FROM customer_activity ca
+              LEFT JOIN products p ON p.id = ca.target_id
+              WHERE ca.session_id = ${sessionId} AND ca.action_type = 'view_product' AND ca.target_id IS NOT NULL
+              ORDER BY ca.target_id, ca.created_at DESC
+              LIMIT 50;
+            `.catch(() => []);
+            const recentViews = [...viewedRows]
+              .sort((a: any, b: any) => new Date(b.viewed_at).getTime() - new Date(a.viewed_at).getTime())
+              .slice(0, 15);
+
+            const searches = await sql`
+              SELECT target_id AS query, created_at FROM customer_activity
+              WHERE session_id = ${sessionId} AND action_type = 'search' AND target_id IS NOT NULL
+              ORDER BY created_at DESC LIMIT 15;
+            `.catch(() => []);
+
+            const cartRows = await sql`SELECT * FROM active_carts WHERE session_id = ${sessionId} LIMIT 1;`.catch(() => []);
+            const normPhone = String(session.customer_phone || cartRows[0]?.customer_phone || '').replace(/\D/g, '');
+            const orderRows = normPhone
+              ? await sql`
+                  SELECT * FROM orders
+                  WHERE REGEXP_REPLACE(COALESCE(customer_phone, ''), '\\D', '', 'g') = ${normPhone}
+                  ORDER BY created_at DESC LIMIT 30;
+                `.catch(() => [])
+              : [];
+
+            return {
+                visitor: session,
+                recent_views: recentViews,
+                searches: searches || [],
+                active_cart: cartRows[0] || null,
+                orders: (orderRows || []).map(mapRowToOrder)
+            };
+        } catch (err) {
+            console.error('❌ neonDb.getGuestInsights error:', err);
+            return null;
+        }
+    },
+    async deleteGuestVisitor(sessionId: string): Promise<{ success: boolean }> {
+        try {
+            await ensureUserCrmColumns().catch(() => {});
+            await sql`DELETE FROM active_carts WHERE session_id = ${sessionId};`.catch(() => {});
+            await sql`DELETE FROM customer_activity WHERE session_id = ${sessionId};`.catch(() => {});
+            await sql`DELETE FROM visitor_sessions WHERE session_id = ${sessionId};`;
+            return { success: true };
+        } catch {
+            return { success: false };
+        }
+    },
+    async getRecentlyViewedProductIds(sessionId: string, customerId?: string | null, limit = 12): Promise<string[]> {
+        try {
+            const sid = String(sessionId || '').trim();
+            const uid = customerId ? String(customerId).trim() : null;
+            if (!sid && !uid) return [];
+            const rows = await sql`
+              SELECT target_id, MAX(created_at) AS last_viewed
+              FROM customer_activity
+              WHERE action_type = 'view_product'
+                AND target_id IS NOT NULL
+                AND ((${sid || null}::text IS NOT NULL AND session_id = ${sid || null})
+                  OR (${uid}::text IS NOT NULL AND customer_id = ${uid}))
+              GROUP BY target_id
+              ORDER BY last_viewed DESC
+              LIMIT ${Math.min(24, Math.max(1, Number(limit) || 12))};
+            `;
+            return (rows || []).map((r: any) => String(r.target_id)).filter(Boolean);
+        } catch {
             return [];
         }
     },
@@ -706,6 +1136,28 @@ async updateOrderStatus(
           updated_at = NOW()
         WHERE id = ${orderId} OR order_number = ${orderId};
       `;
+      try {
+        const settings = await this.getStoreSettings();
+        const crm = resolveCrmConfig(settings);
+        if (crm.autoSendOnStatusChange && ['shipped', 'out_for_delivery', 'delivered', 'cancelled'].includes(status)) {
+          const orderRows = await sql`SELECT * FROM orders WHERE id = ${orderId} OR order_number = ${orderId} LIMIT 1;`;
+          if (orderRows[0]) {
+            const mappedOrder = mapRowToOrder(orderRows[0]);
+            const recipient = mappedOrder.customer_whatsapp || mappedOrder.customer_phone;
+            const msgText = buildServerOrderWhatsAppMessage(status as any, mappedOrder, settings);
+            await dispatchWhatsAppViaCrm(sql, {
+              recipient,
+              text: msgText,
+              type: status as any,
+              orderId: mappedOrder.id,
+              orderNumber: mappedOrder.order_number,
+              settings
+            });
+          }
+        }
+      } catch (waErr) {
+        console.warn('⚠️ WhatsApp status dispatch skipped:', waErr);
+      }
       return { success: true };
     } catch (err: any) {
       console.error('❌ neonDb.updateOrderStatus error:', err);
@@ -1225,5 +1677,231 @@ async getWishlistGap(limit = 5): Promise<{ product_id: string; name_ar: string; 
       console.error('❌ neonDb.deleteProductReview error:', error);
       return { success: false, error: error.message };
     }
+  },
+
+  async getWhatsAppAdminConfig(): Promise<any> {
+    const settings = (await this.getStoreSettings()) || {};
+    const crm = resolveCrmConfig(settings);
+    return {
+      whatsapp_automation_url: settings.whatsapp_automation_url || '',
+      whatsapp_automation_email: settings.whatsapp_automation_email || '',
+      has_password: Boolean(settings.whatsapp_automation_pass || process.env.WHATSAPP_CRM_PASSWORD),
+      env_configured: Boolean(process.env.WHATSAPP_CRM_URL && process.env.WHATSAPP_CRM_EMAIL && process.env.WHATSAPP_CRM_PASSWORD),
+      configured: crm.configured,
+      auto_send_on_order: crm.autoSendOnOrder,
+      auto_send_on_status_change: crm.autoSendOnStatusChange,
+      auto_alert_admin_on_order: crm.autoAlertAdminOnOrder,
+      admin_alert_whatsapp_number: settings.admin_alert_whatsapp_number || '',
+      admin_alert_recipients: crm.adminAlertRecipients,
+      whatsapp_templates: {
+        ...DEFAULT_WHATSAPP_TEMPLATES,
+        ...(settings.whatsapp_templates || {})
+      }
+    };
+  },
+
+  async saveWhatsAppAdminConfig(config: any): Promise<{ success: boolean; error?: string }> {
+    try {
+      const current = (await this.getStoreSettings()) || {};
+      const next: any = { ...current };
+      if (config.whatsapp_automation_url !== undefined) {
+        next.whatsapp_automation_url = String(config.whatsapp_automation_url || '').trim().replace(/\/+$/, '');
+      }
+      if (config.whatsapp_automation_email !== undefined) {
+        next.whatsapp_automation_email = String(config.whatsapp_automation_email || '').trim();
+      }
+      if (typeof config.whatsapp_automation_pass === 'string' && config.whatsapp_automation_pass.trim()) {
+        next.whatsapp_automation_pass = config.whatsapp_automation_pass;
+      }
+      if (config.auto_send_on_order !== undefined) {
+        next.auto_send_on_order = Boolean(config.auto_send_on_order);
+      }
+      if (config.auto_send_on_status_change !== undefined) {
+        next.auto_send_on_status_change = Boolean(config.auto_send_on_status_change);
+      }
+      if (config.auto_alert_admin_on_order !== undefined) {
+        next.auto_alert_admin_on_order = Boolean(config.auto_alert_admin_on_order);
+      }
+      if (config.admin_alert_whatsapp_number !== undefined) {
+        next.admin_alert_whatsapp_number = String(config.admin_alert_whatsapp_number || '').trim();
+      }
+      if (config.whatsapp_templates && typeof config.whatsapp_templates === 'object') {
+        next.whatsapp_templates = {
+          ...(current.whatsapp_templates || {}),
+          ...config.whatsapp_templates
+        };
+      }
+      return this.updateStoreSettings(next);
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'تعذر حفظ إعدادات واتساب' };
+    }
+  },
+
+  async testWhatsAppConnection(): Promise<any> {
+    const settings = (await this.getStoreSettings()) || {};
+    return testWhatsAppCrmConnection(settings);
+  },
+
+  async getWhatsAppNotifications(limit = 60): Promise<any[]> {
+    try {
+      await ensureWhatsAppNotificationsTable(sql);
+      const rows = await sql`
+        SELECT id, order_id, order_number, phone, notification_type, message_text, status, error_message, created_at
+        FROM whatsapp_notifications
+        ORDER BY created_at DESC
+        LIMIT ${Math.min(200, Math.max(10, Number(limit) || 60))};
+      `;
+      return rows || [];
+    } catch {
+      return [];
+    }
+  },
+
+  async sendOrderWhatsApp(params: {
+    orderId: string;
+    type?: string;
+    customText?: string;
+    recipient?: string;
+  }): Promise<any> {
+    const settings = (await this.getStoreSettings()) || {};
+    const rows = await sql`SELECT * FROM orders WHERE id = ${params.orderId} OR order_number = ${params.orderId} LIMIT 1;`;
+    if (!rows[0]) return { success: false, status: 'failed', error: 'الطلب غير موجود.' };
+    const order = mapRowToOrder(rows[0]);
+    const notifType = (params.type || 'order_confirmed') as any;
+    const text = buildServerOrderWhatsAppMessage(notifType, order, settings, params.customText);
+    const recipient = params.recipient || order.customer_whatsapp || order.customer_phone;
+    return dispatchWhatsAppViaCrm(sql, {
+      recipient,
+      text,
+      type: notifType,
+      orderId: order.id,
+      orderNumber: order.order_number,
+      settings
+    });
+  },
+
+  async sendTestWhatsApp(params: { phone: string; text: string }): Promise<any> {
+    const settings = (await this.getStoreSettings()) || {};
+    return dispatchWhatsAppViaCrm(sql, {
+      recipient: params.phone,
+      text: params.text || 'رسالة تجربة من متجر جو ستور (JOE Store) عبر WhatsApp Pro CRM ✅',
+      type: 'custom',
+      settings
+    });
+  },
+
+  async getPaymentGatewayAdminConfig(): Promise<any> {
+    const settings = (await this.getStoreSettings()) || {};
+    return toAdminPaymentGatewayState(settings);
+  },
+
+  async savePaymentGatewayConfig(config: any, actor?: { id?: string; name?: string }): Promise<{ success: boolean; error?: string; state?: any }> {
+    try {
+      const current = (await this.getStoreSettings()) || {};
+      const next: any = { ...current };
+      const cleanStr = (v: any, max = 300) => String(v ?? '').trim().slice(0, max);
+
+      if (config.provider !== undefined) {
+        const p = cleanStr(config.provider, 40).toLowerCase();
+        next.payment_gateway_provider = p === 'kashier' || p === 'paymob' ? p : 'none';
+      }
+      if (config.mode !== undefined) {
+        next.payment_gateway_mode = cleanStr(config.mode, 20).toLowerCase() === 'live' ? 'live' : 'test';
+      }
+      if (config.merchant_id !== undefined) {
+        next.payment_gateway_merchant_id = cleanStr(config.merchant_id, 160);
+      }
+      if (config.public_key !== undefined) {
+        next.payment_gateway_public_key = cleanStr(config.public_key, 400);
+      }
+      if (typeof config.api_key === 'string' && config.api_key.trim()) {
+        next.payment_gateway_api_key = config.api_key.trim();
+      }
+      if (typeof config.secret_key === 'string' && config.secret_key.trim()) {
+        next.payment_gateway_secret_key = config.secret_key.trim();
+      }
+      if (typeof config.hmac_secret === 'string' && config.hmac_secret.trim()) {
+        next.payment_gateway_hmac_secret = config.hmac_secret.trim();
+      }
+      if (config.card_integration_id !== undefined) {
+        next.payment_gateway_card_integration_id = cleanStr(config.card_integration_id, 120);
+      }
+      if (config.wallet_integration_id !== undefined) {
+        next.payment_gateway_wallet_integration_id = cleanStr(config.wallet_integration_id, 120);
+      }
+      if (config.instapay_integration_id !== undefined) {
+        next.payment_gateway_instapay_integration_id = cleanStr(config.instapay_integration_id, 120);
+      }
+      if (config.enable_card !== undefined) {
+        next.payment_gateway_enable_card = Boolean(config.enable_card);
+      }
+      if (config.enable_wallet !== undefined) {
+        next.payment_gateway_enable_wallet = Boolean(config.enable_wallet);
+      }
+      if (config.enable_instapay !== undefined) {
+        next.payment_gateway_enable_instapay = Boolean(config.enable_instapay);
+      }
+
+      const saved = await this.updateStoreSettings(next);
+      if (!saved.success) return saved;
+      if (actor) {
+        await logAudit({
+          actorId: actor.id,
+          actorName: actor.name,
+          action: 'PAYMENT_GATEWAY_CONFIG_UPDATED',
+          entity: 'store_settings',
+          entityId: 'main',
+          after: {
+            provider: next.payment_gateway_provider,
+            mode: next.payment_gateway_mode,
+            merchant_id: next.payment_gateway_merchant_id,
+            enable_card: next.payment_gateway_enable_card,
+            enable_wallet: next.payment_gateway_enable_wallet,
+            enable_instapay: next.payment_gateway_enable_instapay
+          }
+        });
+      }
+      return { success: true, state: toAdminPaymentGatewayState(next) };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'تعذر حفظ إعدادات بوابة الدفع.' };
+    }
+  },
+
+  async testPaymentGatewayConfig(): Promise<{ success: boolean; message?: string; error?: string; state?: any }> {
+    const settings = (await this.getStoreSettings()) || {};
+    const cfg = resolvePaymentGatewayConfig(settings);
+    const state = toAdminPaymentGatewayState(settings);
+    if (cfg.provider === 'none') {
+      return { success: false, error: 'اختر مزود الدفع (Kashier أو Paymob) أولاً.', state };
+    }
+    if (!cfg.configured) {
+      return {
+        success: false,
+        error:
+          cfg.provider === 'kashier'
+            ? 'أكمل إدخال Merchant ID و API Key الخاصين بـ Kashier.'
+            : 'أكمل إدخال Secret Key و Public Key ومعرف تكامل واحد على الأقل لـ Paymob.',
+        state
+      };
+    }
+    if (cfg.provider === 'paymob') {
+      try {
+        const probeRes = await fetch('https://accept.paymob.com/api/auth/tokens', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ api_key: cfg.apiKey || cfg.secretKey })
+        });
+        if (!probeRes.ok && !cfg.publicKey.startsWith('egy_pk_')) {
+          return { success: false, error: `تعذر التحقق من Paymob (HTTP ${probeRes.status}). تأكد من المفاتيح.`, state };
+        }
+      } catch {
+        // Fallback to configuration validation when network/API Key-only Intention mode is used
+      }
+    }
+    return {
+      success: true,
+      message: `تم التحقق من جاهزية ربط ${cfg.provider === 'kashier' ? 'Kashier' : 'Paymob'} (${cfg.mode === 'live' ? 'تشغيل فعلي Live' : 'وضع تجريبي Test'}).`,
+      state
+    };
   }
 };
