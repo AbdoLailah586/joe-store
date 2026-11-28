@@ -49,8 +49,8 @@ import { neonDb } from '../services/neonDb';
 import { Product } from '../types';
 import { buildProductAdUrl } from '../utils/adLinks';
 import { ProductSocialPostButtons } from '../components/SocialIcons';
-import { trackMetaEvent } from '../utils/metaPixel';
-import { hasAnalyticsConsent, trackGa4ViewItem } from '../utils/analytics';
+import { initMetaPixel, trackMetaEvent } from '../utils/metaPixel';
+import { hasAnalyticsConsent, initGa4, trackGa4ViewItem } from '../utils/analytics';
 
 function getClientSessionId(): string {
   try {
@@ -178,7 +178,19 @@ export const ProductDetails: React.FC = () => {
     return getCategoryComparisonRows(product, enriched.comparison_items, language);
   }, [product, enriched?.comparison_items, language]);
 
-  // Initialize bundle selection when product changes + Track product view & Meta ViewContent
+  const trackedActivityRef = useRef<string>('');
+  const trackedMetaViewRef = useRef<string>('');
+  const trackedGaViewRef = useRef<string>('');
+  const [consentTick, setConsentTick] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const bump = () => setConsentTick(c => c + 1);
+    window.addEventListener('joe-cookie-consent-changed', bump);
+    return () => window.removeEventListener('joe-cookie-consent-changed', bump);
+  }, []);
+
+  // Initialize bundle selection when product changes
   useEffect(() => {
     if (product && enriched) {
       setSelectedImage(0);
@@ -186,19 +198,6 @@ export const ProductDetails: React.FC = () => {
       setSelectedStorage(product.available_storages?.[0] || product.storage || '');
       setSelectedColor(product.available_colors?.[0]?.name_ar || product.color_ar || '');
       document.title = `${enriched.detailed_title_ar.slice(0, 60)} | متجر جو ستور`;
-
-      if (hasAnalyticsConsent()) {
-        trackActivity('view_product', product.id, { product_name: product.name_ar, brand: product.brand, category: product.category });
-        trackMetaEvent('ViewContent', {
-          content_ids: [product.id],
-          content_name: product.name_ar,
-          content_category: product.category,
-          content_type: 'product',
-          value: product.price,
-          currency: 'EGP'
-        });
-        trackGa4ViewItem(product);
-      }
 
       // Select all bundle items by default
       const initialBundleMap: { [id: string]: boolean } = { [product.id]: true };
@@ -208,6 +207,37 @@ export const ProductDetails: React.FC = () => {
       setBundleSelected(initialBundleMap);
     }
   }, [product?.id, language]);
+
+  // Track product view, Meta ViewContent & GA4 view_item reliably after consent & settings hydrate
+  useEffect(() => {
+    if (!product || !enriched || !hasAnalyticsConsent()) return;
+    if (trackedActivityRef.current !== product.id) {
+      trackedActivityRef.current = product.id;
+      trackActivity('view_product', product.id, { product_name: product.name_ar, brand: product.brand, category: product.category });
+    }
+    if (settings.meta_pixel_enabled !== false && settings.meta_pixel_id) {
+      const metaKey = `${product.id}:${settings.meta_pixel_id}`;
+      if (trackedMetaViewRef.current !== metaKey && initMetaPixel(settings.meta_pixel_id)) {
+        trackedMetaViewRef.current = metaKey;
+        trackMetaEvent('ViewContent', {
+          content_ids: [product.id],
+          content_name: product.name_ar,
+          content_category: product.category,
+          content_type: 'product',
+          value: product.price,
+          currency: 'EGP'
+        });
+      }
+    }
+    if (settings.ga4_measurement_id) {
+      const gaKey = `${product.id}:${settings.ga4_measurement_id}`;
+      if (trackedGaViewRef.current !== gaKey) {
+        trackedGaViewRef.current = gaKey;
+        initGa4(settings.ga4_measurement_id);
+        trackGa4ViewItem(product);
+      }
+    }
+  }, [product?.id, Boolean(enriched), settings.meta_pixel_id, settings.meta_pixel_enabled, settings.ga4_measurement_id, consentTick]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

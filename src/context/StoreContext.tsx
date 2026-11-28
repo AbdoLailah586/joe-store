@@ -920,13 +920,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
     trackActivity('add_to_cart', product.id, { quantity });
     if (hasAnalyticsConsent()) {
-      trackMetaEvent('AddToCart', {
-        content_ids: [product.id],
-        content_name: product.name_ar,
-        content_type: 'product',
-        value: product.price * quantity,
-        currency: 'EGP'
-      });
+      if (settings.meta_pixel_enabled !== false && initMetaPixel(settings.meta_pixel_id)) {
+        trackMetaEvent('AddToCart', {
+          content_ids: [product.id],
+          content_name: product.name_ar,
+          content_type: 'product',
+          value: product.price * quantity,
+          currency: 'EGP'
+        });
+      }
+      initGa4(settings.ga4_measurement_id);
       trackGa4AddToCart(product, quantity);
     }
     setIsCartOpen(true);

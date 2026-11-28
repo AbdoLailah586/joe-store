@@ -39,8 +39,8 @@ import { productDetail } from '../utils/detailModels';
 import { normalizeProductImage, compressImageFile } from '../utils/imageUrl';
 import { buildAddressDetails, formatDeliveryAddress, pickDeliveryFields, normalizeDigits, normalizePhone, isEgyptianPhone, isGoogleMapsUrl, coordsToGoogleMapsUrl } from '../utils/deliveryAddress';
 import { reverseGeocodeCoords } from '../utils/egyptLocation';
-import { trackMetaEvent } from '../utils/metaPixel';
-import { hasAnalyticsConsent, trackGa4BeginCheckout } from '../utils/analytics';
+import { initMetaPixel, trackMetaEvent } from '../utils/metaPixel';
+import { hasAnalyticsConsent, initGa4, trackGa4BeginCheckout } from '../utils/analytics';
 import { getOrCaptureVisitorAttribution } from '../utils/visitorAttribution';
 import { neonDb } from '../services/neonDb';
 
@@ -277,18 +277,37 @@ export const Checkout: React.FC = () => {
     }
   };
 
+  const trackedCheckoutMetaRef = React.useRef('');
+  const trackedCheckoutGaRef = React.useRef('');
+  const [consentTick, setConsentTick] = React.useState(0);
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const bump = () => setConsentTick(c => c + 1);
+    window.addEventListener('joe-cookie-consent-changed', bump);
+    return () => window.removeEventListener('joe-cookie-consent-changed', bump);
+  }, []);
+
   // Early guest/customer capture + InitiateCheckout Pixel & GA4
   useEffect(() => {
-    if (cart.length > 0 && hasAnalyticsConsent()) {
-      trackMetaEvent('InitiateCheckout', {
-        value: cartSubtotal,
-        currency: 'EGP',
-        num_items: cart.reduce((s, i) => s + i.quantity, 0),
-        content_ids: cart.map(i => i.product.id)
-      });
+    if (cart.length === 0 || !hasAnalyticsConsent()) return;
+    if (settings.meta_pixel_enabled !== false && settings.meta_pixel_id) {
+      const mKey = `${settings.meta_pixel_id}:${cart.length}:${cartSubtotal}`;
+      if (!trackedCheckoutMetaRef.current && initMetaPixel(settings.meta_pixel_id)) {
+        trackedCheckoutMetaRef.current = mKey;
+        trackMetaEvent('InitiateCheckout', {
+          value: cartSubtotal,
+          currency: 'EGP',
+          num_items: cart.reduce((s, i) => s + i.quantity, 0),
+          content_ids: cart.map(i => i.product.id)
+        });
+      }
+    }
+    if (settings.ga4_measurement_id && !trackedCheckoutGaRef.current) {
+      trackedCheckoutGaRef.current = settings.ga4_measurement_id;
+      initGa4(settings.ga4_measurement_id);
       trackGa4BeginCheckout(cart, cartSubtotal, appliedCoupon?.code);
     }
-  }, []);
+  }, [cart.length, cartSubtotal, settings.meta_pixel_id, settings.meta_pixel_enabled, settings.ga4_measurement_id, consentTick]);
 
   useEffect(() => {
     if (!customerPhone.trim() && !customerName.trim() && !customerEmail.trim()) return;

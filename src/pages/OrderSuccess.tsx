@@ -20,8 +20,8 @@ import { InfoButton } from '../components/DetailsDialog';
 import { orderDetail, productDetail } from '../utils/detailModels';
 import { generateWhatsAppWebLink, buildOrderConfirmationMessage } from '../utils/whatsappService';
 import { InvoiceModal } from '../components/InvoiceModal';
-import { trackMetaEvent } from '../utils/metaPixel';
-import { hasAnalyticsConsent, trackGa4Purchase } from '../utils/analytics';
+import { initMetaPixel, trackMetaEvent } from '../utils/metaPixel';
+import { hasAnalyticsConsent, initGa4, trackGa4Purchase } from '../utils/analytics';
 
 export const OrderSuccess: React.FC = () => {
   const { currentOrder, navigate, settings } = useStore();
@@ -54,13 +54,15 @@ export const OrderSuccess: React.FC = () => {
   React.useEffect(() => {
     if (gatewayStatus !== 'paid' || !orderNumber || typeof window === 'undefined') return;
     if (!hasAnalyticsConsent()) return;
+    const metaEnabled = settings.meta_pixel_enabled !== false && Boolean(settings.meta_pixel_id);
+    if (!metaEnabled && !settings.ga4_measurement_id) return;
     const guardKey = `joe_purchase_tracked_${orderNumber}`;
     try {
       if (window.sessionStorage.getItem(guardKey) === '1') return;
       window.sessionStorage.setItem(guardKey, '1');
     } catch {}
 
-    if (settings.meta_pixel_enabled !== false) {
+    if (metaEnabled && initMetaPixel(settings.meta_pixel_id)) {
       const items = Array.isArray(activeOrder?.items) ? activeOrder.items : [];
       trackMetaEvent(
         'Purchase',
@@ -74,10 +76,11 @@ export const OrderSuccess: React.FC = () => {
         orderNumber
       );
     }
-    if (activeOrder) {
+    if (activeOrder && settings.ga4_measurement_id) {
+      initGa4(settings.ga4_measurement_id);
       trackGa4Purchase(activeOrder);
     }
-  }, [gatewayStatus, orderNumber, activeOrder, settings.meta_pixel_enabled]);
+  }, [gatewayStatus, orderNumber, activeOrder, settings.meta_pixel_id, settings.meta_pixel_enabled, settings.ga4_measurement_id]);
 
   if (!activeOrder && !queryOrderNumber) {
     return (

@@ -23,8 +23,8 @@ import { AnimateStorefront } from '../components/motion/AnimateStorefront';
 import { useDetails } from '../components/DetailsDialog';
 import { productRows } from '../utils/detailModels';
 import { sortCatalogProducts } from '../utils/productSorting';
-import { trackMetaEvent } from '../utils/metaPixel';
-import { hasAnalyticsConsent, trackGa4Search } from '../utils/analytics';
+import { initMetaPixel, trackMetaEvent } from '../utils/metaPixel';
+import { hasAnalyticsConsent, initGa4, trackGa4Search } from '../utils/analytics';
 import {
   CHARGING_SUBSECTIONS,
   STORE_CATEGORIES,
@@ -95,12 +95,15 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     const timer = window.setTimeout(() => {
       if (hasAnalyticsConsent()) {
         trackActivity?.('search', undefined, { query: q, category: selectedCategory });
-        trackMetaEvent('Search', { search_string: q });
+        if (settings.meta_pixel_enabled !== false && initMetaPixel(settings.meta_pixel_id)) {
+          trackMetaEvent('Search', { search_string: q });
+        }
+        initGa4(settings.ga4_measurement_id);
         trackGa4Search(q);
       }
     }, 350);
     return () => window.clearTimeout(timer);
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, settings.meta_pixel_id, settings.meta_pixel_enabled, settings.ga4_measurement_id]);
 
 
   // Extract unique brands and storages
