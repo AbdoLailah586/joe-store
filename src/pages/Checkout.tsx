@@ -36,10 +36,11 @@ import confetti from 'canvas-confetti';
 import { DetailedAddressFields } from '../components/DetailedAddressFields';
 import { InfoButton, useDetails } from '../components/DetailsDialog';
 import { productDetail } from '../utils/detailModels';
-import { normalizeProductImage } from '../utils/imageUrl';
+import { normalizeProductImage, compressImageFile } from '../utils/imageUrl';
 import { buildAddressDetails, formatDeliveryAddress, pickDeliveryFields, normalizeDigits, normalizePhone, isEgyptianPhone, isGoogleMapsUrl, coordsToGoogleMapsUrl } from '../utils/deliveryAddress';
 import { reverseGeocodeCoords } from '../utils/egyptLocation';
 import { trackMetaEvent } from '../utils/metaPixel';
+import { hasAnalyticsConsent, trackGa4BeginCheckout } from '../utils/analytics';
 import { getOrCaptureVisitorAttribution } from '../utils/visitorAttribution';
 import { neonDb } from '../services/neonDb';
 
@@ -100,6 +101,19 @@ export const Checkout: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
   const [policyError, setPolicyError] = useState(false);
+  const checkoutAttemptKeyRef = useRef<string>('');
+
+  const cartSignature = useMemo(
+    () =>
+      cart
+        .map((i) => `${i.product.id}:${i.quantity}:${i.product.price}:${i.selected_color || ''}:${i.selected_storage || ''}`)
+        .join('|'),
+    [cart]
+  );
+
+  useEffect(() => {
+    checkoutAttemptKeyRef.current = '';
+  }, [cartSignature, paymentMethod, appliedCoupon?.code, selectedGovId, selectedCity]);
 
   // Pre-fill user data when user changes
   useEffect(() => {
@@ -263,15 +277,16 @@ export const Checkout: React.FC = () => {
     }
   };
 
-  // Early guest/customer capture + InitiateCheckout Pixel
+  // Early guest/customer capture + InitiateCheckout Pixel & GA4
   useEffect(() => {
-    if (cart.length > 0) {
+    if (cart.length > 0 && hasAnalyticsConsent()) {
       trackMetaEvent('InitiateCheckout', {
         value: cartSubtotal,
         currency: 'EGP',
         num_items: cart.reduce((s, i) => s + i.quantity, 0),
         content_ids: cart.map(i => i.product.id)
       });
+      trackGa4BeginCheckout(cart, cartSubtotal, appliedCoupon?.code);
     }
   }, []);
 
@@ -370,14 +385,24 @@ export const Checkout: React.FC = () => {
     );
   };
 
-  const handleReceiptUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleReceiptUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (uploadEvent) => {
-        setReceiptImage(uploadEvent.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setErrorMsg(language === 'ar' ? 'يُسمح برفع صور بصيغة JPG أو PNG أو WebP فقط لإيصال الدفع.' : 'Only JPG, PNG, or WebP images are allowed for receipts.');
+      e.target.value = '';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg(language === 'ar' ? 'حجم صورة الإيصال يجب ألا يتجاوز 5 ميجابايت.' : 'Receipt image must be under 5 MB.');
+      e.target.value = '';
+      return;
+    }
+    try {
+      const compressed = await compressImageFile(file, 1200, 0.8);
+      setReceiptImage(compressed);
+    } catch {
+      setErrorMsg(language === 'ar' ? 'تعذر معالجة صورة الإيصال. حاول بصورة أخرى.' : 'Could not process receipt image.');
     }
   };
 
@@ -457,6 +482,13 @@ export const Checkout: React.FC = () => {
         if (!saved.success) throw new Error(saved.error || 'تعذّر حفظ العنوان.');
       }
 
+      if (!checkoutAttemptKeyRef.current) {
+        checkoutAttemptKeyRef.current =
+          typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+            ? `idem-${crypto.randomUUID()}`
+            : `idem-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      }
+
       const order = await createOrder({
         ...pickDeliveryFields(delivery),
         extra_details: addressDetails || undefined,
@@ -477,6 +509,7 @@ export const Checkout: React.FC = () => {
         latitude,
         longitude,
         session_id: sessionId,
+        idempotency_key: checkoutAttemptKeyRef.current,
         notes: notes || undefined,
         items: cart,
         subtotal: cartSubtotal,
@@ -491,21 +524,7 @@ export const Checkout: React.FC = () => {
         order_status: 'pending',
       });
 
-      // Mark the coupon as redeemed by this user so it expires for their account
-      if (appliedCoupon) {
-        const userIdentifier = user?.id || user?.email || normalizePhone(customerPhone) || 'customer';
-        const currentCoupons = settings.coupons || [];
-        const updatedCoupons = currentCoupons.map((cp) => {
-          if (cp.code.toUpperCase() === appliedCoupon.code.toUpperCase()) {
-            return {
-              ...cp,
-              used_by: Array.from(new Set([...(cp.used_by || []), userIdentifier]))
-            };
-          }
-          return cp;
-        });
-        updateSettings({ coupons: updatedCoupons });
-      }
+      checkoutAttemptKeyRef.current = '';
 
       if (order.checkout_url && typeof window !== 'undefined') {
         window.location.assign(order.checkout_url);
@@ -523,7 +542,10 @@ export const Checkout: React.FC = () => {
 
       navigate('order-success');
     } catch (err: any) {
-      setErrorMsg(language === 'ar' ? `حدث خطأ أثناء تسجيل الطلب: ${err.message}` : `Error creating order: ${err.message}`);
+      const safeMsg = err?.message && !/sql|postgres|syntax|ECONN|stack/i.test(String(err.message))
+        ? err.message
+        : (language === 'ar' ? 'تعذر إتمام الطلب الآن. سلتك محفوظة، حاول مرة أخرى.' : 'Could not complete order right now. Your cart is saved.');
+      setErrorMsg(safeMsg);
     } finally {
       setIsSubmitting(false);
     }
@@ -1332,6 +1354,24 @@ export const Checkout: React.FC = () => {
                       , and Cookies collection for placing this order.
                     </>
                   )}
+                </span>
+              </label>
+
+              <label className="flex items-start gap-2.5 cursor-pointer select-none pt-2 mt-2 border-t border-amber-200/70 text-[11px] text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={Boolean((user as any)?.marketing_opt_in)}
+                  onChange={async (e) => {
+                    if (user?.id) {
+                      await neonDb.updateConsentPreferences({ marketing_opt_in: e.target.checked });
+                    }
+                  }}
+                  className="mt-0.5 w-3.5 h-3.5 accent-amber-600 shrink-0"
+                />
+                <span>
+                  {language === 'ar'
+                    ? '(اختياري) أوافق على استقبال عروض وتنبيهات التخفيضات الجديدة عبر واتساب والبريد — مستقل عن إتمام هذا الطلب.'
+                    : '(Optional) Send me seasonal offers and promotions via WhatsApp & email.'}
                 </span>
               </label>
             </div>

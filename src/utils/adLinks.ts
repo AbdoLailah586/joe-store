@@ -1,4 +1,55 @@
+import type { ProductSocialLinks } from '../types';
+
 export type AdPlatformSource = 'facebook' | 'instagram' | 'tiktok' | 'google';
+export type SocialPostPlatform = 'facebook' | 'tiktok' | 'instagram';
+
+const SOCIAL_PLATFORMS: SocialPostPlatform[] = ['facebook', 'tiktok', 'instagram'];
+
+/**
+ * Validates and normalizes an external social post URL to safe http/https URLs.
+ */
+export function sanitizeSocialUrl(raw?: string | null): string | undefined {
+  const trimmed = String(raw || '').trim();
+  if (!trimmed) return undefined;
+  const withScheme = /^(https?:)?\/\//i.test(trimmed)
+    ? (trimmed.startsWith('//') ? `https:${trimmed}` : trimmed)
+    : /^(?:www\.)?(?:facebook\.com|fb\.watch|m\.facebook\.com|tiktok\.com|vm\.tiktok\.com|vt\.tiktok\.com|instagram\.com|instagr\.am)\//i.test(trimmed)
+      ? `https://${trimmed}`
+      : trimmed;
+  try {
+    const parsed = new URL(withScheme);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return undefined;
+    return parsed.toString();
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Normalizes a product's social_links map, keeping only valid http/https links.
+ */
+export function normalizeProductSocialLinks(input?: ProductSocialLinks | Record<string, unknown> | null): ProductSocialLinks | undefined {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return undefined;
+  const out: ProductSocialLinks = {};
+  for (const key of SOCIAL_PLATFORMS) {
+    const clean = sanitizeSocialUrl((input as Record<string, unknown>)[key] as string | undefined);
+    if (clean) out[key] = clean;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
+/**
+ * Returns ordered list of valid social post link entries for rendering.
+ */
+export function getProductSocialLinkEntries(
+  product?: { social_links?: ProductSocialLinks | null } | null
+): { platform: SocialPostPlatform; url: string }[] {
+  const clean = normalizeProductSocialLinks(product?.social_links);
+  if (!clean) return [];
+  return SOCIAL_PLATFORMS
+    .filter((platform) => Boolean(clean[platform]))
+    .map((platform) => ({ platform, url: clean[platform]! }));
+}
 
 function appendUtms(
   baseUrl: string,

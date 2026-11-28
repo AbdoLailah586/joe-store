@@ -12,6 +12,7 @@ export const categoryLabels: Record<string, string> = {
   smart_rings: 'خواتم التسبيح الذكية', trackers: 'أجهزة تتبع ذكية',
   photography_mics: 'مايكات ومعدات تصوير', car_accessories: 'مستلزمات وطوارئ السيارات',
   speakers: 'مكبرات صوت سبيكر', adapters: 'محولات ووصلات OTG',
+  printers: 'طابعات محمولة وملحقاتها', gaming: 'أجهزة وإكسسوارات الألعاب',
   accessories: 'إكسسوارات متنوعة',
 };
 export const reportOptions = {

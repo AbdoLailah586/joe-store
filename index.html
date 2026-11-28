@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-title" content="جو ستور" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="application-name" content="JOE Store" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f8fafc" />
     <meta name="description" content="JOE Store - متجر جو ستور لأحدث الهواتف الذكية، إكسسوارات الموبايل، الساعات الذكية، الشواحن والسماعات الأصلية بأفضل الأسعار وأقوى ضمان." />
     <link rel="canonical" href="https://joe-store-2026.vercel.app/" />
@@ -58,19 +58,29 @@
     }
     </script>
     
-    <!-- Google Fonts: Cairo for Arabic, Outfit for English & Numerals -->
+    <!-- Google Fonts: Trimmed to required weights only with swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
 
     <title>JOE Store | جو ستور - الهواتف والإكسسوارات الأصلية</title>
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-amber-500 selection:text-black">
     <div id="root">
-      <main id="store-loading" dir="rtl" style="min-height:100vh;display:grid;place-content:center;text-align:center;padding:24px;font-family:Arial,sans-serif;background:#f8fafc;color:#0f172a">
-        <h1 style="color:#b45309">JOE Store | جو ستور</h1>
-        <p id="store-loading-message">جاري تحميل المتجر…</p>
-        <button id="store-retry" type="button" hidden style="padding:12px 24px;border:0;border-radius:12px;background:#fbbf24;font-weight:bold;cursor:pointer">إعادة المحاولة</button>
+      <main id="store-loading" dir="rtl" aria-label="جاري تحميل المتجر" style="min-height:100vh;padding:24px;max-width:1280px;margin:0 auto;font-family:Arial,sans-serif;background:#f8fafc;color:#0f172a">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+          <h1 style="color:#b45309;font-size:20px;margin:0">JOE Store | جو ستور</h1>
+          <span id="store-loading-message" style="font-size:13px;color:#475569">جاري تحميل المنتجات…</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px">
+          <div style="height:310px;border-radius:18px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%)"></div>
+          <div style="height:310px;border-radius:18px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%)"></div>
+          <div style="height:310px;border-radius:18px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%)"></div>
+          <div style="height:310px;border-radius:18px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%)"></div>
+        </div>
+        <div style="margin-top:20px;text-align:center">
+          <button id="store-retry" type="button" hidden style="padding:12px 24px;border:0;border-radius:12px;background:#fbbf24;font-weight:bold;cursor:pointer">إعادة المحاولة</button>
+        </div>
         <noscript>فعّل JavaScript في المتصفح لفتح المتجر.</noscript>
       </main>
     </div>

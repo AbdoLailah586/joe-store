@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { normalizePhone } from '../src/utils/deliveryAddress.js';
 import type { Order, StoreSettings, WhatsAppAutoTriggers, WhatsAppNotification, WhatsAppTemplates } from '../src/types/index.js';
+import { fetchWithTimeout } from './monitoring.js';
 
 type NotificationType = WhatsAppNotification['type'];
 
@@ -335,23 +336,33 @@ export async function dispatchWhatsAppViaCrm(
     errorMessage = 'خادم WhatsApp Pro CRM غير مضبوط في الإعدادات أو متغيرات البيئة.';
   } else {
     try {
-      const loginRes = await fetchFn(`${crm.baseUrl}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: crm.email, password: crm.password })
-      });
+      const loginRes = await fetchWithTimeout(
+        `${crm.baseUrl}/api/auth/login`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: crm.email, password: crm.password })
+        },
+        8000,
+        fetchFn
+      );
       if (!loginRes.ok) throw new Error(`Login HTTP ${loginRes.status}`);
       const loginData: any = await loginRes.json();
       if (!loginData?.token) throw new Error('لم يرد رمز JWT من خادم واتساب CRM');
 
-      const sendRes = await fetchFn(`${crm.baseUrl}/api/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${loginData.token}`
+      const sendRes = await fetchWithTimeout(
+        `${crm.baseUrl}/api/send`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${loginData.token}`
+          },
+          body: JSON.stringify({ to: formattedPhone, text: params.text })
         },
-        body: JSON.stringify({ to: formattedPhone, text: params.text })
-      });
+        8000,
+        fetchFn
+      );
       if (!sendRes.ok) {
         const bodyErr = await sendRes.text().catch(() => '');
         throw new Error(`Send HTTP ${sendRes.status}${bodyErr ? `: ${bodyErr.slice(0, 120)}` : ''}`);
@@ -385,11 +396,16 @@ export async function testWhatsAppCrmConnection(settings?: any, fetchFn: typeof 
     return { success: false, configured: false, error: 'أدخل رابط الخادم والبريد وكلمة المرور أولاً.' };
   }
   try {
-    const res = await fetchFn(`${crm.baseUrl}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: crm.email, password: crm.password })
-    });
+    const res = await fetchWithTimeout(
+      `${crm.baseUrl}/api/auth/login`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: crm.email, password: crm.password })
+      },
+      8000,
+      fetchFn
+    );
     if (!res.ok) return { success: false, configured: true, error: `HTTP ${res.status}` };
     const data: any = await res.json();
     if (!data?.token) return { success: false, configured: true, error: 'لم يتم استلام رمز المصادقة' };

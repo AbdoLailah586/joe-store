@@ -11,7 +11,8 @@ import {
   MessageCircle,
   AlertCircle,
   ShieldCheck,
-  ChevronRight
+  ChevronRight,
+  Receipt
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -20,6 +21,7 @@ import { generateWhatsAppWebLink } from '../utils/whatsappService';
 import { neonDb } from '../services/neonDb';
 import { InfoButton, useDetails } from '../components/DetailsDialog';
 import { orderDetail } from '../utils/detailModels';
+import { InvoiceModal } from '../components/InvoiceModal';
 
 export const OrderTracking: React.FC = () => {
   const { orders, getOrderById, currentOrder, settings, navigate } = useStore();
@@ -31,6 +33,7 @@ export const OrderTracking: React.FC = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false), [error, setError] = useState('');
+  const [showInvoice, setShowInvoice] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -253,6 +256,17 @@ export const OrderTracking: React.FC = () => {
               </a>
             </div>
           )}
+
+          <div className="flex justify-end pt-2">
+            <button
+              type="button"
+              onClick={() => setShowInvoice(true)}
+              className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-extrabold text-xs inline-flex items-center gap-2"
+            >
+              <Receipt className="w-4 h-4" />
+              <span>عرض الفاتورة الإلكترونية (QR / PDF)</span>
+            </button>
+          </div>
         </div>
       ) : hasSearched ? (
         <div className="p-8 rounded-3xl bg-white border border-slate-200 text-center space-y-3">
@@ -263,6 +277,11 @@ export const OrderTracking: React.FC = () => {
           </p>
         </div>
       ) : null}
+      <InvoiceModal
+        order={showInvoice ? searchedOrder : null}
+        settings={settings}
+        onClose={() => setShowInvoice(false)}
+      />
     </div>
   );
 };

@@ -2351,7 +2351,57 @@
   .joe-promo-ticker-track,
   .joe-hero-float,
   .joe-shimmer-badge::after,
-  .joe-hero-progress-fill {
+  .joe-hero-progress-fill,
+  .joe-skeleton-block::after {
     animation: none !important;
   }
+}
+
+/* Skeleton loading base + smooth shimmer highlight (light & dark compatible) */
+.joe-skeleton-block {
+  position: relative;
+  overflow: hidden;
+  background-color: #e2e8f0;
+}
+.joe-skeleton-block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.72) 50%, transparent 100%);
+  animation: joe-skeleton-shimmer 1.35s infinite;
+}
+html.dark .joe-skeleton-block {
+  background-color: #1e293b;
+}
+html.dark .joe-skeleton-block::after {
+  background: linear-gradient(90deg, transparent 0%, rgba(51, 65, 85, 0.75) 50%, transparent 100%);
+}
+@keyframes joe-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Dark mode theme tokens */
+html.dark .joe-storefront {
+  --joe-paper: #0f172a;
+  --joe-ink: #f1f5f9;
+  --joe-line: #334155;
+  background: #0f172a;
+  color: #f1f5f9;
+}
+html.dark .joe-header,
+html.dark .joe-product-card,
+html.dark .joe-footer {
+  background-color: #111827;
+  border-color: #1f2937;
+  color: #f8fafc;
+}
+html.dark .joe-product-content h3 button,
+html.dark .joe-section-heading h2 {
+  color: #f8fafc;
+}
+html.dark .joe-skeleton-card {
+  border-color: #1f2937;
 }

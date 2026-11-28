@@ -87,6 +87,46 @@ export const MarketingAdToolsCard: React.FC<{
           </label>
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+          <label className="space-y-1 font-bold text-slate-700">
+            <span>معرّف Google Analytics 4 (Measurement ID)</span>
+            <input
+              type="text"
+              dir="ltr"
+              value={settings.ga4_measurement_id || ''}
+              onChange={e => updateSettings({ ga4_measurement_id: e.target.value })}
+              placeholder="G-XXXXXXXXXX"
+              className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50 font-mono"
+            />
+            <span className="text-[11px] font-normal text-slate-500 block">يفعّل تتبع الزيارات وأحداث التجارة الإلكترونية تلقائياً بعد موافقة العميل على الكوكيز.</span>
+          </label>
+
+          <label className="space-y-1 font-bold text-slate-700">
+            <span>رمز التحقق من Google Search Console</span>
+            <input
+              type="text"
+              dir="ltr"
+              value={settings.gsc_verification_token || ''}
+              onChange={e => updateSettings({ gsc_verification_token: e.target.value })}
+              placeholder="google-site-verification token or <meta ...>"
+              className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50 font-mono"
+            />
+            <span className="text-[11px] font-normal text-slate-500 block">
+              يُحقن تلقائياً داخل الترويسة — رابط خريطة الموقع: <span dir="ltr" className="font-mono text-amber-700">{`${origin}/sitemap.xml`}</span>
+            </span>
+          </label>
+
+          <label className="sm:col-span-2 flex items-center gap-2.5 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 cursor-pointer font-bold text-emerald-950">
+            <input
+              type="checkbox"
+              checked={settings.meta_capi_enabled !== false}
+              onChange={e => updateSettings({ meta_capi_enabled: e.target.checked })}
+              className="accent-emerald-600 w-4 h-4"
+            />
+            <span>تفعيل Meta Conversions API (Server-Side Purchase Tracking) — يتطلب ضبط META_CAPI_ACCESS_TOKEN في Vercel Env</span>
+          </label>
+        </div>
+
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-2.5">
           <p className="font-bold text-slate-900">روابط كتالوج المنتجات التلقائي (CSV / XML):</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

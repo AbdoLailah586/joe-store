@@ -115,6 +115,8 @@ export const CATEGORY_SPEC_FIELDS: Record<CategoryKey, ComparisonFieldConfig[]> 
   trackers: ACCESSORY_FIELDS,
   car_accessories: ACCESSORY_FIELDS,
   adapters: ACCESSORY_FIELDS,
+  printers: ACCESSORY_FIELDS,
+  gaming: ACCESSORY_FIELDS,
   accessories: ACCESSORY_FIELDS,
   all: []
 };

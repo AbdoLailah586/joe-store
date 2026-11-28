@@ -22,8 +22,8 @@ if (!dbUrl) {
 const sql = neon(dbUrl);
 
 export async function insertRealProduct(productData) {
-  if (!productData || !productData.name_ar || !productData.price) {
-    throw new Error('بيانات المنتج ناقصة: الاسم العربي والسعر مطلوبان كحد أدنى.');
+  if (!productData || !productData.name_ar || productData.price == null || Number.isNaN(Number(productData.price))) {
+    throw new Error('بيانات المنتج ناقصة: الاسم العربي والسعر (حتى لو 0) مطلوبان كحد أدنى.');
   }
 
   const id = productData.id || `prod-real-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -59,8 +59,9 @@ export async function insertRealProduct(productData) {
       about_item: productData.about_item || [],
       quick_specs: productData.quick_specs || {},
       feature_banners: productData.feature_banners || [],
-      image_is_illustrative: false,
-      catalog_status: 'verified_real_inventory'
+      ...(productData.social_links ? { social_links: productData.social_links } : {}),
+      image_is_illustrative: Boolean(productData.image_is_illustrative),
+      catalog_status: productData.catalog_status || 'verified'
     })
   };
 

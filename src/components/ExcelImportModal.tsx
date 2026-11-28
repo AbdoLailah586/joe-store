@@ -15,6 +15,7 @@ import {
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { downloadSampleExcelTemplate, parseExcelFile, ParsedProductResult } from '../utils/excelParser';
+import { validateSpreadsheetFile } from '../utils/fileValidation';
 import confetti from 'canvas-confetti';
 
 interface ExcelImportModalProps {
@@ -36,8 +37,9 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({ isOpen, onCl
   if (!isOpen) return null;
 
   const handleFileChange = async (file: File) => {
-    if (!file.name.match(/\.(xlsx|xls|csv)$/i)) {
-      setErrorMsg('يرجى اختيار ملف إكسل بصيغة .xlsx أو .xls أو .csv');
+    const check = validateSpreadsheetFile(file);
+    if (!check.valid) {
+      setErrorMsg(check.error || 'يرجى اختيار ملف إكسل صالح بحد أقصى 20 ميجابايت.');
       return;
     }
 

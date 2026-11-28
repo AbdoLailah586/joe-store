@@ -42,6 +42,20 @@ export interface CustomerActivityRecord {
   created_at: string;
 }
 
+function sanitizeRowSocialLinks(raw: any): Product['social_links'] {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+  const out: NonNullable<Product['social_links']> = {};
+  for (const k of ['facebook', 'tiktok', 'instagram'] as const) {
+    const v = typeof raw[k] === 'string' ? raw[k].trim() : '';
+    if (!v) continue;
+    try {
+      const u = new URL(v);
+      if (u.protocol === 'http:' || u.protocol === 'https:') out[k] = u.toString();
+    } catch {}
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 // Convert PostgreSQL DB row to frontend Product type
 function mapRowToProduct(row: any): Product {
   const isPreowned = Boolean(row.is_preowned);
@@ -61,6 +75,7 @@ function mapRowToProduct(row: any): Product {
     catalog_status: details.catalog_status,
     image_is_illustrative: details.image_is_illustrative,
     data_sources: details.data_sources,
+    social_links: sanitizeRowSocialLinks(details.social_links),
     source_row: details.source_row,
     source_item_code: details.source_item_code,
     source_name: details.source_name,
@@ -89,7 +104,7 @@ function mapRowToProduct(row: any): Product {
     recorded_images: Array.isArray(row.images) ? row.images.filter(url => typeof url === 'string' && url.trim()) : [],
     in_stock: (row.stock_quantity ?? 0) > 0 && Number(row.price) > 0 && (row.is_active ?? true),
     is_active: row.is_active ?? true,
-    images: Array.isArray(row.images) && row.images.length > 0 ? row.images : ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],
+    images: Array.isArray(row.images) && row.images.length > 0 ? row.images : ['/product-placeholder.svg'],
     description_ar: details.description_ar || row.specs?.description_ar || row.name_ar,
     description_en: details.description_en || row.specs?.description_en || row.name_en,
     specs: publicSpecs as Record<string, string>,
@@ -126,7 +141,11 @@ export function mapRowToOrder(r: any): Order {
     items: Array.isArray(r.items) ? r.items : [],
     subtotal: Number(r.subtotal || 0),
     shipping_fee: Number(r.shipping_fee || 0),
-    discount: 0,
+    discount: Number(r.discount || 0),
+    coupon_code: r.coupon_code || undefined,
+    payment_receipt_url: r.payment_receipt_url || undefined,
+    idempotency_key: r.idempotency_key || undefined,
+    invoice_number: r.invoice_number || (r.order_number ? `INV-${r.order_number}` : undefined),
     total: Number(r.total || 0),
     payment_method: (r.payment_method || 'cod') as PaymentMethod,
     payment_status: (r.payment_status || 'unpaid') as PaymentStatus,
@@ -297,6 +316,10 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
    */
   async getOrders(): Promise<Order[]> { return await callStore('getOrders', []); },
 
+  async getOrdersPaginated(params?: { page?: number; limit?: number; status?: string; search?: string }): Promise<{ orders: Order[]; total: number; page: number; limit: number; pages: number }> {
+    return await callStore('getOrdersPaginated', [params || {}]);
+  },
+
   /**
    * 11. Intelligent Personalization Engine: Get tailored recommendations based on visitor signals
    */
@@ -326,7 +349,7 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
     }
   },
 
-  async verifyOtpAndCreateUser(data: { email: string; code: string; name: string; phone: string; password?: string }): Promise<{ success: boolean; user?: any; error?: string; requiresTotp?: boolean }> {
+  async verifyOtpAndCreateUser(data: { email: string; code: string; name: string; phone: string; password?: string; marketing_opt_in?: boolean; ai_training_opt_in?: boolean; parental_consent?: boolean }): Promise<{ success: boolean; user?: any; error?: string; requiresTotp?: boolean }> {
     try {
       const res = await fetch('/api/verify-otp', {
         method: 'POST',
@@ -483,5 +506,74 @@ async verifyTotpLogin(_email: string, code?: string): Promise<any> { return call
 
   async testPaymentGatewayConfig(): Promise<{ success: boolean; message?: string; error?: string; state?: any }> {
     return await callAction('testPaymentGatewayConfig', []);
+  },
+
+  async logoutAllDevices(): Promise<{ success: boolean; error?: string }> {
+    return await callAction('logoutAllDevices', []);
+  },
+
+  async requestPasswordReset(email: string): Promise<{ success: boolean; message?: string; error?: string }> {
+    return await callAction('requestPasswordReset', [email]);
+  },
+
+  async completePasswordReset(token: string, newPassword: string): Promise<{ success: boolean; message?: string; error?: string }> {
+    return await callAction('completePasswordReset', [token, newPassword]);
+  },
+
+  async getSystemAlerts(limit = 50): Promise<any[]> {
+    try {
+      return await callStore('getSystemAlerts', [limit]);
+    } catch {
+      return [];
+    }
+  },
+
+  async resolveSystemAlert(alertId: string): Promise<boolean> {
+    try {
+      return await callStore('resolveSystemAlert', [alertId]);
+    } catch {
+      return false;
+    }
+  },
+
+  async exportMyData(): Promise<{ success: boolean; data?: any; error?: string }> {
+    try {
+      return await callStore('exportMyData', []);
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'تعذر تصدير البيانات.' };
+    }
+  },
+
+  async updateConsentPreferences(prefs: { marketing_opt_in?: boolean; ai_training_opt_in?: boolean; cookie_consent?: string }): Promise<{ success: boolean; user?: any; error?: string }> {
+    try {
+      return await callStore('updateConsentPreferences', [prefs]);
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'تعذر حفظ تفضيلات الخصوصية.' };
+    }
+  },
+
+  async submitBreachReport(payload: { reporter_email: string; reporter_name?: string; incident_type: string; description: string }): Promise<{ success: boolean; id?: string; report_deadline_at?: string; error?: string }> {
+    try {
+      return await callStore('submitBreachReport', [payload]);
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'تعذر إرسال البلاغ الأمني.' };
+    }
+  },
+
+  async listBreachReports(limit = 50): Promise<any[]> {
+    try {
+      return await callStore('listBreachReports', [limit]);
+    } catch {
+      return [];
+    }
+  },
+
+  async updateBreachReportStatus(id: string, status: string, adminNotes?: string): Promise<boolean> {
+    try {
+      const res = await callStore('updateBreachReportStatus', [id, status, adminNotes || '']);
+      return Boolean(res?.success);
+    } catch {
+      return false;
+    }
   }
 };

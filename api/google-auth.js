@@ -1,10 +1,12 @@
 import { neon } from '@neondatabase/serverless';
 import { DEFAULT_GOOGLE_CLIENT_ID, verifyGoogleCredential } from '../lib/googleCredential.js';
-import { issueSession, sameOrigin } from '../lib/session.js';
+import { issueSession, sameOrigin, applyCors } from '../lib/session.js';
 import { publicUser } from '../lib/access.js';
+import { checkRateLimit, extractClientIp } from '../lib/rateLimit.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
+  applyCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -16,6 +18,12 @@ export default async function handler(req, res) {
 
   try {
     if (!sameOrigin(req)) return res.status(403).json({success:false,error:'مصدر الطلب غير مسموح.'});
+    const sql = neon(process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '');
+    const ip = extractClientIp(req);
+    const gate = await checkRateLimit(sql, { key: `google-auth:${ip}`, maxHits: 20, windowSeconds: 900, blockSeconds: 900 });
+    if (!gate.allowed) {
+      return res.status(429).json({ success: false, error: 'محاولات دخول كثيرة. انتظر قليلاً ثم أعد المحاولة.' });
+    }
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const audience = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID;
     let identity;
@@ -29,7 +37,6 @@ export default async function handler(req, res) {
     const cleanEmail = email.trim().toLowerCase();
     const userId = googleId ? `usr-google-${googleId}` : `usr-${Date.now()}`;
 
-    const sql = neon(process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '');
     const userRows = await sql`
       INSERT INTO users (id, name, email, avatar, phone, role, provider, email_verified)
       VALUES (

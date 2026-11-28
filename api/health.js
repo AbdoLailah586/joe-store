@@ -1,15 +1,37 @@
 import { neon } from '@neondatabase/serverless';
 import nodemailer from 'nodemailer';
-import { currentUser } from '../lib/session.js';
+import { currentUser, applyCors } from '../lib/session.js';
 import { isFullAdmin } from '../lib/access.js';
 
 export default async function handler(req, res) {
   const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
+  applyCors(req, res, 'GET, POST, OPTIONS');
 
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
+  }
+
+  if (req.method === 'POST') {
+    res.setHeader('Cache-Control', 'no-store');
+    try {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+      const name = String(body?.name || '').slice(0, 40);
+      const value = Number(body?.value);
+      const path = String(body?.path || '').slice(0, 200);
+      const rating = String(body?.rating || '').slice(0, 24);
+      if (name && Number.isFinite(value)) {
+        console.info(JSON.stringify({
+          ts: new Date().toISOString(),
+          level: rating === 'poor' ? 'warn' : 'info',
+          event: 'web_vital',
+          metric: name,
+          value: Math.round(value * 100) / 100,
+          rating,
+          path
+        }));
+      }
+    } catch {}
+    return res.status(204).end();
   }
 
   if (req.method !== 'GET') {

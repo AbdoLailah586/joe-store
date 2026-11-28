@@ -22,7 +22,7 @@ import {
 import { useProductInfo } from "./useProductInfo";
 import { normalizeProductImage } from "../utils/imageUrl";
 
-export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+export const ProductCard: React.FC<{ product: Product }> = React.memo(({ product }) => {
   const {
     addToCart,
     isInWishlist,
@@ -228,4 +228,4 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       </div>
     </article>
   );
-};
+});

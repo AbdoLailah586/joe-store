@@ -1,5 +1,5 @@
 import { neon } from '@neondatabase/serverless';
-import { currentUser, sameOrigin } from '../lib/session.js';
+import { currentUser, sameOrigin, applyCors } from '../lib/session.js';
 import { canAccessSection } from '../lib/access.js';
 import nodemailer from 'nodemailer';
 import { randomInt } from 'node:crypto';
@@ -21,9 +21,8 @@ const FROM_EMAIL = process.env.VITE_EMAIL_FROM || process.env.RESEND_FROM || 'JO
 
 export default async function handler(req, res) {
   const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
+  applyCors(req, res, 'POST, OPTIONS');
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
   }
 
@@ -214,8 +213,11 @@ export default async function handler(req, res) {
     // --- Provider B: Brevo (Sendinblue) REST API ---
     if (!deliverySuccess && BREVO_API_KEY) {
       try {
+        const brevoController = new AbortController();
+        const brevoTimer = setTimeout(() => brevoController.abort(), 10000);
         const brevoRes = await fetch('https://api.brevo.com/v3/smtp/email', {
           method: 'POST',
+          signal: brevoController.signal,
           headers: {
             'api-key': BREVO_API_KEY,
             'Content-Type': 'application/json',
@@ -231,7 +233,7 @@ export default async function handler(req, res) {
             htmlContent: emailHtml,
             textContent: plainText
           })
-        });
+        }).finally(() => clearTimeout(brevoTimer));
 
         const brevoData = await brevoRes.json();
         if (brevoRes.ok && (brevoData?.messageId || brevoData?.id)) {
@@ -246,8 +248,11 @@ export default async function handler(req, res) {
     // --- Provider C: Resend REST API (Only if SMTP was NOT configured) ---
     if (!deliverySuccess && !SMTP_USER && RESEND_API_KEY) {
       try {
+        const resendController = new AbortController();
+        const resendTimer = setTimeout(() => resendController.abort(), 10000);
         const resendRes = await fetch('https://api.resend.com/emails', {
           method: 'POST',
+          signal: resendController.signal,
           headers: {
             'Authorization': `Bearer ${RESEND_API_KEY}`,
             'Content-Type': 'application/json'
@@ -262,7 +267,7 @@ export default async function handler(req, res) {
               'X-Entity-Ref-ID': `joe-otp-${Date.now()}`
             }
           })
-        });
+        }).finally(() => clearTimeout(resendTimer));
 
         const resendData = await resendRes.json();
         if (resendRes.ok && resendData?.id) {
@@ -291,15 +296,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // If SMTP was configured but failed:
+    // If SMTP was configured but failed (log internals server-side only; never expose raw SMTP internals to clients):
     if (SMTP_USER && smtpErrorDetails) {
-      let friendlyError = smtpErrorDetails;
-      if (smtpErrorDetails.includes('Username and Password not accepted') || smtpErrorDetails.includes('535-5.7.8') || smtpErrorDetails.includes('BadCredentials')) {
-        friendlyError = 'كلمة مرور التطبيقات (App Password) لجيميل غير مقبولة. يرجى التأكد من استخراج كلمة مرور التطبيقات من Google (16 حرفاً) وتفعيل التحقق بخطوتين، وليس استخدام كلمة مرور الحساب العادية.';
-      }
-      return res.status(400).json({
+      console.error('[send-otp SMTP Failure Details]', smtpErrorDetails);
+      return res.status(502).json({
         success: false,
-        error: `تعذر إرسال الإيميل عبر Gmail SMTP: ${friendlyError}`
+        error: 'تعذر إرسال كود التأكيد عبر خادم البريد حالياً. يرجى المحاولة مرة أخرى بعد قليل.'
       });
     }
 

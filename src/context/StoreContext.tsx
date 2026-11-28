@@ -30,8 +30,33 @@ import {
 } from '../utils/browserStorage';
 import { normalizeProductImages } from '../utils/imageUrl';
 import { getOrCaptureVisitorAttribution } from '../utils/visitorAttribution';
+
+function sanitizeProductSocialLinks(input: any): Product['social_links'] {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return undefined;
+  const out: NonNullable<Product['social_links']> = {};
+  for (const key of ['facebook', 'tiktok', 'instagram'] as const) {
+    const raw = typeof input[key] === 'string' ? input[key].trim() : '';
+    if (!raw) continue;
+    const withScheme = /^(https?:)?\/\//i.test(raw) ? (raw.startsWith('//') ? `https:${raw}` : raw) : `https://${raw}`;
+    try {
+      const u = new URL(withScheme);
+      if (u.protocol === 'http:' || u.protocol === 'https:') out[key] = u.toString();
+    } catch {}
+  }
+  return Object.keys(out).length ? out : undefined;
+}
 import { applyPageSeo, buildProductJsonLd, buildStoreJsonLd } from '../utils/seo';
 import { initMetaPixel, trackMetaEvent } from '../utils/metaPixel';
+import {
+  hasAnalyticsConsent,
+  initGa4,
+  revokeAnalyticsIfDeclined,
+  trackGa4AddToCart,
+  trackGa4PageView,
+  trackGa4Purchase
+} from '../utils/analytics';
+import { syncSiteVerificationMeta } from '../utils/seo';
+import { startWebVitalsObserver } from '../utils/webVitals';
 
 export type AppTab =
   | 'home'
@@ -107,6 +132,8 @@ interface StoreContextType {
   // Settings & WhatsApp
   settings: StoreSettings;
   updateSettings: (newSettings: Partial<StoreSettings>) => void;
+  themeMode: 'light' | 'dark';
+  toggleThemeMode: () => void;
   whatsappLogs: WhatsAppNotification[];
   refreshWhatsAppLogs: () => void;
   manualSendWhatsAppNotification: (order: Order, type: WhatsAppNotification['type'], customText?: string) => Promise<{ success: boolean; simulated?: boolean; error?: string }>;
@@ -364,6 +391,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   }, [products, catalogLoaded]);
 
+  const [themeMode, setThemeMode] = useState<'light' | 'dark'>(() => {
+    try {
+      const saved = typeof window !== 'undefined' ? window.localStorage.getItem('joe_theme_mode') : null;
+      return saved === 'dark' ? 'dark' : 'light';
+    } catch {
+      return 'light';
+    }
+  });
+
   // Settings State
   const [settings, setSettings] = useState<StoreSettings>(() => {
     const merged = readStoredSettings(defaultSettings);
@@ -371,7 +407,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       merged.tiktok_url = 'https://www.tiktok.com/@joestore2026';
       writeStoredJson('joe_store_settings', merged);
     }
-    return { ...merged, theme_mode: 'light' };
+    return { ...merged, theme_mode: themeMode };
   });
 
   // Synchronize settings with database across all devices (mobile, laptop, and customers)
@@ -380,7 +416,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     neonDb.getStoreSettings().then(remoteSettings => {
       if (!active || !remoteSettings || typeof remoteSettings !== 'object') return;
       setSettings(prev => {
-        const merged = { ...defaultSettings, ...prev, ...remoteSettings, theme_mode: 'light' as const };
+        const merged = { ...defaultSettings, ...prev, ...remoteSettings, theme_mode: themeMode };
         writeStoredJson('joe_store_settings', merged);
         return merged;
       });
@@ -392,7 +428,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateSettings = (newSettings: Partial<StoreSettings>) => {
     setSettings(prev => {
-      const updated = { ...prev, ...newSettings, theme_mode: 'light' as const };
+      const nextMode = newSettings.theme_mode === 'dark' || newSettings.theme_mode === 'light'
+        ? newSettings.theme_mode
+        : themeMode;
+      const updated = { ...prev, ...newSettings, theme_mode: nextMode };
       writeStoredJson('joe_store_settings', updated);
       neonDb.updateStoreSettings(updated).catch(err => {
         console.warn('⚠️ Could not sync settings to database:', err);
@@ -401,11 +440,24 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   };
 
+  const toggleThemeMode = () => {
+    setThemeMode(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      try {
+        window.localStorage.setItem('joe_theme_mode', next);
+      } catch {
+        // Ignore storage restrictions
+      }
+      setSettings(s => ({ ...s, theme_mode: next }));
+      return next;
+    });
+  };
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', settings.active_theme || 'royal_gold');
-    document.documentElement.classList.remove('dark');
-    document.documentElement.style.colorScheme = 'light';
-  }, [settings.active_theme, settings.theme_mode]);
+    document.documentElement.classList.toggle('dark', themeMode === 'dark');
+    document.documentElement.style.colorScheme = themeMode === 'dark' ? 'dark' : 'light';
+  }, [settings.active_theme, themeMode]);
 
   // WhatsApp Logs
   const [whatsappLogs, setWhatsappLogs] = useState<WhatsAppNotification[]>(getWhatsAppLogs);
@@ -428,15 +480,28 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const lastPixelRouteRef = useRef<string>('');
   const lastVisitTrackedRef = useRef<string>('');
 
+  const [consentVersion, setConsentVersion] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onConsentChange = () => setConsentVersion(v => v + 1);
+    window.addEventListener('joe-cookie-consent-changed', onConsentChange);
+    window.addEventListener('storage', onConsentChange);
+    return () => {
+      window.removeEventListener('joe-cookie-consent-changed', onConsentChange);
+      window.removeEventListener('storage', onConsentChange);
+    };
+  }, []);
+
   const readClientTelemetry = () => {
     if (typeof window === 'undefined') return {};
-    let cookieConsent = '';
-    try {
-      const rawConsent = readStorage('joe_cookie_consent_v1');
-      if (rawConsent) {
-        cookieConsent = JSON.parse(rawConsent)?.choice || '';
-      }
-    } catch {}
+    const consented = hasAnalyticsConsent();
+    if (!consented) {
+      return {
+        path: window.location.pathname,
+        cookie_consent: 'essential'
+      };
+    }
     let timezone = '';
     try {
       timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
@@ -448,13 +513,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       viewport: `${window.innerWidth}x${window.innerHeight}`,
       browser_lang: typeof navigator !== 'undefined' ? navigator.language : '',
       timezone,
-      cookie_consent: cookieConsent || 'pending'
+      cookie_consent: 'accepted'
     };
   };
 
-  // Track attribution & visitor session on load and navigation
+  // Track attribution & visitor session on load and navigation ONLY after explicit non-essential consent
   useEffect(() => {
-    if (!deviceIsOnline()) return;
+    if (!deviceIsOnline() || !hasAnalyticsConsent()) return;
     const attr = getOrCaptureVisitorAttribution();
     const visitKey = `${sessionId}:${account?.id || 'guest'}:${currentTab}:${selectedProductId || ''}`;
     if (lastVisitTrackedRef.current === visitKey) return;
@@ -468,7 +533,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         ...readClientTelemetry()
       }
     }).catch(() => {});
-  }, [sessionId, account?.id, currentTab, selectedProductId]);
+  }, [sessionId, account?.id, currentTab, selectedProductId, consentVersion]);
 
   // Merge recently viewed products from server DB
   useEffect(() => {
@@ -495,14 +560,38 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   }, [currentTab, selectedProductId, isCatalogLoading, products]);
 
-  // Initialize Meta Pixel & track PageView + Dynamic SEO/JSON-LD
+  // Initialize Meta Pixel, GA4 & Core Web Vitals (strictly after analytics consent) + Dynamic SEO/JSON-LD
   useEffect(() => {
-    initMetaPixel(settings.meta_pixel_id);
-    const routeKey = `${currentTab}:${selectedProductId || ''}:${selectedCategory || ''}:${searchQuery || ''}`;
-    if (lastPixelRouteRef.current !== routeKey) {
-      lastPixelRouteRef.current = routeKey;
-      trackMetaEvent('PageView');
+    syncSiteVerificationMeta(settings.gsc_verification_token);
+
+    if (hasAnalyticsConsent()) {
+      initMetaPixel(settings.meta_pixel_id);
+      initGa4(settings.ga4_measurement_id);
+      const stopVitals = startWebVitalsObserver();
+      const routeKey = `${currentTab}:${selectedProductId || ''}:${selectedCategory || ''}:${searchQuery || ''}`;
+      if (lastPixelRouteRef.current !== routeKey) {
+        lastPixelRouteRef.current = routeKey;
+        trackMetaEvent('PageView');
+        if (typeof window !== 'undefined') {
+          trackGa4PageView(`${window.location.pathname}${window.location.search}`);
+        }
+      }
+      return stopVitals;
+    } else {
+      revokeAnalyticsIfDeclined(settings.ga4_measurement_id);
     }
+  }, [
+    settings.meta_pixel_id,
+    settings.ga4_measurement_id,
+    settings.gsc_verification_token,
+    consentVersion,
+    currentTab,
+    selectedProductId,
+    selectedCategory,
+    searchQuery
+  ]);
+
+  useEffect(() => {
 
     if (typeof window === 'undefined') return;
     const origin = window.location.origin;
@@ -638,6 +727,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Product Operations
   const addProduct = (newProd: Partial<Product>) => {
     if (!accountSections.includes('products')) return;
+    const isActive = newProd.is_active !== false;
+    const stockQty = newProd.stock ?? 1;
+    const priceVal = newProd.price ?? 0;
+    const socialLinks = sanitizeProductSocialLinks(newProd.social_links);
     const fullProd: Product = {
       id: newProd.id || `prod-${Date.now()}`,
       sku: newProd.sku || `JOE-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -650,15 +743,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       storage: newProd.storage || '',
       color_ar: newProd.color_ar || '',
       color_en: newProd.color_en || '',
-      price: newProd.price || 0,
+      price: priceVal,
       original_price: newProd.original_price,
       discount_percentage: newProd.discount_percentage,
-      stock: newProd.stock || 1,
-      in_stock: (newProd.stock || 1) > 0,
+      stock: stockQty,
+      in_stock: isActive && stockQty > 0 && priceVal > 0,
+      is_active: isActive,
       images: newProd.images && newProd.images.length > 0 ? newProd.images : ['/product-placeholder.svg'],
       description_ar: newProd.description_ar || '',
       description_en: newProd.description_en || '',
       specs: newProd.specs || {},
+      ...(socialLinks ? { social_links: socialLinks } : {}),
       warranty_months: newProd.warranty_months || 6,
       rating: 5.0,
       reviews_count: 1,
@@ -672,6 +767,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     locallyEditedIds.current.add(fullProd.id);
     locallyDeletedIds.current.delete(fullProd.id);
     setProducts(prev => [fullProd, ...prev]);
+    neonDb.bulkInsertProducts([fullProd]).catch(console.warn);
   };
 
   const bulkAddProducts = (newProducts: Partial<Product>[]) => {
@@ -734,10 +830,22 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const toggleProductVisibility = async (id: string, isActive: boolean): Promise<boolean> => {
+    const previous = products.find(p => p.id === id);
     productCacheDirty.current = true;
     locallyEditedIds.current.add(id);
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, is_active: isActive, in_stock: isActive && p.stock > 0 } : p));
-    return await neonDb.toggleProductVisibility(id, isActive);
+    setProducts(prev => prev.map(p => p.id === id ? { ...p, is_active: isActive, in_stock: isActive && p.stock > 0 && p.price > 0 } : p));
+    try {
+      const ok = await neonDb.toggleProductVisibility(id, isActive);
+      if (!ok && previous) {
+        setProducts(prev => prev.map(p => p.id === id ? previous : p));
+      }
+      return ok;
+    } catch {
+      if (previous) {
+        setProducts(prev => prev.map(p => p.id === id ? previous : p));
+      }
+      return false;
+    }
   };
 
   const trackActivity = (
@@ -745,6 +853,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     targetId?: string,
     metadata?: Record<string, any>
   ) => {
+    if (!hasAnalyticsConsent()) return;
     const attr = getOrCaptureVisitorAttribution();
     neonDb.trackActivity({
       sessionId,
@@ -777,6 +886,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     productCacheDirty.current = true;
     locallyEditedIds.current.add(clone.id);
     setProducts(prev => [clone, ...prev]);
+    neonDb.bulkInsertProducts([clone]).catch(console.warn);
   };
 
   // Cart Operations
@@ -803,13 +913,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     });
     trackActivity('add_to_cart', product.id, { quantity });
-    trackMetaEvent('AddToCart', {
-      content_ids: [product.id],
-      content_name: product.name_ar,
-      content_type: 'product',
-      value: product.price * quantity,
-      currency: 'EGP'
-    });
+    if (hasAnalyticsConsent()) {
+      trackMetaEvent('AddToCart', {
+        content_ids: [product.id],
+        content_name: product.name_ar,
+        content_type: 'product',
+        value: product.price * quantity,
+        currency: 'EGP'
+      });
+      trackGa4AddToCart(product, quantity);
+    }
     setIsCartOpen(true);
   };
 
@@ -873,11 +986,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
     if (!checkedItems.length) throw new Error('عربة التسوق فارغة.');
     const orderNumber = `JOE-${Math.floor(10000 + Math.random() * 90000)}`;
+    const idempotencyKey =
+      orderData.idempotency_key ||
+      (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? `idem-${crypto.randomUUID()}`
+        : `idem-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`);
     const newOrder: Order = {
       ...orderData,
+      idempotency_key: idempotencyKey,
       items: checkedItems,
       id: `ord-${Date.now()}`,
       order_number: orderNumber,
+      invoice_number: `INV-${orderNumber}`,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       whatsapp_notification_sent: false
@@ -890,6 +1010,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (typeof persisted === 'object') {
       if (persisted.id) newOrder.id = persisted.id;
       if (persisted.order_number) newOrder.order_number = persisted.order_number;
+      if (persisted.invoice_number) newOrder.invoice_number = persisted.invoice_number;
+      if (Number.isFinite(persisted.subtotal)) newOrder.subtotal = persisted.subtotal;
+      if (Number.isFinite(persisted.discount)) newOrder.discount = persisted.discount;
+      if (Number.isFinite(persisted.shipping_fee)) newOrder.shipping_fee = persisted.shipping_fee;
+      if (Number.isFinite(persisted.total)) newOrder.total = persisted.total;
       if (persisted.checkout_url) newOrder.checkout_url = persisted.checkout_url;
     }
 
@@ -912,13 +1037,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     } catch {}
 
-    trackMetaEvent('Purchase', {
-      value: newOrder.total,
-      currency: 'EGP',
-      content_ids: newOrder.items.map(i => i.product.id),
-      content_type: 'product',
-      num_items: newOrder.items.reduce((sum, i) => sum + i.quantity, 0)
-    });
+    if (hasAnalyticsConsent()) {
+      trackMetaEvent('Purchase', {
+        value: newOrder.total,
+        currency: 'EGP',
+        content_ids: newOrder.items.map(i => i.product.id),
+        content_type: 'product',
+        num_items: newOrder.items.reduce((sum, i) => sum + i.quantity, 0)
+      });
+      trackGa4Purchase(newOrder);
+    }
 
     setOrders(prev => [newOrder, ...prev]);
     setCurrentOrder(newOrder);
@@ -1041,61 +1169,63 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     );
   };
 
+  const contextPayload: StoreContextType = {
+    products,
+    isCatalogLoading,
+    isOfflineCatalog,
+    catalogSavedAt,
+    refreshCatalog: () => setConnectionVersion(value => value + 1),
+    isCatalogReadyForReports: catalogLoaded,
+    addProduct,
+    bulkAddProducts,
+    updateProduct,
+    deleteProduct,
+    duplicateProduct,
+    toggleProductVisibility,
+    cart,
+    addToCart,
+    removeFromCart,
+    updateCartQuantity,
+    clearCart,
+    cartCount,
+    cartSubtotal,
+    isCartOpen,
+    setIsCartOpen,
+    wishlist,
+    toggleWishlist,
+    isInWishlist,
+    orders,
+    currentOrder,
+    createOrder,
+    cancelOrder,
+    updateOrderStatus,
+    updatePaymentStatus,
+    getOrderById,
+    sessionId,
+    recentlyViewedIds,
+    trackActivity,
+    activeCarts,
+    refreshActiveCarts,
+    currentTab,
+    navigate,
+    selectedProductId,
+    quickViewProduct,
+    setQuickViewProduct,
+    searchQuery,
+    setSearchQuery,
+    selectedCategory,
+    setSelectedCategory,
+    settings,
+    updateSettings,
+    themeMode,
+    toggleThemeMode,
+    whatsappLogs,
+    refreshWhatsAppLogs,
+    manualSendWhatsAppNotification
+  };
+
   return (
-    <StoreContext.Provider
-      value={{
-        products,
-        isCatalogLoading,
-        isOfflineCatalog,
-        catalogSavedAt,
-        refreshCatalog:()=>setConnectionVersion(value=>value+1),
-        isCatalogReadyForReports: catalogLoaded,
-        addProduct,
-        bulkAddProducts,
-        updateProduct,
-        deleteProduct,
-        duplicateProduct,
-        toggleProductVisibility,
-        cart,
-        addToCart,
-        removeFromCart,
-        updateCartQuantity,
-        clearCart,
-        cartCount,
-        cartSubtotal,
-        isCartOpen,
-        setIsCartOpen,
-        wishlist,
-        toggleWishlist,
-        isInWishlist,
-        orders,
-        currentOrder,
-        createOrder,
-        cancelOrder,
-        updateOrderStatus,
-        updatePaymentStatus,
-        getOrderById,
-        sessionId,
-        recentlyViewedIds,
-        trackActivity,
-        activeCarts,
-        refreshActiveCarts,
-        currentTab,
-        navigate,
-        selectedProductId,
-        quickViewProduct,
-        setQuickViewProduct,
-        searchQuery,
-        setSearchQuery,
-        selectedCategory,
-        setSelectedCategory,
-        settings,
-        updateSettings,
-        whatsappLogs,
-        refreshWhatsAppLogs,
-        manualSendWhatsAppNotification
-      }}
-    >
+    <StoreContext.Provider value={contextPayload}>
       {children}
     </StoreContext.Provider>
   );

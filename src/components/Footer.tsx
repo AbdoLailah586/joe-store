@@ -138,6 +138,8 @@ export const Footer: React.FC = () => {
           <span>
             © {new Date().getFullYear()} JOE Store.{" "}
             {ar ? "كل الحقوق محفوظة." : "All rights reserved."}
+            {settings.commercial_register ? (ar ? ` • س.ت: ${settings.commercial_register}` : ` • CR: ${settings.commercial_register}`) : ""}
+            {settings.tax_id ? (ar ? ` • ب.ض: ${settings.tax_id}` : ` • Tax ID: ${settings.tax_id}`) : ""}
           </span>
           <span className="joe-footer-signature" dir="ltr">
             GOOD TECH. GOOD MOOD.

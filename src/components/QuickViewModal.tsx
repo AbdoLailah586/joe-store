@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
 import { canPurchaseProduct, productNotice, priceLabel } from '../utils/amazonEnricher';
 import { useProductInfo } from './useProductInfo';
+import { ProductSocialPostButtons } from './SocialIcons';
 import { normalizeProductImage } from '../utils/imageUrl';
 
 export const QuickViewModal: React.FC = () => {
@@ -65,10 +66,16 @@ export const QuickViewModal: React.FC = () => {
   const whatsappUrl = generateWhatsAppWebLink(settings.store_whatsapp, inquiryText);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div
+      onClick={() => setQuickViewProduct(null)}
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+    >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={language === 'ar' ? product.name_ar : (product.name_en || product.name_ar)}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl bg-white border border-amber-500/30 rounded-3xl shadow-2xl overflow-hidden text-slate-900 flex flex-col md:flex-row max-h-[90vh]"
+        className="relative w-full max-w-3xl bg-white dark:bg-slate-900 border border-amber-500/30 rounded-3xl shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100 flex flex-col md:flex-row max-h-[90vh]"
       >
         {/* Close Button */}
         <button
@@ -96,6 +103,7 @@ export const QuickViewModal: React.FC = () => {
                   src={normalizeProductImage(img)}
                   onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = '/product-placeholder.svg'; }}
                   alt={selectedImage === idx ? product.name_ar : ''}
+                  decoding="async"
                   className="w-full h-full object-contain mix-blend-multiply"
                 />
               </div>
@@ -139,7 +147,7 @@ export const QuickViewModal: React.FC = () => {
                     selectedImage === i ? 'border-amber-400 scale-105' : 'border-transparent opacity-60 hover:opacity-100'
                   }`}
                 >
-                  <img src={normalizeProductImage(img)} alt="" className="w-full h-full object-cover" />
+                  <img src={normalizeProductImage(img)} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
@@ -311,6 +319,8 @@ export const QuickViewModal: React.FC = () => {
                 {language === 'ar' ? 'الصفحة الكاملة ←' : 'Full Page →'}
               </button>
             </div>
+
+            <ProductSocialPostButtons product={product} language={language} compact />
           </div>
         </div>
       </div>

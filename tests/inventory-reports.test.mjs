@@ -4,7 +4,9 @@ import fs from 'node:fs';
 import ts from 'typescript';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const XLSX = require('xlsx');
+const writeXlsxFileBrowser = require('write-excel-file/browser');
+const writeXlsxFileNode = require('write-excel-file/node');
+const readXlsxFileNode = require('read-excel-file/node');
 function compile(file, mocks = {}) {
   const code = ts.transpileModule(fs.readFileSync(new URL('../' + file, import.meta.url), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
@@ -14,7 +16,10 @@ function compile(file, mocks = {}) {
   return module.exports;
 }
 const report = compile('src/utils/inventoryReports.ts');
-const exporter = compile('src/utils/inventoryReportExport.ts', { './inventoryReports': report });
+const exporter = compile('src/utils/inventoryReportExport.ts', {
+  './inventoryReports': report,
+  'write-excel-file/browser': writeXlsxFileBrowser
+});
 const base = { id: 'a', sku: '001234', name_ar: 'سماعة', name_en: 'Earbuds', brand: 'Oraimo', category: 'audio', condition: 'brand_new', stock: 3, price: 550, cost_price: 400, images: ['product.jpg'], catalog_status: 'verified', image_is_illustrative: false };
 const product = (id, data = {}) => ({ ...base, id, ...data });
 const filters = data => ({ ...report.defaultInventoryFilters, ...data });
@@ -48,7 +53,7 @@ test('invalid, empty and reversed numeric boundaries cannot silently export all 
   for (const f of [filters({ stockOp: 'lt', stockValue: '' }), filters({ stockOp: 'eq', stockValue: '3.5' }), filters({ stockOp: 'between', stockValue: '9', stockMax: '2' }), filters({ minPrice: '900', maxPrice: '2' }), filters({ minPrice: 'abc' })]) {
     assert.ok(report.validateInventoryFilters(f).length);
     assert.deepEqual(report.filterInventory([base], f), []);
-    assert.throws(() => exporter.createInventoryWorkbook([base], f, ['name'], 'test'));
+    assert.throws(() => exporter.buildInventorySheets([base], f, ['name'], 'test'));
   }
   assert.equal(report.parseReportNumber('٥٥٠٫٥٠'), 550.5);
 });
@@ -61,19 +66,20 @@ test('valuation preserves negative stock separately and reports incomplete cost 
   assert.equal(s.unvaluedUnits, 5); assert.equal(s.unpricedUnits, 1);
   assert.deepEqual(report.filterInventory(rows, filters({ stockOp: 'eq', stockValue: '0' })).map(p => p.id), ['zero']);
 });
-test('workbook roundtrip keeps all matching rows, selected columns, SKUs and text cells', () => {
+test('workbook roundtrip keeps all matching rows, selected columns, SKUs and text cells', async () => {
   const rows = Array.from({ length: 125 }, (_, i) => product(String(i), { name_ar: i ? `منتج ${i}` : '=1+1', stock: i ? 0 : -2 }));
-  const workbook = exporter.createInventoryWorkbook(rows, filters(), ['sku', 'name', 'stock'], 'كشف الجرد', new Date('2026-10-16T12:00:00Z'));
-  const bytes = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
-  const restored = XLSX.read(bytes, { type: 'buffer' });
-  const sheet = restored.Sheets['الأصناف'];
-  const values = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-  assert.equal(values.length, 126); assert.equal(values[0].length, 3);
-  assert.equal(values[1][0], '001234'); assert.equal(values[1][1], '=1+1'); assert.equal(values[1][2], -2);
-  assert.equal(sheet.B2.t, 's'); assert.equal(sheet.B2.f, undefined);
-  assert.equal(sheet['!autofilter'].ref, 'A1:C126');
-  assert.equal(restored.SheetNames[0], 'ملخص التقرير');
-  assert.ok(XLSX.utils.sheet_to_json(restored.Sheets['ملخص التقرير'], { header: 1 }).some(r => r[0] === 'عدد الأصناف' && r[1] === 125));
+  const sheets = exporter.buildInventorySheets(rows, filters(), ['sku', 'name', 'stock'], 'كشف الجرد', new Date('2026-10-16T12:00:00Z'));
+  const buffer = await writeXlsxFileNode.default(sheets).toBuffer();
+  const parsed = await readXlsxFileNode.default(buffer);
+  const summarySheet = parsed.find(s => s.sheet === 'ملخص التقرير');
+  const detailSheet = parsed.find(s => s.sheet === 'الأصناف');
+  assert.ok(summarySheet && detailSheet);
+  assert.equal(detailSheet.data.length, 126);
+  assert.equal(detailSheet.data[0].length, 3);
+  assert.equal(detailSheet.data[1][0], '001234');
+  assert.equal(detailSheet.data[1][1], '=1+1');
+  assert.equal(detailSheet.data[1][2], -2);
+  assert.ok(summarySheet.data.some(r => r[0] === 'عدد الأصناف' && r[1] === 125));
 });
 test('CSV handles Arabic, multiline quotes and spreadsheet formula injection as text', () => {
   const csv = exporter.inventoryCsv([product('x', { name_ar: '  =HYPERLINK("bad")\nسماعة', stock: -2 })], ['name', 'stock']);
@@ -110,8 +116,10 @@ test('report readiness waits for the full catalog, independently of cart synchro
     '../services/offlineCatalog': {deviceIsOnline:()=>true,readOfflineCatalog:async()=>null,saveOfflineCatalog:async()=>false},
     '../utils/imageUrl': { normalizeProductImage: x => x || '/product-placeholder.svg', normalizeProductImages: x => x || [] },
     '../utils/visitorAttribution': { getOrCaptureVisitorAttribution: () => ({}) },
-    '../utils/seo': { applyPageSeo() {}, buildProductJsonLd: () => [], buildStoreJsonLd: () => [] },
+    '../utils/seo': { applyPageSeo() {}, buildProductJsonLd: () => [], buildStoreJsonLd: () => [], syncSiteVerificationMeta() {} },
     '../utils/metaPixel': { initMetaPixel: () => false, trackMetaEvent() {} },
+    '../utils/analytics': { hasAnalyticsConsent: () => false, initGa4() {}, revokeAnalyticsIfDeclined() {}, trackGa4AddToCart() {}, trackGa4PageView() {}, trackGa4Purchase() {} },
+    '../utils/webVitals': { startWebVitalsObserver: () => () => {} },
     './AuthContext': { useAuth: () => ({user:{id:'test-admin',role:'admin'},sessionReady:true,adminSections:['products','inventory']}) },
     react, '../data/seedProducts': { initialProducts: [] }, '../utils/browserStorage': storage,
     '../utils/whatsappService': { defaultSettings: {}, getWhatsAppLogs: () => [] },

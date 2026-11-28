@@ -12,6 +12,8 @@ import {
   Grid2X2,
   ChevronLeft,
   ChevronRight,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useStore } from "../context/StoreContext";
 import { useLanguage } from "../context/LanguageContext";
@@ -34,6 +36,8 @@ export const Navbar: React.FC = () => {
     selectedCategory,
     products,
     trackActivity,
+    themeMode,
+    toggleThemeMode,
   } = useStore();
   const { t, language, toggleLanguage, formatPrice } = useLanguage();
   const { canAccessAdmin: isAdmin } = useAuth();
@@ -217,6 +221,9 @@ export const Navbar: React.FC = () => {
                     <img
                       src={p.images[0] || "/product-placeholder.svg"}
                       alt=""
+                      loading="lazy"
+                      width={40}
+                      height={40}
                       onError={(e) => {
                         e.currentTarget.onerror = null;
                         e.currentTarget.src = "/product-placeholder.svg";
@@ -236,6 +243,15 @@ export const Navbar: React.FC = () => {
             )}
           </div>
           <div className="joe-header-controls">
+            <button
+              type="button"
+              onClick={toggleThemeMode}
+              className="joe-header-icon"
+              aria-label={themeMode === 'dark' ? (ar ? 'التبديل للوضع النهاري' : 'Switch to light mode') : (ar ? 'التبديل للوضع الداكن' : 'Switch to dark mode')}
+              title={themeMode === 'dark' ? (ar ? 'الوضع النهاري' : 'Light mode') : (ar ? 'الوضع الداكن' : 'Dark mode')}
+            >
+              {themeMode === 'dark' ? <Sun size={19} /> : <Moon size={19} />}
+            </button>
             <AccountMenu />
             <button
               className="joe-header-icon joe-wishlist-button"

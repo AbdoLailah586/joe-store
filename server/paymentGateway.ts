@@ -1,5 +1,7 @@
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { buildServerOrderWhatsAppMessage, dispatchWhatsAppViaCrm, resolveCrmConfig } from './whatsappCrm.js';
+import { fetchWithTimeout, recordOperationalAlert } from './monitoring.js';
+import { sendMetaConversionEvent } from './metaCapi.js';
 
 export type PaymentGatewayProvider = 'none' | 'kashier' | 'paymob';
 export type PaymentGatewayMode = 'test' | 'live';
@@ -269,11 +271,15 @@ export async function ensurePaymentTransactionsTable(sql: any) {
       currency VARCHAR(12) NOT NULL DEFAULT 'EGP',
       status VARCHAR(30) NOT NULL DEFAULT 'pending',
       gateway_reference VARCHAR(200),
+      idempotency_key VARCHAR(160),
+      checkout_url TEXT,
       raw_payload JSONB,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
   `);
+  await sql.query(`ALTER TABLE payment_transactions ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(160);`).catch(() => {});
+  await sql.query(`ALTER TABLE payment_transactions ADD COLUMN IF NOT EXISTS checkout_url TEXT;`).catch(() => {});
 }
 
 export function resolveRequestOrigin(req: any, fallbackOrigin = 'https://joe-store-2026.vercel.app'): string {
@@ -311,12 +317,43 @@ export async function createGatewayCheckoutSession(
   const txnId = `txn-${Date.now()}-${randomBytes(4).toString('hex')}`;
   const orderNumber = String(params.order.order_number || params.order.id);
   const orderId = String(params.order.id || orderNumber);
+  const idempotencyKey = params.order.idempotency_key ? String(params.order.idempotency_key).slice(0, 160) : null;
   const amountFixed = amountNum.toFixed(2);
   const cleanBase = params.baseUrl.replace(/\/+$/, '');
   const callbackBase = `${cleanBase}/api/payment-callback`;
   const fetchImpl = params.fetchFn || fetch;
 
-  await ensurePaymentTransactionsTable(sql).catch(() => {});
+  await ensurePaymentTransactionsTable(sql).catch(err => {
+    void recordOperationalAlert(sql, {
+      severity: 'warn',
+      source: 'paymentGateway.ensureTable',
+      message: String(err?.message || err),
+      orderNumber
+    });
+  });
+
+  if (idempotencyKey || orderNumber) {
+    try {
+      const existingTxn = await sql`
+        SELECT id, checkout_url, status, provider
+        FROM payment_transactions
+        WHERE ((${idempotencyKey}::text IS NOT NULL AND idempotency_key = ${idempotencyKey}) OR upper(order_number) = ${orderNumber.toUpperCase()})
+          AND status = 'pending'
+          AND checkout_url IS NOT NULL
+          AND created_at > NOW() - INTERVAL '30 minutes'
+        ORDER BY created_at DESC
+        LIMIT 1;
+      `;
+      if (existingTxn?.[0]?.checkout_url) {
+        return {
+          provider: (existingTxn[0].provider || cfg.provider) as PaymentGatewayProvider,
+          mode: cfg.mode,
+          checkoutUrl: existingTxn[0].checkout_url,
+          transactionId: existingTxn[0].id
+        };
+      }
+    } catch {}
+  }
 
   if (cfg.provider === 'kashier') {
     const allowedMethods =
@@ -348,9 +385,19 @@ export async function createGatewayCheckoutSession(
     });
     const checkoutUrl = `https://checkout.kashier.io/?${sp.toString()}`;
     await sql`
-      INSERT INTO payment_transactions (id, order_id, order_number, provider, payment_method, amount, currency, status, gateway_reference)
-      VALUES (${txnId}, ${orderId}, ${orderNumber}, 'kashier', ${String(params.order.payment_method)}, ${amountNum}, 'EGP', 'pending', ${hash});
-    `.catch(() => {});
+      INSERT INTO payment_transactions (id, order_id, order_number, provider, payment_method, amount, currency, status, gateway_reference, idempotency_key, checkout_url)
+      VALUES (${txnId}, ${orderId}, ${orderNumber}, 'kashier', ${String(params.order.payment_method)}, ${amountNum}, 'EGP', 'pending', ${hash}, ${idempotencyKey}, ${checkoutUrl})
+      ON CONFLICT (id) DO NOTHING;
+    `.catch(err => {
+      void recordOperationalAlert(sql, {
+        severity: 'error',
+        source: 'paymentGateway.insertKashierTxn',
+        message: String(err?.message || err),
+        orderNumber,
+        settings: params.settings,
+        notifyAdmin: true
+      });
+    });
     return { provider: 'kashier', mode: cfg.mode, checkoutUrl, transactionId: txnId };
   }
 
@@ -369,34 +416,39 @@ export async function createGatewayCheckoutSession(
   const [firstName, ...restName] = fullName.split(/\s+/);
   const lastName = restName.join(' ') || firstName || 'Customer';
 
-  const res = await fetchImpl('https://accept.paymob.com/v1/intention/', {
-    method: 'POST',
-    headers: {
-      Authorization: `Token ${cfg.secretKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      amount: Math.round(amountNum * 100),
-      currency: 'EGP',
-      payment_methods: [integrationId],
-      billing_data: {
-        first_name: firstName,
-        last_name: lastName,
-        phone_number: String(params.order.customer_phone || '01000000000'),
-        email: String(params.order.customer_email || 'customer@joestore.eg'),
-        street: String(params.order.address_details || 'NA'),
-        city: String(params.order.city || params.order.governorate || 'Mansoura'),
-        state: String(params.order.governorate || 'Dakahlia'),
-        country: 'EG',
-        apartment: 'NA',
-        floor: 'NA',
-        building: 'NA'
+  const res = await fetchWithTimeout(
+    'https://accept.paymob.com/v1/intention/',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Token ${cfg.secretKey}`,
+        'Content-Type': 'application/json'
       },
-      special_reference: orderNumber,
-      notification_url: `${callbackBase}?provider=paymob`,
-      redirection_url: `${callbackBase}?provider=paymob`
-    })
-  });
+      body: JSON.stringify({
+        amount: Math.round(amountNum * 100),
+        currency: 'EGP',
+        payment_methods: [integrationId],
+        billing_data: {
+          first_name: firstName,
+          last_name: lastName,
+          phone_number: String(params.order.customer_phone || '01000000000'),
+          email: String(params.order.customer_email || 'customer@joestore.eg'),
+          street: String(params.order.address_details || 'NA'),
+          city: String(params.order.city || params.order.governorate || 'Mansoura'),
+          state: String(params.order.governorate || 'Dakahlia'),
+          country: 'EG',
+          apartment: 'NA',
+          floor: 'NA',
+          building: 'NA'
+        },
+        special_reference: orderNumber,
+        notification_url: `${callbackBase}?provider=paymob`,
+        redirection_url: `${callbackBase}?provider=paymob`
+      })
+    },
+    12000,
+    fetchImpl
+  );
   const data: any = await res.json().catch(() => ({}));
   if (!res.ok || !data?.client_secret) {
     throw new Error(data?.detail || data?.message || 'تعذر إنشاء جلسة الدفع عبر Paymob.');
@@ -404,9 +456,19 @@ export async function createGatewayCheckoutSession(
 
   const checkoutUrl = `https://accept.paymob.com/unifiedcheckout/?publicKey=${encodeURIComponent(cfg.publicKey)}&clientSecret=${encodeURIComponent(data.client_secret)}`;
   await sql`
-    INSERT INTO payment_transactions (id, order_id, order_number, provider, payment_method, amount, currency, status, gateway_reference, raw_payload)
-    VALUES (${txnId}, ${orderId}, ${orderNumber}, 'paymob', ${String(params.order.payment_method)}, ${amountNum}, 'EGP', 'pending', ${String(data.id || '')}, ${JSON.stringify(data)}::jsonb);
-  `.catch(() => {});
+    INSERT INTO payment_transactions (id, order_id, order_number, provider, payment_method, amount, currency, status, gateway_reference, idempotency_key, checkout_url, raw_payload)
+    VALUES (${txnId}, ${orderId}, ${orderNumber}, 'paymob', ${String(params.order.payment_method)}, ${amountNum}, 'EGP', 'pending', ${String(data.id || '')}, ${idempotencyKey}, ${checkoutUrl}, ${JSON.stringify(data)}::jsonb)
+    ON CONFLICT (id) DO NOTHING;
+  `.catch(err => {
+    void recordOperationalAlert(sql, {
+      severity: 'error',
+      source: 'paymentGateway.insertPaymobTxn',
+      message: String(err?.message || err),
+      orderNumber,
+      settings: params.settings,
+      notifyAdmin: true
+    });
+  });
 
   return { provider: 'paymob', mode: cfg.mode, checkoutUrl, transactionId: txnId };
 }
@@ -436,6 +498,7 @@ export async function processPaymentGatewayCallback(params: {
   let pending = false;
   let orderNumber = '';
   let gatewayTxnId = '';
+  let gatewayPaidAmount: number | null = null;
 
   if (provider === 'kashier') {
     if (params.method === 'POST' && params.body?.data) {
@@ -444,6 +507,8 @@ export async function processPaymentGatewayCallback(params: {
       const d = params.body.data;
       orderNumber = String(d.merchantOrderId || '');
       gatewayTxnId = String(d.transactionId || d.kashierOrderId || '');
+      const rawAmt = Number(d.amount);
+      if (Number.isFinite(rawAmt) && rawAmt > 0) gatewayPaidAmount = rawAmt;
       const status = String(d.status || '').toUpperCase();
       paid = verified && status === 'SUCCESS';
       pending = verified && status === 'PENDING';
@@ -451,6 +516,8 @@ export async function processPaymentGatewayCallback(params: {
       verified = verifyKashierRedirectSignature(params.query, cfg.apiKey);
       orderNumber = String(params.query?.merchantOrderId || '');
       gatewayTxnId = String(params.query?.transactionId || params.query?.orderReference || '');
+      const rawAmt = Number(params.query?.amount);
+      if (Number.isFinite(rawAmt) && rawAmt > 0) gatewayPaidAmount = rawAmt;
       const status = String(params.query?.paymentStatus || '').toUpperCase();
       paid = verified && status === 'SUCCESS';
       pending = verified && status === 'PENDING';
@@ -486,12 +553,16 @@ export async function processPaymentGatewayCallback(params: {
       verified = verifyPaymobHmac(normalizedObj, hmacVal, cfg.hmacSecret);
       orderNumber = String(params.query.merchant_order_id || params.query.special_reference || '');
       gatewayTxnId = String(params.query.id || '');
+      const rawCents = Number(params.query.amount_cents);
+      if (Number.isFinite(rawCents) && rawCents > 0) gatewayPaidAmount = rawCents / 100;
       paid = verified && String(params.query.success) === 'true' && String(params.query.pending) !== 'true';
       pending = verified && String(params.query.pending) === 'true';
     } else if (obj) {
       verified = verifyPaymobHmac(obj, hmacVal, cfg.hmacSecret);
       orderNumber = String(obj?.order?.merchant_order_id || obj?.special_reference || '');
       gatewayTxnId = String(obj?.id || '');
+      const rawCents = Number(obj?.amount_cents);
+      if (Number.isFinite(rawCents) && rawCents > 0) gatewayPaidAmount = rawCents / 100;
       paid = verified && Boolean(obj?.success) && !obj?.pending;
       pending = verified && Boolean(obj?.pending);
     }
@@ -500,6 +571,13 @@ export async function processPaymentGatewayCallback(params: {
   }
 
   if (!verified || !orderNumber) {
+    await recordOperationalAlert(params.sql, {
+      severity: 'warn',
+      source: 'paymentGateway.callbackSignature',
+      message: `فشل التحقق من توقيع بوابة الدفع (${provider}).`,
+      orderNumber,
+      gatewayTxnId
+    });
     return { verified, paid: false, pending: false, orderNumber, gatewayTxnId, error: 'Signature verification failed' };
   }
 
@@ -511,7 +589,15 @@ export async function processPaymentGatewayCallback(params: {
         raw_payload = ${JSON.stringify(params.method === 'POST' ? params.body : params.query)}::jsonb,
         updated_at = NOW()
     WHERE order_number = ${orderNumber};
-  `.catch(() => {});
+  `.catch(err => {
+    void recordOperationalAlert(params.sql, {
+      severity: 'error',
+      source: 'paymentGateway.updateTransaction',
+      message: String(err?.message || err),
+      orderNumber,
+      gatewayTxnId
+    });
+  });
 
   if (paid) {
     const rows = await params.sql`
@@ -525,6 +611,36 @@ export async function processPaymentGatewayCallback(params: {
     `;
     const updatedOrder = rows[0];
     if (updatedOrder) {
+      const expectedTotal = Number(updatedOrder.total || 0);
+      if (
+        gatewayPaidAmount !== null &&
+        Number.isFinite(expectedTotal) &&
+        expectedTotal > 0 &&
+        gatewayPaidAmount + 0.5 < expectedTotal
+      ) {
+        await params.sql`
+          UPDATE orders SET payment_status = 'unpaid', updated_at = NOW() WHERE id = ${updatedOrder.id};
+        `.catch(() => {});
+        await recordOperationalAlert(params.sql, {
+          severity: 'critical',
+          source: 'paymentGateway.amountMismatch',
+          message: `تعارض مبلغ الدفع! المدفوع في ${provider}: ${gatewayPaidAmount} ج.م بينما قيمة الطلب ${expectedTotal} ج.م.`,
+          orderNumber,
+          gatewayTxnId,
+          metadata: { gatewayPaidAmount, expectedTotal, provider },
+          settings: params.settings,
+          notifyAdmin: true
+        });
+        return {
+          verified: true,
+          paid: false,
+          pending: false,
+          orderNumber,
+          gatewayTxnId,
+          error: 'Paid amount mismatch'
+        };
+      }
+
       let storeHelpers: any = null;
       try {
         storeHelpers = await import('./store.js');
@@ -537,12 +653,36 @@ export async function processPaymentGatewayCallback(params: {
           action: 'PAYMENT_VERIFIED_GATEWAY',
           entity: 'order',
           entityId: orderNumber,
-          after: { payment_status: 'paid', gatewayTxnId, provider }
-        }).catch(() => {});
+          after: { payment_status: 'paid', gatewayTxnId, provider, amount: gatewayPaidAmount }
+        }).catch(err => {
+          void recordOperationalAlert(params.sql, {
+            severity: 'warn',
+            source: 'paymentGateway.logAudit',
+            message: String(err?.message || err),
+            orderNumber,
+            gatewayTxnId
+          });
+        });
       }
 
       const crm = resolveCrmConfig(params.settings);
       const ord = storeHelpers?.mapRowToOrder ? storeHelpers.mapRowToOrder(updatedOrder) : updatedOrder;
+      if (params.settings?.meta_capi_enabled !== false) {
+        await Promise.race([
+          sendMetaConversionEvent({
+            pixelId: params.settings?.meta_pixel_id,
+            eventName: 'Purchase',
+            eventId: ord.order_number || orderNumber,
+            value: expectedTotal,
+            orderNumber: ord.order_number || orderNumber,
+            phone: ord.customer_whatsapp || ord.customer_phone,
+            email: ord.customer_email,
+            city: ord.city || ord.governorate,
+            contentIds: Array.isArray(ord.items) ? ord.items.map((i: any) => String(i?.product?.id || '')).filter(Boolean) : []
+          }),
+          new Promise(resolve => setTimeout(resolve, 2000))
+        ]).catch(() => {});
+      }
       if (crm.configured && crm.shouldAutoSend('payment_verified') && (ord.customer_whatsapp || ord.customer_phone)) {
         const dispatch = params.dispatchWhatsApp || dispatchWhatsAppViaCrm;
         await dispatch(params.sql, {
@@ -552,7 +692,37 @@ export async function processPaymentGatewayCallback(params: {
           orderId: ord.id,
           orderNumber: ord.order_number,
           settings: params.settings
-        }).catch(() => {});
+        }).catch(err => {
+          void recordOperationalAlert(params.sql, {
+            severity: 'error',
+            source: 'paymentGateway.dispatchWhatsApp',
+            message: String(err?.message || err),
+            orderNumber,
+            gatewayTxnId
+          });
+        });
+      }
+    } else {
+      const existingCheck = await params.sql`
+        SELECT id, status, payment_status, total
+        FROM orders
+        WHERE upper(order_number) = ${orderNumber.toUpperCase()}
+        LIMIT 1;
+      `.catch(() => []);
+      const found = existingCheck?.[0];
+      if (!found || found.status === 'cancelled') {
+        await recordOperationalAlert(params.sql, {
+          severity: 'critical',
+          source: 'paymentGateway.paidWithoutActiveOrder',
+          message: !found
+            ? `دفعة ناجحة عبر ${provider} بقيمة ${gatewayPaidAmount ?? '؟'} ج.م للطلب #${orderNumber} ولكن الطلب غير مسجل في قاعدة البيانات!`
+            : `دفعة ناجحة عبر ${provider} بقيمة ${gatewayPaidAmount ?? '؟'} ج.م للطلب الملغي #${orderNumber} (${found.status})! يرجى المراجعة والرد.`,
+          orderNumber,
+          gatewayTxnId,
+          metadata: { provider, gatewayPaidAmount, existingStatus: found?.status || 'missing' },
+          settings: params.settings,
+          notifyAdmin: true
+        });
       }
     }
   }

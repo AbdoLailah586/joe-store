@@ -1,6 +1,9 @@
 import React from 'react';
+import { ExternalLink } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { generateWhatsAppWebLink } from '../utils/whatsappService';
+import { getProductSocialLinkEntries, type SocialPostPlatform } from '../utils/adLinks';
+import type { Product } from '../types';
 
 type SocialKey = 'facebook' | 'instagram' | 'whatsapp' | 'tiktok';
 
@@ -72,6 +75,67 @@ export const SocialIconLinks: React.FC = () => {
           <BrandGlyph kind={key} className="w-4 h-4" />
         </a>
       ))}
+    </div>
+  );
+};
+
+const PLATFORM_META: Record<
+  SocialPostPlatform,
+  { ar: string; en: string; classes: string }
+> = {
+  facebook: {
+    ar: 'شاهد بوست المنتج على فيسبوك',
+    en: 'View Product Post on Facebook',
+    classes: 'bg-[#1877F2]/10 hover:bg-[#1877F2]/20 text-[#145DBB] border-[#1877F2]/30',
+  },
+  tiktok: {
+    ar: 'شاهد فيديو المنتج على تيك توك',
+    en: 'Watch Product Video on TikTok',
+    classes: 'bg-slate-900/5 hover:bg-slate-900/10 text-slate-900 border-slate-300',
+  },
+  instagram: {
+    ar: 'شاهد البوست على إنستجرام',
+    en: 'View Post on Instagram',
+    classes: 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 border-rose-500/30',
+  },
+};
+
+export const ProductSocialPostButtons: React.FC<{
+  product?: Pick<Product, 'social_links'> | null;
+  language?: string;
+  compact?: boolean;
+}> = ({ product, language = 'ar', compact = false }) => {
+  const entries = getProductSocialLinkEntries(product);
+  if (!entries.length) return null;
+  const ar = language === 'ar';
+
+  return (
+    <div className={compact ? 'space-y-1.5' : 'space-y-1.5 pt-1'}>
+      {!compact && (
+        <p className="text-[11px] font-bold text-slate-600">
+          {ar ? 'شاهد عرض المنتج على السوشيال ميديا:' : 'View product showcase on social media:'}
+        </p>
+      )}
+      <div className="flex flex-col gap-1.5">
+        {entries.map(({ platform, url }) => {
+          const meta = PLATFORM_META[platform];
+          return (
+            <a
+              key={platform}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`w-full ${compact ? 'py-2 px-3 text-[11px]' : 'py-2 px-3.5 text-xs'} rounded-xl border font-bold flex items-center justify-between gap-2 transition-all ${meta.classes}`}
+            >
+              <span className="flex items-center gap-2 min-w-0">
+                <BrandGlyph kind={platform} className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="truncate">{ar ? meta.ar : meta.en}</span>
+              </span>
+              <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 opacity-75" />
+            </a>
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -52,8 +52,16 @@ export function UsersTab({ onNavigateSection }: { onNavigateSection?: (section: 
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
+  const [usersPage, setUsersPage] = useState(1);
+  const [guestsPage, setGuestsPage] = useState(1);
+  const pageSize = 25;
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    setUsersPage(1);
+    setGuestsPage(1);
+  }, [search, filter]);
 
   // Permissions Modal
   const [editing, setEditing] = useState<any | null>(null);
@@ -600,12 +608,19 @@ export function UsersTab({ onNavigateSection }: { onNavigateSection?: (section: 
           {/* Registered Accounts Section */}
           {rows.length > 0 && (
             <section className="space-y-3">
-              {guestRows.length > 0 && (
-                <h3 className="font-black text-sm text-slate-800 px-1">
+              <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+                <h3 className="font-black text-sm text-slate-800">
                   الحسابات المسجلة ({rows.length})
                 </h3>
-              )}
-              {rows.map(u => {
+                {rows.length > pageSize && (
+                  <div className="flex items-center gap-2 text-xs">
+                    <button type="button" disabled={usersPage <= 1} onClick={() => setUsersPage(p => Math.max(1, p - 1))} className="px-3 py-1 rounded-lg border border-slate-300 bg-white disabled:opacity-40">السابق</button>
+                    <span className="font-bold text-slate-700">{usersPage} / {Math.ceil(rows.length / pageSize)}</span>
+                    <button type="button" disabled={usersPage >= Math.ceil(rows.length / pageSize)} onClick={() => setUsersPage(p => p + 1)} className="px-3 py-1 rounded-lg border border-slate-300 bg-white disabled:opacity-40">التالي</button>
+                  </div>
+                )}
+              </div>
+              {rows.slice((usersPage - 1) * pageSize, usersPage * pageSize).map(u => {
                 const seenIso = u.last_seen_at || u.last_activity_at;
                 return (
                   <article key={u.id} className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3">
@@ -724,18 +739,27 @@ export function UsersTab({ onNavigateSection }: { onNavigateSection?: (section: 
                   <UserX className="w-4 h-4 text-amber-700" />
                   <span>زوار بدون حساب ({guestRows.length})</span>
                 </h3>
-                {canOpenGuestsPage && (
-                  <button
-                    type="button"
-                    onClick={() => onNavigateSection!('guests')}
-                    className="text-xs font-bold text-amber-800 hover:underline"
-                  >
-                    عرض كل التفاصيل والتصدير في الصفحة المخصصة ←
-                  </button>
-                )}
+                <div className="flex items-center gap-3">
+                  {guestRows.length > pageSize && (
+                    <div className="flex items-center gap-2 text-xs">
+                      <button type="button" disabled={guestsPage <= 1} onClick={() => setGuestsPage(p => Math.max(1, p - 1))} className="px-3 py-1 rounded-lg border border-slate-300 bg-white disabled:opacity-40">السابق</button>
+                      <span className="font-bold text-slate-700">{guestsPage} / {Math.ceil(guestRows.length / pageSize)}</span>
+                      <button type="button" disabled={guestsPage >= Math.ceil(guestRows.length / pageSize)} onClick={() => setGuestsPage(p => p + 1)} className="px-3 py-1 rounded-lg border border-slate-300 bg-white disabled:opacity-40">التالي</button>
+                    </div>
+                  )}
+                  {canOpenGuestsPage && (
+                    <button
+                      type="button"
+                      onClick={() => onNavigateSection!('guests')}
+                      className="text-xs font-bold text-amber-800 hover:underline"
+                    >
+                      عرض كل التفاصيل والتصدير في الصفحة المخصصة ←
+                    </button>
+                  )}
+                </div>
               </div>
 
-              {guestRows.map(g => {
+              {guestRows.slice((guestsPage - 1) * pageSize, guestsPage * pageSize).map(g => {
                 const meta = g.metadata && typeof g.metadata === 'object' ? g.metadata : {};
                 return (
                   <article key={g.session_id} className="bg-white border border-amber-200/80 rounded-2xl p-4 space-y-3">

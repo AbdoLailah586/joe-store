@@ -19,11 +19,13 @@ import { useLanguage } from '../context/LanguageContext';
 import { InfoButton } from '../components/DetailsDialog';
 import { orderDetail, productDetail } from '../utils/detailModels';
 import { generateWhatsAppWebLink, buildOrderConfirmationMessage } from '../utils/whatsappService';
+import { InvoiceModal } from '../components/InvoiceModal';
 
 export const OrderSuccess: React.FC = () => {
   const { currentOrder, navigate, settings } = useStore();
   const { t, formatPrice } = useLanguage();
   const [copied, setCopied] = React.useState(false);
+  const [showInvoice, setShowInvoice] = React.useState(false);
 
   const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const gatewayStatus = searchParams?.get('payment') || '';
@@ -181,6 +183,8 @@ export const OrderSuccess: React.FC = () => {
                 <img
                   src={normalizeProductImage(item.product.images[0])}
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="w-12 h-12 rounded-xl object-cover bg-slate-100 border border-slate-200"
                 />
                 <div>
@@ -267,6 +271,17 @@ export const OrderSuccess: React.FC = () => {
 
       {/* 4. Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+        {activeOrder && (
+          <button
+            type="button"
+            onClick={() => setShowInvoice(true)}
+            className="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-extrabold text-xs inline-flex items-center justify-center gap-2 transition-all"
+          >
+            <Receipt className="w-4 h-4" />
+            <span>عرض الفاتورة الإلكترونية (QR / PDF)</span>
+          </button>
+        )}
+
         <button
           onClick={() => navigate('track-order')}
           className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs shadow-glow-gold transition-all"
@@ -281,6 +296,12 @@ export const OrderSuccess: React.FC = () => {
           {t('backToHome')}
         </button>
       </div>
+
+      <InvoiceModal
+        order={showInvoice ? activeOrder : null}
+        settings={settings}
+        onClose={() => setShowInvoice(false)}
+      />
     </div>
   );
 };

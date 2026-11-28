@@ -1,13 +1,12 @@
 import { neon } from '@neondatabase/serverless';
-import { issueSession, sameOrigin, passwordHash } from '../lib/session.js';
+import { issueSession, sameOrigin, passwordHash, applyCors } from '../lib/session.js';
 import { publicUser } from '../lib/access.js';
 
 
 export default async function handler(req, res) {
   const DB_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL || '';
+  applyCors(req, res, 'POST, OPTIONS');
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
   }
 
@@ -18,7 +17,7 @@ export default async function handler(req, res) {
   try {
     if (!sameOrigin(req)) return res.status(403).json({success:false,error:'مصدر الطلب غير مسموح.'});
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const { email, code, name, phone, password } = body || {};
+    const { email, code, name, phone, password, marketing_opt_in, ai_training_opt_in, parental_consent } = body || {};
 
     if (!email || !code) {
       return res.status(400).json({ success: false, error: 'البريد الإلكتروني وكود التأكيد مطلوبان.' });
@@ -59,8 +58,12 @@ export default async function handler(req, res) {
     const userId = `usr-${Date.now()}`;
     const defaultRole = cleanEmail === 'abdolailah586@gmail.com' ? 'admin' : 'customer';
 
+    const marketingOptIn = Boolean(marketing_opt_in);
+    const aiOptIn = Boolean(ai_training_opt_in);
+    const parentalAt = parental_consent ? new Date().toISOString() : null;
+
     const userRows = await sql`
-      INSERT INTO users (id, name, email, phone, password_hash, role, provider, email_verified)
+      INSERT INTO users (id, name, email, phone, password_hash, role, provider, email_verified, marketing_opt_in, ai_training_opt_in, parental_consent_at)
       VALUES (
         ${userId}, 
         ${name || 'عميل جو ستور'}, 
@@ -69,15 +72,21 @@ export default async function handler(req, res) {
         ${password ? passwordHash(password) : ''},
         ${defaultRole}, 
         'email', 
-        true
+        true,
+        ${marketingOptIn},
+        ${aiOptIn},
+        ${parentalAt}
       )
       ON CONFLICT (email) DO UPDATE SET
         name = COALESCE(EXCLUDED.name, users.name),
         phone = COALESCE(NULLIF(EXCLUDED.phone, ''), users.phone),
         password_hash = COALESCE(NULLIF(EXCLUDED.password_hash, ''), users.password_hash),
+        marketing_opt_in = EXCLUDED.marketing_opt_in,
+        ai_training_opt_in = EXCLUDED.ai_training_opt_in,
+        parental_consent_at = COALESCE(EXCLUDED.parental_consent_at, users.parental_consent_at),
         email_verified = true,
         updated_at = NOW()
-      RETURNING id, name, email, phone, role, provider, email_verified, addresses, created_at, admin_permissions, totp_enabled;
+      RETURNING id, name, email, phone, role, provider, email_verified, addresses, created_at, admin_permissions, totp_enabled, marketing_opt_in, ai_training_opt_in, parental_consent_at;
     `;
 
     const user = userRows[0];

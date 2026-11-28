@@ -146,6 +146,8 @@ export const CATEGORY_LABEL_MAP: Record<string, { ar: string; en: string }> = {
   audio: { ar: 'سماعات وصوتيات', en: 'Audio & Earbuds' },
   chargers_cables: { ar: 'شواحن وكابلات', en: 'Chargers & Cables' },
   desktop_chargers: { ar: 'محطات شحن مكتبية', en: 'Desktop Charging Stations' },
+  printers: { ar: 'طابعات محمولة وملحقاتها', en: 'Portable Printers' },
+  gaming: { ar: 'أجهزة وإكسسوارات الألعاب', en: 'Gaming Consoles & Gear' },
   accessories: { ar: 'إكسسوارات متنوعة', en: 'Accessories' },
   ...Object.fromEntries(
     STORE_CATEGORIES.map((c) => [c.key, { ar: c.name_ar, en: c.name_en }])

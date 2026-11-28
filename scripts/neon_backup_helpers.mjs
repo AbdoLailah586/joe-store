@@ -31,11 +31,14 @@ export async function sendWhatsAppNotification(env, message) {
     throw new Error('Missing WHATSAPP_CRM_URL, WHATSAPP_CRM_EMAIL, WHATSAPP_CRM_PASSWORD, or WHATSAPP_CRM_TO in environment/.env');
   }
 
+  const loginController = new AbortController();
+  const loginTimer = setTimeout(() => loginController.abort(), 10000);
   const loginRes = await fetch(`${baseUrl}/api/auth/login`, {
     method: 'POST',
+    signal: loginController.signal,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
-  });
+  }).finally(() => clearTimeout(loginTimer));
   if (!loginRes.ok) {
     throw new Error(`WhatsApp login failed: ${loginRes.status} ${await loginRes.text()}`);
   }
@@ -46,14 +49,17 @@ export async function sendWhatsAppNotification(env, message) {
     throw new Error('WhatsApp login succeeded but no JWT token found in response');
   }
 
+  const sendController = new AbortController();
+  const sendTimer = setTimeout(() => sendController.abort(), 10000);
   const sendRes = await fetch(`${baseUrl}/api/send`, {
     method: 'POST',
+    signal: sendController.signal,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${jwt}`
     },
     body: JSON.stringify({ to, text: message })
-  });
+  }).finally(() => clearTimeout(sendTimer));
   if (!sendRes.ok) {
     throw new Error(`WhatsApp send failed: ${sendRes.status} ${await sendRes.text()}`);
   }

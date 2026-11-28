@@ -1,11 +1,17 @@
 import { neonDb, mapRowToOrder, logAudit } from '../server/store.js';
-import { database, currentUser, issueSession, endSession, sameOrigin, passwordHash, passwordMatches, pendingSecondFactor } from '../lib/session.js';
+import { database, currentUser, issueSession, endSession, endAllSessions, applyCors, sameOrigin, passwordHash, passwordMatches, pendingSecondFactor } from '../lib/session.js';
+import { sendTransactionalEmail } from '../lib/mailer.js';
+import { checkRateLimit, clearRateLimit, extractClientIp } from '../server/rateLimit.js';
 import { generateTotpSecret, totpAuthUrl, verifyTotpCode } from '../lib/totp.js';
 import { randomBytes, createHash } from 'node:crypto';
 import { canAccessSection, isFullAdmin, normalizePermissions, publicUser, OWNER_EMAIL } from '../lib/access.js';
 import { normalizePhone } from '../src/utils/deliveryAddress.js';
 import { saveOrder, cancelOrder as cancelStoredOrder } from '../server/orderWrites.js';
 import { buildServerOrderWhatsAppMessage, dispatchWhatsAppViaCrm, resolveCrmConfig } from '../server/whatsappCrm.js';
+import { calculateServerShippingFee, validateAndComputeCouponDiscount, sanitizeUploadedImage } from '../server/pricing.js';
+import { recordOperationalAlert } from '../server/monitoring.js';
+import { enqueueBackgroundJob, processPendingBackgroundJobs } from '../server/jobs.js';
+import { sendMetaConversionEvent } from '../server/metaCapi.js';
 import {
   stripPaymentSecrets,
   toPublicPaymentGatewayState,
@@ -26,7 +32,7 @@ const policies: Record<string,string[]> = {
   getActiveCarts:['crm'],updateOrderState:['orders'],
   getCoverOverrides:['covers'],saveCoverOverride:['covers'],addCoverEntry:['covers'],getCoverAdditions:['covers'],
   addScreenEntry:['screens'],getScreenAdditions:['screens'],
-  getAuditLog:['security'],getPickingList:['fulfillment'],getDeliveryBoard:['fulfillment'],
+  getAuditLog:['security'],getSystemAlerts:['security'],resolveSystemAlert:['security'],listBreachReports:['security'],updateBreachReportStatus:['security'],getPickingList:['fulfillment'],getDeliveryBoard:['fulfillment'],
   updateOrderStatus:['orders','fulfillment'],confirmPacking:['fulfillment'],recordDeliveryRefusal:['fulfillment'],
   getRefusalHistory:['fulfillment'],getAllRefusals:['fulfillment'],addSupplierQuote:['suppliers'],getSupplierQuotes:['suppliers'],
   listSupportTickets:['support'],escalateSupportTicket:['support'],closeSupportTicket:['support'],getWishlistGap:['overview','analytics'],
@@ -88,6 +94,72 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
   const user=deps && 'user' in deps ? deps.user : await currentUser(req,sql);
   if(method==='getSession') return {success:true,user};
   if(method==='logout') { await endSession(req,res,sql); return true; }
+  if(method==='logoutAllDevices') {
+    if(!user) throw forbidden();
+    await endAllSessions(user.id, res, sql);
+    if(!deps) await logAudit({ actorId: user.id, actorName: user.name, action: 'LOGOUT_ALL_DEVICES', entity: 'user', entityId: user.id });
+    return { success: true };
+  }
+  if(method==='requestPasswordReset') {
+    const emailRaw = String(args[0] || '').trim().toLowerCase();
+    if(!emailRaw || !emailRaw.includes('@')) throw fail(400, 'يرجى إدخال بريد إلكتروني صحيح.');
+    const ip = extractClientIp(req);
+    const ipLimit = await checkRateLimit(sql, { key: `pwreset-ip:${ip}`, maxHits: 10, windowSeconds: 3600, blockSeconds: 3600 });
+    const emailLimit = await checkRateLimit(sql, { key: `pwreset-email:${emailRaw}`, maxHits: 3, windowSeconds: 3600, blockSeconds: 3600 });
+    if(!ipLimit.allowed || !emailLimit.allowed) {
+      throw fail(429, 'تم إرسال طلبات كثيرة لإعادة التعيين. حاول مرة أخرى بعد قليل.');
+    }
+    const rows = await sql`SELECT id, name, email FROM users WHERE lower(email)=${emailRaw} LIMIT 1`.catch(() => []);
+    const targetUser = rows?.[0];
+    if(targetUser) {
+      const token = randomBytes(32).toString('hex');
+      const tokenHash = createHash('sha256').update(token).digest('hex');
+      const id = `pwr-${Date.now()}-${randomBytes(4).toString('hex')}`;
+      await sql`
+        INSERT INTO password_reset_tokens (id, user_id, email, token_hash, expires_at)
+        VALUES (${id}, ${targetUser.id}, ${emailRaw}, ${tokenHash}, NOW() + INTERVAL '30 minutes');
+      `.catch(() => {});
+      const origin = resolveRequestOrigin(req);
+      const resetLink = `${origin}/?resetToken=${encodeURIComponent(token)}&email=${encodeURIComponent(emailRaw)}`;
+      const html = `
+        <div dir="rtl" style="font-family:Segoe UI,Tahoma,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #e2e8f0;border-radius:16px">
+          <h2 style="color:#b45309;margin:0 0 12px">إعادة تعيين كلمة المرور - JOE Store</h2>
+          <p style="color:#334155;font-size:14px">مرحباً ${targetUser.name || 'عميلنا'}، تلقينا طلباً لإعادة تعيين كلمة المرور لحسابك.</p>
+          <p style="margin:20px 0"><a href="${resetLink}" style="display:inline-block;background:#f59e0b;color:#000;font-weight:bold;padding:12px 24px;border-radius:10px;text-decoration:none">إعادة تعيين كلمة المرور الآن</a></p>
+          <p style="color:#64748b;font-size:12px">صلاحية هذا الرابط <strong>30 دقيقة فقط</strong> ويُستخدم لمرة واحدة. إذا لم تطلب هذا التغيير فتجاهل هذه الرسالة.</p>
+        </div>
+      `;
+      await sendTransactionalEmail({
+        to: emailRaw,
+        toName: targetUser.name || 'عميل جو ستور',
+        subject: 'رابط إعادة تعيين كلمة المرور - متجر جو ستور (صالح لمدة 30 دقيقة)',
+        html,
+        text: `رابط إعادة تعيين كلمة المرور (صالح 30 دقيقة): ${resetLink}`
+      }).catch(() => {});
+    }
+    return { success: true, message: 'إذا كان البريد مسجلاً لدينا فسيصلك رابط إعادة تعيين صالح لمدة 30 دقيقة.' };
+  }
+  if(method==='completePasswordReset') {
+    const [tokenRaw, newPass] = args;
+    const token = String(tokenRaw || '').trim();
+    if(!/^[a-f0-9]{64}$/.test(token)) throw fail(400, 'رابط إعادة التعيين غير صالح أو منتهي الصلاحية.');
+    if(typeof newPass!=='string'||newPass.length<8||newPass.length>512||!/[A-Za-z\u0600-\u06FF]/.test(newPass)||!/\d/.test(newPass)) {
+      throw fail(400, 'كلمة المرور يجب أن تتكون من 8 أحرف على الأقل وتحتوي على حروف وأرقام.');
+    }
+    const tokenHash = createHash('sha256').update(token).digest('hex');
+    const claimed = await sql`
+      UPDATE password_reset_tokens
+      SET used_at = NOW()
+      WHERE token_hash = ${tokenHash} AND used_at IS NULL AND expires_at > NOW()
+      RETURNING user_id, email;
+    `;
+    if(!claimed?.[0]) throw fail(400, 'انتهت صلاحية رابط إعادة التعيين أو تم استخدامه بالفعل. اطلب رابطاً جديداً.');
+    const uid = claimed[0].user_id;
+    await sql`UPDATE users SET password_hash=${passwordHash(newPass)}, updated_at=NOW() WHERE id=${uid}`;
+    await sql`DELETE FROM app_sessions WHERE user_id=${uid}`;
+    if(!deps) await logAudit({ actorId: uid, actorName: claimed[0].email, action: 'PASSWORD_RESET_COMPLETED', entity: 'user', entityId: uid });
+    return { success: true, message: 'تم تغيير كلمة المرور وإلغاء جميع الجلسات القديمة. يمكنك تسجيل الدخول الآن.' };
+  }
   if(method==='completeSecondFactor') {
     const pending=await pendingSecondFactor(req,sql);
     if(!pending||!pending.totp_enabled||!verifyTotpCode(pending.totp_secret,args[0])) throw Object.assign(fail(401,'كود المصادقة غير صحيح أو انتهت جلسة التحقق. أعد تسجيل الدخول.'),{code:'TOTP_INVALID'});
@@ -100,9 +172,31 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
   if(method==='authenticateUser') {
     const [email,password]=args;
     if(typeof email!=='string'||typeof password!=='string'||password.length>512) throw fail(400,'بيانات الدخول غير صالحة.');
-    const rows=await sql`SELECT * FROM users WHERE lower(email)=${email.trim().toLowerCase()} LIMIT 1`;
+    const cleanEmail = email.trim().toLowerCase();
+    const ip = extractClientIp(req);
+    const ipGate = await checkRateLimit(sql, { key: `login-ip:${ip}`, maxHits: 12, windowSeconds: 900, blockSeconds: 900, increment: false });
+    const accountGate = await checkRateLimit(sql, { key: `login-email:${cleanEmail}:${ip}`, maxHits: 5, windowSeconds: 900, blockSeconds: 900, increment: false });
+    if (!ipGate.allowed || !accountGate.allowed) {
+      const mins = Math.max(1, Math.ceil(Math.max(ipGate.retryAfterSeconds, accountGate.retryAfterSeconds) / 60));
+      throw fail(429, `تم إيقاف محاولات الدخول مؤقتاً بعد تكرار الخطأ. انتظر ${mins} دقيقة ثم حاول مجدداً.`);
+    }
+
+    const rows=await sql`SELECT * FROM users WHERE lower(email)=${cleanEmail} LIMIT 1`;
     const row=rows[0];
-    if(!row||!passwordMatches(password,row.password_hash)) throw fail(401,'البريد الإلكتروني أو كلمة المرور غير صحيحة. استخدم Google أو كود البريد إذا لم تكن لديك كلمة مرور.');
+    if(!row||!passwordMatches(password,row.password_hash)) {
+      await checkRateLimit(sql, { key: `login-ip:${ip}`, maxHits: 12, windowSeconds: 900, blockSeconds: 900, increment: true });
+      const attemptState = await checkRateLimit(sql, { key: `login-email:${cleanEmail}:${ip}`, maxHits: 5, windowSeconds: 900, blockSeconds: 900, increment: true });
+      if (!attemptState.allowed) {
+        void recordOperationalAlert(sql, {
+          severity: 'warn',
+          source: 'auth.bruteForceBlocked',
+          message: `تم حظر IP (${ip}) مؤقتاً بعد 5 محاولات دخول فاشلة للحساب ${cleanEmail}.`,
+          metadata: { ip, email: cleanEmail }
+        });
+      }
+      throw fail(401,'البريد الإلكتروني أو كلمة المرور غير صحيحة. استخدم Google أو كود البريد إذا لم تكن لديك كلمة مرور.');
+    }
+    await clearRateLimit(sql, `login-email:${cleanEmail}:${ip}`);
     if(!row.password_hash.startsWith('scrypt$')) await sql`UPDATE users SET password_hash=${passwordHash(password)} WHERE id=${row.id}`;
     await issueSession(req,res,row.id,sql,!row.totp_enabled);
     if(row.totp_enabled) return {success:false,requiresTotp:true,code:'TOTP_REQUIRED',error:'أدخل كود تطبيق المصادقة لإكمال الدخول.'};
@@ -160,6 +254,10 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     const rows=await sql`SELECT * FROM orders WHERE lower(customer_email)=${user.email.toLowerCase()} ORDER BY created_at DESC LIMIT 100`;
     return rows.map(mapRowToOrder);
   }
+  if(method==='getOrdersPaginated') {
+    if(!hasAny(user,orderSections)) throw forbidden();
+    return store.getOrdersPaginated(args[0] || {});
+  }
   if(method==='getStoreSettings') {
     const raw = store.getStoreSettings ? await store.getStoreSettings() : null;
     return safeSettings(raw);
@@ -195,7 +293,15 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
         'auto_alert_admin_on_order',
         'whatsapp_templates',
         'whatsapp_auto_triggers',
-        'policy_pages'
+        'policy_pages',
+        'ga4_measurement_id',
+        'gsc_verification_token',
+        'meta_capi_enabled',
+        'commercial_register',
+        'tax_id',
+        'vat_rate',
+        'data_retention_months',
+        'dpo_contact_email'
       ]) {
         if (incoming[cfgKey] === undefined && current[cfgKey] !== undefined) {
           incoming[cfgKey] = current[cfgKey];
@@ -237,7 +343,7 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     const password=String(data.password||'');
     const role=data.role==='admin'?'admin':'customer';
     const permissions=role==='admin'?normalizePermissions(Array.isArray(data.admin_permissions)?data.admin_permissions:[]):[];
-    if(!name||!email.includes('@')||password.length<6) throw fail(400,'أدخل الاسم والبريد الإلكتروني وكلمة مرور لا تقل عن 6 أحرف.');
+    if(!name||!email.includes('@')||password.length<8||!/[A-Za-z\u0600-\u06FF]/.test(password)||!/\d/.test(password)) throw fail(400,'أدخل الاسم والبريد الإلكتروني وكلمة مرور من 8 أحرف على الأقل تحتوي على حروف وأرقام.');
     const existing=await sql`SELECT id FROM users WHERE lower(email)=${email} LIMIT 1`;
     if(existing[0]) throw fail(400,'يوجد حساب مسجل بهذا البريد الإلكتروني بالفعل.');
     const id=`user-${Date.now()}-${randomBytes(3).toString('hex')}`;
@@ -333,15 +439,94 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
   if(method==='changePassword') {
     if(!user||user.id!==args[0]) throw forbidden();
     const [,oldPass,newPass]=args;
-    if(typeof newPass!=='string'||newPass.length<8||newPass.length>512) throw fail(400,'كلمة المرور الجديدة يجب أن تتكون من 8 أحرف على الأقل.');
+    if(typeof newPass!=='string'||newPass.length<8||newPass.length>512||!/[A-Za-z\u0600-\u06FF]/.test(newPass)||!/\d/.test(newPass)) {
+      throw fail(400,'كلمة المرور الجديدة يجب أن تتكون من 8 أحرف على الأقل وتحتوي على حروف وأرقام.');
+    }
     const rows=await sql`SELECT password_hash FROM users WHERE id=${user.id}`;
     if(!passwordMatches(oldPass,rows[0]?.password_hash)) throw fail(400,'كلمة المرور الحالية غير صحيحة.');
     await sql`UPDATE users SET password_hash=${passwordHash(newPass)},updated_at=NOW() WHERE id=${user.id}`;
+    // Revoke all older sessions across every device and mint a clean session for this device only
+    await sql`DELETE FROM app_sessions WHERE user_id=${user.id}`;
+    await issueSession(req, res, user.id, sql, true);
+    if(!deps) await logAudit({ actorId: user.id, actorName: user.name, action: 'PASSWORD_CHANGED_SESSIONS_REVOKED', entity: 'user', entityId: user.id });
     return {success:true};
+  }
+  if(method==='exportMyData') {
+    if(!user) throw forbidden();
+    const uRows = await sql`SELECT id, name, email, phone, role, provider, email_verified, addresses, created_at, marketing_opt_in, ai_training_opt_in, parental_consent_at, cookie_consent FROM users WHERE id=${user.id} LIMIT 1`;
+    const ordRows = await sql`SELECT order_number, invoice_number, total, subtotal, discount, shipping_fee, coupon_code, payment_method, payment_status, status, governorate, city, created_at FROM orders WHERE lower(customer_email)=${user.email.toLowerCase()} ORDER BY created_at DESC LIMIT 200`;
+    const revRows = await sql`SELECT product_id, rating, comment, status, created_at FROM product_reviews WHERE user_id=${user.id} ORDER BY created_at DESC LIMIT 100`;
+    const tickRows = await sql`SELECT id, category, subject, status, created_at FROM support_tickets WHERE lower(customer_email)=${user.email.toLowerCase()} ORDER BY created_at DESC LIMIT 100`;
+    return {
+      success: true,
+      data: {
+        exported_at: new Date().toISOString(),
+        profile: uRows[0] || publicUser(user),
+        orders: ordRows,
+        reviews: revRows,
+        support_tickets: tickRows
+      }
+    };
+  }
+  if(method==='updateConsentPreferences') {
+    if(!user) throw forbidden();
+    const prefs = args[0] && typeof args[0] === 'object' ? args[0] : {};
+    const mkt = prefs.marketing_opt_in === undefined ? undefined : Boolean(prefs.marketing_opt_in);
+    const ai = prefs.ai_training_opt_in === undefined ? undefined : Boolean(prefs.ai_training_opt_in);
+    const ck = prefs.cookie_consent === 'accepted' || prefs.cookie_consent === 'essential' ? prefs.cookie_consent : undefined;
+    const rows = await sql`
+      UPDATE users
+      SET marketing_opt_in = COALESCE(${mkt === undefined ? null : mkt}, marketing_opt_in),
+          ai_training_opt_in = COALESCE(${ai === undefined ? null : ai}, ai_training_opt_in),
+          cookie_consent = COALESCE(${ck || null}, cookie_consent),
+          updated_at = NOW()
+      WHERE id = ${user.id}
+      RETURNING *;
+    `;
+    return { success: true, user: rows[0] ? publicUser(rows[0]) : user };
+  }
+  if(method==='listBreachReports') {
+    if(!user || !canAccessSection(user, 'security')) throw forbidden();
+    const lim = Math.max(1, Math.min(200, Number(args[0]) || 50));
+    return sql`SELECT id, reporter_email, reporter_name, incident_type, description, affected_scope, status, report_deadline_at, admin_notes, resolved_at, created_at FROM data_breach_reports ORDER BY created_at DESC LIMIT ${lim}`;
+  }
+  if(method==='updateBreachReportStatus') {
+    if(!user || !canAccessSection(user, 'security')) throw forbidden();
+    const [reportId, nextStatus, adminNotes] = args;
+    const allowed = ['open', 'investigating', 'reported_to_authority', 'resolved'];
+    if(!allowed.includes(String(nextStatus || ''))) throw fail(400, 'حالة البلاغ غير صالحة.');
+    const resolvedAt = nextStatus === 'resolved' ? new Date().toISOString() : null;
+    await sql`UPDATE data_breach_reports SET status=${nextStatus}, admin_notes=${String(adminNotes || '').slice(0, 1000)}, resolved_at=COALESCE(${resolvedAt}, resolved_at) WHERE id=${String(reportId || '')}`;
+    return { success: true };
   }
   if(method==='deleteUser') {
     if(!user||(!isFullAdmin(user)&&user.id!==args[0])) throw forbidden();
-    const rows=await sql`DELETE FROM users WHERE id=${args[0]} AND lower(email)<>${OWNER_EMAIL} RETURNING id`;
+    const targetRows = await sql`SELECT id, email FROM users WHERE id=${args[0]} AND lower(email)<>${OWNER_EMAIL} LIMIT 1`;
+    const target = targetRows[0];
+    if (!target) return {success:false,error:'لا يمكن حذف الحساب المحمي.'};
+    const targetEmail = String(target.email || '').toLowerCase();
+    await sql`DELETE FROM app_sessions WHERE user_id=${target.id}`.catch(()=>{});
+    await sql`DELETE FROM password_reset_tokens WHERE user_id=${target.id}`.catch(()=>{});
+    await sql`DELETE FROM customer_activity WHERE customer_id=${target.id}`.catch(()=>{});
+    await sql`DELETE FROM active_carts WHERE customer_id=${target.id}`.catch(()=>{});
+    await sql`UPDATE product_reviews SET user_id=NULL, author_name='مستخدم سابق' WHERE user_id=${target.id}`.catch(()=>{});
+    if (targetEmail) {
+      await sql`
+        UPDATE orders
+        SET customer_name='عميل محذوف', customer_phone='REDACTED', customer_whatsapp=NULL, customer_email=NULL,
+            street='REDACTED', building=NULL, floor=NULL, apartment=NULL, landmark=NULL,
+            google_maps_url=NULL, delivery_lat=NULL, delivery_lng=NULL, address='REDACTED', notes=NULL, updated_at=NOW()
+        WHERE lower(customer_email)=${targetEmail}
+      `.catch(()=>{});
+      await sql`
+        UPDATE support_tickets
+        SET customer_email=NULL, customer_phone='REDACTED', customer_name='عميل محذوف'
+        WHERE lower(customer_email)=${targetEmail}
+      `.catch(()=>{});
+    }
+    const rows=await sql`DELETE FROM users WHERE id=${target.id} AND lower(email)<>${OWNER_EMAIL} RETURNING id`;
+    if (user.id === target.id) await endSession(req, res, sql).catch(() => {});
+    if (!deps) await logAudit({ actorId: user.id, actorName: user.name, action: 'USER_DSAR_DELETED_ANONYMIZED', entity: 'user', entityId: target.id });
     return rows.length ? {success:true}:{success:false,error:'لا يمكن حذف الحساب المحمي.'};
   }
   if(method==='cancelOrder') {
@@ -384,6 +569,9 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     return true;
   }
   if(method==='trackOrder') {
+    const ip = extractClientIp(req);
+    const gate = await checkRateLimit(sql, { key: `track-order:${ip}`, maxHits: 15, windowSeconds: 900, blockSeconds: 900 });
+    if(!gate.allowed) throw fail(429, 'طلبات تتبع كثيرة متتالية. انتظر قليلًا ثم حاول مجدداً.');
     const number=String(args[0]||'').trim().replace(/^#/,'').toUpperCase(),phone=normalizePhone(String(args[1]||''));
     if(!/^JOE-[A-Z0-9-]{4,80}$/.test(number)||phone.length!==11) throw fail(400,'اكتب رقم الطلب ورقم الهاتف المسجل معًا.');
     const rows=await sql`SELECT * FROM orders WHERE upper(order_number)=${number} AND customer_phone=${phone} LIMIT 1`;
@@ -392,24 +580,136 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
   if(method==='createOrder') {
     const order=args[0];
     if(!order||!Array.isArray(order.items)||!order.items.length||order.items.length>100) throw fail(400,'الطلب غير صالح.');
-    const discount = Number(order.discount || 0);
-    if(!Number.isFinite(order.shipping_fee)||order.shipping_fee<0||!Number.isFinite(order.subtotal)||!Number.isFinite(order.total)||!Number.isFinite(discount)||discount<0||discount>order.subtotal||Math.abs(order.total-(order.subtotal-discount+order.shipping_fee))>0.011) throw fail(400,'إجمالي الطلب غير صالح.');
+    const rawIdempotencyKey = String(order.idempotency_key || req.headers?.['x-idempotency-key'] || '').trim().slice(0, 160);
+    const idempotencyKey = /^[A-Za-z0-9_.:-]{8,160}$/.test(rawIdempotencyKey) ? rawIdempotencyKey : undefined;
+
     if(order.items.some((i:any)=>!i.product?.id||!Number.isInteger(i.quantity)||i.quantity<=0||i.quantity>1000||!Number.isFinite(i.product.price)||i.product.price<=0)) throw fail(400,'كميات أو أسعار الطلب غير صالحة.');
-    const subtotal=order.items.reduce((sum:number,i:any)=>sum+i.product.price*i.quantity,0);
-    if(Math.abs(subtotal-order.subtotal)>0.011) throw fail(400,'راجع إجمالي المنتجات في السلة.');
     const phone=normalizePhone(String(order.customer_phone||''));
     if(phone.length!==11||!order.customer_name?.trim()||!order.address_details?.trim()||!['cod','instapay','vodafone_cash','credit_card','card'].includes(order.payment_method)) throw fail(400,'راجع اسم العميل والهاتف والعنوان وطريقة الدفع.');
+
     let orderSettings: any = null;
     try { orderSettings = store.getStoreSettings ? await store.getStoreSettings() : null; } catch {}
+
+    // Idempotent replay check: never create duplicate orders or double-charge on retries
+    if (idempotencyKey && typeof sql === 'function') {
+      try {
+        const existingRows = await sql`
+          SELECT id, order_number, invoice_number, customer_phone, customer_email, total, payment_method, payment_status
+          FROM orders
+          WHERE idempotency_key = ${idempotencyKey}
+          LIMIT 1;
+        `;
+        const existing = existingRows?.[0];
+        if (existing) {
+          const sameCaller =
+            existing.customer_phone === phone ||
+            (user?.email && existing.customer_email && existing.customer_email.toLowerCase() === user.email.toLowerCase());
+          if (!sameCaller) throw fail(409, 'مفتاح الطلب مكرر لحساب آخر.');
+          const gwActive = shouldRouteOrderToGateway(existing.payment_method, orderSettings);
+          let checkoutUrl: string | undefined;
+          if (gwActive && existing.payment_status !== 'paid') {
+            const txRows = await sql`
+              SELECT checkout_url FROM payment_transactions
+              WHERE upper(order_number) = ${String(existing.order_number).toUpperCase()} AND checkout_url IS NOT NULL
+              ORDER BY created_at DESC LIMIT 1;
+            `.catch(() => []);
+            checkoutUrl = txRows?.[0]?.checkout_url || undefined;
+          }
+          return {
+            success: true,
+            duplicate: true,
+            id: existing.id,
+            order_number: existing.order_number,
+            invoice_number: existing.invoice_number || `INV-${existing.order_number}`,
+            ...(checkoutUrl ? { checkout_url: checkoutUrl } : {})
+          };
+        }
+      } catch (idempErr: any) {
+        if (idempErr?.status) throw idempErr;
+      }
+    }
+
+    // Fetch authoritative DB prices when products table exists; fallback to validated items otherwise (saveOrder also enforces DB price lock)
+    let authoritativeItems = order.items;
+    if (typeof sql === 'function') {
+      try {
+        const productIds = Array.from(new Set(order.items.map((i: any) => String(i.product.id))));
+        const dbProducts = await sql`SELECT id, price, is_active FROM products WHERE id = ANY(${productIds});`;
+        if (Array.isArray(dbProducts) && dbProducts.length > 0) {
+          const priceMap = new Map(dbProducts.map((r: any) => [r.id, r]));
+          authoritativeItems = order.items.map((i: any) => {
+            const dbRow: any = priceMap.get(i.product.id);
+            if (!dbRow || dbRow.is_active === false || Number(dbRow.price) <= 0) {
+              throw fail(400, 'أحد المنتجات غير متاح حالياً.');
+            }
+            const dbPrice = Number(dbRow.price);
+            if (Math.abs(dbPrice - Number(i.product.price)) > 0.011) {
+              throw fail(400, 'تم تحديث سعر أحد المنتجات على السيرفر. حدّث السلة قبل التأكيد.');
+            }
+            return { ...i, product: { ...i.product, price: dbPrice } };
+          });
+        }
+      } catch (priceErr: any) {
+        if (priceErr?.status) throw priceErr;
+      }
+    }
+
+    const subtotal = authoritativeItems.reduce((sum: number, i: any) => sum + Number(i.product.price) * Number(i.quantity), 0);
+    if (!Number.isFinite(order.subtotal) || Math.abs(subtotal - order.subtotal) > 0.011) {
+      throw fail(400, 'راجع إجمالي المنتجات في السلة.');
+    }
+
+    const serverShipping = calculateServerShippingFee({
+      subtotal,
+      governorate: order.governorate,
+      city: order.city,
+      settings: orderSettings
+    });
+    if (!Number.isFinite(order.shipping_fee) || Math.abs(Number(order.shipping_fee) - serverShipping) > 0.011) {
+      throw fail(400, 'قيمة الشحن غير مطابقة لتعريفة السيرفر. حدّث الصفحة وحاول مجدداً.');
+    }
+
+    const couponResult = validateAndComputeCouponDiscount({
+      subtotal,
+      couponCode: order.coupon_code,
+      clientDiscount: Number(order.discount || 0),
+      settings: orderSettings,
+      userId: user?.id,
+      userEmail: user?.email,
+      phone
+    });
+    if (couponResult.error) throw fail(400, couponResult.error);
+
+    const serverDiscount = couponResult.discount;
+    const serverTotal = Math.max(0, subtotal - serverDiscount + serverShipping);
+    if (!Number.isFinite(order.total) || Math.abs(Number(order.total) - serverTotal) > 0.011) {
+      throw fail(400, 'إجمالي الطلب غير مطابق للحساب المعتمد على السيرفر.');
+    }
+
+    const cleanReceipt = sanitizeUploadedImage(order.payment_receipt_url, 1_500_000);
+    if (order.payment_receipt_url && !cleanReceipt) {
+      throw fail(400, 'صيغة أو حجم إيصال الدفع غير صالح (المسموح PNG/JPEG/WebP حتى 1.5 ميجابايت).');
+    }
+
     const isCardMethod = order.payment_method === 'credit_card' || order.payment_method === 'card';
     const gatewayActiveForOrder = shouldRouteOrderToGateway(order.payment_method, orderSettings);
     if (isCardMethod && !gatewayActiveForOrder) {
       throw fail(400, 'الدفع بالبطاقة البنكية أونلاين غير مفعل حالياً في إعدادات بوابة الدفع.');
     }
-    const safeOrderId = String(order.id || `ord-${Date.now()}`);
+    const safeOrderId = String(order.id || `ord-${Date.now()}-${randomBytes(2).toString('hex')}`);
     const safeOrderNumber = String(order.order_number || `JOE-${Math.floor(10000 + Math.random() * 90000)}`);
+    const invoiceNumber = `INV-${safeOrderNumber}`;
     const fullOrder = {
       ...order,
+      items: authoritativeItems,
+      subtotal,
+      discount: serverDiscount,
+      coupon_code: couponResult.couponCode,
+      shipping_fee: serverShipping,
+      total: serverTotal,
+      payment_receipt_url: cleanReceipt,
+      idempotency_key: idempotencyKey,
+      invoice_number: invoiceNumber,
       id: safeOrderId,
       order_number: safeOrderNumber,
       customer_phone: phone,
@@ -419,6 +719,27 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     };
     const saved = await saveOrder(sql, fullOrder);
     if (!saved) return saved;
+
+    // Server-side coupon redemption persistence so customers cannot tamper or fail settings ACL
+    if (couponResult.couponCode && Array.isArray(orderSettings?.coupons) && store.updateStoreSettings) {
+      try {
+        const redeemer = user?.id || user?.email || phone || 'customer';
+        const nextCoupons = orderSettings.coupons.map((cp: any) =>
+          String(cp?.code || '').trim().toUpperCase() === couponResult.couponCode!.toUpperCase()
+            ? { ...cp, used_by: Array.from(new Set([...(Array.isArray(cp.used_by) ? cp.used_by : []), redeemer])) }
+            : cp
+        );
+        await store.updateStoreSettings({ ...orderSettings, coupons: nextCoupons });
+      } catch (couponPersistErr: any) {
+        await recordOperationalAlert(sql, {
+          severity: 'warn',
+          source: 'createOrder.couponRedemption',
+          message: String(couponPersistErr?.message || couponPersistErr),
+          orderNumber: safeOrderNumber
+        });
+      }
+    }
+
     if (gatewayActiveForOrder) {
       let gatewaySession: any;
       try {
@@ -429,6 +750,14 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
         });
       } catch (gwErr: any) {
         await cancelStoredOrder(sql, safeOrderId, 'تعذر تهيئة رابط بوابة الدفع الإلكتروني', 'admin').catch(() => {});
+        await recordOperationalAlert(sql, {
+          severity: 'error',
+          source: 'createOrder.gatewayInit',
+          message: String(gwErr?.message || gwErr),
+          orderNumber: safeOrderNumber,
+          settings: orderSettings,
+          notifyAdmin: true
+        });
         throw fail(502, gwErr?.message || 'تعذر الاتصال ببوابة الدفع الإلكتروني حالياً.');
       }
       try {
@@ -448,11 +777,23 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
             )
           );
         }
-      } catch {}
+      } catch (notifyErr: any) {
+        await recordOperationalAlert(sql, {
+          severity: 'warn',
+          source: 'createOrder.gatewayAdminNotify',
+          message: String(notifyErr?.message || notifyErr),
+          orderNumber: safeOrderNumber
+        });
+      }
       return {
         success: true,
         id: safeOrderId,
         order_number: safeOrderNumber,
+        invoice_number: invoiceNumber,
+        subtotal,
+        discount: serverDiscount,
+        shipping_fee: serverShipping,
+        total: serverTotal,
         payment: {
           provider: gatewaySession.provider,
           mode: gatewaySession.mode,
@@ -464,40 +805,81 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     try {
       const crm = resolveCrmConfig(orderSettings);
       if (crm.configured) {
-        const jobs: Promise<any>[] = [];
+        const payloads: any[] = [];
         const recipient = fullOrder.customer_whatsapp || phone;
         if (crm.shouldAutoSend('order_confirmed') && recipient) {
-          const customerMsg = buildServerOrderWhatsAppMessage('order_confirmed', fullOrder, orderSettings);
-          jobs.push(
-            dispatchWhatsAppViaCrm(sql, {
-              recipient,
-              text: customerMsg,
-              type: 'order_confirmed',
-              orderId: safeOrderId,
-              orderNumber: safeOrderNumber,
-              settings: orderSettings
-            })
-          );
+          payloads.push({
+            recipient,
+            text: buildServerOrderWhatsAppMessage('order_confirmed', fullOrder, orderSettings),
+            type: 'order_confirmed',
+            orderId: safeOrderId,
+            orderNumber: safeOrderNumber
+          });
         }
         if (crm.shouldAutoSend('admin_new_order') && crm.adminAlertRecipients.length) {
           const adminMsg = buildServerOrderWhatsAppMessage('admin_new_order', fullOrder, orderSettings);
           for (const adminPhone of crm.adminAlertRecipients) {
-            jobs.push(
-              dispatchWhatsAppViaCrm(sql, {
-                recipient: adminPhone,
-                text: adminMsg,
-                type: 'admin_new_order',
-                orderId: safeOrderId,
-                orderNumber: safeOrderNumber,
-                settings: orderSettings
-              })
-            );
+            payloads.push({
+              recipient: adminPhone,
+              text: adminMsg,
+              type: 'admin_new_order',
+              orderId: safeOrderId,
+              orderNumber: safeOrderNumber
+            });
           }
         }
-        if (jobs.length) await Promise.allSettled(jobs);
+        if (payloads.length) {
+          const dispatchWithFallback = payloads.map(p =>
+            Promise.race([
+              dispatchWhatsAppViaCrm(sql, { ...p, settings: orderSettings }).then(res => {
+                if (!res?.success) return enqueueBackgroundJob(sql, 'whatsapp_dispatch', p);
+              }),
+              new Promise(resolve => setTimeout(() => resolve('timeout'), 3500)).then(flag => {
+                if (flag === 'timeout') return enqueueBackgroundJob(sql, 'whatsapp_dispatch', p);
+              })
+            ]).catch(() => enqueueBackgroundJob(sql, 'whatsapp_dispatch', p))
+          );
+          await Promise.allSettled(dispatchWithFallback);
+        }
       }
-    } catch {}
-    return saved;
+    } catch (crmErr: any) {
+      await recordOperationalAlert(sql, {
+        severity: 'warn',
+        source: 'createOrder.crmNotify',
+        message: String(crmErr?.message || crmErr),
+        orderNumber: safeOrderNumber
+      });
+    }
+    if (orderSettings?.meta_capi_enabled !== false && !gatewayActiveForOrder) {
+      const serverMeta = requestVisitorMeta(req);
+      await Promise.race([
+        sendMetaConversionEvent({
+          pixelId: orderSettings?.meta_pixel_id,
+          eventName: 'Purchase',
+          eventId: safeOrderNumber,
+          value: serverTotal,
+          orderNumber: safeOrderNumber,
+          phone,
+          email: user?.email || undefined,
+          city: order.city || order.governorate,
+          clientIp: serverMeta.ip_address,
+          userAgent: serverMeta.server_user_agent,
+          contentIds: authoritativeItems.map((it: any) => String(it?.product?.id || '')).filter(Boolean),
+          sourceUrl: resolveRequestOrigin(req)
+        }),
+        new Promise(resolve => setTimeout(resolve, 2000))
+      ]).catch(() => {});
+    }
+    return {
+      success: true,
+      id: safeOrderId,
+      order_number: safeOrderNumber,
+      invoice_number: invoiceNumber,
+      subtotal,
+      discount: serverDiscount,
+      shipping_fee: serverShipping,
+      total: serverTotal
+    };
   }
   if(method==='getCoverOverrides') {
     const rows=await sql`SELECT cover_id,data FROM cover_catalog_overrides`;
@@ -519,14 +901,17 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     const rating = Math.max(1, Math.min(5, Math.round(Number(data.rating) || 5)));
     if (!productId || !authorName || !comment) throw fail(400, 'يرجى كتابة الاسم والتعليق واختيار المنتج.');
     const images = Array.isArray(data.images)
-      ? data.images.filter((img: any) => typeof img === 'string' && img.trim()).slice(0, 3)
+      ? data.images
+          .map((img: any) => sanitizeUploadedImage(img, 1_000_000))
+          .filter((img: string | undefined): img is string => Boolean(img))
+          .slice(0, 3)
       : [];
     return store.submitProductReview({
       product_id: productId,
       product_name_ar: data.product_name_ar ? String(data.product_name_ar).slice(0, 200) : undefined,
       author_name: authorName,
       author_phone: data.author_phone ? String(data.author_phone).trim().slice(0, 30) : undefined,
-      user_id: user?.id || data.user_id || undefined,
+      user_id: user?.id || undefined,
       session_id: data.session_id ? String(data.session_id).slice(0, 100) : undefined,
       rating,
       comment,
@@ -538,24 +923,58 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     if(!productId || typeof productId !== 'string') return [];
     return store.getProductReviews(productId, sessionId, user?.id);
   }
+  if(method==='submitBreachReport') {
+    const payload = args[0] && typeof args[0] === 'object' ? args[0] : {};
+    const email = String(payload.reporter_email || user?.email || '').trim().toLowerCase().slice(0, 160);
+    const description = String(payload.description || '').trim().slice(0, 3000);
+    const incidentType = String(payload.incident_type || 'security_incident').trim().slice(0, 64);
+    const reporterName = String(payload.reporter_name || user?.name || '').trim().slice(0, 120);
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw fail(400, 'يرجى إدخال بريد إلكتروني صحيح للتواصل معك.');
+    if (description.length < 15) throw fail(400, 'يرجى كتابة وصف واضح للبلاغ لا يقل عن 15 حرفاً.');
+    const ip = extractClientIp(req);
+    const gate = await checkRateLimit(sql, { key: `breach-report:${ip}`, maxHits: 5, windowSeconds: 3600, blockSeconds: 3600, increment: true });
+    if (!gate.allowed) throw fail(429, 'تم تجاوز الحد المسموح للبلاغات مؤقتاً. حاول لاحقاً.');
+    const reportId = `BR-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+    const deadlineAt = new Date(Date.now() + 48 * 3600 * 1000).toISOString();
+    await sql`
+      INSERT INTO data_breach_reports (id, reporter_email, reporter_name, incident_type, description, status, report_deadline_at)
+      VALUES (${reportId}, ${email}, ${reporterName || null}, ${incidentType}, ${description}, 'open', ${deadlineAt})
+    `;
+    const alertSettings = store.getStoreSettings ? await store.getStoreSettings().catch(() => null) : null;
+    await recordOperationalAlert(sql, {
+      severity: 'critical',
+      source: 'legal.dataBreachReport',
+      message: `بلاغ خصوصية/خرق بيانات جديد (${incidentType}) من ${email} — مهلة المعالجة 48 ساعة.`,
+      metadata: { reportId, email, incidentType },
+      settings: alertSettings,
+      notifyAdmin: true
+    });
+    return { success: true, id: reportId, report_deadline_at: deadlineAt };
+  }
   if(policies[method]||['trackActivity','syncActiveCart','getPersonalizedRecommendations','getRecentlyViewedProductIds'].includes(method)) {
     if(typeof store[method]!=='function') throw fail(400,'الإجراء غير مدعوم.');
     if(method==='trackActivity'&&args[0]&&typeof args[0]==='object') {
       const serverMeta = requestVisitorMeta(req);
       const clientMeta = args[0].metadata && typeof args[0].metadata === 'object' ? args[0].metadata : {};
+      const consented = clientMeta.cookie_consent === 'accepted';
       args[0] = {
         ...args[0],
         customerId: user?.id || undefined,
-        metadata: { ...serverMeta, ...clientMeta, ip_address: serverMeta.ip_address || clientMeta.ip_address }
+        metadata: consented
+          ? { ...serverMeta, ...clientMeta, ip_address: serverMeta.ip_address || clientMeta.ip_address }
+          : { ...clientMeta, cookie_consent: 'essential' }
       };
     }
     if(method==='syncActiveCart'&&args[0]&&typeof args[0]==='object') {
       const serverMeta = requestVisitorMeta(req);
       const clientAttr = args[0].attribution && typeof args[0].attribution === 'object' ? args[0].attribution : {};
+      const consented = clientAttr.cookie_consent === 'accepted';
       args[0] = {
         ...args[0],
         customerId: user?.id || undefined,
-        attribution: { ...serverMeta, ...clientAttr, ip_address: serverMeta.ip_address || clientAttr.ip_address }
+        attribution: consented
+          ? { ...serverMeta, ...clientAttr, ip_address: serverMeta.ip_address || clientAttr.ip_address }
+          : { ...clientAttr }
       };
     }
     if(method==='getRecentlyViewedProductIds') {
@@ -624,7 +1043,21 @@ function parsePublicGetRequest(rawUrl: string) {
 }
 
 export default async function handler(req:any,res:any,deps?:any) {
+  const startedAt = Date.now();
   res.setHeader('Cache-Control','no-store');
+  if (typeof applyCors === 'function') applyCors(req, res, 'GET, POST, OPTIONS');
+  if(req.method==='OPTIONS') return res.status(200).end();
+  if ((req.method === 'GET' || req.method === 'POST') && String(req.url || '').includes('cron=jobs')) {
+    const cronSecret = process.env.CRON_SECRET?.trim();
+    const authHeader = String(req.headers?.authorization || '');
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) return res.status(401).json({ error: 'Unauthorized' });
+    const sql = deps?.sql || database();
+    const settings = await (deps?.store?.getStoreSettings ? deps.store.getStoreSettings() : neonDb.getStoreSettings().catch(() => null));
+    const jobStats = await processPendingBackgroundJobs(sql, settings, 30);
+    await sql`DELETE FROM password_reset_tokens WHERE expires_at < NOW() - INTERVAL '7 days';`.catch(() => {});
+    await sql`DELETE FROM security_rate_limits WHERE window_start < NOW() - INTERVAL '7 days' AND (blocked_until IS NULL OR blocked_until < NOW());`.catch(() => {});
+    return res.status(200).json({ ok: true, timestamp: new Date().toISOString(), jobs: jobStats });
+  }
   if(!sameOrigin(req)) return res.status(403).json({error:'الطلب يجب أن يأتي من المتجر نفسه.'});
   if(req.method==='GET') {
     const parsed=parsePublicGetRequest(req.url);
@@ -632,6 +1065,9 @@ export default async function handler(req:any,res:any,deps?:any) {
     try {
       // Public GET endpoints never inspect session cookies or return privileged fields.
       const result=await execute(req,res,parsed,{...(deps||{}),user:null});
+      const elapsed = Date.now() - startedAt;
+      res.setHeader('X-Response-Time', `${elapsed}ms`);
+      if (elapsed > 2000) console.warn(JSON.stringify({ ts: new Date().toISOString(), level: 'warn', event: 'slow_get', method: parsed.method, elapsedMs: elapsed }));
       const cacheable=parsed.method==='getProducts'
         ? Boolean(result&&typeof result.total==='number'&&result.total>0)
         : Boolean(result&&typeof result==='object');
@@ -647,7 +1083,11 @@ export default async function handler(req:any,res:any,deps?:any) {
   try {
     const body=typeof req.body==='string'?JSON.parse(req.body):req.body;
     if(JSON.stringify(body).length>3_000_000) return res.status(413).json({error:'حجم الطلب أكبر من المسموح.'});
-    return res.status(200).json({result:(await execute(req,res,body,deps))??null});
+    const out = (await execute(req,res,body,deps))??null;
+    const elapsed = Date.now() - startedAt;
+    res.setHeader('X-Response-Time', `${elapsed}ms`);
+    if (elapsed > 2000) console.warn(JSON.stringify({ ts: new Date().toISOString(), level: 'warn', event: 'slow_post', method: body?.method, elapsedMs: elapsed }));
+    return res.status(200).json({result: out});
   } catch(error:any) {
     console.error('[store]',error.status||500,error.code||error.message?.slice(0,100));
     return res.status(error.status||500).json({error:error.status?error.message:'تعذر تنفيذ الطلب في الخادم. حاول مرة أخرى.',code:error.status?error.code:undefined});

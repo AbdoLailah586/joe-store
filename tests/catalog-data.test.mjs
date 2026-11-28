@@ -23,7 +23,7 @@ function compile(relative, mocks, transform = value => value) {
   return module.exports;
 }
 const deliveryHelpers = compile('src/utils/deliveryAddress.ts', {});
-const { neonDb } = compile('server/store.ts', { './orderWrites.js': {}, './whatsappCrm.js': {}, './paymentGateway.js': {}, '@neondatabase/serverless': { neon: () => sql } },
+const { neonDb } = compile('server/store.ts', { './orderWrites.js': {}, './whatsappCrm.js': {}, './paymentGateway.js': {}, './monitoring.js': { fetchWithTimeout: fetch, logStructured() {}, recordOperationalAlert: async () => {} }, '@neondatabase/serverless': { neon: () => sql } },
   source => source.replace(/const DB_URL\s*=[\s\S]*?const sql = neon\(DB_URL\);/, 'const sql = neon("mock://catalog");'));
 const row = (id = 'prod-pos-0', details = {}) => ({ id, name_ar: 'صنف', name_en: 'Item', category: 'audio',
   brand: 'Brand', price: '0', cost_price: '0', stock_quantity: 0, old_price: null,
@@ -137,8 +137,8 @@ test('full updates retain zero columns and JSONB metadata while replacing public
 const icons = new Proxy({}, { get: () => props => React.createElement('svg', { className: props.className }) });
 const noop = () => {};
 const placeholderModules = Object.fromEntries([
-  '../../components/ExcelImportModal', '../../utils/excelParser', '../../utils/whatsappService', '../../services/neonDb',
-  './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab', './GuestVisitorsTab', './AdminShell',
+  '../../components/ExcelImportModal', '../../components/InvoiceModal', '../../utils/excelParser', '../../utils/whatsappService', '../../services/neonDb',
+  '../../utils/fileValidation', './InventoryTab', './CustomerCrmTab', './EmailTemplatesTab', './UsersTab', './GuestVisitorsTab', './AdminShell',
   './WhatsAppCrmAdminSection', './PaymentGatewaySettingsCard', './MarketingAdToolsCard', './PolicyPagesEditorCard',
   './SecurityPanel', './FulfillmentPanel', './SupportPanel', './SupplierQuotesPanel', './OverviewPanel', './ReviewsModerationPanel', '../../utils/detailModels', '../../utils/imageUrl'
 ].map(id => [id, new Proxy({}, { get: () => noop })]));
@@ -183,6 +183,7 @@ test('admin authorization guard is a top-level return after every React hook', (
 test('opening order tracking does not reveal the first database order before a search', () => {
   const { OrderTracking } = compile('src/pages/OrderTracking.tsx', {
     '../components/DetailsDialog': { useDetails: () => ({openDetails:noop,closeDetails:noop}) },
+    '../components/InvoiceModal': { InvoiceModal: () => null },
     '../utils/detailModels': {orderDetail:noop},
     'lucide-react': new Proxy({}, { get: (_, key) => key === '__esModule' ? true : () => React.createElement('svg') }),
     '../context/StoreContext': { useStore: () => ({ orders: [{ id: 'PRIVATE-42', order_number: 'PRIVATE-42', customer_name: 'Private Customer' }], currentOrder: null, getOrderById: () => undefined, settings: {}, navigate() {} }) },

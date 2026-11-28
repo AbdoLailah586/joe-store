@@ -28,6 +28,7 @@ import {
 import { useStore } from "../context/StoreContext";
 import { useLanguage } from "../context/LanguageContext";
 import { ProductCard } from "../components/ProductCard";
+import { ProductGridSkeleton } from "../components/Skeletons";
 import { CategoryKey, Product, HeroSlide } from "../types";
 import { neonDb } from "../services/neonDb";
 import { SpotlightCard } from "../components/motion/SpotlightCard";
@@ -121,7 +122,7 @@ const defaultHeroSlides: HeroSlide[] = [
 ];
 
 export const Home: React.FC = () => {
-  const { products: allProducts, navigate, settings, sessionId, recentlyViewedIds } = useStore();
+  const { products: allProducts, isCatalogLoading, navigate, settings, sessionId, recentlyViewedIds } = useStore();
   const { language, isRTL, t } = useLanguage();
   const ar = language === "ar";
   const { openDetails } = useDetails();
@@ -447,6 +448,9 @@ export const Home: React.FC = () => {
                       <img
                         src={slide.image}
                         alt={ar ? slide.title_ar : slide.title_en}
+                        loading={idx === 0 ? "eager" : "lazy"}
+                        fetchPriority={isActive ? "high" : "auto"}
+                        decoding="async"
                         onError={(e) => {
                           e.currentTarget.onerror = null;
                           e.currentTarget.src = "/product-placeholder.svg";
@@ -526,6 +530,9 @@ export const Home: React.FC = () => {
                           <img
                             src={slide.image}
                             alt={ar ? slide.title_ar : slide.title_en}
+                            loading={idx === 0 ? "eager" : "lazy"}
+                            fetchPriority={isActive ? "high" : "auto"}
+                            decoding="async"
                             onError={(e) => {
                               e.currentTarget.onerror = null;
                               e.currentTarget.src = "/product-placeholder.svg";
@@ -970,12 +977,16 @@ export const Home: React.FC = () => {
         </div>
 
         {/* Guaranteed 2 products per row on mobile (grid-cols-2) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
-          {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-        {!featured.length && (
+        {isCatalogLoading && featured.length === 0 ? (
+          <ProductGridSkeleton count={8} />
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+            {featured.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+        {!isCatalogLoading && !featured.length && (
           <p className="joe-empty-note">
             {ar ? "بنجهّز لك التشكيلة…" : "Getting the collection ready…"}
           </p>

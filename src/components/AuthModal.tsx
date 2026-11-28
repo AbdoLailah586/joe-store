@@ -37,14 +37,19 @@ export const AuthModal: React.FC = () => {
     completeSecondFactor,
     sendOtp,
     verifyOtpAndRegister,
+    requestPasswordReset,
+    completePasswordReset,
+    openAuthModal,
     redirectAfterLogin
   } = useAuth();
 
   const { navigate } = useStore();
   const { t, isRTL } = useLanguage();
 
-  // Mode: 'login' | 'register' | 'otp_verify'
-  const [mode, setMode] = useState<'login' | 'register' | 'otp_verify'>('login');
+  // Mode: 'login' | 'register' | 'otp_verify' | 'forgot' | 'reset'
+  const [mode, setMode] = useState<'login' | 'register' | 'otp_verify' | 'forgot' | 'reset'>('login');
+  const [resetToken, setResetToken] = useState('');
+  const [resetNewPassword, setResetNewPassword] = useState('');
 
   // Registration & Login inputs
   const [name, setName] = useState('');
@@ -65,6 +70,9 @@ export const AuthModal: React.FC = () => {
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
+  const [parentalConfirmed, setParentalConfirmed] = useState(false);
+  const [marketingOptIn, setMarketingOptIn] = useState(false);
+  const [aiTrainingOptIn, setAiTrainingOptIn] = useState(false);
   const acceptedPoliciesRef = useRef(false);
   acceptedPoliciesRef.current = acceptedPolicies;
   const [googleStatus, setGoogleStatus] = useState<'loading' | 'ready' | 'error'>('loading');
@@ -79,6 +87,19 @@ export const AuthModal: React.FC = () => {
   const googleBtnContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sp = new URLSearchParams(window.location.search);
+    const tok = sp.get('resetToken');
+    const em = sp.get('email');
+    if (tok && /^[a-f0-9]{64}$/.test(tok)) {
+      setResetToken(tok);
+      if (em) setEmail(em);
+      setMode('reset');
+      openAuthModal('أدخل كلمة المرور الجديدة لإكمال إعادة التعيين.');
+    }
+  }, []);
+
+  useEffect(() => {
     if (!isAuthModalOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -91,7 +112,7 @@ export const AuthModal: React.FC = () => {
 
   // Render the official sign-in button when Identity Services is ready.
   useEffect(() => {
-    if (!isAuthModalOpen || mode === 'otp_verify') return;
+    if (!isAuthModalOpen || mode === 'otp_verify' || mode === 'forgot' || mode === 'reset') return;
     let cancelled = false;
     setGoogleStatus('loading');
     setGoogleError('');
@@ -164,6 +185,10 @@ export const AuthModal: React.FC = () => {
     setErrorMsg('');
     if (!acceptedPolicies) {
       setErrorMsg('يجب الموافقة على جميع شروط الاستخدام وسياسة الخصوصية وملفات تعريف الارتباط (Cookies) للمتابعة.');
+      return;
+    }
+    if (mode === 'register' && !parentalConfirmed) {
+      setErrorMsg('يرجى الإقرار بأن عمرك 18 عاماً فأكثر أو الحصول على موافقة ولي الأمر لإنشاء الحساب.');
       return;
     }
     setLoading(true);
@@ -259,7 +284,10 @@ export const AuthModal: React.FC = () => {
         code: fullCode,
         name: name.trim(),
         phone: phone.trim(),
-        password: password
+        password: password,
+        marketing_opt_in: marketingOptIn,
+        ai_training_opt_in: aiTrainingOptIn,
+        parental_consent: parentalConfirmed
       });
 
       if (res.success) {
@@ -305,7 +333,12 @@ export const AuthModal: React.FC = () => {
 
   if(pendingSecondFactor) return <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"><form className="bg-white text-slate-900 rounded-3xl p-7 space-y-5 w-full max-w-md" onSubmit={async e=>{e.preventDefault();setLoading(true);setErrorMsg('');try{await completeSecondFactor(totpCode);if(redirectAfterLogin)navigate(redirectAfterLogin as any)}catch(err:any){setErrorMsg(err.message||'تعذر التحقق.')}finally{setLoading(false)}}}><h2 className="text-xl font-black">كود المصادقة الثنائية</h2><p className="text-sm text-slate-600">أدخل كود تطبيق المصادقة لإكمال تسجيل الدخول.</p><input aria-label="كود المصادقة الثنائية" className="w-full border rounded-xl p-3 text-center text-xl tracking-widest" inputMode="numeric" autoComplete="one-time-code" autoFocus maxLength={6} value={totpCode} onChange={e=>setTotpCode(e.target.value.replace(/\D/g,'').slice(0,6))}/>{errorMsg&&<p role="alert" className="text-rose-700 text-sm">{errorMsg}</p>}<button disabled={loading||totpCode.length!==6} className="w-full bg-amber-500 font-bold rounded-xl p-3 disabled:opacity-50">{loading?'جارٍ التحقق…':'تأكيد الدخول'}</button><button type="button" onClick={closeAuthModal} className="w-full text-sm text-slate-600">إغلاق</button></form></div>;
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label="بوابة تسجيل الدخول"
+    >
       <div
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-md bg-white border border-amber-500/40 rounded-3xl shadow-2xl p-6 sm:p-8 text-slate-900 font-cairo space-y-5 animate-in fade-in zoom-in-95 duration-200"
@@ -322,7 +355,77 @@ export const AuthModal: React.FC = () => {
         {/* ============================================================== */}
         {/* SCREEN 1 & 2: LOGIN OR REGISTRATION FORM                      */}
         {/* ============================================================== */}
-        {mode !== 'otp_verify' ? (
+        {mode === 'forgot' ? (
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setErrorMsg(''); setSuccessMsg(''); setLoading(true);
+              try {
+                const res = await requestPasswordReset(email.trim());
+                if (res.success) setSuccessMsg(res.message || 'تم إرسال رابط استعادة كلمة المرور (صالح لمدة 30 دقيقة).');
+                else setErrorMsg(res.error || 'تعذر إرسال رابط الاستعادة.');
+              } catch (err: any) {
+                setErrorMsg(err?.message || 'تعذر إرسال رابط الاستعادة.');
+              } finally { setLoading(false); }
+            }}
+            className="space-y-4 pt-2"
+          >
+            <h2 className="text-lg font-black text-slate-900 text-center">استعادة كلمة المرور</h2>
+            <p className="text-xs text-slate-600 text-center">أدخل بريدك المسجل وسنرسل لك رابطاً آمناً ينتهي خلال 30 دقيقة.</p>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@gmail.com"
+              className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 font-outfit text-xs"
+            />
+            {successMsg && <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-2.5">{successMsg}</p>}
+            {errorMsg && <p role="alert" className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl p-2.5">{errorMsg}</p>}
+            <button type="submit" disabled={loading} className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs">
+              {loading ? 'جاري الإرسال...' : 'إرسال رابط إعادة التعيين'}
+            </button>
+            <button type="button" onClick={() => { setMode('login'); setErrorMsg(''); setSuccessMsg(''); }} className="w-full text-xs text-slate-600 hover:underline">
+              العودة لتسجيل الدخول
+            </button>
+          </form>
+        ) : mode === 'reset' ? (
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setErrorMsg(''); setSuccessMsg(''); setLoading(true);
+              try {
+                const res = await completePasswordReset(resetToken, resetNewPassword);
+                if (res.success) {
+                  setSuccessMsg(res.message || 'تم تحديث كلمة المرور بنجاح.');
+                  setResetToken(''); setResetNewPassword('');
+                  window.history.replaceState({}, '', '/');
+                  setTimeout(() => setMode('login'), 1200);
+                } else {
+                  setErrorMsg(res.error || 'تعذر إعادة تعيين كلمة المرور.');
+                }
+              } catch (err: any) {
+                setErrorMsg(err?.message || 'تعذر إعادة تعيين كلمة المرور.');
+              } finally { setLoading(false); }
+            }}
+            className="space-y-4 pt-2"
+          >
+            <h2 className="text-lg font-black text-slate-900 text-center">تعيين كلمة مرور جديدة</h2>
+            <input
+              type="password"
+              required
+              value={resetNewPassword}
+              onChange={(e) => setResetNewPassword(e.target.value)}
+              placeholder="8 أحرف على الأقل (حروف وأرقام)"
+              className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 font-outfit text-xs"
+            />
+            {successMsg && <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-2.5">{successMsg}</p>}
+            {errorMsg && <p role="alert" className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl p-2.5">{errorMsg}</p>}
+            <button type="submit" disabled={loading} className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs">
+              {loading ? 'جاري الحفظ...' : 'حفظ كلمة المرور الجديدة'}
+            </button>
+          </form>
+        ) : mode !== 'otp_verify' ? (
           <>
             {/* Header */}
             <div className="text-center space-y-2">
@@ -446,6 +549,17 @@ export const AuthModal: React.FC = () => {
                   />
                   <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                 </div>
+                {mode === 'login' && (
+                  <div className="mt-1.5 text-left">
+                    <button
+                      type="button"
+                      onClick={() => { setMode('forgot'); setErrorMsg(''); setSuccessMsg(''); }}
+                      className="text-[11px] font-bold text-amber-700 hover:underline"
+                    >
+                      نسيت كلمة المرور؟
+                    </button>
+                  </div>
+                )}
               </div>
 
               {mode === 'login' && totpRequired && (
@@ -513,6 +627,41 @@ export const AuthModal: React.FC = () => {
                   </span>
                 </label>
               </div>
+
+              {mode === 'register' && (
+                <div className="space-y-2 p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-700">
+                  <label className="flex items-start gap-2 cursor-pointer font-semibold text-slate-900">
+                    <input
+                      type="checkbox"
+                      checked={parentalConfirmed}
+                      onChange={e => {
+                        setParentalConfirmed(e.target.checked);
+                        if (e.target.checked && errorMsg.includes('18 عاماً')) setErrorMsg('');
+                      }}
+                      className="mt-0.5 w-4 h-4 accent-amber-600 shrink-0"
+                    />
+                    <span>أقر أن عمري 18 عاماً فأكثر أو لدي موافقة ولي الأمر القانونية لاستخدام المتجر *</span>
+                  </label>
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={marketingOptIn}
+                      onChange={e => setMarketingOptIn(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 accent-amber-600 shrink-0"
+                    />
+                    <span>(اختياري) أوافق على استلام العروض والتخفيضات عبر واتساب والبريد — يمكنك الإلغاء بضغطة واحدة.</span>
+                  </label>
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={aiTrainingOptIn}
+                      onChange={e => setAiTrainingOptIn(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 accent-amber-600 shrink-0"
+                    />
+                    <span>(اختياري) أوافق على استخدام تفضيلاتي لتحسين توصيات المنتجات بالذكاء الاصطناعي.</span>
+                  </label>
+                </div>
+              )}
 
               {errorMsg && (
                 <p className="text-xs text-rose-700 font-semibold bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20">

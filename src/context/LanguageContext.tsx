@@ -40,6 +40,8 @@ export const translations: Translations = {
   car_accessories: { ar: 'مستلزمات السيارات', en: 'Car Accessories' },
   speakers: { ar: 'مكبرات صوت سبيكر', en: 'Speakers' },
   adapters: { ar: 'محولات ووصلات', en: 'Adapters & Hubs' },
+  printers: { ar: 'طابعات محمولة وملحقاتها', en: 'Portable Printers' },
+  gaming: { ar: 'أجهزة وإكسسوارات الألعاب', en: 'Gaming Consoles & Gear' },
   accessories: { ar: 'إكسسوارات متنوعة', en: 'Accessories' },
 
   // Navigation

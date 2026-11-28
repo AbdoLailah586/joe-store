@@ -4,7 +4,7 @@ export const config = {
 
 export default function middleware(request) {
   const userAgent = request.headers.get('user-agent') || '';
-  const isCrawler = /whatsapp|facebookexternalhit|facebot|instagram|tiktok|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|applebot|bingbot|pinterest|google-structured-data-testing-tool/i.test(userAgent);
+  const isCrawler = /whatsapp|facebookexternalhit|facebot|instagram|tiktok|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|applebot|bingbot|pinterest|googlebot|google-inspectiontool|adsbot-google|storebot-google|yandex|google-structured-data-testing-tool/i.test(userAgent);
 
   if (isCrawler) {
     const url = new URL(request.url);

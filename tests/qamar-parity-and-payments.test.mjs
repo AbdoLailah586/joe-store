@@ -30,8 +30,9 @@ function compile(file, mocks = {}) {
 const address = compile('src/utils/deliveryAddress.ts');
 const governorates = compile('src/data/governorates.ts');
 const egyptLocation = compile('src/utils/egyptLocation.ts', { '../data/governorates': governorates });
-const whatsappCrm = compile('server/whatsappCrm.ts', { '../src/utils/deliveryAddress.js': address });
-const paymentGateway = compile('server/paymentGateway.ts', { './whatsappCrm.js': whatsappCrm });
+const monMock = { fetchWithTimeout: fetch, logStructured() {}, recordOperationalAlert: async () => {} };
+const whatsappCrm = compile('server/whatsappCrm.ts', { '../src/utils/deliveryAddress.js': address, './monitoring.js': monMock });
+const paymentGateway = compile('server/paymentGateway.ts', { './whatsappCrm.js': whatsappCrm, './monitoring.js': monMock, './metaCapi.js': { sendMetaConversionEvent: async () => ({ sent: false }) } });
 const visitorAttribution = compile('src/utils/visitorAttribution.ts');
 const adLinks = compile('src/utils/adLinks.ts');
 const metaPixel = compile('src/utils/metaPixel.ts');
@@ -200,6 +201,12 @@ test('checkout API blocks disabled card method, routes enabled gateway orders, a
     '../server/store.js': { neonDb: {}, mapRowToOrder: r => r, logAudit: async () => {} },
     '../server/whatsappCrm.js': whatsappCrm,
     '../server/paymentGateway.js': paymentGateway,
+    '../server/monitoring.js': monMock,
+    '../server/pricing.js': { sanitizeUploadedImage: x => x, calculateServerShippingFee: ({ subtotal }) => (subtotal >= 2500 ? 0 : 35), validateAndComputeCouponDiscount: () => ({ discount: 0 }) },
+    '../server/rateLimit.js': { extractClientIp: () => '127.0.0.1', checkRateLimit: async () => ({ allowed: true, remaining: 5, retryAfterSeconds: 0 }), clearRateLimit: async () => {} },
+    '../server/jobs.js': { enqueueBackgroundJob: async () => ({ queued: true }) },
+    '../server/metaCapi.js': { sendMetaConversionEvent: async () => ({ sent: false }) },
+    '../lib/mailer.js': { sendTransactionalEmail: async () => ({ sent: true }) },
     '../lib/access.js': access,
     '../src/utils/deliveryAddress.js': address,
     '../server/orderWrites.js': { saveOrder: async () => true, cancelOrder: async () => true },
@@ -339,6 +346,7 @@ test('Liquid Glass Floating Capsule Dock and Policy Pages render cleanly', () =>
   const iconsMod = new Proxy({}, { get: (_, name) => name === '__esModule' ? true : () => React.createElement('svg') });
   const { PolicyPage } = compile('src/pages/PolicyPage.tsx', {
     'lucide-react': iconsMod,
+    '../services/neonDb': { neonDb: {} },
     '../context/StoreContext': {
       useStore: () => ({
         navigate: () => {},
@@ -390,6 +398,12 @@ test('WhatsApp per-event checkboxes default to disabled and gate createOrder & u
     '../server/store.js': { neonDb: {}, mapRowToOrder: r => r, logAudit: async () => {} },
     '../server/whatsappCrm.js': fakeCrm,
     '../server/paymentGateway.js': paymentGateway,
+    '../server/monitoring.js': monMock,
+    '../server/pricing.js': { sanitizeUploadedImage: x => x, calculateServerShippingFee: ({ subtotal }) => (subtotal >= 2500 ? 0 : 35), validateAndComputeCouponDiscount: () => ({ discount: 0 }) },
+    '../server/rateLimit.js': { extractClientIp: () => '127.0.0.1', checkRateLimit: async () => ({ allowed: true, remaining: 5, retryAfterSeconds: 0 }), clearRateLimit: async () => {} },
+    '../server/jobs.js': { enqueueBackgroundJob: async () => ({ queued: true }) },
+    '../server/metaCapi.js': { sendMetaConversionEvent: async () => ({ sent: false }) },
+    '../lib/mailer.js': { sendTransactionalEmail: async () => ({ sent: true }) },
     '../lib/access.js': access,
     '../src/utils/deliveryAddress.js': address,
     '../server/orderWrites.js': { saveOrder: async () => true, cancelOrder: async () => true },

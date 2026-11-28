@@ -47,7 +47,12 @@ export const CartDrawer: React.FC = () => {
       />
 
       <div className={`fixed inset-y-0 ${isRTL ? 'left-0' : 'right-0'} max-w-full flex pl-0`}>
-        <div className="w-screen max-w-md bg-white border-r border-amber-500/20 shadow-2xl flex flex-col justify-between text-slate-900">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('cart')}
+          className="w-screen max-w-md bg-white dark:bg-slate-900 border-r border-amber-500/20 shadow-2xl flex flex-col justify-between text-slate-900 dark:text-slate-100"
+        >
 
           {/* Header */}
           <div className="p-4 bg-white border-b border-slate-200 flex items-center justify-between">
@@ -121,6 +126,8 @@ export const CartDrawer: React.FC = () => {
                   <img
                     src={normalizeProductImage(item.product.images[0])}
                     alt={item.product.name_ar}
+                    loading="lazy"
+                    decoding="async"
                     className="w-16 h-16 object-cover rounded-xl bg-slate-100 flex-shrink-0 border border-slate-200"
                   />
                   <div className="flex-1 min-w-0">

@@ -1,5 +1,6 @@
 import { formatDeliveryAddress } from '../../utils/deliveryAddress';
 import { normalizeProductImage, normalizeProductImages, compressImageFile } from '../../utils/imageUrl';
+import { validateImageFile } from '../../utils/fileValidation';
 import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { AdminShell, AdminSection, initialAdminSection } from './AdminShell';
 const AdminTools = lazy(() => import('./AdminTools').then(m => ({ default: m.AdminTools })));
@@ -47,8 +48,29 @@ import {
   Sparkles,
   Tag,
   Gift,
-  FolderPlus
+  FolderPlus,
+  Eye,
+  EyeOff
 } from 'lucide-react';
+
+function sanitizeAdminSocialLinks(input: any): Product['social_links'] | undefined {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return undefined;
+  const out: NonNullable<Product['social_links']> = {};
+  for (const key of ['facebook', 'tiktok', 'instagram'] as const) {
+    const raw = typeof input[key] === 'string' ? input[key].trim() : '';
+    if (!raw) continue;
+    const withScheme = /^(https?:)?\/\//i.test(raw)
+      ? (raw.startsWith('//') ? `https:${raw}` : raw)
+      : /^(?:www\.)?(?:facebook\.com|fb\.watch|m\.facebook\.com|tiktok\.com|vm\.tiktok\.com|vt\.tiktok\.com|instagram\.com|instagr\.am)\//i.test(raw)
+        ? `https://${raw}`
+        : raw;
+    try {
+      const u = new URL(withScheme);
+      if (u.protocol === 'http:' || u.protocol === 'https:') out[key] = u.toString();
+    } catch {}
+  }
+  return Object.keys(out).length ? out : undefined;
+}
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
@@ -66,6 +88,7 @@ import { WhatsAppCrmAdminSection } from './WhatsAppCrmAdminSection';
 import { PaymentGatewaySettingsCard } from './PaymentGatewaySettingsCard';
 import { MarketingAdToolsCard } from './MarketingAdToolsCard';
 import { PolicyPagesEditorCard } from './PolicyPagesEditorCard';
+import { InvoiceModal } from '../../components/InvoiceModal';
 import { neonDb } from '../../services/neonDb';
 import { SecurityPanel } from './SecurityPanel';
 import { FulfillmentPanel } from './FulfillmentPanel';
@@ -83,6 +106,7 @@ export const AdminDashboard: React.FC = () => {
     updateProduct,
     deleteProduct,
     duplicateProduct,
+    toggleProductVisibility,
     orders,
     cancelOrder,
     updateOrderStatus,
@@ -140,11 +164,57 @@ export const AdminDashboard: React.FC = () => {
 
   // Filter states for orders & products
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
+  const [orderSearchInput, setOrderSearchInput] = useState<string>('');
+  const [orderSearchDebounced, setOrderSearchDebounced] = useState<string>('');
+  const [ordersPage, setOrdersPage] = useState<number>(1);
+  const [paginatedOrders, setPaginatedOrders] = useState<Order[]>([]);
+  const [ordersTotal, setOrdersTotal] = useState<number>(0);
+  const [ordersTotalPages, setOrdersTotalPages] = useState<number>(1);
+  const [ordersLoadingPage, setOrdersLoadingPage] = useState<boolean>(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setOrderSearchDebounced(orderSearchInput.trim());
+      setOrdersPage(1);
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [orderSearchInput]);
+
+  useEffect(() => {
+    setOrdersPage(1);
+  }, [orderStatusFilter]);
+
+  useEffect(() => {
+    if (activeTab !== 'orders' || !canAccessSection('orders')) return;
+    let cancelled = false;
+    setOrdersLoadingPage(true);
+    neonDb
+      .getOrdersPaginated({
+        page: ordersPage,
+        limit: 50,
+        status: orderStatusFilter,
+        search: orderSearchDebounced
+      })
+      .then((res) => {
+        if (cancelled) return;
+        setPaginatedOrders(res.orders || []);
+        setOrdersTotal(Number(res.total || 0));
+        setOrdersTotalPages(Math.max(1, Number(res.pages || 1)));
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setOrdersLoadingPage(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTab, ordersPage, orderStatusFilter, orderSearchDebounced, orders.length]);
   const [productSearch, setProductSearch] = useState('');
   const [productCatFilter, setProductCatFilter] = useState<string>('all');
 
   // Manual WhatsApp Send Modal
   const [whatsappModalOrder, setWhatsappModalOrder] = useState<Order | null>(null);
+  const [invoiceModalOrder, setInvoiceModalOrder] = useState<Order | null>(null);
   const [customMsgType, setCustomMsgType] = useState<'order_confirmed' | 'payment_verified' | 'shipped' | 'out_for_delivery' | 'delivered' | 'review_request'>('shipped');
   const [courierInput, setCourierInput] = useState('مندوب جو ستور');
   const [trackingInput, setTrackingInput] = useState('');
@@ -301,17 +371,23 @@ export const AdminDashboard: React.FC = () => {
     updateSettings({ disabled_cities: updated });
   };
 
-  // Helper for reading files directly from laptop to Base64 Data URL
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64Url: string) => void) => {
+  // Helper for reading files directly from laptop to Base64 Data URL with type & size guards
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, callback: (base64Url: string) => void) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          callback(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    const check = validateImageFile(file);
+    if (!check.valid) {
+      alert(check.error);
+      e.target.value = '';
+      return;
+    }
+    try {
+      const compressed = await compressImageFile(file, 1400, 0.84);
+      callback(compressed);
+    } catch {
+      alert('تعذر قراءة أو ضغط ملف الصورة.');
+    } finally {
+      e.target.value = '';
     }
   };
 
@@ -459,7 +535,9 @@ export const AdminDashboard: React.FC = () => {
     stock: 5,
     warranty_months: 6,
     is_featured: false,
-    images: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],
+    is_active: true,
+    social_links: { facebook: '', tiktok: '', instagram: '' },
+    images: ['/product-placeholder.svg'],
     description_ar: '',
   });
 
@@ -481,7 +559,9 @@ export const AdminDashboard: React.FC = () => {
       stock: 5,
       warranty_months: 6,
       is_featured: false,
-      images: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],
+      is_active: true,
+      social_links: { facebook: '', tiktok: '', instagram: '' },
+      images: ['/product-placeholder.svg'],
       description_ar: 'جهاز كسر زيرو خالي من الخدوش مع ضمان معتمد من متجر جو ستور.',
     });
     setIsAddProductModalOpen(true);
@@ -493,6 +573,12 @@ export const AdminDashboard: React.FC = () => {
     setProdForm({
       ...prod,
       is_featured: !!prod.is_featured,
+      is_active: prod.is_active !== false,
+      social_links: {
+        facebook: prod.social_links?.facebook || '',
+        tiktok: prod.social_links?.tiktok || '',
+        instagram: prod.social_links?.instagram || '',
+      },
       images: normalizeProductImages(prod.images)
     });
     setSpecsInput(JSON.stringify(prod.specs || {}, null, 2));
@@ -507,6 +593,11 @@ export const AdminDashboard: React.FC = () => {
       const newImages: string[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
+        const check = validateImageFile(file);
+        if (!check.valid) {
+          setProductSaveError(check.error || 'ملف صورة غير مدعوم.');
+          continue;
+        }
         const compressed = await compressImageFile(file, 1200, 0.85);
         if (compressed) {
           newImages.push(compressed);
@@ -563,12 +654,16 @@ export const AdminDashboard: React.FC = () => {
       return;
     }
     const cleanedImages = normalizeProductImages(prodForm.images);
+    const cleanedSocial = sanitizeAdminSocialLinks(prodForm.social_links);
+    const isActive = prodForm.is_active !== false;
     const saved = { ...prodForm,
       images: cleanedImages,
       recorded_images: cleanedImages,
       specs, quick_specs: specs,
+      social_links: cleanedSocial ?? {},
+      is_active: isActive,
       is_featured: !!prodForm.is_featured,
-      in_stock: (prodForm.stock ?? 0) > 0 && (prodForm.price ?? 0) > 0 && prodForm.is_active !== false };
+      in_stock: (prodForm.stock ?? 0) > 0 && (prodForm.price ?? 0) > 0 && isActive };
 
     if (editingProduct) {
       updateProduct(editingProduct.id, saved);
@@ -604,11 +699,16 @@ export const AdminDashboard: React.FC = () => {
   const [wishlistGap, setWishlistGap] = useState<{ product_id: string; name_ar: string; interest_count: number }[]>([]);
   useEffect(() => { neonDb.getWishlistGap().then(setWishlistGap).catch(() => {}); }, []);
 
-  // Filtered orders list
-  const filteredOrders = orders.filter(o => {
+  // Filtered orders list (prefers server-paginated results when loaded)
+  const fallbackFilteredOrders = orders.filter(o => {
     if (orderStatusFilter !== 'all' && o.order_status !== orderStatusFilter) return false;
+    if (orderSearchDebounced) {
+      const q = orderSearchDebounced.toLowerCase();
+      return `${o.order_number} ${o.customer_name} ${o.customer_phone} ${o.customer_email || ''}`.toLowerCase().includes(q);
+    }
     return true;
   });
+  const filteredOrders = paginatedOrders.length > 0 || ordersLoadingPage || ordersTotal > 0 ? paginatedOrders : fallbackFilteredOrders;
 
   // Filtered products list
   const filteredProducts = products.filter(p => {
@@ -770,6 +870,8 @@ export const AdminDashboard: React.FC = () => {
                 {defaultCategoriesList.map((c) => (
                   <option key={c.key} value={c.key}>{c.name_ar}</option>
                 ))}
+                <option value="printers">طابعات محمولة وملحقاتها</option>
+                <option value="gaming">أجهزة وإكسسوارات الألعاب</option>
                 <option value="accessories">إكسسوارات متنوعة</option>
               </select>
             </div>
@@ -830,8 +932,16 @@ export const AdminDashboard: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 text-slate-800">
-                  {filteredProducts.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-100 transition-colors">
+                  {filteredProducts.map((p) => {
+                    const isHidden = p.is_active === false;
+                    const cleanedSocial = sanitizeAdminSocialLinks(p.social_links);
+                    const socialEntries = cleanedSocial
+                      ? (['facebook', 'tiktok', 'instagram'] as const)
+                          .filter(k => Boolean(cleanedSocial[k]))
+                          .map(k => ({ platform: k, url: cleanedSocial[k]! }))
+                      : [];
+                    return (
+                    <tr key={p.id} className={`hover:bg-slate-100 transition-colors ${isHidden ? 'opacity-65 bg-slate-50/70' : ''}`}>
                       <td className="p-3.5 flex items-center gap-3">
                         <img
                           src={p.images[0]}
@@ -839,7 +949,24 @@ export const AdminDashboard: React.FC = () => {
                           className="w-10 h-10 rounded-xl object-cover bg-slate-100 border border-slate-200 flex-shrink-0"
                         />
                         <div>
-                          <button type="button" onClick={() => showProductInfo(p)} className="detail-info-button text-start font-bold text-slate-900 block line-clamp-1">{p.name_ar}</button>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <button type="button" onClick={() => showProductInfo(p)} className="detail-info-button text-start font-bold text-slate-900 block line-clamp-1">{p.name_ar}</button>
+                            {isHidden && (
+                              <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-800 text-[9px] font-bold">مخفي</span>
+                            )}
+                            {socialEntries.map(({ platform, url }) => (
+                              <a
+                                key={platform}
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title={`رابط ${platform}`}
+                                className="inline-flex items-center justify-center px-1.5 py-0.5 rounded bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-[9px] font-bold uppercase font-outfit"
+                              >
+                                {platform === 'facebook' ? 'FB' : platform === 'tiktok' ? 'TT' : 'IG'}
+                              </a>
+                            ))}
+                          </div>
                           <span className="text-[10px] text-slate-600 font-outfit">{p.brand} {p.storage && `• ${p.storage}`}</span>
                         </div>
                       </td>
@@ -880,6 +1007,20 @@ export const AdminDashboard: React.FC = () => {
 
                       <td className="p-3.5">
                         <div className="flex items-center justify-center gap-1.5">
+                          {/* Show / Hide visibility toggle */}
+                          <button
+                            type="button"
+                            onClick={() => toggleProductVisibility(p.id, isHidden)}
+                            className={`p-1.5 rounded-lg transition-colors border ${
+                              !isHidden
+                                ? 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 border-emerald-500/30'
+                                : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 border-amber-500/30'
+                            }`}
+                            title={!isHidden ? 'ظاهر في المتجر (انقر لإخفاء المنتج عن العملاء)' : 'مخفي عن العملاء (انقر لإظهار المنتج)'}
+                          >
+                            {!isHidden ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                          </button>
+
                           {/* Pin / Star to Homepage Default */}
                           <button
                             onClick={() => handleToggleHomepageFeatured(p.id)}
@@ -926,7 +1067,7 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  );})}
                 </tbody>
               </table>
             </div>
@@ -945,12 +1086,12 @@ export const AdminDashboard: React.FC = () => {
         />
       )}
 
-      {/* TAB 4: ORDERS & SALES MANAGER (WhatsApp Automated Status Triggers) */}
+      {/* TAB 4: ORDERS & SALES MANAGER (WhatsApp Automated Status Triggers + Server Pagination) */}
       {activeTab === 'orders' && (
         <div className="space-y-6">
-          {/* Order Status Filter */}
-          <div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-slate-200">
-            <div className="flex items-center gap-2">
+          {/* Order Status Filter & Search */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-4 rounded-2xl bg-white border border-slate-200">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-slate-600 font-bold">تصفية حسب الحالة:</span>
               <div className="flex gap-1 overflow-x-auto text-xs">
                 {['all', 'pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'].map((st) => (
@@ -976,10 +1117,46 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            <span className="text-xs text-slate-600 font-outfit">
-              {filteredOrders.length} طلبات
-            </span>
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-2.5" />
+                <input
+                  type="text"
+                  value={orderSearchInput}
+                  onChange={(e) => setOrderSearchInput(e.target.value)}
+                  placeholder="بحث برقم الطلب أو هاتف العميل..."
+                  className="bg-slate-50 border border-slate-200 rounded-xl pr-8 pl-3 py-1.5 text-xs text-slate-900 w-56 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+              <span className="text-xs text-slate-600 font-outfit">
+                {ordersTotal || filteredOrders.length} طلبات
+              </span>
+            </div>
           </div>
+
+          {ordersTotalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs">
+              <button
+                type="button"
+                disabled={ordersPage <= 1 || ordersLoadingPage}
+                onClick={() => setOrdersPage(p => Math.max(1, p - 1))}
+                className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold disabled:opacity-40"
+              >
+                الصفحة السابقة
+              </button>
+              <span className="font-bold text-slate-700">
+                صفحة {ordersPage} من {ordersTotalPages}
+              </span>
+              <button
+                type="button"
+                disabled={ordersPage >= ordersTotalPages || ordersLoadingPage}
+                onClick={() => setOrdersPage(p => p + 1)}
+                className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold disabled:opacity-40"
+              >
+                الصفحة التالية
+              </button>
+            </div>
+          )}
 
           {/* Orders Cards List */}
           <div className="space-y-4">
@@ -1163,8 +1340,16 @@ export const AdminDashboard: React.FC = () => {
                       )}
                     </div>
 
-                    {/* Direct WhatsApp Message Modal Trigger */}
-                    <div className="flex items-center gap-2">
+                    {/* Direct WhatsApp Message & E-Invoice Modal Triggers */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setInvoiceModalOrder(ord)}
+                        className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-extrabold text-xs flex items-center gap-1.5 transition-all"
+                      >
+                        <span>الفاتورة الإلكترونية (QR)</span>
+                      </button>
+
                       <button
                         onClick={() => {
                           setWhatsappModalOrder(ord);
@@ -1276,6 +1461,54 @@ export const AdminDashboard: React.FC = () => {
                   value={settings.store_address_ar}
                   onChange={(e) => updateSettings({ store_address_ar: e.target.value })}
                   className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-600 mb-1">{language === 'ar' ? 'رقم السجل التجاري (للفواتير الإلكترونية والفوتر):' : 'Commercial Register:'}</label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  value={settings.commercial_register || ''}
+                  onChange={(e) => updateSettings({ commercial_register: e.target.value })}
+                  placeholder="مثال: 123456"
+                  className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-600 mb-1">{language === 'ar' ? 'رقم البطاقة الضريبية (Tax ID):' : 'Tax Registration ID:'}</label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  value={settings.tax_id || ''}
+                  onChange={(e) => updateSettings({ tax_id: e.target.value })}
+                  placeholder="مثال: 123-456-789"
+                  className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-600 mb-1">{language === 'ar' ? 'نسبة ضريبة القيمة المضافة % (0 = بدون تفصيل ضريبي):' : 'VAT Rate (%):'}</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={25}
+                  value={settings.vat_rate ?? 0}
+                  onChange={(e) => updateSettings({ vat_rate: Number(e.target.value) })}
+                  className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 font-outfit"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-600 mb-1">{language === 'ar' ? 'بريد مسؤول حماية البيانات / البلاغات (DPO):' : 'DPO Contact Email:'}</label>
+                <input
+                  type="email"
+                  dir="ltr"
+                  value={settings.dpo_contact_email || ''}
+                  onChange={(e) => updateSettings({ dpo_contact_email: e.target.value })}
+                  placeholder="privacy@joestore.com"
+                  className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 font-mono"
                 />
               </div>
 
@@ -2737,7 +2970,7 @@ export const AdminDashboard: React.FC = () => {
       {/* MODAL 1: ADD / EDIT PRODUCT INTERACTIVE MODAL */}
       {isAddProductModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative w-full max-w-2xl bg-white border border-amber-500/40 rounded-3xl p-6 text-slate-900 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4">
+          <div role="dialog" aria-modal="true" aria-label={editingProduct ? 'تعديل بيانات المنتج' : 'إضافة منتج يدوي جديد'} className="relative w-full max-w-2xl bg-white border border-amber-500/40 rounded-3xl p-6 text-slate-900 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <h3 className="font-bold text-base text-slate-900">
                 {editingProduct ? 'تعديل بيانات المنتج' : 'إضافة منتج يدوي جديد'}
@@ -2787,7 +3020,13 @@ export const AdminDashboard: React.FC = () => {
                         {cat.name_ar} ({cat.key})
                       </option>
                     ))}
-                    {!currentCategories.some((c) => c.key === prodForm.category) && prodForm.category && (
+                    {!currentCategories.some((c) => c.key === 'printers') && (
+                      <option value="printers">طابعات محمولة وملحقاتها (printers)</option>
+                    )}
+                    {!currentCategories.some((c) => c.key === 'gaming') && (
+                      <option value="gaming">أجهزة وإكسسوارات الألعاب (gaming)</option>
+                    )}
+                    {!currentCategories.some((c) => c.key === prodForm.category) && prodForm.category && !['printers', 'gaming'].includes(prodForm.category) && (
                       <option value={prodForm.category}>{prodForm.category}</option>
                     )}
                   </select>
@@ -3010,6 +3249,83 @@ export const AdminDashboard: React.FC = () => {
                   الصور توضيحية
                 </label>
               </div>
+              <div className="space-y-2.5 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                <div>
+                  <label className="block text-slate-800 font-bold text-xs">
+                    روابط بوستات وإعلانات السوشيال ميديا (اختياري — تظهر للعميل في صفحة المنتج)
+                  </label>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    أضف رابط البوست أو الفيديو الترويجي على فيسبوك أو تيك توك أو إنستجرام ليتمكن العميل من مشاهدته مباشرة.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div>
+                    <label className="flex items-center gap-1.5 text-slate-700 font-bold mb-1">
+                      <span className="px-1.5 py-0.5 rounded bg-[#1877F2]/15 text-[#1877F2] text-[10px] font-outfit">FB</span>
+                      <span>رابط بوست فيسبوك</span>
+                    </label>
+                    <input
+                      type="url"
+                      dir="ltr"
+                      value={prodForm.social_links?.facebook || ''}
+                      onChange={e => setProdForm({
+                        ...prodForm,
+                        social_links: { ...(prodForm.social_links || {}), facebook: e.target.value }
+                      })}
+                      placeholder="https://www.facebook.com/..."
+                      className="w-full bg-white border border-slate-200 rounded-xl p-2 text-[11px] text-slate-900 font-mono focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="flex items-center gap-1.5 text-slate-700 font-bold mb-1">
+                      <span className="px-1.5 py-0.5 rounded bg-slate-900/10 text-slate-900 text-[10px] font-outfit">TT</span>
+                      <span>رابط فيديو تيك توك</span>
+                    </label>
+                    <input
+                      type="url"
+                      dir="ltr"
+                      value={prodForm.social_links?.tiktok || ''}
+                      onChange={e => setProdForm({
+                        ...prodForm,
+                        social_links: { ...(prodForm.social_links || {}), tiktok: e.target.value }
+                      })}
+                      placeholder="https://www.tiktok.com/@..."
+                      className="w-full bg-white border border-slate-200 rounded-xl p-2 text-[11px] text-slate-900 font-mono focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="flex items-center gap-1.5 text-slate-700 font-bold mb-1">
+                      <span className="px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-700 text-[10px] font-outfit">IG</span>
+                      <span>رابط بوست إنستجرام</span>
+                    </label>
+                    <input
+                      type="url"
+                      dir="ltr"
+                      value={prodForm.social_links?.instagram || ''}
+                      onChange={e => setProdForm({
+                        ...prodForm,
+                        social_links: { ...(prodForm.social_links || {}), instagram: e.target.value }
+                      })}
+                      placeholder="https://www.instagram.com/..."
+                      className="w-full bg-white border border-slate-200 rounded-xl p-2 text-[11px] text-slate-900 font-mono focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <label className="flex items-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-slate-800 font-bold cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={prodForm.is_active !== false}
+                  onChange={e => setProdForm({ ...prodForm, is_active: e.target.checked })}
+                  className="accent-emerald-600 w-4 h-4 rounded cursor-pointer"
+                />
+                <span className="flex items-center gap-1.5">
+                  {prodForm.is_active !== false ? <Eye className="w-4 h-4 text-emerald-700" /> : <EyeOff className="w-4 h-4 text-amber-700" />}
+                  <span>{prodForm.is_active !== false ? 'ظاهر للعملاء في المتجر (مفعّل)' : 'مخفي عن العملاء حالياً (مسودة / أرشيف)'}</span>
+                </span>
+              </label>
+
               <label className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-800 font-bold cursor-pointer">
                 <input
                   type="checkbox"
@@ -3046,7 +3362,7 @@ export const AdminDashboard: React.FC = () => {
       {/* MODAL 2: MANUAL WHATSAPP DISPATCH */}
       {whatsappModalOrder && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="relative w-full max-w-xl bg-white border border-emerald-500/40 rounded-3xl p-6 text-slate-900 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+          <div role="dialog" aria-modal="true" aria-label={`إرسال إشعار واتساب للطلب #${whatsappModalOrder.order_number}`} className="relative w-full max-w-xl bg-white border border-emerald-500/40 rounded-3xl p-6 text-slate-900 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
                 <MessageCircle className="w-5 h-5 text-emerald-700" />
@@ -3225,6 +3541,12 @@ export const AdminDashboard: React.FC = () => {
       <ExcelImportModal
         isOpen={isExcelModalOpen}
         onClose={() => setIsExcelModalOpen(false)}
+      />
+
+      <InvoiceModal
+        order={invoiceModalOrder}
+        settings={settings}
+        onClose={() => setInvoiceModalOrder(null)}
       />
     </div></AdminShell>
   );

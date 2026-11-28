@@ -39,6 +39,7 @@ function source(relative) {
 }
 
 const presentation = source('src/utils/amazonEnricher.ts');
+const adLinks = source('src/utils/adLinks.ts');
 const { ProductCard } = source('src/components/ProductCard.tsx');
 const { ProductDetails } = source('src/pages/ProductDetails.tsx');
 const { QuickViewModal } = source('src/components/QuickViewModal.tsx');
@@ -119,4 +120,35 @@ test('full details expose sources and uncertainty, hide reserved metadata and ze
   assert.match(html, /اسأل المحل عن الضمان/);
   assert.doesNotMatch(html, /__catalog_meta|40 ساعة|Qi اللاسلكي|أصلي معتمد 100%|توصيل سريع مجاني/);
   assert.doesNotMatch(html, /0 ج\.م/);
+});
+
+test('product social links sanitize unsafe URLs and render safe Facebook/TikTok/Instagram buttons', () => {
+  const cleaned = adLinks.normalizeProductSocialLinks({
+    facebook: 'facebook.com/JOESTORE2022/posts/123',
+    tiktok: 'https://www.tiktok.com/@joestore2026/video/999',
+    instagram: 'javascript:alert(1)'
+  });
+  assert.deepEqual(cleaned, {
+    facebook: 'https://facebook.com/JOESTORE2022/posts/123',
+    tiktok: 'https://www.tiktok.com/@joestore2026/video/999'
+  });
+
+  const withSocial = {
+    ...product,
+    social_links: {
+      facebook: 'https://www.facebook.com/JOESTORE2022/posts/123',
+      tiktok: 'https://www.tiktok.com/@joestore2026/video/999',
+      instagram: 'javascript:alert(1)'
+    }
+  };
+  setContext({ products: [withSocial], selectedProductId: withSocial.id, quickViewProduct: withSocial });
+  const detailsHtml = renderToString(React.createElement(ProductDetails));
+  const quickHtml = renderToString(React.createElement(QuickViewModal));
+  for (const html of [detailsHtml, quickHtml]) {
+    assert.match(html, /https:\/\/www\.facebook\.com\/JOESTORE2022\/posts\/123/);
+    assert.match(html, /https:\/\/www\.tiktok\.com\/@joestore2026\/video\/999/);
+    assert.match(html, /شاهد بوست المنتج على فيسبوك/);
+    assert.match(html, /شاهد فيديو المنتج على تيك توك/);
+    assert.doesNotMatch(html, /javascript:alert/);
+  }
 });

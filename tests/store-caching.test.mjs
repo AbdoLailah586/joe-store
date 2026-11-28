@@ -20,13 +20,22 @@ function compile(file, mocks = {}) {
 }
 
 const address = compile('src/utils/deliveryAddress.ts');
+const monMock = { fetchWithTimeout: fetch, logStructured() {}, recordOperationalAlert: async () => {} };
 const gw = compile('server/paymentGateway.ts', {
-  './whatsappCrm.js': { buildServerOrderWhatsAppMessage: () => '', dispatchWhatsAppViaCrm: async () => ({}), resolveCrmConfig: () => ({ configured: false }) }
+  './whatsappCrm.js': { buildServerOrderWhatsAppMessage: () => '', dispatchWhatsAppViaCrm: async () => ({}), resolveCrmConfig: () => ({ configured: false }) },
+  './monitoring.js': monMock,
+  './metaCapi.js': { sendMetaConversionEvent: async () => ({ sent: false }) }
 });
 const { default: handler } = compile('api/store.ts', {
   '../server/store.js': { neonDb: {}, mapRowToOrder: r => r },
   '../server/whatsappCrm.js': { buildServerOrderWhatsAppMessage: () => '', dispatchWhatsAppViaCrm: async () => ({}), resolveCrmConfig: () => ({ configured: false }) },
   '../server/paymentGateway.js': gw,
+  '../server/monitoring.js': monMock,
+  '../server/pricing.js': { sanitizeUploadedImage: x => x, calculateServerShippingFee: ({ subtotal }) => (subtotal >= 2500 ? 0 : 35), validateAndComputeCouponDiscount: () => ({ discount: 0 }) },
+  '../server/rateLimit.js': { extractClientIp: () => '127.0.0.1', checkRateLimit: async () => ({ allowed: true, remaining: 5, retryAfterSeconds: 0 }), clearRateLimit: async () => {} },
+  '../server/jobs.js': { enqueueBackgroundJob: async () => ({ queued: true }) },
+  '../server/metaCapi.js': { sendMetaConversionEvent: async () => ({ sent: false }) },
+  '../lib/mailer.js': { sendTransactionalEmail: async () => ({ sent: true }) },
   '../lib/access.js': access,
   '../src/utils/deliveryAddress.js': address,
   '../server/orderWrites.js': {},

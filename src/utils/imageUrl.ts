@@ -91,9 +91,15 @@ export async function compressImageFile(file: File, maxDimension = 1200, quality
           // Draw and compress
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Try webp first, fallback to jpeg if unsupported
-          const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-          const compressed = canvas.toDataURL(mimeType, quality);
+          // Export as lightweight WebP when supported, fallback to JPEG
+          let compressed = '';
+          try {
+            compressed = canvas.toDataURL('image/webp', quality);
+          } catch {}
+          if (!compressed || !compressed.startsWith('data:image/webp')) {
+            const fallbackMime = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+            compressed = canvas.toDataURL(fallbackMime, quality);
+          }
           resolve(compressed);
         } catch {
           resolve(dataUrl);

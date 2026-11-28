@@ -1,0 +1,55 @@
+name: Automated 2-Hour Neon Backup & Health Monitor
+
+on:
+  schedule:
+    # Runs automatically every 2 hours (UTC)
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup-and-monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run full Neon PostgreSQL backup & Google Drive upload
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GOOGLE_DRIVE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS_JSON }}
+          GOOGLE_DRIVE_TOKEN_JSON: ${{ secrets.GOOGLE_DRIVE_TOKEN_JSON }}
+          GOOGLE_DRIVE_BACKUP_FOLDER: ${{ secrets.GOOGLE_DRIVE_BACKUP_FOLDER }}
+          WHATSAPP_CRM_URL: ${{ secrets.WHATSAPP_CRM_URL }}
+          WHATSAPP_CRM_EMAIL: ${{ secrets.WHATSAPP_CRM_EMAIL }}
+          WHATSAPP_CRM_PASSWORD: ${{ secrets.WHATSAPP_CRM_PASSWORD }}
+          WHATSAPP_CRM_TO: ${{ secrets.WHATSAPP_CRM_TO }}
+        run: node scripts/backup_neon_to_drive.mjs
+
+      - name: Check Neon free-tier usage & alert on >=80%
+        if: ${{ secrets.NEON_API_KEY != '' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+          WHATSAPP_CRM_URL: ${{ secrets.WHATSAPP_CRM_URL }}
+          WHATSAPP_CRM_EMAIL: ${{ secrets.WHATSAPP_CRM_EMAIL }}
+          WHATSAPP_CRM_PASSWORD: ${{ secrets.WHATSAPP_CRM_PASSWORD }}
+          WHATSAPP_CRM_TO: ${{ secrets.WHATSAPP_CRM_TO }}
+        run: node scripts/monitor_neon_limits.mjs
+
+      - name: Drain queued background jobs via production endpoint
+        if: ${{ secrets.CRON_SECRET != '' }}
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -fsSL -H "Authorization: Bearer $CRON_SECRET" "https://joe-store-2026.vercel.app/api/store?cron=jobs" || true

@@ -119,12 +119,18 @@ export async function handleMetaFeed(req, res, deps) {
       .map(src => toFullUrl(baseUrl, src))
       .filter(Boolean);
     const inStock = Number(p.stock_quantity ?? p.stock ?? 1) > 0;
+    const isPreowned = Boolean(p.is_preowned || details.condition === 'mint' || details.condition === 'used_good');
+    const feedCondition = isPreowned ? 'used' : 'new';
+    const mpn = String(specsObj.model || specsObj.mpn || p.sku || p.id || '').trim().slice(0, 70);
+    const gtin = String(specsObj.gtin || specsObj.barcode || specsObj.ean || '').replace(/\D/g, '').slice(0, 14);
     return {
       id: p.id,
       title: String(p.name_ar || p.name_en || p.id).slice(0, 150),
       description: String(rawDesc).slice(0, 1000),
       availability: inStock ? 'in stock' : 'out of stock',
-      condition: 'new',
+      condition: feedCondition,
+      mpn,
+      gtin,
       price: `${Number(p.price || 0).toFixed(2)} EGP`,
       link: `${baseUrl}/product/${encodeURIComponent(p.id)}`,
       image_link: imgs[0] || `${baseUrl}/logo-og.jpg`,
@@ -150,7 +156,7 @@ export async function handleMetaFeed(req, res, deps) {
       <g:brand>${escXml(item.brand)}</g:brand>
       <g:condition>${item.condition}</g:condition>
       <g:availability>${item.availability === 'in stock' ? 'in_stock' : 'out_of_stock'}</g:availability>
-      <g:price>${escXml(item.price)}</g:price>
+      <g:price>${escXml(item.price)}</g:price>${item.mpn ? `\n      <g:mpn>${escXml(item.mpn)}</g:mpn>` : ''}${item.gtin ? `\n      <g:gtin>${escXml(item.gtin)}</g:gtin>` : '\n      <g:identifier_exists>false</g:identifier_exists>'}
       <g:google_product_category>${escXml(item.google_product_category)}</g:google_product_category>
     </item>`
       )

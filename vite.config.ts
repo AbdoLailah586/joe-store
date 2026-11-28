@@ -121,7 +121,7 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
           'vendor-icons': ['lucide-react'],
-          'vendor-excel': ['xlsx'],
+          'vendor-excel': ['read-excel-file/browser', 'write-excel-file/browser'],
         }
       }
     },

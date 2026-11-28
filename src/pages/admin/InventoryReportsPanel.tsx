@@ -53,7 +53,7 @@ export function InventoryReportsPanel({ products, rows, filters, onChange, error
     setExporting(true); setNotice('');
     try {
       const { downloadInventoryReport } = await import('../../utils/inventoryReportExport');
-      downloadInventoryReport(rows, filters, columns, title.trim() || 'تقرير المخزون', format);
+      await downloadInventoryReport(rows, filters, columns, title.trim() || 'تقرير المخزون', format);
       setNotice(`تم تجهيز تقرير يضم ${rows.length} صنفًا للتنزيل.`);
     } catch { setNotice('تعذر تجهيز الملف. جرّب التنزيل مرة أخرى.'); }
     finally { setExporting(false); }

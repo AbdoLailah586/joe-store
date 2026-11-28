@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, KeyRound, AlertCircle, CheckCircle } from 'lucide-react';
+import { ShieldCheck, KeyRound, AlertCircle, CheckCircle, LogOut, BellRing } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { neonDb } from '../../services/neonDb';
 import { InfoButton } from '../../components/DetailsDialog';
@@ -9,7 +9,7 @@ const button = 'rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm fo
 const box = 'rounded-2xl border border-slate-200 bg-white p-4 sm:p-5';
 
 export const SecurityPanel: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logoutAll } = useAuth();
   const [setup, setSetup] = useState<{ secret: string; otpauthUrl: string } | null>(null);
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
@@ -19,9 +19,25 @@ export const SecurityPanel: React.FC = () => {
 
   const [auditRows, setAuditRows] = useState<any[]>([]);
   const [auditLoading, setAuditLoading] = useState(true);
+  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alertsLoading, setAlertsLoading] = useState(true);
+  const [breachReports, setBreachReports] = useState<any[]>([]);
+  const [breachLoading, setBreachLoading] = useState(true);
+
+  const loadAlerts = () => {
+    setAlertsLoading(true);
+    neonDb.getSystemAlerts(50).then(setAlerts).catch(() => {}).finally(() => setAlertsLoading(false));
+  };
+
+  const loadBreachReports = () => {
+    setBreachLoading(true);
+    neonDb.listBreachReports(50).then(setBreachReports).catch(() => {}).finally(() => setBreachLoading(false));
+  };
 
   useEffect(() => {
     neonDb.getAuditLog().then(setAuditRows).catch(() => {}).finally(() => setAuditLoading(false));
+    loadAlerts();
+    loadBreachReports();
   }, []);
 
   const beginSetup = async () => {
@@ -70,6 +86,21 @@ export const SecurityPanel: React.FC = () => {
         <button className={button} disabled={busy} onClick={beginSetup}>تفعيل / إعادة تجهيز 2FA</button>
         <input type="text" inputMode="numeric" maxLength={6} className={`${field} max-w-xs`} placeholder="كود تطبيق المصادقة لإلغاء التفعيل" value={password} onChange={e => setPassword(e.target.value)} />
         <button className={button} disabled={busy || !password} onClick={disable}>تعطيل 2FA</button>
+        <button
+          className="rounded-xl border border-rose-300 bg-rose-50 px-4 py-2 text-sm font-bold text-rose-700 hover:bg-rose-100 flex items-center gap-1.5"
+          disabled={busy}
+          onClick={async () => {
+            if (!confirm('سيتم تسجيل الخروج فوراً من جميع الأجهزة والمتصفحات المفتوحة لهذا الحساب. متابعة؟')) return;
+            setBusy(true); setError('');
+            try {
+              const res = await logoutAll();
+              if (!res.success) setError(res.error || 'تعذر تسجيل الخروج من الأجهزة.');
+            } finally { setBusy(false); }
+          }}
+        >
+          <LogOut className="w-4 h-4" />
+          <span>تسجيل الخروج من جميع الأجهزة</span>
+        </button>
       </div> : <div className="space-y-3">
         <p className="text-xs text-slate-700">افتحي تطبيق المصادقة (Google Authenticator أو ما شابه) وأدخلي هذا المفتاح يدويًا:</p>
         <code className="block text-xs bg-slate-100 p-2 rounded-lg break-all">{setup.secret}</code>
@@ -79,6 +110,86 @@ export const SecurityPanel: React.FC = () => {
           <button className={button} onClick={() => setSetup(null)}>إلغاء</button>
         </div>
       </div>}
+    </div>
+
+    <div className={box}>
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <div>
+          <h3 className="font-bold text-slate-900 flex items-center gap-2"><BellRing className="w-4 h-4 text-rose-600" /> تنبيهات التشغيل وتعارض الدفع والأمان</h3>
+          <p className="text-xs text-slate-600">تسجل أي دفعة بدون طلب نشط أو تعارض مبلغ أو محاولات اختراق فاشلة.</p>
+        </div>
+        <button onClick={loadAlerts} className={button}>تحديث</button>
+      </div>
+      {alertsLoading ? <p className="text-xs text-slate-500">جاري التحميل…</p> : !alerts.length ? <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-3">لا توجد تنبيهات تشغيلية مفتوحة حالياً.</p> : (
+        <div className="space-y-2">
+          {alerts.map(a => (
+            <div key={a.id} className={`p-3 rounded-xl border text-xs flex flex-wrap items-center justify-between gap-2 ${a.resolved ? 'bg-slate-50 border-slate-200 text-slate-500' : a.severity === 'critical' ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-amber-50 border-amber-300 text-amber-900'}`}>
+              <div className="space-y-0.5 min-w-0 flex-1">
+                <div className="flex items-center gap-2 font-bold">
+                  <span className="uppercase font-mono text-[10px] px-1.5 py-0.5 rounded bg-white/80 border">{a.severity}</span>
+                  <span>{a.source}</span>
+                  {a.order_number && <span className="font-mono">#{a.order_number}</span>}
+                </div>
+                <p>{a.message}</p>
+                <p className="text-[10px] opacity-75">{new Date(a.created_at).toLocaleString('ar-EG')}</p>
+              </div>
+              {!a.resolved ? (
+                <button
+                  onClick={async () => {
+                    await neonDb.resolveSystemAlert(a.id);
+                    loadAlerts();
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-800 font-bold hover:bg-slate-100"
+                >
+                  تمت المعالجة
+                </button>
+              ) : (
+                <span className="text-[11px] font-bold text-emerald-700">محلول ✓</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div className={box}>
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <div>
+          <h3 className="font-bold text-slate-900 flex items-center gap-2"><AlertCircle className="w-4 h-4 text-amber-700" /> بلاغات خرق البيانات والخصوصية (مهلة 48 ساعة)</h3>
+          <p className="text-xs text-slate-600">الطلبات الواردة من نموذج الخصوصية العام بحد أقصى 48 ساعة للاستجابة والتوثيق.</p>
+        </div>
+        <button onClick={loadBreachReports} className={button}>تحديث</button>
+      </div>
+      {breachLoading ? <p className="text-xs text-slate-500">جاري التحميل…</p> : !breachReports.length ? <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-3">لا توجد بلاغات خرق بيانات مسجلة حالياً.</p> : (
+        <div className="space-y-2">
+          {breachReports.map(rep => (
+            <div key={rep.id} className={`p-3 rounded-xl border text-xs flex flex-wrap items-center justify-between gap-2 ${rep.status === 'resolved' ? 'bg-slate-50 border-slate-200 text-slate-500' : 'bg-amber-50 border-amber-300 text-slate-900'}`}>
+              <div className="space-y-0.5 min-w-0 flex-1">
+                <div className="flex items-center gap-2 font-bold">
+                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-white border">{rep.id}</span>
+                  <span>{rep.incident_type}</span>
+                  <span dir="ltr" className="font-mono text-[11px] text-slate-600">{rep.reporter_email}</span>
+                </div>
+                <p>{rep.description}</p>
+                <p className="text-[10px] opacity-75">الموعد الأقصى للاستجابة (48h): {new Date(rep.report_deadline_at).toLocaleString('ar-EG')}</p>
+              </div>
+              {rep.status !== 'resolved' ? (
+                <button
+                  onClick={async () => {
+                    await neonDb.updateBreachReportStatus(rep.id, 'resolved', 'تم الفحص والمعالجة بواسطة مسؤول الأمان');
+                    loadBreachReports();
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-800 font-bold hover:bg-slate-100"
+                >
+                  تم الإغلاق والمعالجة
+                </button>
+              ) : (
+                <span className="text-[11px] font-bold text-emerald-700">مغلق ✓</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
 
     <div className={box}>

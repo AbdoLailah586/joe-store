@@ -1,12 +1,9 @@
 import { neon } from '@neondatabase/serverless';
 import { google } from 'googleapis';
-import { createRequire } from 'node:module';
+import { zipSync, strToU8 } from 'fflate';
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadLocalEnv, sendWhatsAppNotification } from './neon_backup_helpers.mjs';
-
-const require = createRequire(import.meta.url);
-const { ZipArchive } = require('archiver');
 
 function loadDatabaseUrl(env) {
   if (env.DATABASE_URL) return env.DATABASE_URL;
@@ -112,21 +109,16 @@ async function dumpNeonDatabase(sql) {
 
 async function createZipArchive(zipPath, sqlDump, manifest, tableJsonData) {
   await fs.promises.mkdir(path.dirname(zipPath), { recursive: true });
-  return new Promise((resolve, reject) => {
-    const output = fs.createWriteStream(zipPath);
-    const archive = new ZipArchive({ zlib: { level: 9 } });
-
-    output.on('close', () => resolve({ sizeBytes: archive.pointer() }));
-    archive.on('error', reject);
-
-    archive.pipe(output);
-    archive.append(sqlDump, { name: 'dump.sql' });
-    archive.append(JSON.stringify(manifest, null, 2), { name: 'manifest.json' });
-    for (const [tableName, rows] of Object.entries(tableJsonData)) {
-      archive.append(JSON.stringify(rows, null, 2), { name: `tables/${tableName}.json` });
-    }
-    archive.finalize();
-  });
+  const entries = {
+    'dump.sql': strToU8(sqlDump),
+    'manifest.json': strToU8(JSON.stringify(manifest, null, 2)),
+  };
+  for (const [tableName, rows] of Object.entries(tableJsonData)) {
+    entries[`tables/${tableName}.json`] = strToU8(JSON.stringify(rows, null, 2));
+  }
+  const zipped = zipSync(entries, { level: 9 });
+  await fs.promises.writeFile(zipPath, zipped);
+  return { sizeBytes: zipped.byteLength };
 }
 
 async function uploadToGoogleDrive(env, zipPath, fileName) {

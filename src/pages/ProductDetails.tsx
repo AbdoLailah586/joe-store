@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { AnimateStorefront } from '../components/motion/AnimateStorefront';
 import { normalizeProductImage } from '../utils/imageUrl';
+import { validateImageFile } from '../utils/fileValidation';
+import { ProductDetailsSkeleton } from '../components/Skeletons';
 import {
   ShieldCheck,
   BatteryMedium,
@@ -46,7 +48,9 @@ import { sortCatalogProducts } from '../utils/productSorting';
 import { neonDb } from '../services/neonDb';
 import { Product } from '../types';
 import { buildProductAdUrl } from '../utils/adLinks';
+import { ProductSocialPostButtons } from '../components/SocialIcons';
 import { trackMetaEvent } from '../utils/metaPixel';
+import { hasAnalyticsConsent, trackGa4ViewItem } from '../utils/analytics';
 
 function getClientSessionId(): string {
   try {
@@ -183,15 +187,18 @@ export const ProductDetails: React.FC = () => {
       setSelectedColor(product.available_colors?.[0]?.name_ar || product.color_ar || '');
       document.title = `${enriched.detailed_title_ar.slice(0, 60)} | متجر جو ستور`;
 
-      trackActivity('view_product', product.id, { product_name: product.name_ar, brand: product.brand, category: product.category });
-      trackMetaEvent('ViewContent', {
-        content_ids: [product.id],
-        content_name: product.name_ar,
-        content_category: product.category,
-        content_type: 'product',
-        value: product.price,
-        currency: 'EGP'
-      });
+      if (hasAnalyticsConsent()) {
+        trackActivity('view_product', product.id, { product_name: product.name_ar, brand: product.brand, category: product.category });
+        trackMetaEvent('ViewContent', {
+          content_ids: [product.id],
+          content_name: product.name_ar,
+          content_category: product.category,
+          content_type: 'product',
+          value: product.price,
+          currency: 'EGP'
+        });
+        trackGa4ViewItem(product);
+      }
 
       // Select all bundle items by default
       const initialBundleMap: { [id: string]: boolean } = { [product.id]: true };
@@ -274,24 +281,20 @@ export const ProductDetails: React.FC = () => {
   }, [allReviews, reviewFilter]);
 
   if (!product || !enriched) {
+    if (isCatalogLoading) {
+      return <ProductDetailsSkeleton />;
+    }
     return (
       <div className="max-w-4xl mx-auto px-4 py-24 text-center space-y-5">
-        <div className="w-16 h-16 mx-auto rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center animate-pulse">
-          <Sparkles className="w-8 h-8 text-amber-700" />
-        </div>
         <h2 className="text-xl font-bold text-slate-900 font-cairo">
-          {isCatalogLoading
-            ? (language === 'ar' ? 'جاري تحميل بيانات المنتج…' : 'Loading product details…')
-            : (language === 'ar' ? 'عفواً، هذا المنتج غير موجود أو غير متاح حالياً' : 'This product could not be found or is currently unavailable')}
+          {language === 'ar' ? 'عفواً، هذا المنتج غير موجود أو غير متاح حالياً' : 'This product could not be found or is currently unavailable'}
         </h2>
-        {!isCatalogLoading && (
-          <button
-            onClick={() => navigate('catalog')}
-            className="px-6 py-2.5 rounded-xl bg-amber-500 text-black font-bold font-cairo hover:bg-amber-400 transition-colors shadow-glow-gold"
-          >
-            تصفح جميع المنتجات المتاحة في المتجر
-          </button>
-        )}
+        <button
+          onClick={() => navigate('catalog')}
+          className="px-6 py-2.5 rounded-xl bg-amber-500 text-black font-bold font-cairo hover:bg-amber-400 transition-colors shadow-glow-gold"
+        >
+          تصفح جميع المنتجات المتاحة في المتجر
+        </button>
       </div>
     );
   }
@@ -397,7 +400,11 @@ export const ProductDetails: React.FC = () => {
     }
     const toProcess = Array.from(files).slice(0, remaining);
     toProcess.forEach(file => {
-      if (!file.type.startsWith('image/')) return;
+      const check = validateImageFile(file);
+      if (!check.valid) {
+        alert(check.error);
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
@@ -769,12 +776,6 @@ export const ProductDetails: React.FC = () => {
                     <span>اختيار جو ستور</span>
                   </span>
                 )}
-                {enriched.bought_past_month > 0 && (
-                  <div className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded-md">
-                    <Flame className="w-3 h-3 text-emerald-700" />
-                    <span>تم شراء أكثر من {enriched.bought_past_month.toLocaleString('ar-EG')} قطعة الشهر الماضي</span>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -888,6 +889,8 @@ export const ProductDetails: React.FC = () => {
                   <span>{language === 'ar' ? 'استفسر عبر واتساب' : 'Ask on WhatsApp'}</span>
                 </a>
 
+                <ProductSocialPostButtons product={product} language={language} />
+
                 {/* Encoded Ad Link Copy (Meta / TikTok UTM) */}
                 <button
                   type="button"
@@ -991,12 +994,6 @@ export const ProductDetails: React.FC = () => {
                   <Sparkles className="w-3 h-3 text-amber-700" />
                   <span>اختيار جو ستور</span>
                 </span>}
-
-                {/* Bought in Past Month */}
-                {enriched.bought_past_month > 0 && <div className="w-full sm:w-auto flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded-md">
-                  <Flame className="w-3 h-3 text-emerald-700" />
-                  <span>تم شراء أكثر من {enriched.bought_past_month.toLocaleString('ar-EG')} قطعة الشهر الماضي</span>
-                </div>}
               </div>
 
               {/* Price Box */}
@@ -1270,6 +1267,8 @@ export const ProductDetails: React.FC = () => {
                   <MessageCircle className="w-4 h-4" />
                   <span>{language === 'ar' ? 'استفسر عبر واتساب' : 'Ask on WhatsApp'}</span>
                 </a>
+
+                <ProductSocialPostButtons product={product} language={language} />
 
                 {/* Encoded Ad Link Copy (Meta / TikTok UTM) */}
                 <button
@@ -2078,7 +2077,7 @@ export const ProductDetails: React.FC = () => {
                       <span className="text-[10px] font-bold">إضافة صورة</span>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/jpeg,image/png,image/webp"
                         multiple
                         className="hidden"
                         onChange={handleReviewImageUpload}

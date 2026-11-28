@@ -13,6 +13,7 @@ import {
     testWhatsAppCrmConnection
 } from './whatsappCrm.js';
 import { toAdminPaymentGatewayState, resolvePaymentGatewayConfig } from './paymentGateway.js';
+import { fetchWithTimeout } from './monitoring.js';
 
 // Read connection string strictly from environment variables
 // Dev configuration loads .env after imports. Resolve the server connection when
@@ -21,6 +22,9 @@ const queryClient = () => neon(process.env.DATABASE_URL || process.env.VITE_DATA
 const sql: any = Object.assign((strings: any, ...values: any[]) => queryClient()(strings, ...values), {
     query: (...args: any[]) => (queryClient().query as any)(...args)
 });
+
+const PRODUCT_SELECT_COLUMNS = `id, name_ar, name_en, category, brand, price, old_price, cost_price, stock_quantity, is_active, is_featured, is_preowned, battery_health, warranty, colors, storage_options, images, specs, created_at, updated_at`;
+const ORDER_SELECT_COLUMNS = `id, order_number, customer_id, customer_name, customer_phone, customer_email, governorate, address, notes, items, subtotal, shipping_fee, discount, coupon_code, payment_receipt_url, idempotency_key, invoice_number, total, payment_method, payment_status, payment_reference, status, courier_name, packed_at, packed_by, cancellation_reason, cancelled_by, cancelled_at, created_at, updated_at`;
 
 let crmSchemaReady: Promise<void> | null = null;
 export async function ensureUserCrmColumns(): Promise<void> {
@@ -103,6 +107,19 @@ export interface CustomerActivityRecord {
     metadata: Record<string, any>;
     created_at: string;
 }
+function sanitizeRowSocialLinks(raw: any): Product['social_links'] {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+    const out: NonNullable<Product['social_links']> = {};
+    for (const k of ['facebook', 'tiktok', 'instagram'] as const) {
+        const v = typeof raw[k] === 'string' ? raw[k].trim() : '';
+        if (!v) continue;
+        try {
+            const u = new URL(v);
+            if (u.protocol === 'http:' || u.protocol === 'https:') out[k] = u.toString();
+        } catch {}
+    }
+    return Object.keys(out).length ? out : undefined;
+}
 // Convert PostgreSQL DB row to frontend Product type
 function mapRowToProduct(row: any): Product {
     const isPreowned = Boolean(row.is_preowned);
@@ -126,6 +143,7 @@ function mapRowToProduct(row: any): Product {
         catalog_status: details.catalog_status,
         image_is_illustrative: details.image_is_illustrative,
         data_sources: details.data_sources,
+        social_links: sanitizeRowSocialLinks(details.social_links),
         source_row: details.source_row,
         source_item_code: details.source_item_code,
         source_name: details.source_name,
@@ -190,7 +208,11 @@ export function mapRowToOrder(r: any): Order {
         items: Array.isArray(r.items) ? r.items : [],
         subtotal: Number(r.subtotal || 0),
         shipping_fee: Number(r.shipping_fee || 0),
-        discount: 0,
+        discount: Number(r.discount || 0),
+        coupon_code: r.coupon_code || undefined,
+        payment_receipt_url: r.payment_receipt_url || undefined,
+        idempotency_key: r.idempotency_key || undefined,
+        invoice_number: r.invoice_number || (r.order_number ? `INV-${r.order_number}` : undefined),
         total: Number(r.total || 0),
         payment_method: (r.payment_method || 'cod') as PaymentMethod,
         payment_status: (r.payment_status || 'unpaid') as PaymentStatus,
@@ -266,7 +288,7 @@ export const neonDb = {
             const category = params?.category;
             const search = params?.search?.trim();
             const includeHidden = params?.includeHidden ?? false;
-            let queryStr = `SELECT * FROM products WHERE 1=1`;
+            let queryStr = `SELECT ${PRODUCT_SELECT_COLUMNS} FROM products WHERE 1=1`;
             let countStr = `SELECT COUNT(*) as total FROM products WHERE 1=1`;
             const queryParams: any[] = [];
             let paramIndex = 1;
@@ -413,7 +435,7 @@ export const neonDb = {
     }
   },
     /**
-     * 4. Bulk Insert Products from Excel (Scales to 12,000+ items using chunked batches)
+     * 4. Bulk Insert Products from Excel (Single batch upsert per 100-item chunk; eliminates N+1 roundtrips)
      */
     async bulkInsertProducts(products: Product[]): Promise<{
         inserted: number;
@@ -424,50 +446,62 @@ export const neonDb = {
         const chunkSize = 100;
         for (let i = 0; i < products.length; i += chunkSize) {
             const chunk = products.slice(i, i + chunkSize);
+            const payload = chunk.map(p => {
+                const isPre = p.condition === 'mint' || p.condition === 'used_good';
+                return {
+                    id: p.id,
+                    name_ar: p.name_ar,
+                    name_en: p.name_en || p.name_ar,
+                    category: p.category,
+                    brand: p.brand || 'Apple',
+                    price: Number(p.price || 0),
+                    old_price: p.original_price || null,
+                    cost_price: p.cost_price ?? 0,
+                    stock_quantity: p.stock ?? 0,
+                    is_active: p.is_active !== false,
+                    is_featured: Boolean(p.is_featured),
+                    is_preowned: isPre,
+                    battery_health: p.battery_health ? `${p.battery_health}%` : null,
+                    warranty: p.warranty_months > 0 ? `${p.warranty_months} شهور` : null,
+                    colors: p.available_colors || [],
+                    storage_options: p.available_storages || [],
+                    images: p.images || [],
+                    specs: { ...p.specs, __product_data: { ...p, cost_price: undefined, specs: undefined, images: undefined } }
+                };
+            });
             try {
-                for (const p of chunk) {
-                    const isPre = p.condition === 'mint' || p.condition === 'used_good';
-                    await sql `
-            INSERT INTO products (
-              id, name_ar, name_en, category, brand, price, old_price, cost_price,
-              stock_quantity, is_active, is_featured, is_preowned, battery_health,
-              warranty, colors, storage_options, images, specs
-            )
-            VALUES (
-              ${p.id},
-              ${p.name_ar},
-              ${p.name_en},
-              ${p.category},
-              ${p.brand || 'Apple'},
-              ${p.price},
-              ${p.original_price || null},
-              ${p.cost_price ?? 0},
-              ${p.stock ?? 0},
-              ${p.is_active !== false},
-              ${p.is_featured || false},
-              ${isPre},
-              ${p.battery_health ? `${p.battery_health}%` : null},
-              ${p.warranty_months > 0 ? `${p.warranty_months} شهور` : null},
-              ${JSON.stringify(p.available_colors || [])}::jsonb,
-              ${JSON.stringify(p.available_storages || [])}::jsonb,
-              ${JSON.stringify(p.images || [])}::jsonb,
-              ${JSON.stringify({ ...p.specs, __product_data: { ...p, cost_price: undefined, specs: undefined, images: undefined } })}::jsonb
-            )
-            ON CONFLICT (id) DO UPDATE SET
-              name_ar = EXCLUDED.name_ar,
-              name_en = EXCLUDED.name_en,
-              price = EXCLUDED.price,
-              old_price = EXCLUDED.old_price,
-              stock_quantity = EXCLUDED.stock_quantity,
-              is_active = EXCLUDED.is_active,
-              colors = EXCLUDED.colors,
-              storage_options = EXCLUDED.storage_options,
-              images = EXCLUDED.images,
-              specs = EXCLUDED.specs,
-              updated_at = NOW();
-          `;
-                    inserted++;
-                }
+                await sql.query(
+                    `INSERT INTO products (
+                      id, name_ar, name_en, category, brand, price, old_price, cost_price,
+                      stock_quantity, is_active, is_featured, is_preowned, battery_health,
+                      warranty, colors, storage_options, images, specs
+                    )
+                    SELECT
+                      r.id, r.name_ar, r.name_en, r.category, r.brand, r.price, r.old_price, r.cost_price,
+                      r.stock_quantity, r.is_active, r.is_featured, r.is_preowned, r.battery_health,
+                      r.warranty, r.colors, r.storage_options, r.images, r.specs
+                    FROM jsonb_to_recordset($1::jsonb) AS r(
+                      id VARCHAR(100), name_ar VARCHAR(255), name_en VARCHAR(255), category VARCHAR(50), brand VARCHAR(100),
+                      price NUMERIC(12,2), old_price NUMERIC(12,2), cost_price NUMERIC(12,2),
+                      stock_quantity INT, is_active BOOLEAN, is_featured BOOLEAN, is_preowned BOOLEAN,
+                      battery_health VARCHAR(50), warranty VARCHAR(100),
+                      colors JSONB, storage_options JSONB, images JSONB, specs JSONB
+                    )
+                    ON CONFLICT (id) DO UPDATE SET
+                      name_ar = EXCLUDED.name_ar,
+                      name_en = EXCLUDED.name_en,
+                      price = EXCLUDED.price,
+                      old_price = EXCLUDED.old_price,
+                      stock_quantity = EXCLUDED.stock_quantity,
+                      is_active = EXCLUDED.is_active,
+                      colors = EXCLUDED.colors,
+                      storage_options = EXCLUDED.storage_options,
+                      images = EXCLUDED.images,
+                      specs = EXCLUDED.specs,
+                      updated_at = NOW();`,
+                    [JSON.stringify(payload)]
+                );
+                inserted += chunk.length;
             }
             catch (err) {
                 console.error('❌ Chunk insertion error:', err);
@@ -700,16 +734,61 @@ export const neonDb = {
         }
     },
     /**
-     * 10. Get all orders for Admin
+     * 10. Get orders for Admin (supports server-side pagination + filtered search across 15,000+ orders)
      */
     async getOrders(): Promise<Order[]> {
         try {
-            const rows = await sql `SELECT * FROM orders ORDER BY created_at DESC LIMIT 100;`;
+            const rows = await sql.query(`SELECT ${ORDER_SELECT_COLUMNS} FROM orders ORDER BY created_at DESC LIMIT 200;`);
             return (rows as any[]).map(mapRowToOrder);
         }
         catch (error) {
             console.error('❌ neonDb.getOrders error:', error);
             return [];
+        }
+    },
+    async getOrdersPaginated(params?: {
+        page?: number;
+        limit?: number;
+        status?: string;
+        search?: string;
+    }): Promise<{ orders: Order[]; total: number; page: number; limit: number; pages: number }> {
+        const limit = Math.max(10, Math.min(100, Number(params?.limit) || 50));
+        const page = Math.max(1, Number(params?.page) || 1);
+        const offset = (page - 1) * limit;
+        const status = params?.status && params.status !== 'all' ? String(params.status).trim() : '';
+        const search = String(params?.search || '').trim();
+        try {
+            const whereParts: string[] = ['1=1'];
+            const queryParams: any[] = [];
+            let idx = 1;
+            if (status) {
+                whereParts.push(`status = $${idx}`);
+                queryParams.push(status);
+                idx++;
+            }
+            if (search) {
+                whereParts.push(`(order_number ILIKE $${idx} OR customer_name ILIKE $${idx} OR customer_phone ILIKE $${idx} OR customer_email ILIKE $${idx})`);
+                queryParams.push(`%${search}%`);
+                idx++;
+            }
+            const whereClause = whereParts.join(' AND ');
+            const listSql = `SELECT ${ORDER_SELECT_COLUMNS} FROM orders WHERE ${whereClause} ORDER BY created_at DESC LIMIT $${idx} OFFSET $${idx + 1}`;
+            const countSql = `SELECT COUNT(*)::int AS total FROM orders WHERE ${whereClause}`;
+            const [rows, countRows] = await Promise.all([
+                sql.query(listSql, [...queryParams, limit, offset]),
+                sql.query(countSql, queryParams)
+            ]);
+            const total = Number(countRows?.[0]?.total || 0);
+            return {
+                orders: (rows as any[]).map(mapRowToOrder),
+                total,
+                page,
+                limit,
+                pages: Math.max(1, Math.ceil(total / limit))
+            };
+        } catch (error) {
+            console.error('❌ neonDb.getOrdersPaginated error:', error);
+            return { orders: [], total: 0, page: 1, limit, pages: 1 };
         }
     },
     /**
@@ -870,7 +949,8 @@ export const neonDb = {
              OR (NULLIF(REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'), '') IS NOT NULL
                  AND REGEXP_REPLACE(COALESCE(ac.customer_phone, ''), '\\D', '', 'g') = REGEXP_REPLACE(COALESCE(u.phone, ''), '\\D', '', 'g'))
         ) cart ON true
-        ORDER BY u.created_at DESC;
+        ORDER BY u.created_at DESC
+        LIMIT 500;
       `;
             return rows || [];
         }
@@ -2125,11 +2205,11 @@ async getWishlistGap(limit = 5): Promise<{ product_id: string; name_ar: string; 
     }
     if (cfg.provider === 'paymob') {
       try {
-        const probeRes = await fetch('https://accept.paymob.com/api/auth/tokens', {
+        const probeRes = await fetchWithTimeout('https://accept.paymob.com/api/auth/tokens', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ api_key: cfg.apiKey || cfg.secretKey })
-        });
+        }, 8000);
         if (!probeRes.ok && !cfg.publicKey.startsWith('egy_pk_')) {
           return { success: false, error: `تعذر التحقق من Paymob (HTTP ${probeRes.status}). تأكد من المفاتيح.`, state };
         }
@@ -2142,5 +2222,52 @@ async getWishlistGap(limit = 5): Promise<{ product_id: string; name_ar: string; 
       message: `تم التحقق من جاهزية ربط ${cfg.provider === 'kashier' ? 'Kashier' : 'Paymob'} (${cfg.mode === 'live' ? 'تشغيل فعلي Live' : 'وضع تجريبي Test'}).`,
       state
     };
+  },
+
+  async getSystemAlerts(limit = 50): Promise<any[]> {
+    try {
+      await sql.query(`
+        CREATE TABLE IF NOT EXISTS system_alerts (
+          id VARCHAR(120) PRIMARY KEY,
+          severity VARCHAR(20) NOT NULL DEFAULT 'error',
+          source VARCHAR(100) NOT NULL,
+          message TEXT NOT NULL,
+          order_number VARCHAR(120),
+          gateway_txn_id VARCHAR(160),
+          metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+          resolved BOOLEAN NOT NULL DEFAULT false,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+      `);
+      const cap = Math.max(1, Math.min(200, Number(limit) || 50));
+      return await sql`
+        SELECT id, severity, source, message, order_number, gateway_txn_id, resolved, created_at
+        FROM system_alerts
+        ORDER BY resolved ASC, created_at DESC
+        LIMIT ${cap};
+      `;
+    } catch {
+      return [];
+    }
+  },
+
+  async resolveSystemAlert(alertId: string, actor?: { id?: string; name?: string }): Promise<boolean> {
+    try {
+      const cleanId = String(alertId || '').trim();
+      if (!cleanId) return false;
+      await sql`UPDATE system_alerts SET resolved = true WHERE id = ${cleanId};`;
+      if (actor) {
+        await logAudit({
+          actorId: actor.id,
+          actorName: actor.name,
+          action: 'SYSTEM_ALERT_RESOLVED',
+          entity: 'system_alert',
+          entityId: cleanId
+        });
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 };

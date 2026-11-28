@@ -24,8 +24,16 @@ export type CategoryKey =
   | 'car_accessories'
   | 'speakers'
   | 'adapters'
+  | 'printers'
+  | 'gaming'
   | 'accessories'
   | (string & {});
+
+export interface ProductSocialLinks {
+  facebook?: string;
+  tiktok?: string;
+  instagram?: string;
+}
 
 export interface CustomCategory {
   key: string;
@@ -102,6 +110,7 @@ export interface Product {
   catalog_status?: 'verified' | 'estimated';
   image_is_illustrative?: boolean;
   data_sources?: { url: string; title?: string }[];
+  social_links?: ProductSocialLinks;
   source_row?: number;
   source_item_code?: string;
   source_name?: string;
@@ -231,6 +240,8 @@ export interface Order extends DeliveryAddressFields {
   packed_at?: string;
   packed_by?: string;
   tracking_number?: string;
+  idempotency_key?: string;
+  invoice_number?: string;
   whatsapp_notification_sent: boolean;
   cancellation_reason?: string;
   cancelled_by?: string;
@@ -369,6 +380,15 @@ export interface StoreSettings {
   custom_shipping_rates?: CustomShippingRate[];
   custom_cities?: CustomCity[];
   disabled_cities?: string[];
+  // Analytics, SEO & Legal Compliance
+  ga4_measurement_id?: string;
+  gsc_verification_token?: string;
+  meta_capi_enabled?: boolean;
+  commercial_register?: string;
+  tax_id?: string;
+  vat_rate?: number;
+  data_retention_months?: number;
+  dpo_contact_email?: string;
   // Email Template Customization
   email_subject_template?: string;
   email_header_title?: string;

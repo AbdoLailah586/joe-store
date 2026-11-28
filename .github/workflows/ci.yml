@@ -1,0 +1,35 @@
+name: JOE Store CI & Security Checks
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Production dependency vulnerability audit
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: TypeScript typecheck
+        run: npx tsc --noEmit
+
+      - name: Run unit & security tests
+        run: npm test
+
+      - name: Build production bundle
+        run: npm run build

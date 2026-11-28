@@ -26,6 +26,9 @@ export interface User {
   addresses: UserAddress[];
   created_at: string;
   bio?: string;
+  marketing_opt_in?: boolean;
+  ai_training_opt_in?: boolean;
+  parental_consent_at?: string;
 }
 
 export function isAccountAdmin(u?: Partial<User> | null): boolean {
@@ -54,9 +57,12 @@ interface AuthContextType {
   pendingSecondFactor: boolean;
   completeSecondFactor: (code: string) => Promise<void>;
   sendOtp: (email: string, name?: string) => Promise<{ success: boolean; delivered?: boolean; message?: string; isSimulatedNotice?: boolean; simulatedCode?: string; otpCode?: string; resendNotice?: string; error?: string }>;
-  verifyOtpAndRegister: (data: { email: string; code: string; name: string; phone: string; password?: string }) => Promise<{ success: boolean; error?: string }>;
+  verifyOtpAndRegister: (data: { email: string; code: string; name: string; phone: string; password?: string; marketing_opt_in?: boolean; ai_training_opt_in?: boolean; parental_consent?: boolean }) => Promise<{ success: boolean; error?: string }>;
   registerWithEmail: (name: string, email: string, pass: string, phone: string) => Promise<boolean>;
   logout: () => void;
+  logoutAll: () => Promise<{ success: boolean; error?: string }>;
+  requestPasswordReset: (email: string) => Promise<{ success: boolean; message?: string; error?: string }>;
+  completePasswordReset: (token: string, newPassword: string) => Promise<{ success: boolean; message?: string; error?: string }>;
   updateProfile: (data: Partial<User>) => Promise<{ success: boolean; error?: string }>;
   changePassword: (oldPass: string, newPass: string) => Promise<{ success: boolean; error?: string }>;
   updateEmail: (newEmail: string) => Promise<{ success: boolean; error?: string }>;
@@ -212,7 +218,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // 4. Verify 6-Digit OTP and Activate User in Neon DB
-  const verifyOtpAndRegister = async (data: { email: string; code: string; name: string; phone: string; password?: string }) => {
+  const verifyOtpAndRegister = async (data: { email: string; code: string; name: string; phone: string; password?: string; marketing_opt_in?: boolean; ai_training_opt_in?: boolean; parental_consent?: boolean }) => {
     try {
       const res = await neonDb.verifyOtpAndCreateUser(data);
       if(res.requiresTotp){acceptSignIn(res);return {success:true}}
@@ -240,6 +246,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     activeUserId.current = undefined;
     setUser(null);
     void neonDb.logoutSession().catch(() => {});
+  };
+
+  const logoutAll = async (): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await neonDb.logoutAllDevices();
+      if (res?.success) {
+        setPendingSecondFactor(false);
+        activeUserId.current = undefined;
+        removeStorage('joe_store_user');
+        setUser(null);
+        return { success: true };
+      }
+      return { success: false, error: res?.error || 'تعذر تسجيل الخروج من الأجهزة.' };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'تعذر تسجيل الخروج من الأجهزة.' };
+    }
+  };
+
+  const requestPasswordReset = async (email: string) => {
+    return await neonDb.requestPasswordReset(email);
+  };
+
+  const completePasswordReset = async (token: string, newPassword: string) => {
+    return await neonDb.completePasswordReset(token, newPassword);
   };
 
   // Profile Update (Name, Phone, Avatar, Addresses, Bio)
@@ -336,6 +366,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         verifyOtpAndRegister,
         registerWithEmail,
         logout,
+        logoutAll,
+        requestPasswordReset,
+        completePasswordReset,
         updateProfile,
         changePassword,
         updateEmail,

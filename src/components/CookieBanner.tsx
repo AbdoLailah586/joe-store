@@ -36,7 +36,10 @@ export const CookieBanner: React.FC = () => {
 
   const handleChoice = (choice: CookieConsentChoice) => {
     saveCookieConsent(choice);
-    if (typeof trackActivity === 'function') {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('joe-cookie-consent-changed', { detail: { choice } }));
+    }
+    if (choice === 'accepted' && typeof trackActivity === 'function') {
       trackActivity('visit', undefined, { cookie_consent: choice });
     }
     setVisible(false);

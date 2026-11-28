@@ -42,18 +42,27 @@ test('visitorAttribution extracts utm_content, utm_term and click_id', () => {
 test('api/store enriches trackActivity with server IP and Vercel geo headers', async () => {
   let capturedActivity;
   const address = compile('src/utils/deliveryAddress.ts');
+  const monMock = { fetchWithTimeout: fetch, logStructured() {}, recordOperationalAlert: async () => {} };
   const gw = compile('server/paymentGateway.ts', {
-    './whatsappCrm.js': { buildServerOrderWhatsAppMessage: () => '', dispatchWhatsAppViaCrm: async () => ({}), resolveCrmConfig: () => ({ configured: false }) }
+    './whatsappCrm.js': { buildServerOrderWhatsAppMessage: () => '', dispatchWhatsAppViaCrm: async () => ({}), resolveCrmConfig: () => ({ configured: false }) },
+    './monitoring.js': monMock,
+    './metaCapi.js': { sendMetaConversionEvent: async () => ({ sent: false }) }
   });
   const { execute } = compile('api/store.ts', {
     '../server/store.js': { neonDb: {}, mapRowToOrder: r => r, logAudit: async () => {} },
     '../server/whatsappCrm.js': { buildServerOrderWhatsAppMessage: () => '', dispatchWhatsAppViaCrm: async () => ({}), resolveCrmConfig: () => ({ configured: false }) },
     '../server/paymentGateway.js': gw,
+    '../server/monitoring.js': monMock,
+    '../server/pricing.js': { sanitizeUploadedImage: x => x, calculateServerShippingFee: ({ subtotal }) => (subtotal >= 2500 ? 0 : 35), validateAndComputeCouponDiscount: () => ({ discount: 0 }) },
+    '../server/rateLimit.js': { extractClientIp: () => '127.0.0.1', checkRateLimit: async () => ({ allowed: true, remaining: 5, retryAfterSeconds: 0 }), clearRateLimit: async () => {} },
+    '../server/jobs.js': { enqueueBackgroundJob: async () => ({ queued: true }) },
+    '../server/metaCapi.js': { sendMetaConversionEvent: async () => ({ sent: false }) },
+    '../lib/mailer.js': { sendTransactionalEmail: async () => ({ sent: true }) },
     '../lib/access.js': access,
     '../src/utils/deliveryAddress.js': address,
     '../server/orderWrites.js': {},
     '../lib/totp.js': totp,
-    '../lib/session.js': { database: () => ({}), currentUser: () => null, passwordMatches, passwordHash, pendingSecondFactor: async () => null, issueSession: async () => {} }
+    '../lib/session.js': { database: () => ({}), currentUser: () => null, passwordMatches, passwordHash, pendingSecondFactor: async () => null, issueSession: async () => {}, endAllSessions: async () => {}, clearSessionCookie() {} }
   });
 
   await execute(
@@ -68,7 +77,7 @@ test('api/store enriches trackActivity with server IP and Vercel geo headers', a
     { setHeader() {} },
     {
       method: 'trackActivity',
-      args: [{ sessionId: 'sess-geo-1', actionType: 'visit', metadata: { screen_size: '390x844' } }]
+      args: [{ sessionId: 'sess-geo-1', actionType: 'visit', metadata: { cookie_consent: 'accepted', screen_size: '390x844' } }]
     },
     {
       user: null,
@@ -86,6 +95,16 @@ test('api/store enriches trackActivity with server IP and Vercel geo headers', a
   assert.equal(capturedActivity.metadata.geo_country, 'EG');
   assert.equal(capturedActivity.metadata.geo_city, 'Mansoura');
   assert.equal(capturedActivity.metadata.screen_size, '390x844');
+
+  // Essential-only visitors must never have their IP/location persisted
+  await execute(
+    { headers: { 'x-forwarded-for': '41.42.43.44', 'x-vercel-ip-country': 'EG' } },
+    { setHeader() {} },
+    { method: 'trackActivity', args: [{ sessionId: 'sess-priv-2', actionType: 'visit', metadata: { cookie_consent: 'essential' } }] },
+    { user: null, sql: Object.assign(async () => [], { query: async () => [] }), store: { trackActivity: async act => { capturedActivity = act; } } }
+  );
+  assert.equal(capturedActivity.metadata.ip_address, undefined);
+  assert.equal(capturedActivity.metadata.geo_country, undefined);
 });
 
 test('server/store getGuestInsights reads search queries from metadata->>query and returns full signals', async () => {
@@ -127,7 +146,8 @@ test('server/store getGuestInsights reads search queries from metadata->>query a
     '../src/utils/deliveryAddress.js': { decodeDeliveryNotes: () => ({}), encodeDeliveryNotes: () => '', formatDeliveryAddress: () => '' },
     './orderWrites.js': {},
     './whatsappCrm.js': {},
-    './paymentGateway.js': {}
+    './paymentGateway.js': {},
+    './monitoring.js': { fetchWithTimeout: fetch, logStructured() {}, recordOperationalAlert: async () => {} }
   });
 
   const insights = await neonDb.getGuestInsights('sess-guest-7');
@@ -150,7 +170,7 @@ test('UsersTab displays unregistered visitors and every MetricCard opens an expl
   ];
 
   // Mock React hooks in order so UsersTab renders synchronously with populated state
-  const stateValues = [users, guests, false, '', 'all', '', '', null, 'customer', [], false, false, '', '', '', '', 'customer', [], false, null, null, false, 'views', null, 'overview'];
+  const stateValues = [users, guests, false, '', 'all', 1, 1, '', '', null, 'customer', [], false, false, '', '', '', '', 'customer', [], false, null, null, false, 'views', null, 'overview'];
   let stateIdx = 0;
   const reactMock = {
     ...React,

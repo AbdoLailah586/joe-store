@@ -1,11 +1,9 @@
-import { RefObject } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { SplitText } from "gsap/SplitText";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, RefObject } from "react";
 
-gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
-
+/**
+ * Lightweight zero-dependency storefront reveal motion using IntersectionObserver.
+ * Respects prefers-reduced-motion and preserves GSAP-free MIT licensing.
+ */
 export default function StorefrontMotion({
   root,
   motionKey,
@@ -13,67 +11,57 @@ export default function StorefrontMotion({
   root: RefObject<HTMLElement>;
   motionKey: string;
 }) {
-  useGSAP(
-    () => {
-      let disposed = false;
-      const media = gsap.matchMedia();
-      // Font metrics matter for Arabic line wrapping. Never split Arabic letters.
-      document.fonts.ready.then(() => {
-        if (disposed || !root.current) return;
-        media.add("(prefers-reduced-motion: no-preference)", () => {
-          root.current
-            ?.querySelectorAll<HTMLElement>("[data-split-title]")
-            .forEach((title) => {
-              SplitText.create(title, {
-                type: "lines",
-                autoSplit: true,
-                aria: "auto",
-                onSplit: (split) =>
-                  gsap.from(split.lines, {
-                    y: 26,
-                    opacity: 0,
-                    stagger: 0.12,
-                    duration: 0.85,
-                    ease: "power3.out",
-                    clearProps: "transform,opacity",
-                  }),
-              });
-            });
-          root.current
-            ?.querySelectorAll<HTMLElement>("[data-reveal]")
-            .forEach((section) => {
-              gsap.from(section, {
-                y: 24,
-                opacity: 0,
-                duration: 0.65,
-                ease: "power2.out",
-                clearProps: "transform,opacity",
-                scrollTrigger: {
-                  trigger: section,
-                  start: "top 94%",
-                  once: true,
-                },
-              });
-            });
-          const heroPieces =
-            root.current?.querySelectorAll("[data-hero-piece]");
-          if (heroPieces?.length)
-            gsap.from(heroPieces, {
-              y: 22,
-              opacity: 0,
-              stagger: 0.1,
-              duration: 0.9,
-              ease: "power3.out",
-              clearProps: "transform,opacity",
-            });
-        });
-      });
-      return () => {
-        disposed = true;
-        media.revert();
-      };
-    },
-    { scope: root, dependencies: [motionKey], revertOnUpdate: true },
-  );
+  useEffect(() => {
+    const container = root.current;
+    if (!container || typeof window === "undefined") return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
+
+    const animateElement = (el: HTMLElement, delayMs = 0) => {
+      if (el.dataset.motionDone === "1") return;
+      el.dataset.motionDone = "1";
+      try {
+        el.animate(
+          [
+            { opacity: 0, transform: "translateY(22px)" },
+            { opacity: 1, transform: "translateY(0)" },
+          ],
+          {
+            duration: 620,
+            delay: delayMs,
+            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+            fill: "both",
+          }
+        );
+      } catch {}
+    };
+
+    const heroPieces = Array.from(container.querySelectorAll<HTMLElement>("[data-hero-piece]"));
+    heroPieces.forEach((el, idx) => animateElement(el, idx * 80));
+
+    const splitTitles = Array.from(container.querySelectorAll<HTMLElement>("[data-split-title]"));
+    splitTitles.forEach((el, idx) => animateElement(el, idx * 90));
+
+    const revealEls = Array.from(container.querySelectorAll<HTMLElement>("[data-reveal]"));
+    if (typeof IntersectionObserver === "undefined") {
+      revealEls.forEach((el) => animateElement(el));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            animateElement(entry.target as HTMLElement);
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -4% 0px" }
+    );
+
+    revealEls.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [root, motionKey]);
+
   return null;
 }

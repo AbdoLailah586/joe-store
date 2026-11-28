@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 import { useAuth, UserAddress } from '../context/AuthContext';
 import { DetailedAddressFields } from '../components/DetailedAddressFields';
-import type { DeliveryAddressFields } from '../types';
+import type { DeliveryAddressFields, Order } from '../types';
 import { buildAddressDetails, formatDeliveryAddress, normalizeDigits, isGoogleMapsUrl } from '../utils/deliveryAddress';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -37,14 +37,21 @@ import { orderBelongsToAccount } from '../utils/storeExpansion';
 import { InfoButton, useDetails } from '../components/DetailsDialog';
 import { orderDetail, productDetail } from '../utils/detailModels';
 import { normalizeProductImage } from '../utils/imageUrl';
+import { InvoiceModal } from '../components/InvoiceModal';
+import { neonDb } from '../services/neonDb';
+
+const makeSvgAvatar = (bg1: string, bg2: string, accent: string, label: string) =>
+  `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg2}"/></linearGradient></defs><rect width="120" height="120" rx="60" fill="url(#g)"/><circle cx="60" cy="45" r="20" fill="${accent}" opacity="0.92"/><path d="M26 106c5-20 19-30 34-30s29 10 34 30" fill="${accent}" opacity="0.92"/><text x="60" y="51" font-family="sans-serif" font-size="14" font-weight="bold" fill="${bg1}" text-anchor="middle">${label}</text></svg>`
+  )}`;
 
 const PRESET_AVATARS = [
-  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80',
-  'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=250&q=80',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=250&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=250&q=80',
-  'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=250&q=80',
-  'https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=250&q=80'
+  makeSvgAvatar('#0f172a', '#1e293b', '#f59e0b', 'JS'),
+  makeSvgAvatar('#064e3b', '#047857', '#ecfdf5', 'PRO'),
+  makeSvgAvatar('#312e81', '#4338ca', '#eef2ff', 'VIP'),
+  makeSvgAvatar('#78350f', '#b45309', '#fef3c7', 'AU'),
+  makeSvgAvatar('#881337', '#be123c', '#ffe4e6', 'EL'),
+  makeSvgAvatar('#0f766e', '#0d9488', '#f0fdfa', 'JO')
 ];
 
 export const Profile: React.FC = () => {
@@ -53,6 +60,7 @@ export const Profile: React.FC = () => {
     isAdmin,
     canAccessAdmin,
     logout,
+    logoutAll,
     updateProfile,
     changePassword,
     updateEmail,
@@ -61,7 +69,7 @@ export const Profile: React.FC = () => {
     deleteAddress
   } = useAuth();
 
-  const { orders, navigate } = useStore();
+  const { orders, navigate, settings } = useStore();
   const { t, formatPrice, language, setLanguage } = useLanguage();
   const { openDetails } = useDetails();
   const inspectOrder = (order: import('../types').Order) => openDetails(orderDetail(order, formatPrice, p => openDetails(productDetail(p, language, formatPrice))));
@@ -112,6 +120,7 @@ export const Profile: React.FC = () => {
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [invoiceOrder, setInvoiceOrder] = useState<Order | null>(null);
 
   if (!user) {
     return (
@@ -160,8 +169,8 @@ export const Profile: React.FC = () => {
   // 2. Handle Change Password
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPassword || newPassword.length < 6) {
-      showToast('error', 'يجب أن تتكون كلمة المرور الجديدة من 6 أحرف على الأقل.');
+    if (!newPassword || newPassword.length < 8 || !/[A-Za-z\u0600-\u06FF]/.test(newPassword) || !/\d/.test(newPassword)) {
+      showToast('error', 'يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل وتحتوي على حروف وأرقام.');
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -431,15 +440,25 @@ export const Profile: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
+                <div className="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
                   <span className="text-slate-600">التوصيل إلى: {[ord.governorate, ord.city].filter(Boolean).join(' - ')}</span>
-                  <button
-                    onClick={() => navigate('track-order')}
-                    className="text-amber-700 hover:underline flex items-center gap-1 font-bold"
-                  >
-                    <span>تتبع مسار الشحنة</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setInvoiceOrder(ord)}
+                      className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold inline-flex items-center gap-1"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>الفاتورة الإلكترونية (QR)</span>
+                    </button>
+                    <button
+                      onClick={() => navigate('track-order')}
+                      className="text-amber-700 hover:underline flex items-center gap-1 font-bold"
+                    >
+                      <span>تتبع مسار الشحنة</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
@@ -727,7 +746,7 @@ export const Profile: React.FC = () => {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="6 أحرف أو أكثر..."
+                  placeholder="8 أحرف أو أكثر (حروف وأرقام)..."
                   className="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-outfit focus:outline-none focus:border-amber-400"
                 />
               </div>
@@ -744,13 +763,30 @@ export const Profile: React.FC = () => {
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={isChangingPass}
-                className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-glow-gold transition-all"
-              >
-                {isChangingPass ? 'جاري التحديث...' : 'تحديث كلمة المرور'}
-              </button>
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <button
+                  type="submit"
+                  disabled={isChangingPass}
+                  className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-glow-gold transition-all"
+                >
+                  {isChangingPass ? 'جاري التحديث...' : 'تحديث كلمة المرور'}
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const res = await logoutAll();
+                    if (res.success) {
+                      showToast('success', 'تم تسجيل الخروج من جميع الأجهزة المفتوحة بنجاح.');
+                      navigate('home');
+                    } else {
+                      showToast('error', res.error || 'تعذر تنفيذ الخروج من الأجهزة.');
+                    }
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-bold text-xs transition-all"
+                >
+                  تسجيل الخروج من جميع الأجهزة
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -783,15 +819,62 @@ export const Profile: React.FC = () => {
             className="px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-600 text-on-brand font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-rose-900/30 transition-all"
           >
             <Trash2 className="w-4 h-4" />
-            <span>طلب حذف الحساب نهائياً</span>
+            <span>طلب حذف الحساب وإخفاء الهوية نهائياً</span>
           </button>
+
+          <div className="pt-4 border-t border-rose-500/20 space-y-3">
+            <h4 className="font-bold text-slate-900 text-sm">حقوق بياناتك (DSAR &amp; إلغاء الاشتراك)</h4>
+            <p className="text-xs text-slate-600">
+              يمكنك تنزيل نسخة JSON من بياناتك المسجلة وطلباتك في أي وقت، أو إيقاف رسائل التسويق وتخصيص الذكاء الاصطناعي بضغطة واحدة.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  const res = await neonDb.exportMyData();
+                  if (!res.success || !res.data) {
+                    showToast('error', res.error || 'تعذر تصدير بياناتك.');
+                    return;
+                  }
+                  const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: 'application/json;charset=utf-8' });
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = `joe-store-my-data-${new Date().toISOString().slice(0, 10)}.json`;
+                  document.body.appendChild(link);
+                  link.click();
+                  link.remove();
+                  URL.revokeObjectURL(url);
+                  showToast('success', 'تم تصدير نسخة بياناتك الكاملة بنجاح.');
+                }}
+                className="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-900 font-bold text-xs"
+              >
+                عرض وتصدير بياناتي (JSON / DSAR)
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const res = await neonDb.updateConsentPreferences({ marketing_opt_in: false, ai_training_opt_in: false });
+                  if (res.success) {
+                    if (res.user) await updateProfile(res.user);
+                    showToast('success', 'تم إلغاء الاشتراك من الرسائل التسويقية وتخصيص الذكاء الاصطناعي.');
+                  } else {
+                    showToast('error', res.error || 'تعذر تحديث التفضيلات.');
+                  }
+                }}
+                className="px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-300 hover:bg-amber-100 text-amber-900 font-bold text-xs"
+              >
+                إلغاء الاشتراك التسويقي بضغطة واحدة
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-white border border-rose-500/40 rounded-3xl p-6 text-slate-900 shadow-2xl space-y-4">
+          <div role="dialog" aria-modal="true" aria-label="تأكيد نهائي لحذف الحساب" className="w-full max-w-md bg-white border border-rose-500/40 rounded-3xl p-6 text-slate-900 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <h3 className="font-bold text-sm text-rose-700 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5" />
@@ -834,6 +917,11 @@ export const Profile: React.FC = () => {
           </div>
         </div>
       )}
+      <InvoiceModal
+        order={invoiceOrder}
+        settings={settings}
+        onClose={() => setInvoiceOrder(null)}
+      />
         </div>
       </div>
     </div>

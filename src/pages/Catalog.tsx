@@ -14,6 +14,7 @@ import {
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ProductCard } from '../components/ProductCard';
+import { ProductGridSkeleton } from '../components/Skeletons';
 import { CategoryKey, ProductCondition } from '../types';
 import { Pagination } from '../components/Pagination';
 import { pageSlice } from '../utils/storeExpansion';
@@ -22,6 +23,8 @@ import { AnimateStorefront } from '../components/motion/AnimateStorefront';
 import { useDetails } from '../components/DetailsDialog';
 import { productRows } from '../utils/detailModels';
 import { sortCatalogProducts } from '../utils/productSorting';
+import { trackMetaEvent } from '../utils/metaPixel';
+import { hasAnalyticsConsent, trackGa4Search } from '../utils/analytics';
 import {
   CHARGING_SUBSECTIONS,
   STORE_CATEGORIES,
@@ -84,6 +87,20 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
   const [selectedStorage, setSelectedStorage] = useState<string>(initialQuery.current.get('storage') || 'all');
   const [sortBy, setSortBy] = useState<'newest' | 'featured' | 'price_asc' | 'price_desc' | 'rating'>(() => (['newest', 'featured', 'price_asc', 'price_desc', 'rating'].includes(initialQuery.current.get('sort') || '') ? initialQuery.current.get('sort') : 'newest') as any);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
+  // Debounce catalog search query for analytics & Meta Search tracking
+  useEffect(() => {
+    const q = searchQuery.trim();
+    if (!q || q.length < 2) return;
+    const timer = window.setTimeout(() => {
+      if (hasAnalyticsConsent()) {
+        trackActivity?.('search', undefined, { query: q, category: selectedCategory });
+        trackMetaEvent('Search', { search_string: q });
+        trackGa4Search(q);
+      }
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [searchQuery, selectedCategory]);
 
 
   // Extract unique brands and storages
@@ -573,7 +590,9 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
           )}
 
           {/* Products Grid */}
-          {filteredProducts.length === 0 ? (
+          {isCatalogLoading && filteredProducts.length === 0 ? (
+            <ProductGridSkeleton count={12} />
+          ) : filteredProducts.length === 0 ? (
             <div className="p-10 sm:p-12 text-center rounded-3xl bg-white border border-slate-200 space-y-4">
               <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 mx-auto">
                 <Search className="w-8 h-8" />

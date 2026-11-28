@@ -20,6 +20,22 @@ function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
   el.setAttribute('content', content);
 }
 
+export function syncSiteVerificationMeta(token?: string) {
+  if (typeof document === 'undefined') return;
+  const cleaned = String(token || '').trim();
+  const existing = document.head.querySelector('meta[name="google-site-verification"]');
+  if (!cleaned) {
+    existing?.remove();
+    return;
+  }
+  // Accept either full meta tag or bare verification token
+  const match = cleaned.match(/content=["']([^"']+)["']/i);
+  const contentVal = match ? match[1].trim() : cleaned;
+  if (contentVal) {
+    upsertMeta('name', 'google-site-verification', contentVal);
+  }
+}
+
 function upsertCanonical(href: string) {
   if (typeof document === 'undefined') return;
   let link = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
