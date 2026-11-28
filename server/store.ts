@@ -154,7 +154,7 @@ function mapRowToProduct(row: any): Product {
         recorded_images: Array.isArray(row.images) ? row.images.filter(url => typeof url === 'string' && url.trim()) : [],
         in_stock: (row.stock_quantity ?? 0) > 0 && Number(row.price) > 0 && (row.is_active ?? true),
         is_active: row.is_active ?? true,
-        images: Array.isArray(row.images) && row.images.length > 0 ? row.images : ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],
+        images: Array.isArray(row.images) && row.images.length > 0 ? row.images : ['/product-placeholder.svg'],
         description_ar: details.description_ar || row.specs?.description_ar || row.name_ar,
         description_en: details.description_en || row.specs?.description_en || row.name_en,
         specs: publicSpecs as Record<string, string>,

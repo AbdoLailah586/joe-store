@@ -44,12 +44,18 @@ export const Navbar: React.FC = () => {
   const headerRef = useRef<HTMLElement>(null);
   const menu = useRef<HTMLDialogElement>(null);
   const categories: { key: CategoryKey; ar: string; en: string }[] = [
-    { key: "audio", ar: "سماعات وصوتيات", en: "Audio & earbuds" },
+    { key: "iphones", ar: "هواتف آيفون", en: "iPhones" },
+    { key: "feature_phones", ar: "هواتف زراير", en: "Feature Phones" },
+    { key: "chargers", ar: "شواحن", en: "Chargers" },
+    { key: "cables", ar: "كابلات", en: "Cables" },
+    { key: "car_chargers", ar: "شواحن سيارات", en: "Car Chargers" },
+    { key: "wireless_chargers", ar: "شواحن لاسلكية", en: "Wireless Chargers" },
+    { key: "headsets", ar: "سماعات هيدسيت", en: "Headsets" },
+    { key: "headphones", ar: "سماعات هيدفون", en: "Headphones" },
     { key: "smartwatches", ar: "ساعات ذكية", en: "Smartwatches" },
-    { key: "chargers_cables", ar: "شواحن وكابلات", en: "Chargers & cables" },
     { key: "powerbanks", ar: "باور بانك", en: "Power banks" },
     { key: "cases_protection", ar: "كفرات وحماية", en: "Cases & protection" },
-    { key: "smartphones", ar: "موبايلات", en: "Phones" },
+    { key: "smart_rings", ar: "خواتم التسبيح", en: "Smart Rings" },
     { key: "accessories", ar: "إكسسوارات", en: "Accessories" },
   ];
   const browse = (category: CategoryKey = "all") => {

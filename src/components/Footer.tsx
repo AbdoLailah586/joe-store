@@ -32,12 +32,15 @@ export const Footer: React.FC = () => {
       : "Hello JOE Store, I have a product question.",
   );
   const categories: [CategoryKey, string, string][] = [
-    ["audio", "سماعات وصوتيات", "Audio & earbuds"],
+    ["iphones", "هواتف آيفون", "iPhones"],
+    ["feature_phones", "هواتف زراير", "Feature Phones"],
+    ["chargers", "شواحن سريعة", "Fast Chargers"],
+    ["cables", "كابلات الشحن", "Charging Cables"],
+    ["headsets", "سماعات هيدسيت", "Headsets"],
+    ["headphones", "سماعات هيدفون", "Headphones"],
     ["smartwatches", "ساعات ذكية", "Smartwatches"],
-    ["chargers_cables", "شواحن وكابلات", "Chargers & cables"],
     ["powerbanks", "باور بانك", "Power banks"],
     ["cases_protection", "كفرات وحماية", "Cases & protection"],
-    ["smartphones", "موبايلات", "Phones"],
   ];
   const policies: [PolicyType, string, string][] = [
     ["warranty", "الضمان والاستبدال", "Warranty & returns"],

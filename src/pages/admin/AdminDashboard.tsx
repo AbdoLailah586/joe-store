@@ -327,13 +327,26 @@ export const AdminDashboard: React.FC = () => {
   const [editingCatNameEn, setEditingCatNameEn] = useState('');
 
   const defaultCategoriesList: CustomCategory[] = [
-    { key: 'smartphones', name_ar: 'هواتف ذكية', name_en: 'Smartphones', image: '/product-images/15c3630cb4bb430b367edd7f.webp' },
-    { key: 'chargers_cables', name_ar: 'شواحن وكابلات', name_en: 'Chargers & Cables', image: '/product-images/onmust-zolo-30w-studio.jpg' },
-    { key: 'audio', name_ar: 'سماعات وصوتيات', name_en: 'Audio & Earbuds', image: '/product-images/f6427a20c128ea77c56bc426.webp' },
-    { key: 'smartwatches', name_ar: 'ساعات ذكية', name_en: 'Smartwatches', image: '/product-images/3f4452f62308aae22858b473.webp' },
-    { key: 'powerbanks', name_ar: 'باور بانك', name_en: 'Power Banks', image: '/product-images/0e1a38acbfd018e570a0b515.webp' },
-    { key: 'cases_protection', name_ar: 'كفرات وحماية', name_en: 'Cases & Protection', image: '/product-images/2e1f8fb369b614aba97f55d1.webp' },
-    { key: 'accessories', name_ar: 'إكسسوارات متنوعة', name_en: 'Accessories', image: '/product-images/3af3d5bd2ec35679a678251e.webp' },
+    { key: 'iphones', name_ar: 'هواتف آيفون', name_en: 'iPhones', image: '/product-images/cat-iphone-16pm.jpg' },
+    { key: 'feature_phones', name_ar: 'هواتف زراير', name_en: 'Feature Phones', image: '/product-images/cat-feature-phone-nokia.jpg' },
+    { key: 'chargers', name_ar: 'شواحن جدارية وسريعة', name_en: 'Fast Wall Chargers', image: '/product-images/onmust-zolo-30w-studio.jpg' },
+    { key: 'cables', name_ar: 'كابلات الشحن والداتا', name_en: 'Charging Cables', image: '/product-images/4eb8c59128f84c84a66cd390.webp' },
+    { key: 'car_chargers', name_ar: 'شواحن سيارات', name_en: 'Car Chargers', image: '/product-images/b5e6d3bea2ecc40b6fd50a29.webp' },
+    { key: 'wireless_chargers', name_ar: 'شواحن لاسلكية MagSafe', name_en: 'Wireless Chargers', image: '/product-images/cat-wireless-charger.jpg' },
+    { key: 'headsets', name_ar: 'سماعات هيدسيت وإيربودز', name_en: 'Headsets & Earbuds', image: '/product-images/3c06d2c8e8216b7d3f06254a.webp' },
+    { key: 'headphones', name_ar: 'سماعات هيدفون', name_en: 'Headphones', image: '/product-images/f6427a20c128ea77c56bc426.webp' },
+    { key: 'smartwatches', name_ar: 'ساعات ذكية', name_en: 'Smartwatches', image: '/product-images/cat-apple-watch-ultra.jpg' },
+    { key: 'powerbanks', name_ar: 'باور بانك', name_en: 'Power Banks', image: '/product-images/15c3630cb4bb430b367edd7f.webp' },
+    { key: 'cases_protection', name_ar: 'كفرات وحماية', name_en: 'Cases & Covers', image: '/product-images/case-xinreeu-frosted-orange-ip17promax.jpg' },
+    { key: 'screen_protectors', name_ar: 'اسكرينات وحماية العدسات', name_en: 'Screen & Lens Guards', image: '/product-images/a792cefeb7c50327e00a5792.png' },
+    { key: 'smart_rings', name_ar: 'خواتم التسبيح الذكية', name_en: 'Smart Tasbih Rings', image: '/product-images/tasbih-beiqi-s7pro-studio.png' },
+    { key: 'holders_stands', name_ar: 'حوامل وترايبود', name_en: 'Holders & Stands', image: '/product-images/1eb83468cd59fda0e5a9ca9a.webp' },
+    { key: 'straps_bands', name_ar: 'أساور وحماية الساعات', name_en: 'Watch Straps & Bumpers', image: '/product-images/strap-alpine-loop-titanium-ghook-4colors.jpg' },
+    { key: 'photography_mics', name_ar: 'مايكات ومعدات تصوير', name_en: 'Mics & Gimbals', image: '/product-images/m1-gimbal-stabilizer-studio.png' },
+    { key: 'trackers', name_ar: 'أجهزة تتبع ذكية', name_en: 'Smart Trackers', image: '/product-images/world-tag-apple-findmy-studio.jpg' },
+    { key: 'car_accessories', name_ar: 'مستلزمات وطوارئ السيارات', name_en: 'Car Accessories', image: '/product-images/earldom-js02-studio.png' },
+    { key: 'speakers', name_ar: 'مكبرات صوت سبيكر', name_en: 'Bluetooth Speakers', image: '/product-images/3af3d5bd2ec35679a678251e.webp' },
+    { key: 'adapters', name_ar: 'محولات ووصلات OTG', name_en: 'Adapters & Hubs', image: '/product-images/4312cb7f98e9ef14a712461d.webp' },
   ];
 
   const currentCategories: CustomCategory[] = (settings.custom_categories && settings.custom_categories.length > 0)
@@ -754,12 +767,10 @@ export const AdminDashboard: React.FC = () => {
                 className="bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-600 focus:outline-none"
               >
                 <option value="all">كل الأقسام</option>
-                <option value="smartphones">هواتف ذكية</option>
-                <option value="smartwatches">ساعات ذكية</option>
-                <option value="audio">سماعات</option>
-                <option value="chargers_cables">شواحن وكابلات</option>
-                <option value="powerbanks">باوربانك</option>
-                <option value="cases_protection">جرابات وحمايات</option>
+                {defaultCategoriesList.map((c) => (
+                  <option key={c.key} value={c.key}>{c.name_ar}</option>
+                ))}
+                <option value="accessories">إكسسوارات متنوعة</option>
               </select>
             </div>
 
@@ -2264,7 +2275,7 @@ export const AdminDashboard: React.FC = () => {
                         <Edit className="w-3 h-3 text-amber-600" />
                         <span>تعديل الصورة</span>
                       </button>
-                      {!['smartphones', 'chargers_cables', 'audio', 'smartwatches', 'powerbanks', 'cases_protection', 'accessories'].includes(cat.key) && (
+                      {!['iphones', 'feature_phones', 'chargers', 'cables', 'car_chargers', 'wireless_chargers', 'headsets', 'headphones', 'smartwatches', 'powerbanks', 'cases_protection', 'accessories'].includes(cat.key) && (
                         <button
                           type="button"
                           onClick={() => handleDeleteCategory(cat.key)}

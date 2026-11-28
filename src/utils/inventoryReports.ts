@@ -1,8 +1,18 @@
 import type { Product } from '../types';
 
 export const categoryLabels: Record<string, string> = {
-  smartphones: 'هواتف ذكية', smartwatches: 'ساعات ذكية', audio: 'سماعات وصوتيات',
-  chargers_cables: 'شواحن وكابلات', powerbanks: 'باور بانكات', cases_protection: 'جرابات وحمايات', accessories: 'إكسسوارات أخرى',
+  smartphones: 'الهواتف الذكية', iphones: 'هواتف آيفون', feature_phones: 'هواتف زراير',
+  smartwatches: 'ساعات ذكية', audio: 'سماعات وصوتيات',
+  headsets: 'سماعات هيدسيت وإيربودز', headphones: 'سماعات هيدفون',
+  chargers_cables: 'شواحن وكابلات', chargers: 'شواحن جدارية وسريعة', cables: 'كابلات الشحن والداتا',
+  car_chargers: 'شواحن سيارات', wireless_chargers: 'شواحن لاسلكية MagSafe',
+  desktop_chargers: 'محطات شحن مكتبية', powerbanks: 'باور بانك',
+  cases_protection: 'كفرات وحماية', screen_protectors: 'اسكرينات وحماية العدسات',
+  holders_stands: 'حوامل وترايبود', straps_bands: 'أساور وحماية الساعات',
+  smart_rings: 'خواتم التسبيح الذكية', trackers: 'أجهزة تتبع ذكية',
+  photography_mics: 'مايكات ومعدات تصوير', car_accessories: 'مستلزمات وطوارئ السيارات',
+  speakers: 'مكبرات صوت سبيكر', adapters: 'محولات ووصلات OTG',
+  accessories: 'إكسسوارات متنوعة',
 };
 export const reportOptions = {
   stockOp: { all: 'كل الكميات', lt: 'أقل من', lte: 'أقل من أو يساوي', eq: 'يساوي', gt: 'أكبر من', gte: 'أكبر من أو يساوي', between: 'بين رقمين (شامل)' },

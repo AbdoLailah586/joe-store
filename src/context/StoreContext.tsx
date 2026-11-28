@@ -95,7 +95,7 @@ interface StoreContextType {
 
   // Navigation & Search
   currentTab: AppTab;
-  navigate: (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string }) => void;
+  navigate: (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string; sub?: string }) => void;
   selectedProductId: string | null;
   quickViewProduct: Product | null;
   setQuickViewProduct: (prod: Product | null) => void;
@@ -180,7 +180,7 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user: account, sessionReady, adminSections: accountSections = [] } = useAuth();
   const accountAccessKey = `${account?.id || ''}:${account?.role || ''}:${accountSections.join(',')}`;
-  const CURRENT_VERSION = 'v13_live_official_images_394';
+  const CURRENT_VERSION = 'v14_verified_catalog_and_categories';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
@@ -567,7 +567,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const navigate = (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string }) => {
+  const navigate = (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string; sub?: string }) => {
     setCurrentTab(tab);
     let targetProductId = selectedProductId;
     if (productId) {
@@ -591,6 +591,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (cat && cat !== 'all') params.set('category', cat);
       if (q) params.set('q', q);
       if (options?.brand) params.set('brand', options.brand);
+      if (options?.sub) params.set('sub', options.sub);
       const queryStr = params.toString();
       targetPath = queryStr ? `/${tab}?${queryStr}` : `/${tab}`;
     } else if (tab === 'checkout') {
@@ -654,7 +655,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       discount_percentage: newProd.discount_percentage,
       stock: newProd.stock || 1,
       in_stock: (newProd.stock || 1) > 0,
-      images: newProd.images && newProd.images.length > 0 ? newProd.images : ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],
+      images: newProd.images && newProd.images.length > 0 ? newProd.images : ['/product-placeholder.svg'],
       description_ar: newProd.description_ar || '',
       description_en: newProd.description_en || '',
       specs: newProd.specs || {},
@@ -693,7 +694,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       stock: p.stock ?? 5,
       in_stock: (p.stock ?? 5) > 0,
       is_active: true,
-      images: p.images && p.images.length > 0 ? p.images : ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'],
+      images: p.images && p.images.length > 0 ? p.images : ['/product-placeholder.svg'],
       description_ar: p.description_ar || '',
       description_en: p.description_en || '',
       specs: p.specs || {},

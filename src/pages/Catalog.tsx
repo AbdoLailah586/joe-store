@@ -22,6 +22,15 @@ import { AnimateStorefront } from '../components/motion/AnimateStorefront';
 import { useDetails } from '../components/DetailsDialog';
 import { productRows } from '../utils/detailModels';
 import { sortCatalogProducts } from '../utils/productSorting';
+import {
+  CHARGING_SUBSECTIONS,
+  STORE_CATEGORIES,
+  getCategoryLabel,
+  isChargingCategory,
+  productMatchesCategory,
+  productMatchesSubsection,
+} from '../utils/categories';
+import { generateWhatsAppWebLink } from '../utils/whatsappService';
 
 export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'recent' }> = ({ mode = 'catalog' }) => {
   const {
@@ -61,6 +70,12 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
   const recentIds = readStoredArray('joe_recent_products', (value): value is string => typeof value === 'string');
 
   // Filter States
+  const [selectedSubSection, setSelectedSubSection] = useState<string>(initialQuery.current.get('sub') || 'all');
+  useEffect(() => {
+    if (!isChargingCategory(selectedCategory) && selectedSubSection !== 'all') {
+      setSelectedSubSection('all');
+    }
+  }, [selectedCategory, selectedSubSection]);
   const [selectedBrand, setSelectedBrand] = useState<string>(initialQuery.current.get('brand') || 'all');
   const [selectedCondition, setSelectedCondition] = useState<string>(initialQuery.current.get('condition') || 'all');
   const [minBatteryHealth, setMinBatteryHealth] = useState<number>(Math.max(0, Math.min(100, Number(initialQuery.current.get('battery')) || 0)));
@@ -81,6 +96,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
 
   const activeFilterCount = useMemo(() => {
     return (selectedCategory !== 'all' ? 1 : 0) +
+      (selectedSubSection !== 'all' ? 1 : 0) +
       (selectedCondition !== 'all' ? 1 : 0) +
       (minBatteryHealth > 0 ? 1 : 0) +
       (selectedStorage !== 'all' ? 1 : 0) +
@@ -88,39 +104,39 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
       (Number.isFinite(maxPrice) && maxPrice < priceCeiling ? 1 : 0) +
       (availableOnly ? 1 : 0) +
       (searchQuery.trim() ? 1 : 0);
-  }, [selectedCategory, selectedCondition, minBatteryHealth, selectedStorage, selectedBrand, maxPrice, priceCeiling, availableOnly, searchQuery]);
+  }, [selectedCategory, selectedSubSection, selectedCondition, minBatteryHealth, selectedStorage, selectedBrand, maxPrice, priceCeiling, availableOnly, searchQuery]);
 
-  // Dynamic Categories list from settings or catalog
+  // Dynamic Categories list from settings or curated taxonomy
   const categoriesList = useMemo(() => {
     const list: { key: CategoryKey; label: string }[] = [
       { key: 'all', label: t('allCategories') }
     ];
-    if (settings.custom_categories && settings.custom_categories.length > 0) {
-      settings.custom_categories.forEach(c => {
-        list.push({ key: c.key as CategoryKey, label: isAr ? c.name_ar : (c.name_en || c.name_ar) });
-      });
-    } else {
-      list.push(
-        { key: 'smartphones', label: t('smartphones') },
-        { key: 'smartwatches', label: t('smartwatches') },
-        { key: 'audio', label: t('audio') },
-        { key: 'chargers_cables', label: t('chargers_cables') },
-        { key: 'powerbanks', label: t('powerbanks') },
-        { key: 'cases_protection', label: t('cases_protection') },
-        { key: 'accessories', label: t('accessories') }
-      );
-    }
+    const sourceCats = (settings.custom_categories && settings.custom_categories.length >= 10)
+      ? settings.custom_categories
+      : STORE_CATEGORIES;
+    sourceCats.forEach(c => {
+      list.push({ key: c.key as CategoryKey, label: isAr ? c.name_ar : (c.name_en || c.name_ar) });
+    });
     products.forEach(p => {
       if (p.category && !list.some(item => item.key === p.category)) {
-        list.push({ key: p.category, label: p.category });
+        list.push({ key: p.category, label: getCategoryLabel(p.category, isAr) });
       }
     });
     return list;
   }, [settings.custom_categories, products, isAr, t]);
 
+  // Visible charging subsections when browsing chargers / cables categories
+  const visibleChargingSubSections = useMemo(() => {
+    if (!isChargingCategory(selectedCategory)) return [];
+    if (selectedCategory === 'cables') return CHARGING_SUBSECTIONS.filter(s => s.group === 'cables');
+    if (selectedCategory === 'chargers') return CHARGING_SUBSECTIONS.filter(s => s.group === 'chargers');
+    return CHARGING_SUBSECTIONS;
+  }, [selectedCategory]);
+
   // Reset Filters
   const handleResetFilters = () => {
     setSelectedCategory('all');
+    setSelectedSubSection('all');
     setSelectedBrand('all');
     setSelectedCondition('all');
     setMinBatteryHealth(0);
@@ -138,8 +154,10 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
       if (mode === 'deals' && !(p.price > 0 && ((p.original_price || 0) > p.price || p.is_flash_sale))) return false;
       if (mode === 'recent' && !recentIds.includes(p.id)) return false;
       if (availableOnly && !(p.in_stock && p.stock > 0 && p.price > 0)) return false;
-      // Category
-      if (selectedCategory !== 'all' && p.category !== selectedCategory) return false;
+      // Category (with parent/child group support)
+      if (!productMatchesCategory(p, selectedCategory)) return false;
+      // Charging / Cable Subsection
+      if (selectedSubSection !== 'all' && !productMatchesSubsection(p, selectedSubSection)) return false;
       // Brand
       if (selectedBrand !== 'all' && p.brand !== selectedBrand) return false;
       // Condition
@@ -162,9 +180,9 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     });
 
     return sortCatalogProducts(matched, sortBy);
-  }, [products, selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, mode, wishlist, recentIds.join()]);
+  }, [products, selectedCategory, selectedSubSection, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, mode, wishlist, recentIds.join()]);
 
-  const filterKey = JSON.stringify([selectedCategory, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, pageSize, mode]);
+  const filterKey = JSON.stringify([selectedCategory, selectedSubSection, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, pageSize, mode]);
   const previousFilters = useRef(filterKey);
   const slice = pageSlice(filteredProducts, page, pageSize);
   useEffect(() => {
@@ -175,6 +193,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     const restore = () => {
       const q = new URLSearchParams(window.location.search); restored.current = true; setRestoreVersion(v => v + 1);
       setPage(Number(q.get('page')) || 1); setPageSize([24, 36, 48].includes(Number(q.get('size'))) ? Number(q.get('size')) : 36);
+      setSelectedSubSection(q.get('sub') || 'all');
       setSelectedBrand(q.get('brand') || 'all'); setSelectedCondition(q.get('condition') || 'all');
       setMinBatteryHealth(Number(q.get('battery')) || 0); setMaxPrice(q.get('max') ? Number(q.get('max')) : Infinity);
       setSelectedStorage(q.get('storage') || 'all'); setSortBy((q.get('sort') || 'newest') as any); setAvailableOnly(q.get('stock') === 'available');
@@ -191,6 +210,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     if (isCatalogLoading || (!isCatalogReadyForReports && !isOfflineCatalog)) return;
     const q = new URLSearchParams();
     if (selectedCategory !== 'all') q.set('category', selectedCategory);
+    if (selectedSubSection !== 'all') q.set('sub', selectedSubSection);
     if (searchQuery.trim()) q.set('q', searchQuery);
     if (selectedBrand !== 'all') q.set('brand', selectedBrand);
     if (selectedCondition !== 'all') q.set('condition', selectedCondition);
@@ -458,14 +478,71 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
 
         {/* Product Grid Area (3 Cols) */}
         <main className="col-span-1 md:col-span-3 space-y-4">
-          {/* Active filter pills */}
-          {(selectedCategory !== 'all' || selectedBrand !== 'all' || selectedCondition !== 'all' || minBatteryHealth > 0 || searchQuery.trim()) && (
+          {/* Active filter pills + Charging/Cable Subsections */}
+          {visibleChargingSubSections.length > 0 && (
+            <div className="p-3.5 rounded-2xl bg-gradient-to-l from-amber-50/90 via-white to-slate-50 border border-amber-200/80 space-y-2.5 shadow-xs">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-black text-slate-900 font-cairo">
+                  {isAr ? 'اختر التخصص / نوع الوصلة أو الشاحن:' : 'Choose Connector or Charger Type:'}
+                </span>
+                {selectedSubSection !== 'all' && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSubSection('all')}
+                    className="text-[11px] font-bold text-amber-700 hover:underline"
+                  >
+                    {isAr ? 'عرض الكل في القسم' : 'Show all'}
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setSelectedSubSection('all')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                    selectedSubSection === 'all'
+                      ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                      : 'bg-white text-slate-700 border-slate-200 hover:border-amber-400'
+                  }`}
+                >
+                  {isAr ? 'الكل' : 'All'}
+                </button>
+                {visibleChargingSubSections.map((sub) => (
+                  <button
+                    key={sub.key}
+                    type="button"
+                    onClick={() => {
+                      if (selectedCategory !== sub.targetCategory && selectedCategory !== 'chargers_cables') {
+                        setSelectedCategory(sub.targetCategory);
+                      }
+                      setSelectedSubSection(sub.key);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
+                      selectedSubSection === sub.key
+                        ? 'bg-amber-500 text-black border-amber-500 shadow-sm'
+                        : 'bg-white text-slate-700 border-slate-200 hover:border-amber-400 hover:bg-amber-50/50'
+                    }`}
+                  >
+                    <span>{isAr ? sub.ar : sub.en}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {(selectedCategory !== 'all' || selectedSubSection !== 'all' || selectedBrand !== 'all' || selectedCondition !== 'all' || minBatteryHealth > 0 || searchQuery.trim()) && (
             <div className="flex flex-wrap items-center gap-2 p-3 bg-slate-100/60 rounded-xl border border-slate-200 text-xs">
               <span className="text-slate-600 font-semibold">{language === 'ar' ? 'فلاتر مفعلة:' : 'Active Filters:'}</span>
               {selectedCategory !== 'all' && (
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 flex items-center gap-1">
-                  <span>{selectedCategory}</span>
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedCategory('all')} />
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-800 font-bold flex items-center gap-1">
+                  <span>{getCategoryLabel(selectedCategory, isAr)}</span>
+                  <X className="w-3 h-3 cursor-pointer" onClick={() => { setSelectedCategory('all'); setSelectedSubSection('all'); }} />
+                </span>
+              )}
+              {selectedSubSection !== 'all' && (
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-600/20 text-amber-900 font-bold flex items-center gap-1">
+                  <span>{isAr ? CHARGING_SUBSECTIONS.find(s => s.key === selectedSubSection)?.ar || selectedSubSection : CHARGING_SUBSECTIONS.find(s => s.key === selectedSubSection)?.en || selectedSubSection}</span>
+                  <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedSubSection('all')} />
                 </span>
               )}
               {selectedCondition !== 'all' && (
@@ -497,24 +574,47 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
 
           {/* Products Grid */}
           {filteredProducts.length === 0 ? (
-            <div className="p-12 text-center rounded-3xl bg-white border border-slate-200 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mx-auto">
+            <div className="p-10 sm:p-12 text-center rounded-3xl bg-white border border-slate-200 space-y-4">
+              <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 mx-auto">
                 <Search className="w-8 h-8" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 font-cairo">
-                {language === 'ar' ? 'لا توجد منتجات تطابق الفلاتر المحددة' : 'No products match the selected filters'}
+              <h3 className="text-base font-black text-slate-900 font-cairo">
+                {selectedCategory !== 'all' && activeFilterCount <= 2
+                  ? (language === 'ar'
+                    ? `نُحدّث حالياً منتجات قسم "${getCategoryLabel(selectedCategory, true)}" أونلاين`
+                    : `We are updating online stock for "${getCategoryLabel(selectedCategory, false)}"`)
+                  : (language === 'ar' ? 'لا توجد منتجات تطابق الفلاتر المحددة' : 'No products match the selected filters')}
               </h3>
-              <p className="text-xs text-slate-600 max-w-sm mx-auto font-cairo">
-                {language === 'ar'
-                  ? 'جرب تغيير نطاق السعر أو إزالة نسبة البطارية المحددة أو إعادة تعيين الفلاتر.'
-                  : 'Try changing price range, battery filter, or resetting all filters.'}
+              <p className="text-xs text-slate-600 max-w-md mx-auto font-cairo leading-relaxed">
+                {selectedCategory !== 'all' && activeFilterCount <= 2
+                  ? (language === 'ar'
+                    ? 'متوفر تشكيلة كبيرة في الفرع بالفعل! تواصل معنا فوراً على واتساب لمعرفة الموديلات والأسعار المتاحة الآن أو تصفح باقي الأقسام.'
+                    : 'More models are ready in our store! Message us on WhatsApp for live availability and prices, or browse all products.')
+                  : (language === 'ar'
+                    ? 'جرب تغيير نطاق السعر أو إزالة الفلاتر المحددة لعرض المزيد من المنتجات.'
+                    : 'Try changing price range or resetting filters.')}
               </p>
-              <button
-                onClick={handleResetFilters}
-                className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs shadow-glow-gold"
-              >
-                {language === 'ar' ? 'إعادة ضبط الفلاتر' : 'Reset All Filters'}
-              </button>
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+                {selectedCategory !== 'all' && (
+                  <a
+                    href={generateWhatsAppWebLink(
+                      settings.store_whatsapp,
+                      `مرحباً جو ستور، أريد الاستفسار عن الموديلات والأسعار المتوفرة حالياً في قسم: ${getCategoryLabel(selectedCategory, true)}${selectedSubSection !== 'all' ? ` (${CHARGING_SUBSECTIONS.find(s => s.key === selectedSubSection)?.ar || selectedSubSection})` : ''}`
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-colors"
+                  >
+                    {language === 'ar' ? 'اسأل عن المتاح الآن على واتساب' : 'Ask Availability on WhatsApp'}
+                  </a>
+                )}
+                <button
+                  onClick={handleResetFilters}
+                  className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs shadow-glow-gold"
+                >
+                  {language === 'ar' ? 'عرض جميع المنتجات' : 'Show All Products'}
+                </button>
+              </div>
             </div>
           ) : (
             <div className="space-y-8">

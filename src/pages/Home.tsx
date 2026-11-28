@@ -36,57 +36,24 @@ import { generateWhatsAppWebLink } from "../utils/whatsappService";
 import { useDetails } from "../components/DetailsDialog";
 import { readStoredArray, writeStoredJson } from "../utils/browserStorage";
 import { sortCatalogProducts } from "../utils/productSorting";
+import {
+  CHARGING_SUBSECTIONS,
+  STORE_CATEGORIES,
+  countProductsInCategory,
+  productMatchesCategory,
+} from "../utils/categories";
 
-// Dubai Phone style categories with real product imagery
 const dubaiCategories: {
   key: CategoryKey;
   ar: string;
   en: string;
   image: string;
-}[] = [
-  {
-    key: "smartphones",
-    ar: "هواتف ذكية",
-    en: "Smartphones",
-    image: "/product-images/15c3630cb4bb430b367edd7f.webp",
-  },
-  {
-    key: "chargers_cables",
-    ar: "شواحن وكابلات",
-    en: "Chargers & Cables",
-    image: "/product-images/onmust-zolo-30w-studio.jpg",
-  },
-  {
-    key: "audio",
-    ar: "سماعات وصوتيات",
-    en: "Audio & Earbuds",
-    image: "/product-images/f6427a20c128ea77c56bc426.webp",
-  },
-  {
-    key: "smartwatches",
-    ar: "ساعات ذكية",
-    en: "Smartwatches",
-    image: "/product-images/3f4452f62308aae22858b473.webp",
-  },
-  {
-    key: "powerbanks",
-    ar: "باور بانك",
-    en: "Power Banks",
-    image: "/product-images/0e1a38acbfd018e570a0b515.webp",
-  },
-  {
-    key: "cases_protection",
-    ar: "كفرات وحماية",
-    en: "Cases & Protection",
-    image: "/product-images/2e1f8fb369b614aba97f55d1.webp",
-  },
-  {
-    key: "accessories",
-    ar: "إكسسوارات متنوعة",
-    en: "Accessories",
-    image: "/product-images/3af3d5bd2ec35679a678251e.webp",
-  },
-];
+}[] = STORE_CATEGORIES.map((c) => ({
+  key: c.key as CategoryKey,
+  ar: c.name_ar,
+  en: c.name_en || c.name_ar,
+  image: c.image,
+}));
 
 // Default high-converting slides if none configured in admin dashboard
 const defaultHeroSlides: HeroSlide[] = [
@@ -95,14 +62,14 @@ const defaultHeroSlides: HeroSlide[] = [
     slide_type: "banner",
     badge: "جديد وحصري في جو ستور 🔥",
     title_ar: "سلسلة شواحن هنتر الأصلية HUNTER Fast Charging Series",
-    title_en: "HUNTER Fast Charging Series (GaN 67W / 45W / 90W Desktop)",
+    title_en: "HUNTER Fast Charging Series (GaN 20W / 25W / 45W / 67W)",
     subtitle_ar: "تقنيات شحن ذكية GaN III فائقة السرعة مع ضمان استبدال رسمي 12 شهر",
     subtitle_en: "Next-gen GaN III ultra-fast charging with 12-month official replacement warranty",
-    price: "260",
-    oldPrice: "350",
+    price: "280",
+    oldPrice: "360",
     tag: "شواحن هنتر الأصلية",
     image: "/product-images/banner-hunter-charging-series.jpg",
-    cat: "chargers_cables" as CategoryKey,
+    cat: "chargers" as CategoryKey,
     link_type: "search",
     link_target: "HUNTER",
   },
@@ -175,9 +142,9 @@ export const Home: React.FC = () => {
       : defaultHeroSlides;
   }, [settings.hero_slides]);
 
-  // Determine categories dynamically from settings or default
+  // Determine categories dynamically from settings or curated real-image list
   const activeCategories = useMemo(() => {
-    if (settings.custom_categories && settings.custom_categories.length > 0) {
+    if (settings.custom_categories && settings.custom_categories.length >= 10) {
       return settings.custom_categories.map((c) => ({
         key: c.key as CategoryKey,
         ar: c.name_ar,
@@ -346,7 +313,7 @@ export const Home: React.FC = () => {
   // 5. Featured collection (Personalized recommendations > Admin default > Category picks)
   const featured = useMemo(() => {
     if (activeCollection !== "all") {
-      return products.filter((p) => p.category === activeCollection).slice(0, 8);
+      return products.filter((p) => productMatchesCategory(p, activeCollection)).slice(0, 8);
     }
     if (recommendations.length > 0) {
       return sortCatalogProducts(recommendations, 'newest').slice(0, 8);
@@ -357,15 +324,16 @@ export const Home: React.FC = () => {
     const base = sortCatalogProducts(products, 'featured');
     const picks: Product[] = [];
     for (const category of [
-      "smartphones",
-      "chargers_cables",
-      "audio",
+      "chargers",
+      "headsets",
       "smartwatches",
       "powerbanks",
+      "smart_rings",
       "cases_protection",
-      "accessories",
-    ]) {
-      const item = base.find((p) => p.category === category);
+      "holders_stands",
+      "photography_mics",
+    ] as CategoryKey[]) {
+      const item = base.find((p) => productMatchesCategory(p, category));
       if (item && !picks.some((x) => x.id === item.id)) picks.push(item);
     }
     return [
@@ -377,14 +345,14 @@ export const Home: React.FC = () => {
   // Flash deals & offers (Up to 8 items)
   const offers = useMemo(() => {
     return products
-      .filter((p) => p.is_flash_sale || p.discount_percentage > 0)
+      .filter((p) => p.is_flash_sale || (p.discount_percentage ?? 0) > 0)
       .slice(0, 8);
   }, [products]);
 
   // Smartphones collection (Up to 8 items)
   const phones = useMemo(() => {
     return products
-      .filter((p) => p.category === "smartphones")
+      .filter((p) => productMatchesCategory(p, "smartphones"))
       .slice(0, 8);
   }, [products]);
 
@@ -416,6 +384,28 @@ export const Home: React.FC = () => {
         root={root}
         motionKey={`${language}-${products.length}`}
       />
+
+      {/* ==============================================================
+          0. KINETIC LIVE ANNOUNCEMENT TICKER
+         ============================================================== */}
+      <div className="joe-promo-ticker" dir="ltr" aria-label={ar ? "أحدث عروض ومزايا جو ستور" : "Live store announcements"}>
+        <div className="joe-promo-ticker-track">
+          {[...Array(4)].flatMap((_, loopIdx) =>
+            [
+              ar ? "⚡ شواحن هنتر GaN الأصلية بضمان استبدال 12 شهر" : "⚡ Original HUNTER GaN Fast Chargers — 12M Warranty",
+              ar ? "🎧 سماعات أوريمو وساوندكور بخصومات حصرية" : "🎧 Oraimo & Soundcore Earbuds Hot Deals",
+              ar ? "📱 تشكيلة جرابات وكفرات أصلية لكل موديلات آيفون وسامسونج" : "📱 Huge Case Collection for iPhone & Galaxy Ultra",
+              ar ? "🚚 شحن سريع للمنصورة وكل محافظات مصر والدفع عند الاستلام" : "🚚 Express Shipping Nationwide + Cash on Delivery",
+              ar ? "📿 خواتم التسبيح الذكية Bei Qi و iQIBLA متوفرة الآن" : "📿 Bei Qi & iQIBLA Smart Tasbih Rings In Stock",
+            ].map((txt, msgIdx) => (
+              <span key={`${loopIdx}-${msgIdx}`} className="inline-flex items-center gap-2 whitespace-nowrap text-xs sm:text-[13px] font-cairo">
+                <span>{txt}</span>
+                <span className="text-amber-400">✦</span>
+              </span>
+            ))
+          )}
+        </div>
+      </div>
 
       {/* ==============================================================
           1. DUBAI PHONE STYLE HERO SLIDER (At the very top)
@@ -465,7 +455,7 @@ export const Home: React.FC = () => {
                       />
                       {slide.badge && (
                         <div className="absolute top-3 start-4 sm:top-5 sm:start-8 z-10 pointer-events-none">
-                          <span className="px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-amber-400 text-xs sm:text-sm font-black shadow-lg border border-amber-400/40 font-cairo">
+                          <span className="joe-shimmer-badge inline-block px-3 py-1 rounded-full bg-slate-900/90 backdrop-blur-md text-amber-400 text-xs sm:text-sm font-black shadow-lg border border-amber-400/40 font-cairo">
                             {slide.badge}
                           </span>
                         </div>
@@ -541,7 +531,7 @@ export const Home: React.FC = () => {
                               e.currentTarget.src = "/product-placeholder.svg";
                             }}
                             className={`max-h-[160px] xs:max-h-[190px] sm:max-h-[270px] md:max-h-[360px] w-auto object-contain transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] drop-shadow-md ${
-                              isActive ? "scale-100 group-hover:scale-105" : "scale-95"
+                              isActive ? "joe-hero-float scale-100 group-hover:scale-105" : "scale-95"
                             }`}
                           />
                         </button>
@@ -575,23 +565,28 @@ export const Home: React.FC = () => {
             </>
           )}
 
-          {/* Dots Pagination */}
+          {/* Dots Pagination + Animated Progress Bar */}
           {slides.length > 1 && (
-            <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-20 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-200/60 shadow-xs">
-              {slides.map((_, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  aria-label={`انتقل إلى العرض ${idx + 1}`}
-                  onClick={() => setSlideIndex(idx)}
-                  className={`h-2 rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                    (slideIndex % slides.length) === idx
-                      ? "w-6 bg-slate-900"
-                      : "w-2 bg-slate-300 hover:bg-slate-400"
-                  }`}
-                />
-              ))}
-            </div>
+            <>
+              <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-20 bg-white/85 backdrop-blur-md px-3 py-1 rounded-full border border-slate-200/70 shadow-xs">
+                {slides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    aria-label={`انتقل إلى العرض ${idx + 1}`}
+                    onClick={() => setSlideIndex(idx)}
+                    className={`h-2 rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      (slideIndex % slides.length) === idx
+                        ? "w-6 bg-slate-900"
+                        : "w-2 bg-slate-300 hover:bg-slate-400"
+                    }`}
+                  />
+                ))}
+              </div>
+              <div key={`prog-${slideIndex % slides.length}`} className="joe-hero-progress" aria-hidden="true">
+                <div className="joe-hero-progress-fill" />
+              </div>
+            </>
           )}
         </div>
       </section>
@@ -690,38 +685,149 @@ export const Home: React.FC = () => {
           </button>
         </div>
 
-        {/* Dubai Phone Style Round Category Cards */}
-        <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-7 gap-3 sm:gap-4 md:gap-5">
-          {activeCategories.map(({ key, ar: title, en, image }) => {
-            const count = products.filter((p) => p.category === key).length;
-            return (
+        {/* Animated Sliding Category Cards (Left-to-Right Marquee) */}
+        <div className="joe-marquee-container" dir="ltr">
+          <div className="joe-categories-marquee-track">
+            {[...activeCategories, ...activeCategories, ...activeCategories].map(({ key, ar: title, en, image }, idx) => {
+              const count = countProductsInCategory(products, key);
+              return (
+                <button
+                  key={`${key}-${idx}`}
+                  type="button"
+                  onClick={() => shop(key)}
+                  className="joe-category-circle group focus:outline-none"
+                >
+                  <div className="joe-category-circle-img">
+                    <img
+                      src={image}
+                      alt={ar ? title : en}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/product-placeholder.svg";
+                      }}
+                      className="w-full h-full object-contain p-1.5 group-hover:scale-110 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  </div>
+                  <strong className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-amber-700 transition-colors line-clamp-1">
+                    {ar ? title : en}
+                  </strong>
+                  <span className="text-[11px] text-slate-500 font-outfit">
+                    {count > 0 ? `${count} ${ar ? "منتج" : "items"}` : (ar ? "تصفح القسم" : "Explore")}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Dedicated Chargers & Cables Interactive Subsections Showcase */}
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
+          {/* Wall, Car, Wireless & Desktop Chargers */}
+          <div className="rounded-3xl border border-amber-200/80 bg-gradient-to-br from-amber-50/75 via-white to-slate-50 p-4 sm:p-5 shadow-xs space-y-3.5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5">
+                <span className="w-9 h-9 rounded-2xl bg-amber-500 text-black flex items-center justify-center shadow-sm">
+                  <BatteryCharging className="w-5 h-5" />
+                </span>
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900">
+                    {ar ? "أقسام الشواحن بكل أنواعها" : "Chargers by Type & Power"}
+                  </h3>
+                  <p className="text-[11px] text-slate-600">
+                    {ar ? "شواحن جدارية GaN، ميني، شواحن سيارات ولاسلكية MagSafe" : "GaN Wall, Compact Mini, Car PD & Wireless MagSafe"}
+                  </p>
+                </div>
+              </div>
               <button
-                key={key}
                 type="button"
-                onClick={() => shop(key)}
-                className="joe-category-circle group focus:outline-none"
+                onClick={() => shop("chargers")}
+                className="text-xs font-bold text-amber-700 hover:underline whitespace-nowrap flex items-center gap-1"
               >
-                <div className="joe-category-circle-img">
+                <span>{ar ? "كل الشواحن" : "All chargers"}</span>
+                <Arrow size={14} />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {CHARGING_SUBSECTIONS.filter((s) => s.group === "chargers").map((sub) => (
+                <button
+                  key={sub.key}
+                  type="button"
+                  onClick={() =>
+                    navigate("catalog", undefined, {
+                      category: sub.targetCategory,
+                      sub: sub.key,
+                      search: "",
+                    })
+                  }
+                  className="group/sub flex items-center gap-2.5 p-2 rounded-2xl bg-white border border-slate-200/90 hover:border-amber-400 hover:bg-amber-50/40 text-start transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+                >
                   <img
-                    src={image}
-                    alt={ar ? title : en}
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = "/product-placeholder.svg";
-                    }}
-                    className="w-full h-full object-contain p-2.5 group-hover:scale-110 transition-transform duration-300"
+                    src={sub.image}
+                    alt={ar ? sub.ar : sub.en}
+                    className="w-10 h-10 rounded-xl object-contain bg-slate-50 p-0.5 shrink-0 border border-slate-100 group-hover/sub:scale-105 transition-transform"
                     loading="lazy"
                   />
-                </div>
-                <strong className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-amber-700 transition-colors line-clamp-1">
-                  {ar ? title : en}
-                </strong>
-                <span className="text-[11px] text-slate-500 font-outfit">
-                  {count} {ar ? "منتج" : "items"}
+                  <span className="text-[11px] font-bold text-slate-800 group-hover/sub:text-amber-800 leading-snug line-clamp-2">
+                    {ar ? sub.ar : sub.en}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Cables Subsections (iPhone Lightning, C-to-C, USB-A to C, Micro, 3-in-1) */}
+          <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-amber-50/40 p-4 sm:p-5 shadow-xs space-y-3.5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5">
+                <span className="w-9 h-9 rounded-2xl bg-slate-900 text-amber-400 flex items-center justify-center shadow-sm">
+                  <Cable className="w-5 h-5" />
                 </span>
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900">
+                    {ar ? "أقسام الكابلات حسب السوكيت" : "Cables by Connector"}
+                  </h3>
+                  <p className="text-[11px] text-slate-600">
+                    {ar ? "كابلات آيفون Lightning، تايب سي إلى تايب سي، USB-A، مايكرو و3×1" : "Lightning, Type-C to Type-C, USB-A to Type-C, Micro & 3-in-1"}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => shop("cables")}
+                className="text-xs font-bold text-slate-900 hover:text-amber-700 hover:underline whitespace-nowrap flex items-center gap-1"
+              >
+                <span>{ar ? "كل الكابلات" : "All cables"}</span>
+                <Arrow size={14} />
               </button>
-            );
-          })}
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {CHARGING_SUBSECTIONS.filter((s) => s.group === "cables").map((sub) => (
+                <button
+                  key={sub.key}
+                  type="button"
+                  onClick={() =>
+                    navigate("catalog", undefined, {
+                      category: sub.targetCategory,
+                      sub: sub.key,
+                      search: "",
+                    })
+                  }
+                  className="group/sub flex items-center gap-2.5 p-2 rounded-2xl bg-white border border-slate-200/90 hover:border-amber-400 hover:bg-amber-50/40 text-start transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+                >
+                  <img
+                    src={sub.image}
+                    alt={ar ? sub.ar : sub.en}
+                    className="w-10 h-10 rounded-xl object-contain bg-slate-50 p-0.5 shrink-0 border border-slate-100 group-hover/sub:scale-105 transition-transform"
+                    loading="lazy"
+                  />
+                  <span className="text-[11px] font-bold text-slate-800 group-hover/sub:text-amber-800 leading-snug line-clamp-2">
+                    {ar ? sub.ar : sub.en}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -846,10 +952,12 @@ export const Home: React.FC = () => {
         >
           {[
             { key: "all", a: "اختياراتنا", e: "Our picks" },
-            { key: "audio", a: "صوتيات", e: "Audio" },
-            { key: "chargers_cables", a: "شحن وتوصيل", e: "Charging" },
-            { key: "smartwatches", a: "ساعات", e: "Watches" },
+            { key: "headsets", a: "هيدسيت وإيربودز", e: "Headsets" },
+            { key: "chargers", a: "شواحن سريعة", e: "Chargers" },
+            { key: "smartwatches", a: "ساعات ذكية", e: "Watches" },
             { key: "powerbanks", a: "باور بانك", e: "Power banks" },
+            { key: "smart_rings", a: "خواتم التسبيح", e: "Smart Rings" },
+            { key: "cases_protection", a: "كفرات وجرابات", e: "Cases" },
           ].map(({ key, a, e }) => (
             <button
               key={key}

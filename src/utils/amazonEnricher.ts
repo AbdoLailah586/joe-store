@@ -27,16 +27,53 @@ export interface ComparisonRow {
   compValues: { id: string; value: string }[];
 }
 
+const CHARGER_CABLE_FIELDS: ComparisonFieldConfig[] = [
+  { label_ar: 'الموديل والطراز', label_en: 'Model', aliases: ['الموديل', 'الموديل ورقم الطراز', 'اسم الطراز', 'model'] },
+  { label_ar: 'القدرة والشحن السريع', label_en: 'Power & Fast Charging', aliases: ['القدرة', 'القدرة القصوى', 'القدرة القصوى (Max Power)', 'بروتوكولات الشحن السريع', 'التقنية'] },
+  { label_ar: 'نوع المنفذ / المنافذ', label_en: 'Ports', aliases: ['المنفذ', 'نوع المنفذ', 'المنافذ', 'عدد المنافذ'] },
+  { label_ar: 'نوع الفيشة', label_en: 'Plug Type', aliases: ['نوع الفيشة', 'الفيشة'] },
+  { label_ar: 'أنظمة الحماية والأمان', label_en: 'Thermal & Safety Protection', aliases: ['الحماية', 'الأمان', 'تقنية إدارة الحرارة', 'أنظمة الحماية والأمان', 'أنظمة الأمان'] },
+  { label_ar: 'الأجهزة المتوافقة', label_en: 'Compatibility', aliases: ['الأجهزة المتوافقة', 'التوافق'] },
+  { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان', 'فترة الضمان'] }
+];
+
+const PHONE_FIELDS: ComparisonFieldConfig[] = [
+  { label_ar: 'الموديل والطراز', label_en: 'Model', aliases: ['الموديل', 'الموديل ورقم الطراز', 'اسم الطراز'] },
+  { label_ar: 'سعة التخزين', label_en: 'Storage', aliases: ['سعة التخزين', 'التخزين', 'الذاكرة الداخلية', 'storage'] },
+  { label_ar: 'صحة البطارية', label_en: 'Battery Health', aliases: ['صحة البطارية', 'نسبة البطارية', 'حالة البطارية'] },
+  { label_ar: 'حالة الجهاز', label_en: 'Condition', aliases: ['حالة الجهاز', 'الحالة'] },
+  { label_ar: 'المعالج', label_en: 'Processor', aliases: ['المعالج', 'المعالج (Chip)', 'نوع المعالج'] },
+  { label_ar: 'الشاشة', label_en: 'Display', aliases: ['الشاشة', 'الشاشة (Display)', 'نوع الشاشة'] },
+  { label_ar: 'الكاميرا', label_en: 'Camera', aliases: ['الكاميرا', 'الكاميرا الخلفية', 'دقة الكاميرا'] },
+  { label_ar: 'الشحن اللاسلكي', label_en: 'Wireless Charging', aliases: ['الشحن اللاسلكي', 'MagSafe'] },
+  { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان'] }
+];
+
+const AUDIO_FIELDS: ComparisonFieldConfig[] = [
+  { label_ar: 'الموديل والطراز', label_en: 'Model', aliases: ['الموديل', 'اسم الطراز', 'الموديل ورقم الطراز'] },
+  { label_ar: 'عمر البطارية وساعات التشغيل', label_en: 'Battery Life', aliases: ['عمر البطارية', 'ساعات التشغيل', 'البطارية'] },
+  { label_ar: 'تقنية عزل الضوضاء', label_en: 'Noise Cancellation', aliases: ['عزل الضوضاء', 'تقنية عزل المكالمات', 'عزل الضوضاء النشط ANC', 'عزل المكالمات ENC'] },
+  { label_ar: 'إصدار البلوتوث', label_en: 'Bluetooth Version', aliases: ['البلوتوث', 'إصدار البلوتوث', 'نسخة البلوتوث'] },
+  { label_ar: 'الشحن اللاسلكي', label_en: 'Wireless Charging', aliases: ['الشحن اللاسلكي', 'تقنية الشحن'] },
+  { label_ar: 'مقاومة الماء والتعرق', label_en: 'Water Resistance', aliases: ['مقاومة الماء', 'مقاومة الماء والتعرق', 'معيار مقاومة الماء'] },
+  { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان'] }
+];
+
+const ACCESSORY_FIELDS: ComparisonFieldConfig[] = [
+  { label_ar: 'الموديل والطراز', label_en: 'Model', aliases: ['الموديل', 'اسم الطراز'] },
+  { label_ar: 'طريقة التوصيل والمنفذ', label_en: 'Connection Type', aliases: ['نوع المنفذ', 'طريقة التوصيل', 'المنفذ', 'الاتصال والتطبيق'] },
+  { label_ar: 'الأجهزة المتوافقة', label_en: 'Compatibility', aliases: ['التوافق', 'الأجهزة المدعومة', 'الموديل المتوافق'] },
+  { label_ar: 'الخامة والتصميم', label_en: 'Material & Design', aliases: ['الخامة', 'المادة', 'علبة الشحن'] },
+  { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان'] }
+];
+
 export const CATEGORY_SPEC_FIELDS: Record<CategoryKey, ComparisonFieldConfig[]> = {
-  chargers_cables: [
-    { label_ar: 'الموديل والطراز', label_en: 'Model', aliases: ['الموديل', 'الموديل ورقم الطراز', 'اسم الطراز', 'model'] },
-    { label_ar: 'القدرة والشحن السريع', label_en: 'Power & Fast Charging', aliases: ['القدرة', 'القدرة القصوى', 'القدرة القصوى (Max Power)', 'بروتوكولات الشحن السريع', 'التقنية'] },
-    { label_ar: 'نوع المنفذ / المنافذ', label_en: 'Ports', aliases: ['المنفذ', 'نوع المنفذ', 'المنافذ', 'عدد المنافذ'] },
-    { label_ar: 'نوع الفيشة', label_en: 'Plug Type', aliases: ['نوع الفيشة', 'الفيشة'] },
-    { label_ar: 'أنظمة الحماية والأمان', label_en: 'Thermal & Safety Protection', aliases: ['الحماية', 'الأمان', 'تقنية إدارة الحرارة', 'أنظمة الحماية والأمان', 'أنظمة الأمان'] },
-    { label_ar: 'الأجهزة المتوافقة', label_en: 'Compatibility', aliases: ['الأجهزة المتوافقة', 'التوافق'] },
-    { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان', 'فترة الضمان'] }
-  ],
+  chargers_cables: CHARGER_CABLE_FIELDS,
+  chargers: CHARGER_CABLE_FIELDS,
+  cables: CHARGER_CABLE_FIELDS,
+  car_chargers: CHARGER_CABLE_FIELDS,
+  wireless_chargers: CHARGER_CABLE_FIELDS,
+  desktop_chargers: CHARGER_CABLE_FIELDS,
   powerbanks: [
     { label_ar: 'الموديل والطراز', label_en: 'Model', aliases: ['الموديل', 'الموديل ورقم الطراز', 'اسم الطراز'] },
     { label_ar: 'سعة البطارية (mAh)', label_en: 'Battery Capacity', aliases: ['السعة', 'سعة البطارية', 'سعة الباور بانك'] },
@@ -46,26 +83,14 @@ export const CATEGORY_SPEC_FIELDS: Record<CategoryKey, ComparisonFieldConfig[]> 
     { label_ar: 'أنظمة الأمان والحماية', label_en: 'Safety Guard', aliases: ['الأمان', 'الحماية', 'أنظمة الحماية'] },
     { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان'] }
   ],
-  smartphones: [
-    { label_ar: 'الموديل والطراز', label_en: 'Model', aliases: ['الموديل', 'الموديل ورقم الطراز', 'اسم الطراز'] },
-    { label_ar: 'سعة التخزين', label_en: 'Storage', aliases: ['سعة التخزين', 'التخزين', 'الذاكرة الداخلية', 'storage'] },
-    { label_ar: 'صحة البطارية', label_en: 'Battery Health', aliases: ['صحة البطارية', 'نسبة البطارية', 'حالة البطارية'] },
-    { label_ar: 'حالة الجهاز', label_en: 'Condition', aliases: ['حالة الجهاز', 'الحالة'] },
-    { label_ar: 'المعالج', label_en: 'Processor', aliases: ['المعالج', 'المعالج (Chip)', 'نوع المعالج'] },
-    { label_ar: 'الشاشة', label_en: 'Display', aliases: ['الشاشة', 'الشاشة (Display)', 'نوع الشاشة'] },
-    { label_ar: 'الكاميرا', label_en: 'Camera', aliases: ['الكاميرا', 'الكاميرا الخلفية', 'دقة الكاميرا'] },
-    { label_ar: 'الشحن اللاسلكي', label_en: 'Wireless Charging', aliases: ['الشحن اللاسلكي', 'MagSafe'] },
-    { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان'] }
-  ],
-  audio: [
-    { label_ar: 'الموديل والطراز', label_en: 'Model', aliases: ['الموديل', 'اسم الطراز', 'الموديل ورقم الطراز'] },
-    { label_ar: 'عمر البطارية وساعات التشغيل', label_en: 'Battery Life', aliases: ['عمر البطارية', 'ساعات التشغيل', 'البطارية'] },
-    { label_ar: 'تقنية عزل الضوضاء', label_en: 'Noise Cancellation', aliases: ['عزل الضوضاء', 'تقنية عزل المكالمات', 'عزل الضوضاء النشط ANC', 'عزل المكالمات ENC'] },
-    { label_ar: 'إصدار البلوتوث', label_en: 'Bluetooth Version', aliases: ['البلوتوث', 'إصدار البلوتوث', 'نسخة البلوتوث'] },
-    { label_ar: 'الشحن اللاسلكي', label_en: 'Wireless Charging', aliases: ['الشحن اللاسلكي', 'تقنية الشحن'] },
-    { label_ar: 'مقاومة الماء والتعرق', label_en: 'Water Resistance', aliases: ['مقاومة الماء', 'مقاومة الماء والتعرق', 'معيار مقاومة الماء'] },
-    { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان'] }
-  ],
+  smartphones: PHONE_FIELDS,
+  iphones: PHONE_FIELDS,
+  feature_phones: PHONE_FIELDS,
+  audio: AUDIO_FIELDS,
+  headsets: AUDIO_FIELDS,
+  headphones: AUDIO_FIELDS,
+  speakers: AUDIO_FIELDS,
+  photography_mics: ACCESSORY_FIELDS,
   smartwatches: [
     { label_ar: 'الموديل والمقاس', label_en: 'Model & Size', aliases: ['الموديل', 'المقاس', 'مقاس الشاشة'] },
     { label_ar: 'نوع الشاشة وجودتها', label_en: 'Screen Type', aliases: ['الشاشة', 'نوع الشاشة'] },
@@ -76,19 +101,21 @@ export const CATEGORY_SPEC_FIELDS: Record<CategoryKey, ComparisonFieldConfig[]> 
     { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان'] }
   ],
   cases_protection: [
-    { label_ar: 'الموديلات المتوافقة', label_en: 'Compatible Models', aliases: ['الموديلات المتوافقة', 'التوافق', 'الموديل'] },
+    { label_ar: 'الموديلات المتوافقة', label_en: 'Compatible Models', aliases: ['الموديل المتوافق', 'الموديلات المتوافقة', 'التوافق', 'الموديل'] },
     { label_ar: 'الخامة ونوع المادة', label_en: 'Material', aliases: ['الخامة', 'المادة المصنوع منها', 'نوع المادة'] },
     { label_ar: 'درجة الحماية والصلابة', label_en: 'Protection Grade', aliases: ['درجة الصلابة', 'الحماية', 'مقاومة الصدمات'] },
     { label_ar: 'دعم الشحن المغناطيسي MagSafe', label_en: 'MagSafe Support', aliases: ['المغناطيس', 'دعم MagSafe', 'ماج سيف'] },
     { label_ar: 'محتويات العلبة', label_en: 'Package Contents', aliases: ['المحتويات', 'محتويات العبوة'] },
     { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان'] }
   ],
-  accessories: [
-    { label_ar: 'طريقة التوصيل والمنفذ', label_en: 'Connection Type', aliases: ['نوع المنفذ', 'طريقة التوصيل', 'المنفذ'] },
-    { label_ar: 'الأجهزة المتوافقة', label_en: 'Compatibility', aliases: ['التوافق', 'الأجهزة المدعومة'] },
-    { label_ar: 'الخامة والتصميم', label_en: 'Material & Design', aliases: ['الخامة', 'المادة'] },
-    { label_ar: 'الضمان', label_en: 'Warranty', aliases: ['الضمان'] }
-  ],
+  screen_protectors: ACCESSORY_FIELDS,
+  holders_stands: ACCESSORY_FIELDS,
+  straps_bands: ACCESSORY_FIELDS,
+  smart_rings: ACCESSORY_FIELDS,
+  trackers: ACCESSORY_FIELDS,
+  car_accessories: ACCESSORY_FIELDS,
+  adapters: ACCESSORY_FIELDS,
+  accessories: ACCESSORY_FIELDS,
   all: []
 };
 
