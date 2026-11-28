@@ -31,7 +31,7 @@ export async function handleSitemap(req, res, deps) {
     try {
       const sql = neon(process.env.DATABASE_URL || process.env.VITE_DATABASE_URL);
       products =
-        (await sql`SELECT id, sku, name_ar, images, updated_at FROM products WHERE is_active = true ORDER BY is_featured DESC, created_at DESC LIMIT 1000`) ||
+        (await sql`SELECT id, name_ar, images, updated_at FROM products WHERE is_active = true ORDER BY is_featured DESC, created_at DESC LIMIT 1000`) ||
         [];
     } catch {
       products = [];
@@ -100,7 +100,7 @@ export async function handleMetaFeed(req, res, deps) {
     try {
       const sql = neon(process.env.DATABASE_URL || process.env.VITE_DATABASE_URL);
       products = await sql`
-        SELECT id, name_ar, name_en, brand, category, price, stock_quantity, images, specs
+        SELECT id, name_ar, name_en, brand, category, price, stock_quantity, is_preowned, images, specs
         FROM products
         WHERE is_active = true AND price > 0
         ORDER BY is_featured DESC, created_at DESC
@@ -121,7 +121,7 @@ export async function handleMetaFeed(req, res, deps) {
     const inStock = Number(p.stock_quantity ?? p.stock ?? 1) > 0;
     const isPreowned = Boolean(p.is_preowned || details.condition === 'mint' || details.condition === 'used_good');
     const feedCondition = isPreowned ? 'used' : 'new';
-    const mpn = String(specsObj.model || specsObj.mpn || p.sku || p.id || '').trim().slice(0, 70);
+    const mpn = String(specsObj.model || specsObj.mpn || details.sku || p.sku || p.id || '').trim().slice(0, 70);
     const gtin = String(specsObj.gtin || specsObj.barcode || specsObj.ean || '').replace(/\D/g, '').slice(0, 14);
     return {
       id: p.id,
