@@ -36,7 +36,6 @@ jobs:
         run: node scripts/backup_neon_to_drive.mjs
 
       - name: Check Neon free-tier usage & alert on >=80%
-        if: ${{ secrets.NEON_API_KEY != '' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
@@ -45,11 +44,19 @@ jobs:
           WHATSAPP_CRM_EMAIL: ${{ secrets.WHATSAPP_CRM_EMAIL }}
           WHATSAPP_CRM_PASSWORD: ${{ secrets.WHATSAPP_CRM_PASSWORD }}
           WHATSAPP_CRM_TO: ${{ secrets.WHATSAPP_CRM_TO }}
-        run: node scripts/monitor_neon_limits.mjs
+        run: |
+          if [ -n "$NEON_API_KEY" ]; then
+            node scripts/monitor_neon_limits.mjs
+          else
+            echo "NEON_API_KEY secret not set; skipping usage check."
+          fi
 
       - name: Drain queued background jobs via production endpoint
-        if: ${{ secrets.CRON_SECRET != '' }}
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          curl -fsSL -H "Authorization: Bearer $CRON_SECRET" "https://joe-store-2026.vercel.app/api/store?cron=jobs" || true
+          if [ -n "$CRON_SECRET" ]; then
+            curl -fsSL -H "Authorization: Bearer $CRON_SECRET" "https://joe-store-2026.vercel.app/api/store?cron=jobs" || true
+          else
+            echo "CRON_SECRET secret not set; skipping cron drain."
+          fi
