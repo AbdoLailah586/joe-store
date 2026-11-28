@@ -26,10 +26,14 @@ import { sortCatalogProducts } from '../utils/productSorting';
 import { initMetaPixel, trackMetaEvent } from '../utils/metaPixel';
 import { hasAnalyticsConsent, initGa4, trackGa4Search } from '../utils/analytics';
 import {
+  CASE_DEVICE_BRANDS,
   CHARGING_SUBSECTIONS,
   STORE_CATEGORIES,
+  getCaseDeviceBrand,
+  getCaseDeviceModel,
   getCategoryLabel,
   isChargingCategory,
+  productMatchesCaseFilter,
   productMatchesCategory,
   productMatchesSubsection,
 } from '../utils/categories';
@@ -74,11 +78,19 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
 
   // Filter States
   const [selectedSubSection, setSelectedSubSection] = useState<string>(initialQuery.current.get('sub') || 'all');
+  const [selectedDeviceBrand, setSelectedDeviceBrand] = useState<string>(initialQuery.current.get('device') || 'all');
+  const [selectedDeviceModel, setSelectedDeviceModel] = useState<string>(initialQuery.current.get('model') || 'all');
+  const [modelQuickSearch, setModelQuickSearch] = useState<string>('');
   useEffect(() => {
     if (!isChargingCategory(selectedCategory) && selectedSubSection !== 'all') {
       setSelectedSubSection('all');
     }
-  }, [selectedCategory, selectedSubSection]);
+    if (selectedCategory !== 'cases_protection' && (selectedDeviceBrand !== 'all' || selectedDeviceModel !== 'all')) {
+      setSelectedDeviceBrand('all');
+      setSelectedDeviceModel('all');
+      setModelQuickSearch('');
+    }
+  }, [selectedCategory, selectedSubSection, selectedDeviceBrand, selectedDeviceModel]);
   const [selectedBrand, setSelectedBrand] = useState<string>(initialQuery.current.get('brand') || 'all');
   const [selectedCondition, setSelectedCondition] = useState<string>(initialQuery.current.get('condition') || 'all');
   const [minBatteryHealth, setMinBatteryHealth] = useState<number>(Math.max(0, Math.min(100, Number(initialQuery.current.get('battery')) || 0)));
@@ -117,6 +129,8 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
   const activeFilterCount = useMemo(() => {
     return (selectedCategory !== 'all' ? 1 : 0) +
       (selectedSubSection !== 'all' ? 1 : 0) +
+      (selectedDeviceBrand !== 'all' ? 1 : 0) +
+      (selectedDeviceModel !== 'all' ? 1 : 0) +
       (selectedCondition !== 'all' ? 1 : 0) +
       (minBatteryHealth > 0 ? 1 : 0) +
       (selectedStorage !== 'all' ? 1 : 0) +
@@ -124,7 +138,7 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
       (Number.isFinite(maxPrice) && maxPrice < priceCeiling ? 1 : 0) +
       (availableOnly ? 1 : 0) +
       (searchQuery.trim() ? 1 : 0);
-  }, [selectedCategory, selectedSubSection, selectedCondition, minBatteryHealth, selectedStorage, selectedBrand, maxPrice, priceCeiling, availableOnly, searchQuery]);
+  }, [selectedCategory, selectedSubSection, selectedDeviceBrand, selectedDeviceModel, selectedCondition, minBatteryHealth, selectedStorage, selectedBrand, maxPrice, priceCeiling, availableOnly, searchQuery]);
 
   // Dynamic Categories list from settings or curated taxonomy
   const categoriesList = useMemo(() => {
@@ -153,10 +167,44 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     return CHARGING_SUBSECTIONS;
   }, [selectedCategory]);
 
+  // Case device brand counts & dynamic phone model options
+  const activeCaseProducts = useMemo(
+    () => products.filter(p => p.is_active !== false && productMatchesCategory(p, 'cases_protection')),
+    [products]
+  );
+
+  const caseDeviceBrandOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    activeCaseProducts.forEach(p => {
+      const b = getCaseDeviceBrand(p);
+      counts.set(b, (counts.get(b) || 0) + 1);
+    });
+    return CASE_DEVICE_BRANDS
+      .map(b => ({ ...b, count: counts.get(b.key) || 0 }))
+      .filter(b => b.count > 0);
+  }, [activeCaseProducts]);
+
+  const caseDeviceModelOptions = useMemo(() => {
+    const map = new Map<string, number>();
+    activeCaseProducts.forEach(p => {
+      if (selectedDeviceBrand !== 'all' && getCaseDeviceBrand(p) !== selectedDeviceBrand) return;
+      const model = getCaseDeviceModel(p);
+      if (model) map.set(model, (map.get(model) || 0) + 1);
+    });
+    const q = modelQuickSearch.trim().toLowerCase();
+    return Array.from(map.entries())
+      .map(([model, count]) => ({ model, count }))
+      .filter(item => !q || item.model.toLowerCase().includes(q))
+      .sort((a, b) => b.count - a.count || a.model.localeCompare(b.model));
+  }, [activeCaseProducts, selectedDeviceBrand, modelQuickSearch]);
+
   // Reset Filters
   const handleResetFilters = () => {
     setSelectedCategory('all');
     setSelectedSubSection('all');
+    setSelectedDeviceBrand('all');
+    setSelectedDeviceModel('all');
+    setModelQuickSearch('');
     setSelectedBrand('all');
     setSelectedCondition('all');
     setMinBatteryHealth(0);
@@ -178,6 +226,8 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
       if (!productMatchesCategory(p, selectedCategory)) return false;
       // Charging / Cable Subsection
       if (selectedSubSection !== 'all' && !productMatchesSubsection(p, selectedSubSection)) return false;
+      // Case Device Brand & Phone Model
+      if ((selectedDeviceBrand !== 'all' || selectedDeviceModel !== 'all') && !productMatchesCaseFilter(p, selectedDeviceBrand, selectedDeviceModel)) return false;
       // Brand
       if (selectedBrand !== 'all' && p.brand !== selectedBrand) return false;
       // Condition
@@ -193,16 +243,16 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
       // Search
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const combined = `${p.name_ar} ${p.name_en} ${p.brand} ${p.storage || ''} ${p.description_ar}`.toLowerCase();
+        const combined = `${p.name_ar} ${p.name_en} ${p.brand} ${p.storage || ''} ${p.description_ar} ${p.specs?.['الموديل المتوافق'] || ''}`.toLowerCase();
         if (!combined.includes(q)) return false;
       }
       return true;
     });
 
     return sortCatalogProducts(matched, sortBy);
-  }, [products, selectedCategory, selectedSubSection, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, mode, wishlist, recentIds.join()]);
+  }, [products, selectedCategory, selectedSubSection, selectedDeviceBrand, selectedDeviceModel, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, mode, wishlist, recentIds.join()]);
 
-  const filterKey = JSON.stringify([selectedCategory, selectedSubSection, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, pageSize, mode]);
+  const filterKey = JSON.stringify([selectedCategory, selectedSubSection, selectedDeviceBrand, selectedDeviceModel, selectedBrand, selectedCondition, minBatteryHealth, maxPrice, selectedStorage, searchQuery, sortBy, availableOnly, pageSize, mode]);
   const previousFilters = useRef(filterKey);
   const slice = pageSlice(filteredProducts, page, pageSize);
   useEffect(() => {
@@ -214,6 +264,8 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
       const q = new URLSearchParams(window.location.search); restored.current = true; setRestoreVersion(v => v + 1);
       setPage(Number(q.get('page')) || 1); setPageSize([24, 36, 48].includes(Number(q.get('size'))) ? Number(q.get('size')) : 36);
       setSelectedSubSection(q.get('sub') || 'all');
+      setSelectedDeviceBrand(q.get('device') || 'all');
+      setSelectedDeviceModel(q.get('model') || 'all');
       setSelectedBrand(q.get('brand') || 'all'); setSelectedCondition(q.get('condition') || 'all');
       setMinBatteryHealth(Number(q.get('battery')) || 0); setMaxPrice(q.get('max') ? Number(q.get('max')) : Infinity);
       setSelectedStorage(q.get('storage') || 'all'); setSortBy((q.get('sort') || 'newest') as any); setAvailableOnly(q.get('stock') === 'available');
@@ -231,6 +283,8 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
     const q = new URLSearchParams();
     if (selectedCategory !== 'all') q.set('category', selectedCategory);
     if (selectedSubSection !== 'all') q.set('sub', selectedSubSection);
+    if (selectedDeviceBrand !== 'all') q.set('device', selectedDeviceBrand);
+    if (selectedDeviceModel !== 'all') q.set('model', selectedDeviceModel);
     if (searchQuery.trim()) q.set('q', searchQuery);
     if (selectedBrand !== 'all') q.set('brand', selectedBrand);
     if (selectedCondition !== 'all') q.set('condition', selectedCondition);
@@ -550,19 +604,138 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
             </div>
           )}
 
-          {(selectedCategory !== 'all' || selectedSubSection !== 'all' || selectedBrand !== 'all' || selectedCondition !== 'all' || minBatteryHealth > 0 || searchQuery.trim()) && (
+          {(selectedCategory === 'cases_protection' || selectedDeviceBrand !== 'all' || selectedDeviceModel !== 'all') && (
+            <div className="p-4 rounded-2xl bg-gradient-to-l from-amber-50/90 via-white to-slate-50 border border-amber-200/80 space-y-3 shadow-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-black text-slate-900 font-cairo flex items-center gap-1.5">
+                  <Smartphone className="w-4 h-4 text-amber-600" />
+                  <span>{isAr ? 'اختر ماركة وموديل موبايلك لعرض الجرابات المتوافقة فوراً:' : 'Filter Cases by Phone Brand & Model:'}</span>
+                </span>
+                {(selectedDeviceBrand !== 'all' || selectedDeviceModel !== 'all') && (
+                  <button
+                    type="button"
+                    onClick={() => { setSelectedDeviceBrand('all'); setSelectedDeviceModel('all'); setModelQuickSearch(''); }}
+                    className="text-[11px] font-bold text-amber-700 hover:underline font-cairo"
+                  >
+                    {isAr ? 'عرض كل الجرابات' : 'Show all cases'}
+                  </button>
+                )}
+              </div>
+
+              {/* Phone Brand Pills */}
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => { setSelectedDeviceBrand('all'); setSelectedDeviceModel('all'); }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all font-cairo ${
+                    selectedDeviceBrand === 'all'
+                      ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                      : 'bg-white text-slate-700 border-slate-200 hover:border-amber-400'
+                  }`}
+                >
+                  {isAr ? `الكل (${activeCaseProducts.length})` : `All (${activeCaseProducts.length})`}
+                </button>
+                {caseDeviceBrandOptions.map(b => (
+                  <button
+                    key={b.key}
+                    type="button"
+                    onClick={() => {
+                      setSelectedDeviceBrand(b.key);
+                      setSelectedDeviceModel('all');
+                      setModelQuickSearch('');
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 font-cairo ${
+                      selectedDeviceBrand === b.key
+                        ? 'bg-amber-500 text-black border-amber-500 shadow-sm'
+                        : 'bg-white text-slate-700 border-slate-200 hover:border-amber-400 hover:bg-amber-50/50'
+                    }`}
+                  >
+                    <span>{isAr ? b.ar : b.en}</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-outfit ${selectedDeviceBrand === b.key ? 'bg-black/15 text-black' : 'bg-slate-100 text-slate-600'}`}>
+                      {b.count}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Dependent Phone Model Pills + Quick Search */}
+              {caseDeviceModelOptions.length > 0 && (
+                <div className="pt-2.5 border-t border-amber-200/60 space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-slate-600 font-cairo">
+                      {isAr
+                        ? `موديلات ${selectedDeviceBrand === 'all' ? 'الهواتف المتاحة' : (caseDeviceBrandOptions.find(b => b.key === selectedDeviceBrand)?.ar || selectedDeviceBrand)} (${caseDeviceModelOptions.length}):`
+                        : `Compatible Models (${caseDeviceModelOptions.length}):`}
+                    </span>
+                    <div className="relative w-full sm:w-56">
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <input
+                        type="text"
+                        value={modelQuickSearch}
+                        onChange={(e) => setModelQuickSearch(e.target.value)}
+                        placeholder={isAr ? 'اكتب اسم الموديل (مثال A57, Reno 15)...' : 'Search model (e.g. A57, iPhone 16)...'}
+                        className="w-full pr-8 pl-3 py-1.5 text-[11px] bg-white border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-amber-500 font-cairo"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDeviceModel('all')}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all font-cairo ${
+                        selectedDeviceModel === 'all'
+                          ? 'bg-slate-800 text-white border-slate-800'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-amber-400'
+                      }`}
+                    >
+                      {isAr ? 'كل الموديلات' : 'All Models'}
+                    </button>
+                    {caseDeviceModelOptions.map(({ model, count }) => (
+                      <button
+                        key={model}
+                        type="button"
+                        onClick={() => setSelectedDeviceModel(prev => prev === model ? 'all' : model)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all font-outfit flex items-center gap-1 ${
+                          selectedDeviceModel === model
+                            ? 'bg-amber-500 text-black border-amber-500 shadow-xs'
+                            : 'bg-white text-slate-700 border-slate-200 hover:border-amber-400 hover:bg-amber-50/40'
+                        }`}
+                      >
+                        <span>{model}</span>
+                        <span className="text-[10px] opacity-75">({count})</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {(selectedCategory !== 'all' || selectedSubSection !== 'all' || selectedDeviceBrand !== 'all' || selectedDeviceModel !== 'all' || selectedBrand !== 'all' || selectedCondition !== 'all' || minBatteryHealth > 0 || searchQuery.trim()) && (
             <div className="flex flex-wrap items-center gap-2 p-3 bg-slate-100/60 rounded-xl border border-slate-200 text-xs">
               <span className="text-slate-600 font-semibold">{language === 'ar' ? 'فلاتر مفعلة:' : 'Active Filters:'}</span>
               {selectedCategory !== 'all' && (
                 <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-800 font-bold flex items-center gap-1">
                   <span>{getCategoryLabel(selectedCategory, isAr)}</span>
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => { setSelectedCategory('all'); setSelectedSubSection('all'); }} />
+                  <X className="w-3 h-3 cursor-pointer" onClick={() => { setSelectedCategory('all'); setSelectedSubSection('all'); setSelectedDeviceBrand('all'); setSelectedDeviceModel('all'); }} />
                 </span>
               )}
               {selectedSubSection !== 'all' && (
                 <span className="px-2.5 py-0.5 rounded-full bg-amber-600/20 text-amber-900 font-bold flex items-center gap-1">
                   <span>{isAr ? CHARGING_SUBSECTIONS.find(s => s.key === selectedSubSection)?.ar || selectedSubSection : CHARGING_SUBSECTIONS.find(s => s.key === selectedSubSection)?.en || selectedSubSection}</span>
                   <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedSubSection('all')} />
+                </span>
+              )}
+              {selectedDeviceBrand !== 'all' && (
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/25 text-amber-900 font-bold flex items-center gap-1">
+                  <span>{isAr ? (caseDeviceBrandOptions.find(b => b.key === selectedDeviceBrand)?.ar || selectedDeviceBrand) : (caseDeviceBrandOptions.find(b => b.key === selectedDeviceBrand)?.en || selectedDeviceBrand)}</span>
+                  <X className="w-3 h-3 cursor-pointer" onClick={() => { setSelectedDeviceBrand('all'); setSelectedDeviceModel('all'); }} />
+                </span>
+              )}
+              {selectedDeviceModel !== 'all' && (
+                <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-white font-bold flex items-center gap-1 font-outfit">
+                  <span>{selectedDeviceModel}</span>
+                  <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedDeviceModel('all')} />
                 </span>
               )}
               {selectedCondition !== 'all' && (
@@ -705,6 +878,40 @@ export const Catalog: React.FC<{ mode?: 'catalog' | 'wishlist' | 'deals' | 'rece
                   ))}
                 </div>
               </div>
+
+              {/* Phone Brand filter inside mobile sheet when browsing cases */}
+              {selectedCategory === 'cases_protection' && caseDeviceBrandOptions.length > 0 && (
+                <div className="pt-3 border-t border-slate-200">
+                  <h4 className="text-xs font-bold text-slate-700 mb-2">
+                    {isAr ? 'ماركة الموبايل' : 'Phone Brand'}
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    <button
+                      onClick={() => { setSelectedDeviceBrand('all'); setSelectedDeviceModel('all'); }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                        selectedDeviceBrand === 'all'
+                          ? 'bg-amber-500 text-black border-amber-400'
+                          : 'bg-slate-50 text-slate-600 border-slate-200'
+                      }`}
+                    >
+                      {isAr ? 'الكل' : 'All'}
+                    </button>
+                    {caseDeviceBrandOptions.map(b => (
+                      <button
+                        key={b.key}
+                        onClick={() => { setSelectedDeviceBrand(b.key); setSelectedDeviceModel('all'); }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                          selectedDeviceBrand === b.key
+                            ? 'bg-amber-500 text-black border-amber-400'
+                            : 'bg-slate-50 text-slate-600 border-slate-200'
+                        }`}
+                      >
+                        {isAr ? b.ar : b.en} ({b.count})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Condition */}
               <div className="pt-3 border-t border-slate-200">

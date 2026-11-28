@@ -61,3 +61,34 @@ test('seed catalog keeps separated Tasbih products, fixed case counts, and clean
   const hunter90 = seedProducts.find(p => p.id === 'prod-hunter-desktop-gan-90w');
   assert.equal(hunter90, undefined, 'Duplicate 20W image 90W entry must be removed');
 });
+
+test('AC batch cases have verified images, specs, and working device brand & model filters', () => {
+  const acCases = seedProducts.filter(p => p.id.startsWith('prod-case-ac-'));
+  assert.equal(acCases.length, 202, 'All 202 unique AC cases should be present in seedProducts');
+
+  const seenImages = new Set();
+  for (const c of acCases) {
+    assert.equal(c.category, 'cases_protection');
+    assert.ok(c.price > 0, `AC case ${c.id} must have a positive price`);
+    assert.ok(Array.isArray(c.images) && c.images.length === 1, `AC case ${c.id} must have 1 primary image`);
+    const imgPath = c.images[0];
+    assert.ok(!seenImages.has(imgPath), `Duplicate image path found: ${imgPath}`);
+    seenImages.add(imgPath);
+    assert.ok(fs.existsSync(path.join(root, 'public', imgPath.slice(1))), `Missing compressed AC image on disk: ${imgPath}`);
+    assert.ok(c.specs?.['الموديل المتوافق'], `Missing compatible phone model on ${c.id}`);
+    assert.ok(c.specs?.['ماركة الهاتف'], `Missing phone brand on ${c.id}`);
+    assert.notEqual(cats.getCaseDeviceBrand(c), 'other', `Unrecognized phone brand on ${c.id}`);
+  }
+
+  // Filter coverage across all mobile brands
+  const allCases = seedProducts.filter(p => p.category === 'cases_protection');
+  for (const brandKey of ['iphone', 'samsung', 'oppo', 'xiaomi', 'realme', 'honor', 'vivo', 'infinix']) {
+    const matched = allCases.filter(c => cats.productMatchesCaseFilter(c, brandKey, 'all'));
+    assert.ok(matched.length >= 2, `Expected multiple cases for device brand ${brandKey}, got ${matched.length}`);
+  }
+
+  // Exact model normalization + filtering check
+  assert.equal(cats.normalizeCaseModelName('Apple iPhone 17 Pro Max (Camera Plateau Edition)'), 'iPhone 17 Pro Max');
+  const a57 = acCases.filter(c => cats.productMatchesCaseFilter(c, 'samsung', 'Samsung Galaxy A57'));
+  assert.equal(a57.length, 3, 'Samsung Galaxy A57 should match Pitaka Brown + Fashion Navy + Pitaka Khaki AC cases');
+});

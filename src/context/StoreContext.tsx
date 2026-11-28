@@ -120,7 +120,7 @@ interface StoreContextType {
 
   // Navigation & Search
   currentTab: AppTab;
-  navigate: (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string; sub?: string }) => void;
+  navigate: (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string; sub?: string; device?: string; model?: string }) => void;
   selectedProductId: string | null;
   quickViewProduct: Product | null;
   setQuickViewProduct: (prod: Product | null) => void;
@@ -207,7 +207,7 @@ export const parseRouteFromLocation = (): ParsedRoute => {
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user: account, sessionReady, adminSections: accountSections = [] } = useAuth();
   const accountAccessKey = `${account?.id || ''}:${account?.role || ''}:${accountSections.join(',')}`;
-  const CURRENT_VERSION = 'v14_verified_catalog_and_categories';
+  const CURRENT_VERSION = 'v15_ac_202_cases_and_device_filters';
   const productCacheDirty = useRef(false);
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
@@ -662,7 +662,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const navigate = (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string; sub?: string }) => {
+  const navigate = (tab: AppTab, productId?: string, options?: { replace?: boolean; category?: CategoryKey; search?: string; section?: string; brand?: string; sub?: string; device?: string; model?: string }) => {
     setCurrentTab(tab);
     let targetProductId = selectedProductId;
     if (productId) {
@@ -687,6 +687,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (q) params.set('q', q);
       if (options?.brand) params.set('brand', options.brand);
       if (options?.sub) params.set('sub', options.sub);
+      if (options?.device) params.set('device', options.device);
+      if (options?.model) params.set('model', options.model);
       const queryStr = params.toString();
       targetPath = queryStr ? `/${tab}?${queryStr}` : `/${tab}`;
     } else if (tab === 'checkout') {

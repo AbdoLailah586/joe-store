@@ -42,6 +42,7 @@ catalog_intake/incoming/*
 !catalog_intake/incoming/.gitkeep
 scratch_grids/
 جرابات/
+AC/
 WhatsApp Unknown*/
 catalog_intake_cases.json
 catalog_intake_whatsapp.json

@@ -423,6 +423,8 @@ export const AdminDashboard: React.FC = () => {
     { key: 'car_accessories', name_ar: 'مستلزمات وطوارئ السيارات', name_en: 'Car Accessories', image: '/product-images/earldom-js02-studio.png' },
     { key: 'speakers', name_ar: 'مكبرات صوت سبيكر', name_en: 'Bluetooth Speakers', image: '/product-images/3af3d5bd2ec35679a678251e.webp' },
     { key: 'adapters', name_ar: 'محولات ووصلات OTG', name_en: 'Adapters & Hubs', image: '/product-images/4312cb7f98e9ef14a712461d.webp' },
+    { key: 'printers', name_ar: 'طابعات محمولة', name_en: 'Portable Printers', image: '/product-images/fb-mini-thermal-printer-1.jpg' },
+    { key: 'gaming', name_ar: 'أجهزة وأكسسوارات الألعاب', name_en: 'Gaming Consoles & Gear', image: '/product-images/fb-r36s-retro-console-1.jpg' },
   ];
 
   const currentCategories: CustomCategory[] = (settings.custom_categories && settings.custom_categories.length > 0)

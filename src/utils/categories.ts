@@ -138,6 +138,18 @@ export const STORE_CATEGORIES: CustomCategory[] = [
     name_en: 'Adapters & Hubs',
     image: '/product-images/4312cb7f98e9ef14a712461d.webp',
   },
+  {
+    key: 'printers',
+    name_ar: 'طابعات محمولة',
+    name_en: 'Portable Printers',
+    image: '/product-images/fb-mini-thermal-printer-1.jpg',
+  },
+  {
+    key: 'gaming',
+    name_ar: 'أجهزة وأكسسوارات الألعاب',
+    name_en: 'Gaming Consoles & Gear',
+    image: '/product-images/fb-r36s-retro-console-1.jpg',
+  },
 ];
 
 export const CATEGORY_LABEL_MAP: Record<string, { ar: string; en: string }> = {
@@ -322,4 +334,69 @@ export function productMatchesSubsection(product: Product, subKey: string): bool
   if (product.category === sub.targetCategory && sub.keywords.test(text)) return true;
   if (productMatchesCategory(product, 'chargers_cables') && sub.keywords.test(text)) return true;
   return product.category === sub.targetCategory && sub.targetCategory !== 'cables' && sub.targetCategory !== 'chargers';
+}
+
+export interface CaseDeviceBrandOption {
+  key: string;
+  ar: string;
+  en: string;
+  keywords: RegExp;
+}
+
+export const CASE_DEVICE_BRANDS: CaseDeviceBrandOption[] = [
+  { key: 'iphone', ar: 'آيفون (iPhone)', en: 'iPhone', keywords: /\biphone\b|آيفون|ايفون/i },
+  { key: 'samsung', ar: 'سامسونج (Samsung)', en: 'Samsung', keywords: /\bsamsung\b|\bgalaxy\b|سامسونج/i },
+  { key: 'oppo', ar: 'أوبو (OPPO)', en: 'OPPO', keywords: /\boppo\b|\breno\b|أوبو|اوبو/i },
+  { key: 'xiaomi', ar: 'شاومي / ريدمي', en: 'Xiaomi Redmi', keywords: /\bxiaomi\b|\bredmi\b|\bpoco\b|شاومي|ريدمي|بوكو/i },
+  { key: 'realme', ar: 'ريلمي (Realme)', en: 'Realme', keywords: /\brealme\b|ريلمي/i },
+  { key: 'honor', ar: 'هونر (HONOR)', en: 'HONOR', keywords: /\bhonor\b|هونر/i },
+  { key: 'vivo', ar: 'فيفو (Vivo)', en: 'Vivo', keywords: /\bvivo\b|فيفو/i },
+  { key: 'infinix', ar: 'انفنكس (Infinix)', en: 'Infinix', keywords: /\binfinix\b|انفنكس/i },
+];
+
+export function normalizeCaseModelName(rawModel: string): string {
+  const cleaned = rawModel
+    .replace(/^Apple\s+/i, '')
+    .replace(/\s*\(Camera Plateau(?:\s+Edition)?\)/gi, '')
+    .trim();
+  if (/^iPhone\s*8\s*\/\s*7$/i.test(cleaned)) return 'iPhone 7 / 8';
+  if (/^iPhone\s*6s\s*\/\s*6$/i.test(cleaned)) return 'iPhone 6 / 6s';
+  if (/^iPhone\s*6s\s*Plus\s*\/\s*6\s*Plus$/i.test(cleaned)) return 'iPhone 6 Plus / 6s Plus';
+  return cleaned;
+}
+
+export function getCaseDeviceBrand(product: Product): string {
+  const explicitBrand = String(product.specs?.['ماركة الهاتف'] || '');
+  const compatModel = String(product.specs?.['الموديل المتوافق'] || product.specs?.['التوافق'] || '');
+  const text = `${explicitBrand} ${compatModel} ${product.name_en} ${product.name_ar}`;
+  for (const option of CASE_DEVICE_BRANDS) {
+    if (option.keywords.test(text)) return option.key;
+  }
+  return 'other';
+}
+
+export function getCaseDeviceModel(product: Product): string {
+  const direct = String(product.specs?.['الموديل المتوافق'] || '').trim();
+  if (direct && direct.length <= 50 && !/^متوفر/.test(direct)) {
+    return normalizeCaseModelName(direct);
+  }
+  const compat = String(product.specs?.['التوافق'] || '').trim();
+  if (compat && compat.length <= 50 && !/^متوفر/.test(compat)) {
+    return normalizeCaseModelName(compat);
+  }
+  const dashMatch = (product.name_en || '').match(/\s+-\s+(.+)$/);
+  if (dashMatch) {
+    return normalizeCaseModelName(dashMatch[1]);
+  }
+  return '';
+}
+
+export function productMatchesCaseFilter(product: Product, deviceBrand: string, deviceModel: string): boolean {
+  if (deviceBrand && deviceBrand !== 'all' && getCaseDeviceBrand(product) !== deviceBrand) {
+    return false;
+  }
+  if (deviceModel && deviceModel !== 'all' && getCaseDeviceModel(product) !== deviceModel) {
+    return false;
+  }
+  return true;
 }

@@ -2,6 +2,987 @@ import { Product } from '../types';
 
 export const initialProducts: Product[] = [
   {
+    "id": "prod-fb-haino-teko-fg2-5g-android",
+    "sku": "PROD-FB-HAINO-TEKO-FG2-5G-ANDROID",
+    "name_ar": "ساعة هاينو تيكو أندرويد بشريحة Haino Teko FG-2 (رام 4 جيجا + 64 جيجا)",
+    "name_en": "Haino Teko FG-2 5G Android Smartwatch (4GB RAM / 64GB, SIM + Play Store)",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-fg2-5g-android-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-fg2-5g-android-1.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو أندرويد بشريحة Haino Teko FG-2 (رام 4 جيجا + 64 جيجا)",
+    "description_en": "Haino Teko FG-2 5G Android Smartwatch (4GB RAM / 64GB, SIM + Play Store)",
+    "specs": {
+      "الموديل": "FG-2 5G Android",
+      "النظام والذاكرة": "أندرويد كامل مع شريحة اتصال + 4GB RAM + 64GB ROM + Wi-Fi ومتجر Google Play لتنزيل أي تطبيق"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-12-watch-buds",
+    "sku": "PROD-FB-HAINO-TEKO-12-WATCH-BUDS",
+    "name_ar": "ساعة وسماعة 2 في 1 هاينو تيكو Haino Teko-12 Watch Buds بشاشة AMOLED",
+    "name_en": "Haino Teko-12 Watch Buds 2-in-1 Smartwatch & Built-in Earbuds AMOLED",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-12-watch-buds-1.jpg",
+      "/product-images/fb-haino-teko-12-watch-buds-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-12-watch-buds-1.jpg",
+      "/product-images/fb-haino-teko-12-watch-buds-2.jpg"
+    ],
+    "description_ar": "ساعة وسماعة 2 في 1 هاينو تيكو Haino Teko-12 Watch Buds بشاشة AMOLED",
+    "description_en": "Haino Teko-12 Watch Buds 2-in-1 Smartwatch & Built-in Earbuds AMOLED",
+    "specs": {
+      "التقنية": "ساعة ذكية تحتوي على سماعات لاسلكية مدمجة بالداخل + 3 سترابات وبطارية 10 أيام",
+      "الموديل": "HainoTeko-12 Watch Buds"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-wo-x9-ultra-2",
+    "sku": "PROD-FB-WO-X9-ULTRA-2",
+    "name_ar": "ساعة W&O X9 Ultra 2 بشاشة AMOLED وذاكرة داخلية للموسيقى والتسجيل الصوتي",
+    "name_en": "W&O X9 Ultra 2 AMOLED Smartwatch with Internal Storage & NFC",
+    "brand": "W&O",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 600,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-wo-x9-ultra-2-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-wo-x9-ultra-2-1.jpg"
+    ],
+    "description_ar": "ساعة W&O X9 Ultra 2 بشاشة AMOLED وذاكرة داخلية للموسيقى والتسجيل الصوتي",
+    "description_en": "W&O X9 Ultra 2 AMOLED Smartwatch with Internal Storage & NFC",
+    "specs": {
+      "العرض": "السعر الخاص في عرض الاستور 600 ج",
+      "التخزين": "ذاكرة داخلية لتسجيل وتشغيل الصوتيات مباشرة + NFC",
+      "الموديل": "W&O X9 Ultra 2"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-mibro-gs-explorer",
+    "sku": "PROD-FB-MIBRO-GS-EXPLORER",
+    "name_ar": "ساعة ميبرو Mibro Watch GS Explorer بشاشة AMOLED 1500 nits وGPS",
+    "name_en": "Mibro Watch GS Explorer 1.43\" AMOLED 1500 Nits GPS Smartwatch (Etisal)",
+    "brand": "Mibro",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-mibro-gs-explorer-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-mibro-gs-explorer-1.jpg"
+    ],
+    "description_ar": "ساعة ميبرو Mibro Watch GS Explorer بشاشة AMOLED 1500 nits وGPS",
+    "description_en": "Mibro Watch GS Explorer 1.43\" AMOLED 1500 Nits GPS Smartwatch (Etisal)",
+    "specs": {
+      "الشاشة": "1.43 بوصة AMOLED UHD بسطوع 1500 nits وإطار ستانلس 316L",
+      "الضمان": "12 شهر ضمان اتصال",
+      "الموديل": "Mibro GS Explorer",
+      "البطارية والـ GPS": "GPS مدمج ثنائي النطاق + بطارية 450mAh + 150 وضع رياضي"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-huawei-watch-5",
+    "sku": "PROD-FB-HUAWEI-WATCH-5",
+    "name_ar": "ساعة هواوي واتش 5 Huawei WATCH 5 الأصلية بمستشعرات TruSense",
+    "name_en": "Huawei WATCH 5 Original AMOLED Smartwatch with Huawei TruSense",
+    "brand": "Huawei",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-huawei-watch-5-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-huawei-watch-5-1.jpg"
+    ],
+    "description_ar": "ساعة هواوي واتش 5 Huawei WATCH 5 الأصلية بمستشعرات TruSense",
+    "description_en": "Huawei WATCH 5 Original AMOLED Smartwatch with Huawei TruSense",
+    "specs": {
+      "الحالة": "أصلية بضمان الوكيل",
+      "الموديل": "HUAWEI WATCH 5",
+      "المستشعرات": "نظام HUAWEI TruSense الدقيق لمتابعة الصحة والرياضة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-jbl-tune-510bt",
+    "sku": "PROD-FB-JBL-TUNE-510BT",
+    "name_ar": "سماعة رأس JBL Tune 510BT بصوت Pure Bass وبطارية 40 ساعة",
+    "name_en": "JBL Tune 510BT Pure Bass Wireless On-Ear Headphones 40H",
+    "brand": "JBL",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-jbl-tune-510bt-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-jbl-tune-510bt-1.jpg"
+    ],
+    "description_ar": "سماعة رأس JBL Tune 510BT بصوت Pure Bass وبطارية 40 ساعة",
+    "description_en": "JBL Tune 510BT Pure Bass Wireless On-Ear Headphones 40H",
+    "specs": {
+      "الصوت": "JBL Pure Bass مع ميكروفون للمكالمات",
+      "الموديل": "Tune 510BT",
+      "البطارية": "حتى 40 ساعة تشغيل + شحن سريع USB-C"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-soundcore-q11i-headphones",
+    "sku": "PROD-FB-SOUNDCORE-Q11I-HEADPHONES",
+    "name_ar": "سماعة رأس أنكر ساوندكور Soundcore Q11i بطارية 60 ساعة ووسائد قابلة للتغيير",
+    "name_en": "Anker Soundcore Q11i 60H Wireless Over-Ear Hi-Res Headphones",
+    "brand": "Anker",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-soundcore-q11i-headphones-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-soundcore-q11i-headphones-1.jpg"
+    ],
+    "description_ar": "سماعة رأس أنكر ساوندكور Soundcore Q11i بطارية 60 ساعة ووسائد قابلة للتغيير",
+    "description_en": "Anker Soundcore Q11i 60H Wireless Over-Ear Hi-Res Headphones",
+    "specs": {
+      "الضمان": "18 شهر ضمان اتصال",
+      "الموديل": "Soundcore Q11i",
+      "البطارية": "حتى 60 ساعة تشغيل + شحن سريع 5 دقائق = 4 ساعات",
+      "المميزات": "وسائد أذن قابلة للفك والتبديل + صوت BassUp بضغطة زر"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-soundcore-q20i-anc",
+    "sku": "PROD-FB-SOUNDCORE-Q20I-ANC",
+    "name_ar": "سماعة رأس أنكر ساوندكور Soundcore Q20i بعزل ضوضاء هجين وHi-Res",
+    "name_en": "Anker Soundcore Q20i Hybrid Active Noise Cancelling Over-Ear Headphones",
+    "brand": "Anker",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-soundcore-q20i-anc-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-soundcore-q20i-anc-1.jpg"
+    ],
+    "description_ar": "سماعة رأس أنكر ساوندكور Soundcore Q20i بعزل ضوضاء هجين وHi-Res",
+    "description_en": "Anker Soundcore Q20i Hybrid Active Noise Cancelling Over-Ear Headphones",
+    "specs": {
+      "الشحن": "5 دقائق شحن = 4 ساعات تشغيل + توصيل جهازين Multipoint",
+      "العزل": "Hybrid ANC + وضع الشفافية Transparency Mode",
+      "الضمان": "18 شهر ضمان اتصال",
+      "الموديل": "Soundcore Q20i"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-smart-screen-anc-enc-earbuds",
+    "sku": "PROD-FB-SMART-SCREEN-ANC-ENC-EARBUDS",
+    "name_ar": "سماعة شاشة ذكية تعمل باللمس ANC/ENC (عرض الساعة والصور والبطارية على العلبة)",
+    "name_en": "Smart Touchscreen Case ANC/ENC Wireless Earbuds",
+    "brand": "Generic",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-smart-screen-anc-enc-earbuds-1.jpg",
+      "/product-images/fb-smart-screen-anc-enc-earbuds-2.jpg",
+      "/product-images/fb-smart-screen-anc-enc-earbuds-3.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-smart-screen-anc-enc-earbuds-1.jpg",
+      "/product-images/fb-smart-screen-anc-enc-earbuds-2.jpg",
+      "/product-images/fb-smart-screen-anc-enc-earbuds-3.jpg"
+    ],
+    "description_ar": "سماعة شاشة ذكية تعمل باللمس ANC/ENC (عرض الساعة والصور والبطارية على العلبة)",
+    "description_en": "Smart Touchscreen Case ANC/ENC Wireless Earbuds",
+    "specs": {
+      "العزل": "ANC + ENC مزدوج",
+      "المميزات": "شاشة لمس ذكية ملونة على علبة الشحن للتحكم بالموسيقى وعزل الضوضاء والعثور على السماعة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-cmf-buds-2a-nothing",
+    "sku": "PROD-FB-CMF-BUDS-2A-NOTHING",
+    "name_ar": "سماعة CMF by Nothing Buds 2a الأصلية",
+    "name_en": "CMF by Nothing Buds 2a True Wireless Earbuds",
+    "brand": "CMF by Nothing",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-cmf-buds-2a-nothing-1.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-2.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-3.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-4.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-5.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-6.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-cmf-buds-2a-nothing-1.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-2.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-3.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-4.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-5.jpg",
+      "/product-images/fb-cmf-buds-2a-nothing-6.jpg"
+    ],
+    "description_ar": "سماعة CMF by Nothing Buds 2a الأصلية",
+    "description_en": "CMF by Nothing Buds 2a True Wireless Earbuds",
+    "specs": {
+      "الصوت": "ضبط صوتي احترافي مع باس عميق وعزل ضوضاء ذكي",
+      "التصميم": "تصميم أيقوني خفيف من CMF by Nothing",
+      "الموديل": "CMF Buds 2a"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-spacebuds-otw630",
+    "sku": "PROD-FB-ORAIMO-SPACEBUDS-OTW630",
+    "name_ar": "سماعة أورايمو سبيس بودز Oraimo SpaceBuds OTW-630 بعزل 50dB هجين",
+    "name_en": "Oraimo SpaceBuds (OTW-630) 50dB Hybrid ANC True Wireless Earbuds",
+    "brand": "Oraimo",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 2300,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-spacebuds-otw630-1.jpg",
+      "/product-images/fb-oraimo-spacebuds-otw630-2.jpg",
+      "/product-images/fb-oraimo-spacebuds-otw630-3.jpg",
+      "/product-images/fb-oraimo-spacebuds-otw630-4.jpg",
+      "/product-images/fb-oraimo-spacebuds-otw630-5.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-spacebuds-otw630-1.jpg",
+      "/product-images/fb-oraimo-spacebuds-otw630-2.jpg",
+      "/product-images/fb-oraimo-spacebuds-otw630-3.jpg",
+      "/product-images/fb-oraimo-spacebuds-otw630-4.jpg",
+      "/product-images/fb-oraimo-spacebuds-otw630-5.jpg"
+    ],
+    "description_ar": "سماعة أورايمو سبيس بودز Oraimo SpaceBuds OTW-630 بعزل 50dB هجين",
+    "description_en": "Oraimo SpaceBuds (OTW-630) 50dB Hybrid ANC True Wireless Earbuds",
+    "specs": {
+      "العزل": "50dB Hybrid Noise Cancelling + مؤثرات إضاءة مخصصة وأوامر صوتية",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "التوصيل": "اتصال مزدوج Dual Device + تطبيق Oraimo Sound",
+      "الموديل": "OTW-630"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-huawei-freebuds-se2",
+    "sku": "PROD-FB-HUAWEI-FREEBUDS-SE2",
+    "name_ar": "سماعة هواوي فري بودز Huawei FreeBuds SE 2 الأصلية",
+    "name_en": "Huawei FreeBuds SE 2 True Wireless Earbuds",
+    "brand": "Huawei",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 1850,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-huawei-freebuds-se2-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-huawei-freebuds-se2-1.jpg"
+    ],
+    "description_ar": "سماعة هواوي فري بودز Huawei FreeBuds SE 2 الأصلية",
+    "description_en": "Huawei FreeBuds SE 2 True Wireless Earbuds",
+    "specs": {
+      "الوزن": "تصميم فائق الخفة 3.8 جم ومقاومة رذاذ IP54",
+      "الضمان": "أصلية بضمان الوكيل",
+      "البطارية": "تصل إلى 40 ساعة تشغيل إجمالية وشحن سريع"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-soundcore-r60i-nc-ai",
+    "sku": "PROD-FB-SOUNDCORE-R60I-NC-AI",
+    "name_ar": "سماعة أنكر ساوندكور Soundcore R60i NC بالترجمة الفورية بالذكاء الاصطناعي وHi-Res",
+    "name_en": "Anker Soundcore R60i NC Real-Time Adaptive ANC & 100+ Language AI Translation",
+    "brand": "Anker",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-soundcore-r60i-nc-ai-1.jpg",
+      "/product-images/fb-soundcore-r60i-nc-ai-2.jpg",
+      "/product-images/fb-soundcore-r60i-nc-ai-3.jpg",
+      "/product-images/fb-soundcore-r60i-nc-ai-4.jpg",
+      "/product-images/fb-soundcore-r60i-nc-ai-5.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-soundcore-r60i-nc-ai-1.jpg",
+      "/product-images/fb-soundcore-r60i-nc-ai-2.jpg",
+      "/product-images/fb-soundcore-r60i-nc-ai-3.jpg",
+      "/product-images/fb-soundcore-r60i-nc-ai-4.jpg",
+      "/product-images/fb-soundcore-r60i-nc-ai-5.jpg"
+    ],
+    "description_ar": "سماعة أنكر ساوندكور Soundcore R60i NC بالترجمة الفورية بالذكاء الاصطناعي وHi-Res",
+    "description_en": "Anker Soundcore R60i NC Real-Time Adaptive ANC & 100+ Language AI Translation",
+    "specs": {
+      "الصوت": "درايفر 11mm + Hi-Res LDAC + عزل Adaptive ANC",
+      "البطارية": "10 ساعات (50 ساعة مع العلبة)، و8/40 ساعة مع ANC",
+      "الذكاء الاصطناعي": "ترجمة فورية لأكثر من 100 لغة عبر تطبيق Soundcore"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-soundcore-liberty-5",
+    "sku": "PROD-FB-SOUNDCORE-LIBERTY-5",
+    "name_ar": "سماعة أنكر ساوندكور ليبرتي 5 Anker Soundcore Liberty 5 بعزل ضوضاء ANC 3.0",
+    "name_en": "Anker Soundcore Liberty 5 Hi-Res Wireless Earbuds Adaptive ANC 3.0 & Dolby Audio",
+    "brand": "Anker",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-soundcore-liberty-5-1.jpg",
+      "/product-images/fb-soundcore-liberty-5-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-soundcore-liberty-5-1.jpg",
+      "/product-images/fb-soundcore-liberty-5-2.jpg"
+    ],
+    "description_ar": "سماعة أنكر ساوندكور ليبرتي 5 Anker Soundcore Liberty 5 بعزل ضوضاء ANC 3.0",
+    "description_en": "Anker Soundcore Liberty 5 Hi-Res Wireless Earbuds Adaptive ANC 3.0 & Dolby Audio",
+    "specs": {
+      "الصوت": "Hi-Res Audio Wireless + Dolby Audio لتجربة صوت سينمائية",
+      "البطارية": "حتى 12 ساعة تشغيل متواصل وشحن سريع",
+      "عزل الضوضاء": "Adaptive ANC 3.0 متطور لعزل الضوضاء في الوقت الفعلي"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-m2-aipro-gimbal-stabilizer",
+    "sku": "PROD-FB-M2-AIPRO-GIMBAL-STABILIZER",
+    "name_ar": "مانع اهتزاز ثلاثي المحاور بالذكاء الاصطناعي M2 AIpro للتصوير الاحترافي",
+    "name_en": "M2 AIpro 3-Axis Smartphone Gimbal Stabilizer with AI Face Tracking",
+    "brand": "M2 AIpro",
+    "category": "photography_mics",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-m2-aipro-gimbal-stabilizer-1.jpg",
+      "/product-images/fb-m2-aipro-gimbal-stabilizer-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-m2-aipro-gimbal-stabilizer-1.jpg",
+      "/product-images/fb-m2-aipro-gimbal-stabilizer-2.jpg"
+    ],
+    "description_ar": "مانع اهتزاز ثلاثي المحاور بالذكاء الاصطناعي M2 AIpro للتصوير الاحترافي",
+    "description_en": "M2 AIpro 3-Axis Smartphone Gimbal Stabilizer with AI Face Tracking",
+    "specs": {
+      "المحاور": "3 محاور تثبيت احترافية لمنع الاهتزاز",
+      "الموديل": "M2 AIpro",
+      "البطارية والوزن": "بطارية 2500mAh تدوم 6-8 ساعات | وزن 360 جم | أبعاد الطي 158×115×68 مم",
+      "الذكاء الاصطناعي": "وحدة AI Tracking لتتبع الوجه والجسم تلقائياً + تحكم بالإيماءات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-xscoot-xs807-desktop-stand",
+    "sku": "PROD-FB-XSCOOT-XS807-DESKTOP-STAND",
+    "name_ar": "حامل مكتب دوار 360° قابل للطي X-SCOOT XS-807 للموبايل والتابلت",
+    "name_en": "X-SCOOT XS-807 360° Rotating Foldable Desktop Phone & Tablet Stand",
+    "brand": "X-SCOOT",
+    "category": "holders_stands",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-xscoot-xs807-desktop-stand-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-xscoot-xs807-desktop-stand-1.jpg"
+    ],
+    "description_ar": "حامل مكتب دوار 360° قابل للطي X-SCOOT XS-807 للموبايل والتابلت",
+    "description_en": "X-SCOOT XS-807 360° Rotating Foldable Desktop Phone & Tablet Stand",
+    "specs": {
+      "الحمل": "قابل للطي بالكامل لسهولة الحمل",
+      "الحركة": "دوران 360 درجة وزوايا ارتفاع قابلة للتعديل",
+      "الموديل": "XS-807",
+      "الاستخدام": "ثبات تام لمكالمات العمل ومشاهدة الفيديو والمذاكرة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-joyroom-s-a18-3in1-cable",
+    "sku": "PROD-FB-JOYROOM-S-A18-3IN1-CABLE",
+    "name_ar": "كابل شحن 3 في 1 جوي روم JOYROOM S-A18 (تايب سي + آيفون + مايكرو)",
+    "name_en": "JOYROOM S-A18 3-in-1 Fast Charging Data Cable 3.5A (1.2m)",
+    "brand": "Joyroom",
+    "category": "cables",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-joyroom-s-a18-3in1-cable-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-joyroom-s-a18-3in1-cable-1.jpg"
+    ],
+    "description_ar": "كابل شحن 3 في 1 جوي روم JOYROOM S-A18 (تايب سي + آيفون + مايكرو)",
+    "description_en": "JOYROOM S-A18 3-in-1 Fast Charging Data Cable 3.5A (1.2m)",
+    "specs": {
+      "التيار": "3.5 أمبير مع شحن 3 أجهزة معاً",
+      "الموديل": "JOYROOM S-A18",
+      "الموصلات": "USB-A إلى Lightning + Type-C + Micro-USB",
+      "الطول والمتانة": "1.2 متر (4ft) يتحمل أكثر من 10,000 ثنية"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-samsung-25w-original-kanawat",
+    "sku": "PROD-FB-SAMSUNG-25W-ORIGINAL-KANAWAT",
+    "name_ar": "رأس شاحن سامسونج الأصلي Samsung 25W Super Fast بضمان قنوات",
+    "name_en": "Samsung 25W Super Fast Original Power Adapter (Kanawat Warranty)",
+    "brand": "Samsung",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 650,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-samsung-25w-original-kanawat-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-samsung-25w-original-kanawat-1.jpg"
+    ],
+    "description_ar": "رأس شاحن سامسونج الأصلي Samsung 25W Super Fast بضمان قنوات",
+    "description_en": "Samsung 25W Super Fast Original Power Adapter (Kanawat Warranty)",
+    "specs": {
+      "الحالة": "أصلي 100% بالكرتونة",
+      "الضمان": "ضمان الوكيل الرسمي قنوات (Kanawat)",
+      "القدرة": "25 واط Super Fast Charging PD 3.0"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-ugreen-nexode-rg-65w",
+    "sku": "PROD-FB-UGREEN-NEXODE-RG-65W",
+    "name_ar": "شاحن روبوت يوجرين UGREEN Nexode RG 65W GaN ثلاثي المنافذ",
+    "name_en": "UGREEN Nexode RG 65W 3-Port GaN Robot Fast Charger",
+    "brand": "UGREEN",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-ugreen-nexode-rg-65w-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-ugreen-nexode-rg-65w-1.jpg"
+    ],
+    "description_ar": "شاحن روبوت يوجرين UGREEN Nexode RG 65W GaN ثلاثي المنافذ",
+    "description_en": "UGREEN Nexode RG 65W 3-Port GaN Robot Fast Charger",
+    "specs": {
+      "القدرة": "65 واط بتقنية GaN المتطورة",
+      "التصميم": "تصميم روبوت ذكي بشاشة تعبر عن حالة الشحن",
+      "التوافق": "شحن الموبايلات والتابلت وأجهزة اللابتوب MacBook",
+      "المنافذ": "2 منفذ USB-C + 1 منفذ USB-A"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-traveler-22-5pd-20k",
+    "sku": "PROD-FB-ORAIMO-TRAVELER-22-5PD-20K",
+    "name_ar": "باور بانك أورايمو Traveler 22.5 PD سعة 20,000mAh شحن فائق السرعة",
+    "name_en": "Oraimo Traveler 22.5 PD 20,000mAh 22.5W Super Fast Power Bank (OPB-7204Q)",
+    "brand": "Oraimo",
+    "category": "powerbanks",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-traveler-22-5pd-20k-1.jpg",
+      "/product-images/fb-oraimo-traveler-22-5pd-20k-2.jpg",
+      "/product-images/fb-oraimo-traveler-22-5pd-20k-3.jpg",
+      "/product-images/fb-oraimo-traveler-22-5pd-20k-4.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-traveler-22-5pd-20k-1.jpg",
+      "/product-images/fb-oraimo-traveler-22-5pd-20k-2.jpg",
+      "/product-images/fb-oraimo-traveler-22-5pd-20k-3.jpg",
+      "/product-images/fb-oraimo-traveler-22-5pd-20k-4.jpg"
+    ],
+    "description_ar": "باور بانك أورايمو Traveler 22.5 PD سعة 20,000mAh شحن فائق السرعة",
+    "description_en": "Oraimo Traveler 22.5 PD 20,000mAh 22.5W Super Fast Power Bank (OPB-7204Q)",
+    "specs": {
+      "السعة": "20,000 مللي أمبير",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "القدرة": "22.5 واط + PD 20W (يشحن من 15% إلى 60% في 30 دقيقة)",
+      "المنافذ": "USB-C + USB-A + Micro-USB",
+      "الموديل": "OPB-7204Q"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-anker-zolo-powerbank-20k",
+    "sku": "PROD-FB-ANKER-ZOLO-POWERBANK-20K",
+    "name_ar": "باور بانك أنكر زولو Anker Zolo 20,000mAh بقوة 22.5 واط وكابل Type-C مدمج",
+    "name_en": "Anker Zolo Power Bank 20,000mAh 22.5W Built-In USB-C Cable (A110EH11)",
+    "brand": "Anker",
+    "category": "powerbanks",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-anker-zolo-powerbank-20k-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-anker-zolo-powerbank-20k-1.jpg"
+    ],
+    "description_ar": "باور بانك أنكر زولو Anker Zolo 20,000mAh بقوة 22.5 واط وكابل Type-C مدمج",
+    "description_en": "Anker Zolo Power Bank 20,000mAh 22.5W Built-In USB-C Cable (A110EH11)",
+    "specs": {
+      "السعة": "20,000 مللي أمبير",
+      "الضمان": "18 شهر ضمان اتصال",
+      "القدرة": "شحن سريع 22.5 واط",
+      "المنافذ": "كابل USB-C مدمج بزاوية 90° + منفذ USB-C + منفذ USB-A (شحن 3 أجهزة معاً)",
+      "الموديل": "A110EH11"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-anker-zolo-powerbank-10k",
+    "sku": "PROD-FB-ANKER-ZOLO-POWERBANK-10K",
+    "name_ar": "باور بانك أنكر زولو Anker Zolo 10,000mAh بقوة 22.5 واط وكابل Type-C مدمج",
+    "name_en": "Anker Zolo Power Bank 10,000mAh 22.5W Built-In USB-C Cable (A110DH11)",
+    "brand": "Anker",
+    "category": "powerbanks",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-anker-zolo-powerbank-10k-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-anker-zolo-powerbank-10k-1.jpg"
+    ],
+    "description_ar": "باور بانك أنكر زولو Anker Zolo 10,000mAh بقوة 22.5 واط وكابل Type-C مدمج",
+    "description_en": "Anker Zolo Power Bank 10,000mAh 22.5W Built-In USB-C Cable (A110DH11)",
+    "specs": {
+      "السعة": "10,000 مللي أمبير",
+      "الضمان": "18 شهر ضمان اتصال",
+      "القدرة": "شحن سريع 22.5 واط",
+      "المنافذ": "كابل USB-C مدمج + منفذ USB-C + منفذ USB-A (شحن 3 أجهزة معاً)",
+      "الموديل": "A110DH11"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-r36s-retro-console",
+    "sku": "PROD-FB-R36S-RETRO-CONSOLE",
+    "name_ar": "جهاز ألعاب محمول R36S Open Source بشاشة 3.5 بوصة (أكثر من 15,000 لعبة)",
+    "name_en": "R36S Open Source Handheld Retro Game Console 3.5\" IPS 15,000+ Games",
+    "brand": "Retro Gaming",
+    "category": "gaming",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-r36s-retro-console-1.jpg",
+      "/product-images/fb-r36s-retro-console-2.jpg",
+      "/product-images/fb-r36s-retro-console-3.jpg",
+      "/product-images/fb-r36s-retro-console-4.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-r36s-retro-console-1.jpg",
+      "/product-images/fb-r36s-retro-console-2.jpg",
+      "/product-images/fb-r36s-retro-console-3.jpg",
+      "/product-images/fb-r36s-retro-console-4.jpg"
+    ],
+    "description_ar": "جهاز ألعاب محمول R36S Open Source بشاشة 3.5 بوصة (أكثر من 15,000 لعبة)",
+    "description_en": "R36S Open Source Handheld Retro Game Console 3.5\" IPS 15,000+ Games",
+    "specs": {
+      "الشاشة": "3.5 بوصة IPS HD بدقة 640×480",
+      "الألعاب": "أكثر من 15,000 لعبة مدمجة جاهزة للعب",
+      "المميزات": "حفظ واستكمال اللعب في أي وقت، تصميم مريح مع عصا تحكم مزدوجة",
+      "المحاكيات": "يدعم 21 منصة ألعاب كلاسيكية (نظام مفتوح Open Source)"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-mini-thermal-printer",
+    "sku": "PROD-FB-MINI-THERMAL-PRINTER",
+    "name_ar": "طابعة حرارية محمولة Mini Printer بلوتوث بدون حبر للصور والملاحظات",
+    "name_en": "Portable Bluetooth Mini Thermal Printer (Inkless Pocket Printer)",
+    "brand": "Mini Printer",
+    "category": "printers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 650,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-mini-thermal-printer-1.jpg",
+      "/product-images/fb-mini-thermal-printer-2.jpg",
+      "/product-images/fb-mini-thermal-printer-3.jpg",
+      "/product-images/fb-mini-thermal-printer-4.jpg",
+      "/product-images/fb-mini-thermal-printer-5.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-mini-thermal-printer-1.jpg",
+      "/product-images/fb-mini-thermal-printer-2.jpg",
+      "/product-images/fb-mini-thermal-printer-3.jpg",
+      "/product-images/fb-mini-thermal-printer-4.jpg",
+      "/product-images/fb-mini-thermal-printer-5.jpg"
+    ],
+    "description_ar": "طابعة حرارية محمولة Mini Printer بلوتوث بدون حبر للصور والملاحظات",
+    "description_en": "Portable Bluetooth Mini Thermal Printer (Inkless Pocket Printer)",
+    "specs": {
+      "الاتصال": "بلوتوث للهواتف (Android / iOS)",
+      "التقنية": "طباعة حرارية فورية بدون حبر",
+      "الملحقات": "رول ورق حراري + كابل شحن",
+      "الاستخدامات": "طباعة صور الموبايل، الملخصات الدراسية، الاستيكرز، والـ QR Code"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": true,
+    "is_best_seller": true,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
     "id": "prod-tasbih-iqibla-zikr-case",
     "sku": "PROD-TASBIH-IQIBLA-ZIKR-CASE",
     "name_ar": "خاتم تسبيح ذكي iQIBLA Zikr مع علبة شحن محمولة (باور بانك)",
@@ -50,8 +1031,8 @@ export const initialProducts: Product[] = [
       "الاتصال والتطبيق": "Bluetooth 5.1 متوافق مع تطبيق iQIBLA Life لتحديد اتجاه القبلة ومتابعة الأذكار"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -126,8 +1107,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرا": "إطار مرتفع بارز لحماية عدسات الكاميرا الخلفية"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -198,8 +1179,8 @@ export const initialProducts: Product[] = [
       "المرفقات": "حزام معصم لؤلؤي مزين بفراشات أكريليك كريستالية فائقة الأناقة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -265,8 +1246,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرا": "إطار مرتفع مخصص لحماية عدسات ومنصة الكاميرا"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -314,8 +1295,8 @@ export const initialProducts: Product[] = [
       "الشحن والأحزمة": "شحن لاسلكي Wireless Charging مع 3 أزواج ستراب مرفقة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -363,8 +1344,8 @@ export const initialProducts: Product[] = [
       "النظام والبرامج": "نظام أندرويد كامل، كاميرا، واي فاي، ومتجر جوجل بلاي"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -413,8 +1394,8 @@ export const initialProducts: Product[] = [
       "الموديل": "FG-8 Android 5G"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -463,8 +1444,8 @@ export const initialProducts: Product[] = [
       "البطارية الخارقة": "30 يوماً من الاستخدام 30 DAYS of Normal Use Battery Power"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -513,8 +1494,8 @@ export const initialProducts: Product[] = [
       "الملحقات": "3 أزواج أحزمة فاخرة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -562,8 +1543,8 @@ export const initialProducts: Product[] = [
       "المكالمات": "سماعة ومايكروفون عالي الوضوح لمكالمات الهاتف"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -611,8 +1592,8 @@ export const initialProducts: Product[] = [
       "الشاشة والسترابات": "شاشة AMOLED كبيرة مع 3 أزواج أحزمة فاخرة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -661,8 +1642,8 @@ export const initialProducts: Product[] = [
       "أوضاع التصوير": "تتبع الوجه Face Tracking، وضع البانوراما، والتصوير الزمني Timelapse"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -712,8 +1693,8 @@ export const initialProducts: Product[] = [
       "تقنية الميكروفون": "4 ميكروفونات مع تقنية تقليل الضوضاء للمكالمات"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -763,8 +1744,8 @@ export const initialProducts: Product[] = [
       "المقاسات المرفقة": "3 حلقات بمقاسات مختلفة (18 مم، 20 مم، 22 مم) بدون علبة باور بانك"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -827,8 +1808,8 @@ export const initialProducts: Product[] = [
       "الاتصال والشبكة": "تدعم شريحة Nano SIM مع شبكات الجيل الخامس 5G LTE ومكالمات هاتفية مباشرة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -880,8 +1861,8 @@ export const initialProducts: Product[] = [
       "المستشعرات الصحية": "قياس معدل ضربات القلب، قياس الأكسجين بالدم SpO2، وتتبع الأنشطة الرياضية"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -934,8 +1915,8 @@ export const initialProducts: Product[] = [
       "زوايا الرؤية": "مفصل كروي يتيح تدوير الهاتف 360 درجة وزاوية ميلان متعددة لتسهيل استخدام خرائط GPS"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -986,8 +1967,8 @@ export const initialProducts: Product[] = [
       "بدون اشتراكات": "لا يحتاج إلى شريحة SIM أو رسوم شهرية، يستفيد من شبكة Apple العالمية المشفرة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1038,8 +2019,8 @@ export const initialProducts: Product[] = [
       "وظيفة الجامب ستارتر": "تيار بدء تشغيل فائق القوة لتشغيل محركات البنزين والديزل عند نفاد البطارية فوراً"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1090,8 +2071,8 @@ export const initialProducts: Product[] = [
       "الشحن اللاسلكي": "شحن مغناطيسي MagSafe متوافق بقوة 15 واط"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1144,8 +2125,8 @@ export const initialProducts: Product[] = [
       "المدى اللاسلكي": "نقل مستقر حتى مسافة 300 متر بموجة 2.4GHz"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1203,8 +2184,8 @@ export const initialProducts: Product[] = [
       "مقاومة الماء": "معيار IP54 المقاوم للعرق ورذاذ المطر والغبار"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1264,8 +2245,8 @@ export const initialProducts: Product[] = [
       "إصدار البلوتوث": "Bluetooth 5.3 سريع ومستقر"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1314,8 +2295,8 @@ export const initialProducts: Product[] = [
       "توزيع الطاقة الذكي": "يتعرف تلقائياً على الجهاز ويمنحه الجهد والتيار الأمثل دون ارتفاع الحرارة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1367,8 +2348,8 @@ export const initialProducts: Product[] = [
       "التوافق الشامل": "يشحن أجهزة اللابتوب (MacBook)، هواتف iPhone، Samsung، وiPad بأقصى كفاءة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1420,8 +2401,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرا": "حواف بارزة مرتفعة لحماية شريط منصة الكاميرات والعدسات من الخدوش"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1473,8 +2454,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرا": "إطار حماية معدني بارز بلون ذهبي تان محيط بمنصة الكاميرات العريضة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1526,8 +2507,8 @@ export const initialProducts: Product[] = [
       "الشحن اللاسلكي": "حلقة MagSafe مغناطيسية قوية باللون البرتقالي"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1594,8 +2575,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرا": "إطار سيليكون بارز يحيط بشريط منصة الكاميرات العريض بالكامل"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1646,8 +2627,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات": "إطار حماية بارز يحيط بشريط الكاميرات العريض بالكامل"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1708,8 +2689,8 @@ export const initialProducts: Product[] = [
       "[دعم الشحن اللاسلكي]: خفيف الوزن ونحيف ليسمح بالشحن اللاسلكي السريع دون الحاجة لنزع الجراب."
     ],
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 3,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
@@ -1759,12 +2740,14007 @@ export const initialProducts: Product[] = [
       "المنافذ": "منفذ Type-C PD 3.0"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": true,
     "is_best_seller": true,
     "is_flash_sale": true,
     "created_at": "2026-11-19"
+  },
+  {
+    "id": "prod-case-ac-001-apple-iphone-11-pro-max-translucent-",
+    "sku": "CASE-AC-001",
+    "name_ar": "جراب سيليكون مطفي دخاني (رمادي دخاني شفاف) - iPhone 11 Pro Max",
+    "name_en": "Translucent Smoke Silicone Case (Translucent Smoke) - iPhone 11 Pro Max",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي دخاني شفاف",
+    "color_en": "Translucent Smoke",
+    "color_hex": "#475569",
+    "available_colors": [
+      {
+        "hex": "#475569",
+        "name_ar": "رمادي دخاني شفاف",
+        "name_en": "Translucent Smoke"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-001-apple-iphone-11-pro-max-translucent-smoke.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-001-apple-iphone-11-pro-max-translucent-smoke.jpg"
+    ],
+    "description_ar": "جراب سيليكون مطفي دخاني باللون رمادي دخاني شفاف مصمم بدقة لهاتف iPhone 11 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Translucent Smoke Silicone Case in Translucent Smoke tailored for iPhone 11 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-001",
+      "اللون": "رمادي دخاني شفاف",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون دخاني",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 11 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_175910_851.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-002-apple-iphone-16-plus-white",
+    "sku": "CASE-AC-002",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (أبيض) - iPhone 16 Plus",
+    "name_en": "Soft Touch Silicone Case (White) - iPhone 16 Plus",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أبيض",
+    "color_en": "White",
+    "color_hex": "#FFFFFF",
+    "available_colors": [
+      {
+        "hex": "#FFFFFF",
+        "name_ar": "أبيض",
+        "name_en": "White"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-002-apple-iphone-16-plus-white.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-002-apple-iphone-16-plus-white.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون أبيض مصمم بدقة لهاتف iPhone 16 Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in White tailored for iPhone 16 Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-002",
+      "اللون": "أبيض",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 16 Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_175920_670.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-003-generic-iphone-xr-clear",
+    "sku": "CASE-AC-003",
+    "name_ar": "جراب شفاف ضد الصدمات بحواف هوائية (شفاف) - iPhone XR",
+    "name_en": "Anti-Fall Air-Balloon Clear Case (Clear) - iPhone XR",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 70,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-003-generic-iphone-xr-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-003-generic-iphone-xr-clear.jpg"
+    ],
+    "description_ar": "جراب شفاف ضد الصدمات بحواف هوائية باللون شفاف مصمم بدقة لهاتف iPhone XR لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Anti-Fall Air-Balloon Clear Case in Clear tailored for iPhone XR, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-003",
+      "اللون": "شفاف",
+      "الماركة": "Generic",
+      "نوع الجراب": "شفاف ضد الصدمات",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone XR",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180023_315.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-004-apple-iphone-13-pro-max-clear",
+    "sku": "CASE-AC-004",
+    "name_ar": "جراب شفاف ماج سيف الأصلي (شفاف) - iPhone 13 Pro Max",
+    "name_en": "Clear MagSafe Protective Case (Clear) - iPhone 13 Pro Max",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 450,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-004-apple-iphone-13-pro-max-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-004-apple-iphone-13-pro-max-clear.jpg"
+    ],
+    "description_ar": "جراب شفاف ماج سيف الأصلي باللون شفاف مصمم بدقة لهاتف iPhone 13 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Clear MagSafe Protective Case in Clear tailored for iPhone 13 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-004",
+      "اللون": "شفاف",
+      "الماركة": "Apple",
+      "نوع الجراب": "شفاف MagSafe",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 13 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180031_843.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-005-generic-iphone-16-pro-max-translucen",
+    "sku": "CASE-AC-005",
+    "name_ar": "جراب سيليكون مطفي دخاني (رمادي دخاني شفاف) - iPhone 16 Pro Max",
+    "name_en": "Translucent Smoke Silicone Case (Translucent Smoke) - iPhone 16 Pro Max",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي دخاني شفاف",
+    "color_en": "Translucent Smoke",
+    "color_hex": "#475569",
+    "available_colors": [
+      {
+        "hex": "#475569",
+        "name_ar": "رمادي دخاني شفاف",
+        "name_en": "Translucent Smoke"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-005-generic-iphone-16-pro-max-translucent-smoke.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-005-generic-iphone-16-pro-max-translucent-smoke.jpg"
+    ],
+    "description_ar": "جراب سيليكون مطفي دخاني باللون رمادي دخاني شفاف مصمم بدقة لهاتف iPhone 16 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Translucent Smoke Silicone Case in Translucent Smoke tailored for iPhone 16 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-005",
+      "اللون": "رمادي دخاني شفاف",
+      "الماركة": "Generic",
+      "نوع الجراب": "سيليكون دخاني",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 16 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180037_795.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-006-fashion-iphone-6-plus-6s-plus-cream",
+    "sku": "CASE-AC-006",
+    "name_ar": "جراب كرتوني بحزام يد (Nice Day) (كريمي) - iPhone 6 Plus / 6s Plus",
+    "name_en": "Nice Day Cute Bear Strap Case (Cream) - iPhone 6 Plus / 6s Plus",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كريمي",
+    "color_en": "Cream",
+    "color_hex": "#F5F5DC",
+    "available_colors": [
+      {
+        "hex": "#F5F5DC",
+        "name_ar": "كريمي",
+        "name_en": "Cream"
+      }
+    ],
+    "price": 120,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-006-fashion-iphone-6-plus-6s-plus-cream.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-006-fashion-iphone-6-plus-6s-plus-cream.jpg"
+    ],
+    "description_ar": "جراب كرتوني بحزام يد (Nice Day) باللون كريمي مصمم بدقة لهاتف iPhone 6 Plus / 6s Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Nice Day Cute Bear Strap Case in Cream tailored for iPhone 6 Plus / 6s Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-006",
+      "اللون": "كريمي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "جراب بحزام يد",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 6 Plus / 6s Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180049_001.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-007-generic-iphone-15-pro-max-tartan-pla",
+    "sku": "CASE-AC-007",
+    "name_ar": "جراب منسوج كاروهات فاخر (كاروهات كلاسيك) - iPhone 15 Pro Max",
+    "name_en": "Tartan Plaid Woven Luxury Case (Tartan Plaid) - iPhone 15 Pro Max",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كاروهات كلاسيك",
+    "color_en": "Tartan Plaid",
+    "color_hex": "#7C2D12",
+    "available_colors": [
+      {
+        "hex": "#7C2D12",
+        "name_ar": "كاروهات كلاسيك",
+        "name_en": "Tartan Plaid"
+      }
+    ],
+    "price": 400,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-007-generic-iphone-15-pro-max-tartan-plaid.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-007-generic-iphone-15-pro-max-tartan-plaid.jpg"
+    ],
+    "description_ar": "جراب منسوج كاروهات فاخر باللون كاروهات كلاسيك مصمم بدقة لهاتف iPhone 15 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Tartan Plaid Woven Luxury Case in Tartan Plaid tailored for iPhone 15 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-007",
+      "اللون": "كاروهات كلاسيك",
+      "الماركة": "Generic",
+      "نوع الجراب": "منسوج فاخر",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 15 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180051_128.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-008-joe-store-iphone-14-plus-black-glitt",
+    "sku": "CASE-AC-008",
+    "name_ar": "جراب كريستال لامع مرصع بالفصوص (أسود جليتر) - iPhone 14 Plus",
+    "name_en": "Luxury Crystal Glitter Rhinestone Case (Black Glitter) - iPhone 14 Plus",
+    "brand": "Joe Store",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود جليتر",
+    "color_en": "Black Glitter",
+    "color_hex": "#1E293B",
+    "available_colors": [
+      {
+        "hex": "#1E293B",
+        "name_ar": "أسود جليتر",
+        "name_en": "Black Glitter"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-008-joe-store-iphone-14-plus-black-glitter.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-008-joe-store-iphone-14-plus-black-glitter.jpg"
+    ],
+    "description_ar": "جراب كريستال لامع مرصع بالفصوص باللون أسود جليتر مصمم بدقة لهاتف iPhone 14 Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Luxury Crystal Glitter Rhinestone Case in Black Glitter tailored for iPhone 14 Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-008",
+      "اللون": "أسود جليتر",
+      "الماركة": "Joe Store",
+      "نوع الجراب": "كريستال لامع",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 14 Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180057_316.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-009-generic-iphone-11-pro-max-tartan-pla",
+    "sku": "CASE-AC-009",
+    "name_ar": "جراب منسوج كاروهات فاخر (كاروهات كلاسيك) - iPhone 11 Pro Max",
+    "name_en": "Tartan Plaid Woven Luxury Case (Tartan Plaid) - iPhone 11 Pro Max",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كاروهات كلاسيك",
+    "color_en": "Tartan Plaid",
+    "color_hex": "#7C2D12",
+    "available_colors": [
+      {
+        "hex": "#7C2D12",
+        "name_ar": "كاروهات كلاسيك",
+        "name_en": "Tartan Plaid"
+      }
+    ],
+    "price": 400,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-009-generic-iphone-11-pro-max-tartan-plaid.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-009-generic-iphone-11-pro-max-tartan-plaid.jpg"
+    ],
+    "description_ar": "جراب منسوج كاروهات فاخر باللون كاروهات كلاسيك مصمم بدقة لهاتف iPhone 11 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Tartan Plaid Woven Luxury Case in Tartan Plaid tailored for iPhone 11 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-009",
+      "اللون": "كاروهات كلاسيك",
+      "الماركة": "Generic",
+      "نوع الجراب": "منسوج فاخر",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 11 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180101_888.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-010-generic-samsung-galaxy-s25-ultra-bla",
+    "sku": "CASE-AC-010",
+    "name_ar": "جراب منسوج كربون مخطط (أسود كربون) - Samsung Galaxy S25 Ultra",
+    "name_en": "Striped Carbon Woven Case (Black Carbon) - Samsung Galaxy S25 Ultra",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود كربون",
+    "color_en": "Black Carbon",
+    "color_hex": "#18181B",
+    "available_colors": [
+      {
+        "hex": "#18181B",
+        "name_ar": "أسود كربون",
+        "name_en": "Black Carbon"
+      }
+    ],
+    "price": 400,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-010-generic-samsung-galaxy-s25-ultra-black-carbon.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-010-generic-samsung-galaxy-s25-ultra-black-carbon.jpg"
+    ],
+    "description_ar": "جراب منسوج كربون مخطط باللون أسود كربون مصمم بدقة لهاتف Samsung Galaxy S25 Ultra لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Striped Carbon Woven Case in Black Carbon tailored for Samsung Galaxy S25 Ultra, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-010",
+      "اللون": "أسود كربون",
+      "الماركة": "Generic",
+      "نوع الجراب": "كربون منسوج",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy S25 Ultra",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180106_672.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-011-ddu-samsung-galaxy-s24-ultra-matte-s",
+    "sku": "CASE-AC-011",
+    "name_ar": "جراب مطفي بحماية عدسات DDU (سموك مطفي) - Samsung Galaxy S24 Ultra",
+    "name_en": "Matte Smoke Frosted Lens-Shield Case (Matte Smoke) - Samsung Galaxy S24 Ultra",
+    "brand": "DDU",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "سموك مطفي",
+    "color_en": "Matte Smoke",
+    "color_hex": "#334155",
+    "available_colors": [
+      {
+        "hex": "#334155",
+        "name_ar": "سموك مطفي",
+        "name_en": "Matte Smoke"
+      }
+    ],
+    "price": 150,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-011-ddu-samsung-galaxy-s24-ultra-matte-smoke.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-011-ddu-samsung-galaxy-s24-ultra-matte-smoke.jpg"
+    ],
+    "description_ar": "جراب مطفي بحماية عدسات DDU باللون سموك مطفي مصمم بدقة لهاتف Samsung Galaxy S24 Ultra لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Matte Smoke Frosted Lens-Shield Case in Matte Smoke tailored for Samsung Galaxy S24 Ultra, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-011",
+      "اللون": "سموك مطفي",
+      "الماركة": "DDU",
+      "نوع الجراب": "مطفي حماية عدسات",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy S24 Ultra",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180114_825.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-012-apple-iphone-6-plus-6s-plus-transluc",
+    "sku": "CASE-AC-012",
+    "name_ar": "جراب سيليكون مطفي دخاني (رمادي دخاني شفاف) - iPhone 6 Plus / 6s Plus",
+    "name_en": "Translucent Smoke Silicone Case (Translucent Smoke) - iPhone 6 Plus / 6s Plus",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي دخاني شفاف",
+    "color_en": "Translucent Smoke",
+    "color_hex": "#475569",
+    "available_colors": [
+      {
+        "hex": "#475569",
+        "name_ar": "رمادي دخاني شفاف",
+        "name_en": "Translucent Smoke"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-012-apple-iphone-6-plus-6s-plus-translucent-smoke.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-012-apple-iphone-6-plus-6s-plus-translucent-smoke.jpg"
+    ],
+    "description_ar": "جراب سيليكون مطفي دخاني باللون رمادي دخاني شفاف مصمم بدقة لهاتف iPhone 6 Plus / 6s Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Translucent Smoke Silicone Case in Translucent Smoke tailored for iPhone 6 Plus / 6s Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-012",
+      "اللون": "رمادي دخاني شفاف",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون دخاني",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 6 Plus / 6s Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180156_472.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-013-generic-iphone-14-pro-max-tartan-pla",
+    "sku": "CASE-AC-013",
+    "name_ar": "جراب منسوج كاروهات فاخر (كاروهات كلاسيك) - iPhone 14 Pro Max",
+    "name_en": "Tartan Plaid Woven Luxury Case (Tartan Plaid) - iPhone 14 Pro Max",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كاروهات كلاسيك",
+    "color_en": "Tartan Plaid",
+    "color_hex": "#7C2D12",
+    "available_colors": [
+      {
+        "hex": "#7C2D12",
+        "name_ar": "كاروهات كلاسيك",
+        "name_en": "Tartan Plaid"
+      }
+    ],
+    "price": 400,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-013-generic-iphone-14-pro-max-tartan-plaid.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-013-generic-iphone-14-pro-max-tartan-plaid.jpg"
+    ],
+    "description_ar": "جراب منسوج كاروهات فاخر باللون كاروهات كلاسيك مصمم بدقة لهاتف iPhone 14 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Tartan Plaid Woven Luxury Case in Tartan Plaid tailored for iPhone 14 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-013",
+      "اللون": "كاروهات كلاسيك",
+      "الماركة": "Generic",
+      "نوع الجراب": "منسوج فاخر",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 14 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180209_518.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-014-generic-iphone-16-pro-clear",
+    "sku": "CASE-AC-014",
+    "name_ar": "جراب شفاف ضد الصدمات بحواف هوائية (شفاف) - iPhone 16 Pro",
+    "name_en": "Anti-Fall Air-Balloon Clear Case (Clear) - iPhone 16 Pro",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 70,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-014-generic-iphone-16-pro-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-014-generic-iphone-16-pro-clear.jpg"
+    ],
+    "description_ar": "جراب شفاف ضد الصدمات بحواف هوائية باللون شفاف مصمم بدقة لهاتف iPhone 16 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Anti-Fall Air-Balloon Clear Case in Clear tailored for iPhone 16 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-014",
+      "اللون": "شفاف",
+      "الماركة": "Generic",
+      "نوع الجراب": "شفاف ضد الصدمات",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 16 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180217_852.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-015-generic-iphone-11-pro-clear",
+    "sku": "CASE-AC-015",
+    "name_ar": "جراب شفاف ضد الصدمات بحواف هوائية (شفاف) - iPhone 11 Pro",
+    "name_en": "Anti-Fall Air-Balloon Clear Case (Clear) - iPhone 11 Pro",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 70,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-015-generic-iphone-11-pro-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-015-generic-iphone-11-pro-clear.jpg"
+    ],
+    "description_ar": "جراب شفاف ضد الصدمات بحواف هوائية باللون شفاف مصمم بدقة لهاتف iPhone 11 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Anti-Fall Air-Balloon Clear Case in Clear tailored for iPhone 11 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-015",
+      "اللون": "شفاف",
+      "الماركة": "Generic",
+      "نوع الجراب": "شفاف ضد الصدمات",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 11 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180249_635.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-016-generic-iphone-15-clear",
+    "sku": "CASE-AC-016",
+    "name_ar": "جراب شفاف ضد الصدمات بحواف هوائية (شفاف) - iPhone 15",
+    "name_en": "Anti-Fall Air-Balloon Clear Case (Clear) - iPhone 15",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 70,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-016-generic-iphone-15-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-016-generic-iphone-15-clear.jpg"
+    ],
+    "description_ar": "جراب شفاف ضد الصدمات بحواف هوائية باللون شفاف مصمم بدقة لهاتف iPhone 15 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Anti-Fall Air-Balloon Clear Case in Clear tailored for iPhone 15, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-016",
+      "اللون": "شفاف",
+      "الماركة": "Generic",
+      "نوع الجراب": "شفاف ضد الصدمات",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 15",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180259_339.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-017-guess-iphone-14-plus-clear-silver",
+    "sku": "CASE-AC-017",
+    "name_ar": "جراب جيس شفاف مرصع بالكريستال (شفاف فضي) - iPhone 14 Plus",
+    "name_en": "Guess Crystal Studs Clear Case (Clear Silver) - iPhone 14 Plus",
+    "brand": "Guess",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف فضي",
+    "color_en": "Clear Silver",
+    "color_hex": "#CBD5E1",
+    "available_colors": [
+      {
+        "hex": "#CBD5E1",
+        "name_ar": "شفاف فضي",
+        "name_en": "Clear Silver"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-017-guess-iphone-14-plus-clear-silver.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-017-guess-iphone-14-plus-clear-silver.jpg"
+    ],
+    "description_ar": "جراب جيس شفاف مرصع بالكريستال باللون شفاف فضي مصمم بدقة لهاتف iPhone 14 Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Guess Crystal Studs Clear Case in Clear Silver tailored for iPhone 14 Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-017",
+      "اللون": "شفاف فضي",
+      "الماركة": "Guess",
+      "نوع الجراب": "جيس كريستال",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 14 Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180324_718.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-018-apple-iphone-6-plus-6s-plus-sky-blue",
+    "sku": "CASE-AC-018",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (أزرق سماوي) - iPhone 6 Plus / 6s Plus",
+    "name_en": "Soft Touch Silicone Case (Sky Blue) - iPhone 6 Plus / 6s Plus",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أزرق سماوي",
+    "color_en": "Sky Blue",
+    "color_hex": "#38BDF8",
+    "available_colors": [
+      {
+        "hex": "#38BDF8",
+        "name_ar": "أزرق سماوي",
+        "name_en": "Sky Blue"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-018-apple-iphone-6-plus-6s-plus-sky-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-018-apple-iphone-6-plus-6s-plus-sky-blue.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون أزرق سماوي مصمم بدقة لهاتف iPhone 6 Plus / 6s Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in Sky Blue tailored for iPhone 6 Plus / 6s Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-018",
+      "اللون": "أزرق سماوي",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 6 Plus / 6s Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180330_950.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-019-goldliwin-iphone-17-multicolor",
+    "sku": "CASE-AC-019",
+    "name_ar": "جراب مزخرف بالورود بحزام حمل (ملون) - iPhone 17",
+    "name_en": "Floral Strap Designer Case (Multicolor) - iPhone 17",
+    "brand": "Goldliwin",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "ملون",
+    "color_en": "Multicolor",
+    "color_hex": "#EC4899",
+    "available_colors": [
+      {
+        "hex": "#EC4899",
+        "name_ar": "ملون",
+        "name_en": "Multicolor"
+      }
+    ],
+    "price": 450,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-019-goldliwin-iphone-17-multicolor.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-019-goldliwin-iphone-17-multicolor.jpg"
+    ],
+    "description_ar": "جراب مزخرف بالورود بحزام حمل باللون ملون مصمم بدقة لهاتف iPhone 17 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Floral Strap Designer Case in Multicolor tailored for iPhone 17, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-019",
+      "اللون": "ملون",
+      "الماركة": "Goldliwin",
+      "نوع الجراب": "جراب بحزام",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 17",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180335_208.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-020-fashion-iphone-12-12-pro-cream",
+    "sku": "CASE-AC-020",
+    "name_ar": "جراب دب كرتوني مودرن بحماية كاملة (كريمي) - iPhone 12 / 12 Pro",
+    "name_en": "Cute Bear Tide Protective Case (Cream) - iPhone 12 / 12 Pro",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كريمي",
+    "color_en": "Cream",
+    "color_hex": "#F5F5DC",
+    "available_colors": [
+      {
+        "hex": "#F5F5DC",
+        "name_ar": "كريمي",
+        "name_en": "Cream"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-020-fashion-iphone-12-12-pro-cream.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-020-fashion-iphone-12-12-pro-cream.jpg"
+    ],
+    "description_ar": "جراب دب كرتوني مودرن بحماية كاملة باللون كريمي مصمم بدقة لهاتف iPhone 12 / 12 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Cute Bear Tide Protective Case in Cream tailored for iPhone 12 / 12 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-020",
+      "اللون": "كريمي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "جراب كرتوني",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 12 / 12 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180350_941.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-021-generic-iphone-6-6s-clear",
+    "sku": "CASE-AC-021",
+    "name_ar": "جراب شفاف ضد الصدمات بحواف هوائية (شفاف) - iPhone 6 / 6s",
+    "name_en": "Anti-Fall Air-Balloon Clear Case (Clear) - iPhone 6 / 6s",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 70,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-021-generic-iphone-6-6s-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-021-generic-iphone-6-6s-clear.jpg"
+    ],
+    "description_ar": "جراب شفاف ضد الصدمات بحواف هوائية باللون شفاف مصمم بدقة لهاتف iPhone 6 / 6s لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Anti-Fall Air-Balloon Clear Case in Clear tailored for iPhone 6 / 6s, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-021",
+      "اللون": "شفاف",
+      "الماركة": "Generic",
+      "نوع الجراب": "شفاف ضد الصدمات",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 6 / 6s",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180355_098.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-022-fashion-iphone-12-12-pro-purple",
+    "sku": "CASE-AC-022",
+    "name_ar": "جراب دب كرتوني مودرن بحماية كاملة (موف) - iPhone 12 / 12 Pro",
+    "name_en": "Cute Bear Tide Protective Case (Purple) - iPhone 12 / 12 Pro",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "موف",
+    "color_en": "Purple",
+    "color_hex": "#A855F7",
+    "available_colors": [
+      {
+        "hex": "#A855F7",
+        "name_ar": "موف",
+        "name_en": "Purple"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-022-fashion-iphone-12-12-pro-purple.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-022-fashion-iphone-12-12-pro-purple.jpg"
+    ],
+    "description_ar": "جراب دب كرتوني مودرن بحماية كاملة باللون موف مصمم بدقة لهاتف iPhone 12 / 12 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Cute Bear Tide Protective Case in Purple tailored for iPhone 12 / 12 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-022",
+      "اللون": "موف",
+      "الماركة": "Fashion",
+      "نوع الجراب": "جراب كرتوني",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 12 / 12 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180356_185.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-023-generic-iphone-16-clear",
+    "sku": "CASE-AC-023",
+    "name_ar": "جراب شفاف ضد الصدمات بحواف هوائية (شفاف) - iPhone 16",
+    "name_en": "Anti-Fall Air-Balloon Clear Case (Clear) - iPhone 16",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 70,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-023-generic-iphone-16-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-023-generic-iphone-16-clear.jpg"
+    ],
+    "description_ar": "جراب شفاف ضد الصدمات بحواف هوائية باللون شفاف مصمم بدقة لهاتف iPhone 16 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Anti-Fall Air-Balloon Clear Case in Clear tailored for iPhone 16, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-023",
+      "اللون": "شفاف",
+      "الماركة": "Generic",
+      "نوع الجراب": "شفاف ضد الصدمات",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 16",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180406_590.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-024-fashion-iphone-x-xs-sky-blue",
+    "sku": "CASE-AC-024",
+    "name_ar": "جراب سيليكون ستيتش 3D بارز (أزرق سماوي) - iPhone X / XS",
+    "name_en": "3D Stitch Cartoon Silicone Case (Sky Blue) - iPhone X / XS",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أزرق سماوي",
+    "color_en": "Sky Blue",
+    "color_hex": "#38BDF8",
+    "available_colors": [
+      {
+        "hex": "#38BDF8",
+        "name_ar": "أزرق سماوي",
+        "name_en": "Sky Blue"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-024-fashion-iphone-x-xs-sky-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-024-fashion-iphone-x-xs-sky-blue.jpg"
+    ],
+    "description_ar": "جراب سيليكون ستيتش 3D بارز باللون أزرق سماوي مصمم بدقة لهاتف iPhone X / XS لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "3D Stitch Cartoon Silicone Case in Sky Blue tailored for iPhone X / XS, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-024",
+      "اللون": "أزرق سماوي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "جراب 3D كرتوني",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone X / XS",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180409_320.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-025-fashion-iphone-12-pink",
+    "sku": "CASE-AC-025",
+    "name_ar": "جراب بطباعة عصرية وحواف حماية (بينك) - iPhone 12",
+    "name_en": "Black Cat Cool Graphic Case (Pink) - iPhone 12",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بينك",
+    "color_en": "Pink",
+    "color_hex": "#F472B6",
+    "available_colors": [
+      {
+        "hex": "#F472B6",
+        "name_ar": "بينك",
+        "name_en": "Pink"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-025-fashion-iphone-12-pink.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-025-fashion-iphone-12-pink.jpg"
+    ],
+    "description_ar": "جراب بطباعة عصرية وحواف حماية باللون بينك مصمم بدقة لهاتف iPhone 12 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Black Cat Cool Graphic Case in Pink tailored for iPhone 12, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-025",
+      "اللون": "بينك",
+      "الماركة": "Fashion",
+      "نوع الجراب": "جراب مطبوع",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 12",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180412_700.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-026-generic-iphone-12-pro-max-clear",
+    "sku": "CASE-AC-026",
+    "name_ar": "جراب شفاف ضد الصدمات بحواف هوائية (شفاف) - iPhone 12 Pro Max",
+    "name_en": "Anti-Fall Air-Balloon Clear Case (Clear) - iPhone 12 Pro Max",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 70,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-026-generic-iphone-12-pro-max-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-026-generic-iphone-12-pro-max-clear.jpg"
+    ],
+    "description_ar": "جراب شفاف ضد الصدمات بحواف هوائية باللون شفاف مصمم بدقة لهاتف iPhone 12 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Anti-Fall Air-Balloon Clear Case in Clear tailored for iPhone 12 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-026",
+      "اللون": "شفاف",
+      "الماركة": "Generic",
+      "نوع الجراب": "شفاف ضد الصدمات",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 12 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180427_930.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-027-fashion-iphone-12-12-pro-orange-crea",
+    "sku": "CASE-AC-027",
+    "name_ar": "جراب كرتوني بحزام يد (Nice Day) (برتقالي كريمي) - iPhone 12 / 12 Pro",
+    "name_en": "Nice Day Cute Bear Strap Case (Orange Cream) - iPhone 12 / 12 Pro",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "برتقالي كريمي",
+    "color_en": "Orange Cream",
+    "color_hex": "#FB923C",
+    "available_colors": [
+      {
+        "hex": "#FB923C",
+        "name_ar": "برتقالي كريمي",
+        "name_en": "Orange Cream"
+      }
+    ],
+    "price": 120,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-027-fashion-iphone-12-12-pro-orange-cream.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-027-fashion-iphone-12-12-pro-orange-cream.jpg"
+    ],
+    "description_ar": "جراب كرتوني بحزام يد (Nice Day) باللون برتقالي كريمي مصمم بدقة لهاتف iPhone 12 / 12 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Nice Day Cute Bear Strap Case in Orange Cream tailored for iPhone 12 / 12 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-027",
+      "اللون": "برتقالي كريمي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "جراب بحزام يد",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 12 / 12 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180457_673.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-028-fashion-iphone-14-plus-black",
+    "sku": "CASE-AC-028",
+    "name_ar": "جراب سيليكون ستيتش 3D بارز (أسود) - iPhone 14 Plus",
+    "name_en": "3D Stitch Cartoon Silicone Case (Black) - iPhone 14 Plus",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-028-fashion-iphone-14-plus-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-028-fashion-iphone-14-plus-black.jpg"
+    ],
+    "description_ar": "جراب سيليكون ستيتش 3D بارز باللون أسود مصمم بدقة لهاتف iPhone 14 Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "3D Stitch Cartoon Silicone Case in Black tailored for iPhone 14 Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-028",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "جراب 3D كرتوني",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 14 Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180505_190.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-029-qy-iphone-14-plus-clear",
+    "sku": "CASE-AC-029",
+    "name_ar": "جراب QY شفاف نحيف مقاوم للاصفرار (شفاف) - iPhone 14 Plus",
+    "name_en": "QY Crystal Clear Slim Case (Clear) - iPhone 14 Plus",
+    "brand": "QY",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-029-qy-iphone-14-plus-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-029-qy-iphone-14-plus-clear.jpg"
+    ],
+    "description_ar": "جراب QY شفاف نحيف مقاوم للاصفرار باللون شفاف مصمم بدقة لهاتف iPhone 14 Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "QY Crystal Clear Slim Case in Clear tailored for iPhone 14 Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-029",
+      "اللون": "شفاف",
+      "الماركة": "QY",
+      "نوع الجراب": "شفاف نحيف",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 14 Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180510_392.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-030-ddu-samsung-galaxy-s23-ultra-black",
+    "sku": "CASE-AC-030",
+    "name_ar": "جراب جلد/نسيج فاخر بحزام مسكة يد DDU (أسود) - Samsung Galaxy S23 Ultra",
+    "name_en": "Luxury Woven Strap Protective Case (Black) - Samsung Galaxy S23 Ultra",
+    "brand": "DDU",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-030-ddu-samsung-galaxy-s23-ultra-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-030-ddu-samsung-galaxy-s23-ultra-black.jpg"
+    ],
+    "description_ar": "جراب جلد/نسيج فاخر بحزام مسكة يد DDU باللون أسود مصمم بدقة لهاتف Samsung Galaxy S23 Ultra لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Luxury Woven Strap Protective Case in Black tailored for Samsung Galaxy S23 Ultra, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-030",
+      "اللون": "أسود",
+      "الماركة": "DDU",
+      "نوع الجراب": "جراب بحزام يد",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy S23 Ultra",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180515_997.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-031-santa-barbara-polo-iphone-11-pro-max",
+    "sku": "CASE-AC-031",
+    "name_ar": "جراب بولو كلوب الرسمي الفاخر (أسود) - iPhone 11 Pro Max",
+    "name_en": "Polo Club Rider Protective Case (Black) - iPhone 11 Pro Max",
+    "brand": "Santa Barbara Polo",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-031-santa-barbara-polo-iphone-11-pro-max-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-031-santa-barbara-polo-iphone-11-pro-max-black.jpg"
+    ],
+    "description_ar": "جراب بولو كلوب الرسمي الفاخر باللون أسود مصمم بدقة لهاتف iPhone 11 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Polo Club Rider Protective Case in Black tailored for iPhone 11 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-031",
+      "اللون": "أسود",
+      "الماركة": "Santa Barbara Polo",
+      "نوع الجراب": "جلد بولو",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 11 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180523_738.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-032-apple-iphone-17-pro-max-pastel-pink",
+    "sku": "CASE-AC-032",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (بينك باستيل) - iPhone 17 Pro Max",
+    "name_en": "Soft Touch Silicone Case (Pastel Pink) - iPhone 17 Pro Max",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بينك باستيل",
+    "color_en": "Pastel Pink",
+    "color_hex": "#F9A8D4",
+    "available_colors": [
+      {
+        "hex": "#F9A8D4",
+        "name_ar": "بينك باستيل",
+        "name_en": "Pastel Pink"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-032-apple-iphone-17-pro-max-pastel-pink.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-032-apple-iphone-17-pro-max-pastel-pink.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون بينك باستيل مصمم بدقة لهاتف iPhone 17 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in Pastel Pink tailored for iPhone 17 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-032",
+      "اللون": "بينك باستيل",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 17 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180542_386.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-033-apple-iphone-11-apricot",
+    "sku": "CASE-AC-033",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (مشمشي) - iPhone 11",
+    "name_en": "Soft Touch Silicone Case (Apricot) - iPhone 11",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "مشمشي",
+    "color_en": "Apricot",
+    "color_hex": "#FDBA74",
+    "available_colors": [
+      {
+        "hex": "#FDBA74",
+        "name_ar": "مشمشي",
+        "name_en": "Apricot"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-033-apple-iphone-11-apricot.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-033-apple-iphone-11-apricot.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون مشمشي مصمم بدقة لهاتف iPhone 11 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in Apricot tailored for iPhone 11, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-033",
+      "اللون": "مشمشي",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 11",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180546_736.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-034-apple-iphone-17-pro-max-white",
+    "sku": "CASE-AC-034",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (أبيض) - iPhone 17 Pro Max",
+    "name_en": "Soft Touch Silicone Case (White) - iPhone 17 Pro Max",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أبيض",
+    "color_en": "White",
+    "color_hex": "#FFFFFF",
+    "available_colors": [
+      {
+        "hex": "#FFFFFF",
+        "name_ar": "أبيض",
+        "name_en": "White"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-034-apple-iphone-17-pro-max-white.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-034-apple-iphone-17-pro-max-white.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون أبيض مصمم بدقة لهاتف iPhone 17 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in White tailored for iPhone 17 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-034",
+      "اللون": "أبيض",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 17 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180557_428.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-035-apple-iphone-6-plus-6s-plus-matte-bl",
+    "sku": "CASE-AC-035",
+    "name_ar": "جراب سيليكون أسود مطفي (أسود مطفي) - iPhone 6 Plus / 6s Plus",
+    "name_en": "Matte Black Silicone Case (Matte Black) - iPhone 6 Plus / 6s Plus",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود مطفي",
+    "color_en": "Matte Black",
+    "color_hex": "#111827",
+    "available_colors": [
+      {
+        "hex": "#111827",
+        "name_ar": "أسود مطفي",
+        "name_en": "Matte Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-035-apple-iphone-6-plus-6s-plus-matte-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-035-apple-iphone-6-plus-6s-plus-matte-black.jpg"
+    ],
+    "description_ar": "جراب سيليكون أسود مطفي باللون أسود مطفي مصمم بدقة لهاتف iPhone 6 Plus / 6s Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Matte Black Silicone Case in Matte Black tailored for iPhone 6 Plus / 6s Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-035",
+      "اللون": "أسود مطفي",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 6 Plus / 6s Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180558_305.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-036-apple-iphone-16-navy-blue",
+    "sku": "CASE-AC-036",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (كحلي) - iPhone 16",
+    "name_en": "Soft Touch Silicone Case (Navy Blue) - iPhone 16",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-036-apple-iphone-16-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-036-apple-iphone-16-navy-blue.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون كحلي مصمم بدقة لهاتف iPhone 16 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in Navy Blue tailored for iPhone 16, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-036",
+      "اللون": "كحلي",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 16",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180603_362.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-037-apple-iphone-11-pro-apricot",
+    "sku": "CASE-AC-037",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (مشمشي) - iPhone 11 Pro",
+    "name_en": "Soft Touch Silicone Case (Apricot) - iPhone 11 Pro",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "مشمشي",
+    "color_en": "Apricot",
+    "color_hex": "#FDBA74",
+    "available_colors": [
+      {
+        "hex": "#FDBA74",
+        "name_ar": "مشمشي",
+        "name_en": "Apricot"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-037-apple-iphone-11-pro-apricot.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-037-apple-iphone-11-pro-apricot.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون مشمشي مصمم بدقة لهاتف iPhone 11 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in Apricot tailored for iPhone 11 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-037",
+      "اللون": "مشمشي",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 11 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180610_139.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-038-beats-iphone-17-pro-max-sandstone",
+    "sku": "CASE-AC-038",
+    "name_ar": "جراب بيتس الأصلي فائق التحمل MagSafe مع زر الكاميرا (بيج رملي) - iPhone 17 Pro Max",
+    "name_en": "Beats Rugged MagSafe Case with Camera Control (Sandstone) - iPhone 17 Pro Max",
+    "brand": "Beats",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج رملي",
+    "color_en": "Sandstone",
+    "color_hex": "#A8A29E",
+    "available_colors": [
+      {
+        "hex": "#A8A29E",
+        "name_ar": "بيج رملي",
+        "name_en": "Sandstone"
+      }
+    ],
+    "price": 1000,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-038-beats-iphone-17-pro-max-sandstone.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-038-beats-iphone-17-pro-max-sandstone.jpg"
+    ],
+    "description_ar": "جراب بيتس الأصلي فائق التحمل MagSafe مع زر الكاميرا باللون بيج رملي مصمم بدقة لهاتف iPhone 17 Pro Max لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Beats Rugged MagSafe Case with Camera Control in Sandstone tailored for iPhone 17 Pro Max, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-038",
+      "اللون": "بيج رملي",
+      "الماركة": "Beats",
+      "نوع الجراب": "Rugged MagSafe",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 17 Pro Max",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180614_678.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-039-generic-iphone-16-plus-clear",
+    "sku": "CASE-AC-039",
+    "name_ar": "جراب شفاف ضد الصدمات بحواف هوائية (شفاف) - iPhone 16 Plus",
+    "name_en": "Anti-Fall Air-Balloon Clear Case (Clear) - iPhone 16 Plus",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 70,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-039-generic-iphone-16-plus-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-039-generic-iphone-16-plus-clear.jpg"
+    ],
+    "description_ar": "جراب شفاف ضد الصدمات بحواف هوائية باللون شفاف مصمم بدقة لهاتف iPhone 16 Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Anti-Fall Air-Balloon Clear Case in Clear tailored for iPhone 16 Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-039",
+      "اللون": "شفاف",
+      "الماركة": "Generic",
+      "نوع الجراب": "شفاف ضد الصدمات",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 16 Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180642_869.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-040-generic-iphone-17-air-black",
+    "sku": "CASE-AC-040",
+    "name_ar": "جراب جلد ناعم فائق النحافة (أسود) - iPhone 17 Air",
+    "name_en": "Slim Soft Leather Textured Case (Black) - iPhone 17 Air",
+    "brand": "Generic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-040-generic-iphone-17-air-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-040-generic-iphone-17-air-black.jpg"
+    ],
+    "description_ar": "جراب جلد ناعم فائق النحافة باللون أسود مصمم بدقة لهاتف iPhone 17 Air لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Slim Soft Leather Textured Case in Black tailored for iPhone 17 Air, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-040",
+      "اللون": "أسود",
+      "الماركة": "Generic",
+      "نوع الجراب": "جلد نحيف",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 17 Air",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180656_210.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-041-new-case-iphone-17-air-black-red",
+    "sku": "CASE-AC-041",
+    "name_ar": "جراب كربون رياضي مضاد للصدمات (أسود × أحمر) - iPhone 17 Air",
+    "name_en": "Carbon Stripe Shockproof Case (Black Red) - iPhone 17 Air",
+    "brand": "New Case",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود × أحمر",
+    "color_en": "Black Red",
+    "color_hex": "#991B1B",
+    "available_colors": [
+      {
+        "hex": "#991B1B",
+        "name_ar": "أسود × أحمر",
+        "name_en": "Black Red"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-041-new-case-iphone-17-air-black-red.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-041-new-case-iphone-17-air-black-red.jpg"
+    ],
+    "description_ar": "جراب كربون رياضي مضاد للصدمات باللون أسود × أحمر مصمم بدقة لهاتف iPhone 17 Air لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Stripe Shockproof Case in Black Red tailored for iPhone 17 Air, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-041",
+      "اللون": "أسود × أحمر",
+      "الماركة": "New Case",
+      "نوع الجراب": "كربون رياضي",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 17 Air",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180700_424.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-042-fashion-iphone-16-plus-black-gold",
+    "sku": "CASE-AC-042",
+    "name_ar": "جراب بإطار كاميرا ذهبي بارز (أسود × ذهبي) - iPhone 16 Plus",
+    "name_en": "Gold Lens Rim Luxury Case (Black Gold) - iPhone 16 Plus",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود × ذهبي",
+    "color_en": "Black Gold",
+    "color_hex": "#CA8A04",
+    "available_colors": [
+      {
+        "hex": "#CA8A04",
+        "name_ar": "أسود × ذهبي",
+        "name_en": "Black Gold"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-042-fashion-iphone-16-plus-black-gold.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-042-fashion-iphone-16-plus-black-gold.jpg"
+    ],
+    "description_ar": "جراب بإطار كاميرا ذهبي بارز باللون أسود × ذهبي مصمم بدقة لهاتف iPhone 16 Plus لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Gold Lens Rim Luxury Case in Black Gold tailored for iPhone 16 Plus, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-042",
+      "اللون": "أسود × ذهبي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "إطار كاميرا ذهبي",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 16 Plus",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180705_049.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-043-new-case-iphone-17-air-brown",
+    "sku": "CASE-AC-043",
+    "name_ar": "جراب منسوج بنقشة أراميد (بني) - iPhone 17 Air",
+    "name_en": "Woven Carbon Aramid Style Case (Brown) - iPhone 17 Air",
+    "brand": "New Case",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 250,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-043-new-case-iphone-17-air-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-043-new-case-iphone-17-air-brown.jpg"
+    ],
+    "description_ar": "جراب منسوج بنقشة أراميد باللون بني مصمم بدقة لهاتف iPhone 17 Air لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven Carbon Aramid Style Case in Brown tailored for iPhone 17 Air, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-043",
+      "اللون": "بني",
+      "الماركة": "New Case",
+      "نوع الجراب": "أراميد منسوج",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 17 Air",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180707_943.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-044-new-fashion-realme-15-pro-blue",
+    "sku": "CASE-AC-044",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (أزرق) - Realme 15 Pro",
+    "name_en": "Woven MagSafe Magnetic Case (Blue) - Realme 15 Pro",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أزرق",
+    "color_en": "Blue",
+    "color_hex": "#2563EB",
+    "available_colors": [
+      {
+        "hex": "#2563EB",
+        "name_ar": "أزرق",
+        "name_en": "Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-044-new-fashion-realme-15-pro-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-044-new-fashion-realme-15-pro-blue.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون أزرق مصمم بدقة لهاتف Realme 15 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Blue tailored for Realme 15 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-044",
+      "اللون": "أزرق",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme 15 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180825_072.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-045-fashion-realme-c21y-navy-blue",
+    "sku": "CASE-AC-045",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (كحلي) - Realme C21Y",
+    "name_en": "Carbon Textured Protection Case (Navy Blue) - Realme C21Y",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-045-fashion-realme-c21y-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-045-fashion-realme-c21y-navy-blue.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون كحلي مصمم بدقة لهاتف Realme C21Y لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Navy Blue tailored for Realme C21Y, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-045",
+      "اللون": "كحلي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C21Y",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180830_081.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-046-new-fashion-realme-14-pro-blue",
+    "sku": "CASE-AC-046",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (أزرق) - Realme 14 Pro",
+    "name_en": "Woven MagSafe Magnetic Case (Blue) - Realme 14 Pro",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أزرق",
+    "color_en": "Blue",
+    "color_hex": "#2563EB",
+    "available_colors": [
+      {
+        "hex": "#2563EB",
+        "name_ar": "أزرق",
+        "name_en": "Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-046-new-fashion-realme-14-pro-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-046-new-fashion-realme-14-pro-blue.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون أزرق مصمم بدقة لهاتف Realme 14 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Blue tailored for Realme 14 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-046",
+      "اللون": "أزرق",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme 14 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180837_955.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-047-new-fashion-realme-15-pro-dark-green",
+    "sku": "CASE-AC-047",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (أخضر غامق) - Realme 15 Pro",
+    "name_en": "Woven MagSafe Magnetic Case (Dark Green) - Realme 15 Pro",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أخضر غامق",
+    "color_en": "Dark Green",
+    "color_hex": "#14532D",
+    "available_colors": [
+      {
+        "hex": "#14532D",
+        "name_ar": "أخضر غامق",
+        "name_en": "Dark Green"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-047-new-fashion-realme-15-pro-dark-green.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-047-new-fashion-realme-15-pro-dark-green.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون أخضر غامق مصمم بدقة لهاتف Realme 15 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Dark Green tailored for Realme 15 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-047",
+      "اللون": "أخضر غامق",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme 15 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180841_473.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-048-pitaka-infinix-hot-60-pro-khaki-grey",
+    "sku": "CASE-AC-048",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (رمادي كاكي) - Infinix Hot 60 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Grey) - Infinix Hot 60 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي كاكي",
+    "color_en": "Khaki Grey",
+    "color_hex": "#78716C",
+    "available_colors": [
+      {
+        "hex": "#78716C",
+        "name_ar": "رمادي كاكي",
+        "name_en": "Khaki Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-048-pitaka-infinix-hot-60-pro-khaki-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-048-pitaka-infinix-hot-60-pro-khaki-grey.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون رمادي كاكي مصمم بدقة لهاتف Infinix Hot 60 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Grey tailored for Infinix Hot 60 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-048",
+      "اللون": "رمادي كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Infinix",
+      "الموديل المتوافق": "Infinix Hot 60 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180845_705.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-049-pitaka-infinix-smart-9-orange",
+    "sku": "CASE-AC-049",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (برتقالي) - Infinix Smart 9",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Orange) - Infinix Smart 9",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "برتقالي",
+    "color_en": "Orange",
+    "color_hex": "#EA580C",
+    "available_colors": [
+      {
+        "hex": "#EA580C",
+        "name_ar": "برتقالي",
+        "name_en": "Orange"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-049-pitaka-infinix-smart-9-orange.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-049-pitaka-infinix-smart-9-orange.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون برتقالي مصمم بدقة لهاتف Infinix Smart 9 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Orange tailored for Infinix Smart 9, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-049",
+      "اللون": "برتقالي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Infinix",
+      "الموديل المتوافق": "Infinix Smart 9",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180928_394.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-050-magic-iphone-7-8-clear",
+    "sku": "CASE-AC-050",
+    "name_ar": "جراب ماجيك ماسك شفاف ضد الكسر (شفاف) - iPhone 7 / 8",
+    "name_en": "Magic Mask Clear Shockproof Case (Clear) - iPhone 7 / 8",
+    "brand": "Magic",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "شفاف",
+    "color_en": "Clear",
+    "color_hex": "#E2E8F0",
+    "available_colors": [
+      {
+        "hex": "#E2E8F0",
+        "name_ar": "شفاف",
+        "name_en": "Clear"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-050-magic-iphone-7-8-clear.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-050-magic-iphone-7-8-clear.jpg"
+    ],
+    "description_ar": "جراب ماجيك ماسك شفاف ضد الكسر باللون شفاف مصمم بدقة لهاتف iPhone 7 / 8 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Magic Mask Clear Shockproof Case in Clear tailored for iPhone 7 / 8, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-050",
+      "اللون": "شفاف",
+      "الماركة": "Magic",
+      "نوع الجراب": "شفاف ضد الكسر",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 7 / 8",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180934_577.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-051-apple-iphone-6s-white",
+    "sku": "CASE-AC-051",
+    "name_ar": "جراب سيليكون أبيض نصف شفاف (أبيض) - iPhone 6s",
+    "name_en": "White Translucent Silicone Case (White) - iPhone 6s",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أبيض",
+    "color_en": "White",
+    "color_hex": "#FFFFFF",
+    "available_colors": [
+      {
+        "hex": "#FFFFFF",
+        "name_ar": "أبيض",
+        "name_en": "White"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-051-apple-iphone-6s-white.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-051-apple-iphone-6s-white.jpg"
+    ],
+    "description_ar": "جراب سيليكون أبيض نصف شفاف باللون أبيض مصمم بدقة لهاتف iPhone 6s لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "White Translucent Silicone Case in White tailored for iPhone 6s, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-051",
+      "اللون": "أبيض",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 6s",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180937_623.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-052-apple-iphone-8-white",
+    "sku": "CASE-AC-052",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (أبيض) - iPhone 8",
+    "name_en": "Soft Touch Silicone Case (White) - iPhone 8",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أبيض",
+    "color_en": "White",
+    "color_hex": "#FFFFFF",
+    "available_colors": [
+      {
+        "hex": "#FFFFFF",
+        "name_ar": "أبيض",
+        "name_en": "White"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-052-apple-iphone-8-white.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-052-apple-iphone-8-white.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون أبيض مصمم بدقة لهاتف iPhone 8 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in White tailored for iPhone 8, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-052",
+      "اللون": "أبيض",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 8",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180941_035.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-053-apple-iphone-8-blue",
+    "sku": "CASE-AC-053",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (أزرق) - iPhone 8",
+    "name_en": "Soft Touch Silicone Case (Blue) - iPhone 8",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أزرق",
+    "color_en": "Blue",
+    "color_hex": "#2563EB",
+    "available_colors": [
+      {
+        "hex": "#2563EB",
+        "name_ar": "أزرق",
+        "name_en": "Blue"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-053-apple-iphone-8-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-053-apple-iphone-8-blue.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون أزرق مصمم بدقة لهاتف iPhone 8 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in Blue tailored for iPhone 8, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-053",
+      "اللون": "أزرق",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 8",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180944_234.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-054-apple-iphone-6s-blue",
+    "sku": "CASE-AC-054",
+    "name_ar": "جراب سيليكون ناعم بحماية فائقة (أزرق) - iPhone 6s",
+    "name_en": "Soft Touch Silicone Case (Blue) - iPhone 6s",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أزرق",
+    "color_en": "Blue",
+    "color_hex": "#2563EB",
+    "available_colors": [
+      {
+        "hex": "#2563EB",
+        "name_ar": "أزرق",
+        "name_en": "Blue"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-054-apple-iphone-6s-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-054-apple-iphone-6s-blue.jpg"
+    ],
+    "description_ar": "جراب سيليكون ناعم بحماية فائقة باللون أزرق مصمم بدقة لهاتف iPhone 6s لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Soft Touch Silicone Case in Blue tailored for iPhone 6s, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-054",
+      "اللون": "أزرق",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون ناعم",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 6s",
+      "الصورة المرجعية بالمحل": "IMG_20261122_180948_495.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-055-apple-iphone-6s-smoke",
+    "sku": "CASE-AC-055",
+    "name_ar": "جراب سيليكون مطفي دخاني (دخاني) - iPhone 6s",
+    "name_en": "Translucent Smoke Silicone Case (Smoke) - iPhone 6s",
+    "brand": "Apple",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "دخاني",
+    "color_en": "Smoke",
+    "color_hex": "#52525B",
+    "available_colors": [
+      {
+        "hex": "#52525B",
+        "name_ar": "دخاني",
+        "name_en": "Smoke"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-055-apple-iphone-6s-smoke.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-055-apple-iphone-6s-smoke.jpg"
+    ],
+    "description_ar": "جراب سيليكون مطفي دخاني باللون دخاني مصمم بدقة لهاتف iPhone 6s لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Translucent Smoke Silicone Case in Smoke tailored for iPhone 6s, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-055",
+      "اللون": "دخاني",
+      "الماركة": "Apple",
+      "نوع الجراب": "سيليكون دخاني",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 6s",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181010_975.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-056-new-fashion-realme-c53-black",
+    "sku": "CASE-AC-056",
+    "name_ar": "جراب أرمور متين مع مسند مدمج (أسود) - Realme C53",
+    "name_en": "Woven Heavy-Duty Armor Stand Case (Black) - Realme C53",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-056-new-fashion-realme-c53-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-056-new-fashion-realme-c53-black.jpg"
+    ],
+    "description_ar": "جراب أرمور متين مع مسند مدمج باللون أسود مصمم بدقة لهاتف Realme C53 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven Heavy-Duty Armor Stand Case in Black tailored for Realme C53, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-056",
+      "اللون": "أسود",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "أرمور بحامل",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C53",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181054_114.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-057-fashion-realme-c100-4g-brown",
+    "sku": "CASE-AC-057",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - Realme C100 4G",
+    "name_en": "Carbon Textured Protection Case (Brown) - Realme C100 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-057-fashion-realme-c100-4g-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-057-fashion-realme-c100-4g-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف Realme C100 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for Realme C100 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-057",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C100 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181106_906.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-058-fashion-realme-5-brown",
+    "sku": "CASE-AC-058",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - Realme 5",
+    "name_en": "Carbon Textured Protection Case (Brown) - Realme 5",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-058-fashion-realme-5-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-058-fashion-realme-5-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف Realme 5 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for Realme 5, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-058",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme 5",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181113_243.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-059-fashion-realme-c53-4g-grey",
+    "sku": "CASE-AC-059",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي) - Realme C53 4G",
+    "name_en": "Carbon Textured Protection Case (Grey) - Realme C53 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي",
+    "color_en": "Grey",
+    "color_hex": "#64748B",
+    "available_colors": [
+      {
+        "hex": "#64748B",
+        "name_ar": "رمادي",
+        "name_en": "Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-059-fashion-realme-c53-4g-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-059-fashion-realme-c53-4g-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي مصمم بدقة لهاتف Realme C53 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Grey tailored for Realme C53 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-059",
+      "اللون": "رمادي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C53 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181120_008.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-060-fashion-samsung-galaxy-a56-black",
+    "sku": "CASE-AC-060",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Samsung Galaxy A56",
+    "name_en": "Carbon Textured Protection Case (Black) - Samsung Galaxy A56",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-060-fashion-samsung-galaxy-a56-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-060-fashion-samsung-galaxy-a56-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Samsung Galaxy A56 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Samsung Galaxy A56, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-060",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A56",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181126_008.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-061-fashion-oppo-a5-2020-black",
+    "sku": "CASE-AC-061",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - OPPO A5 2020",
+    "name_en": "Carbon Textured Protection Case (Black) - OPPO A5 2020",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-061-fashion-oppo-a5-2020-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-061-fashion-oppo-a5-2020-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف OPPO A5 2020 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for OPPO A5 2020, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-061",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A5 2020",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181130_441.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-062-fashion-samsung-galaxy-a05s-navy-blu",
+    "sku": "CASE-AC-062",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (كحلي) - Samsung Galaxy A05s",
+    "name_en": "Carbon Textured Protection Case (Navy Blue) - Samsung Galaxy A05s",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-062-fashion-samsung-galaxy-a05s-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-062-fashion-samsung-galaxy-a05s-navy-blue.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون كحلي مصمم بدقة لهاتف Samsung Galaxy A05s لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Navy Blue tailored for Samsung Galaxy A05s, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-062",
+      "اللون": "كحلي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A05s",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181138_632.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-063-pitaka-samsung-galaxy-a55-orange",
+    "sku": "CASE-AC-063",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (برتقالي) - Samsung Galaxy A55",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Orange) - Samsung Galaxy A55",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "برتقالي",
+    "color_en": "Orange",
+    "color_hex": "#EA580C",
+    "available_colors": [
+      {
+        "hex": "#EA580C",
+        "name_ar": "برتقالي",
+        "name_en": "Orange"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-063-pitaka-samsung-galaxy-a55-orange.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-063-pitaka-samsung-galaxy-a55-orange.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون برتقالي مصمم بدقة لهاتف Samsung Galaxy A55 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Orange tailored for Samsung Galaxy A55, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-063",
+      "اللون": "برتقالي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A55",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181142_378.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-064-fashion-samsung-galaxy-a18-black",
+    "sku": "CASE-AC-064",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Samsung Galaxy A18",
+    "name_en": "Carbon Textured Protection Case (Black) - Samsung Galaxy A18",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-064-fashion-samsung-galaxy-a18-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-064-fashion-samsung-galaxy-a18-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Samsung Galaxy A18 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Samsung Galaxy A18, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-064",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A18",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181147_494.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-065-fashion-vivo-y31d-grey",
+    "sku": "CASE-AC-065",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي) - Vivo Y31d",
+    "name_en": "Carbon Textured Protection Case (Grey) - Vivo Y31d",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي",
+    "color_en": "Grey",
+    "color_hex": "#64748B",
+    "available_colors": [
+      {
+        "hex": "#64748B",
+        "name_ar": "رمادي",
+        "name_en": "Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-065-fashion-vivo-y31d-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-065-fashion-vivo-y31d-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي مصمم بدقة لهاتف Vivo Y31d لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Grey tailored for Vivo Y31d, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-065",
+      "اللون": "رمادي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo Y31d",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181153_407.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-066-fashion-honor-600-lite-black",
+    "sku": "CASE-AC-066",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - HONOR 600 Lite",
+    "name_en": "Carbon Textured Protection Case (Black) - HONOR 600 Lite",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-066-fashion-honor-600-lite-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-066-fashion-honor-600-lite-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف HONOR 600 Lite لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for HONOR 600 Lite, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-066",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR 600 Lite",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181200_716.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-067-fashion-honor-x8d-black",
+    "sku": "CASE-AC-067",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - HONOR X8d",
+    "name_en": "Carbon Textured Protection Case (Black) - HONOR X8d",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-067-fashion-honor-x8d-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-067-fashion-honor-x8d-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف HONOR X8d لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for HONOR X8d, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-067",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X8d",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181204_814.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-068-fashion-vivo-y21d-grey",
+    "sku": "CASE-AC-068",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي) - Vivo Y21d",
+    "name_en": "Carbon Textured Protection Case (Grey) - Vivo Y21d",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي",
+    "color_en": "Grey",
+    "color_hex": "#64748B",
+    "available_colors": [
+      {
+        "hex": "#64748B",
+        "name_ar": "رمادي",
+        "name_en": "Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-068-fashion-vivo-y21d-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-068-fashion-vivo-y21d-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي مصمم بدقة لهاتف Vivo Y21d لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Grey tailored for Vivo Y21d, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-068",
+      "اللون": "رمادي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo Y21d",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181218_975.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-069-fashion-vivo-v70-fe-navy-blue",
+    "sku": "CASE-AC-069",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (كحلي) - Vivo V70 FE",
+    "name_en": "Carbon Textured Protection Case (Navy Blue) - Vivo V70 FE",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-069-fashion-vivo-v70-fe-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-069-fashion-vivo-v70-fe-navy-blue.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون كحلي مصمم بدقة لهاتف Vivo V70 FE لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Navy Blue tailored for Vivo V70 FE, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-069",
+      "اللون": "كحلي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo V70 FE",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181225_217.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-070-fashion-vivo-v70-brown",
+    "sku": "CASE-AC-070",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - Vivo V70",
+    "name_en": "Carbon Textured Protection Case (Brown) - Vivo V70",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-070-fashion-vivo-v70-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-070-fashion-vivo-v70-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف Vivo V70 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for Vivo V70, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-070",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo V70",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181230_333.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-071-fashion-redmi-note-14-4g-charcoal-gr",
+    "sku": "CASE-AC-071",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي فحمي) - Redmi Note 14 4G",
+    "name_en": "Carbon Textured Protection Case (Charcoal Grey) - Redmi Note 14 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي فحمي",
+    "color_en": "Charcoal Grey",
+    "color_hex": "#374151",
+    "available_colors": [
+      {
+        "hex": "#374151",
+        "name_ar": "رمادي فحمي",
+        "name_en": "Charcoal Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-071-fashion-redmi-note-14-4g-charcoal-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-071-fashion-redmi-note-14-4g-charcoal-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي فحمي مصمم بدقة لهاتف Redmi Note 14 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Charcoal Grey tailored for Redmi Note 14 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-071",
+      "اللون": "رمادي فحمي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 14 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181235_316.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-072-fashion-redmi-note-10-black",
+    "sku": "CASE-AC-072",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Redmi Note 10",
+    "name_en": "Carbon Textured Protection Case (Black) - Redmi Note 10",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-072-fashion-redmi-note-10-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-072-fashion-redmi-note-10-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Redmi Note 10 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Redmi Note 10, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-072",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 10",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181250_875.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-073-ironman-oppo-reno-14-black",
+    "sku": "CASE-AC-073",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - OPPO Reno 14",
+    "name_en": "Ironman Armor Kickstand Case (Black) - OPPO Reno 14",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-073-ironman-oppo-reno-14-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-073-ironman-oppo-reno-14-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف OPPO Reno 14 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for OPPO Reno 14, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-073",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 14",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181256_471.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-074-ironman-realme-note-60x-burgundy",
+    "sku": "CASE-AC-074",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (نبيتي) - Realme Note 60X",
+    "name_en": "Ironman Armor Kickstand Case (Burgundy) - Realme Note 60X",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "نبيتي",
+    "color_en": "Burgundy",
+    "color_hex": "#7F1D1D",
+    "available_colors": [
+      {
+        "hex": "#7F1D1D",
+        "name_ar": "نبيتي",
+        "name_en": "Burgundy"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-074-ironman-realme-note-60x-burgundy.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-074-ironman-realme-note-60x-burgundy.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون نبيتي مصمم بدقة لهاتف Realme Note 60X لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Burgundy tailored for Realme Note 60X, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-074",
+      "اللون": "نبيتي",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme Note 60X",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181303_412.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-075-fashion-realme-c100-4g-black",
+    "sku": "CASE-AC-075",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Realme C100 4G",
+    "name_en": "Carbon Textured Protection Case (Black) - Realme C100 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-075-fashion-realme-c100-4g-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-075-fashion-realme-c100-4g-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Realme C100 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Realme C100 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-075",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C100 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181332_347.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-076-fashion-realme-c75-navy-blue",
+    "sku": "CASE-AC-076",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (كحلي) - Realme C75",
+    "name_en": "Carbon Textured Protection Case (Navy Blue) - Realme C75",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-076-fashion-realme-c75-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-076-fashion-realme-c75-navy-blue.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون كحلي مصمم بدقة لهاتف Realme C75 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Navy Blue tailored for Realme C75, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-076",
+      "اللون": "كحلي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C75",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181338_021.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-077-pitaka-vivo-y04-brown",
+    "sku": "CASE-AC-077",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - Vivo Y04",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - Vivo Y04",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-077-pitaka-vivo-y04-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-077-pitaka-vivo-y04-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف Vivo Y04 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for Vivo Y04, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-077",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo Y04",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181356_216.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-078-fashion-redmi-note-13-4g-navy-blue",
+    "sku": "CASE-AC-078",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (كحلي) - Redmi Note 13 4G",
+    "name_en": "Carbon Textured Protection Case (Navy Blue) - Redmi Note 13 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-078-fashion-redmi-note-13-4g-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-078-fashion-redmi-note-13-4g-navy-blue.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون كحلي مصمم بدقة لهاتف Redmi Note 13 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Navy Blue tailored for Redmi Note 13 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-078",
+      "اللون": "كحلي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 13 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181404_593.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-079-pitaka-infinix-smart-9-black",
+    "sku": "CASE-AC-079",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (أسود) - Infinix Smart 9",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Black) - Infinix Smart 9",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-079-pitaka-infinix-smart-9-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-079-pitaka-infinix-smart-9-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون أسود مصمم بدقة لهاتف Infinix Smart 9 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Black tailored for Infinix Smart 9, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-079",
+      "اللون": "أسود",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Infinix",
+      "الموديل المتوافق": "Infinix Smart 9",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181436_771.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-080-fashion-vivo-y04-black",
+    "sku": "CASE-AC-080",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Vivo Y04",
+    "name_en": "Carbon Textured Protection Case (Black) - Vivo Y04",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-080-fashion-vivo-y04-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-080-fashion-vivo-y04-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Vivo Y04 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Vivo Y04, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-080",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo Y04",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181527_986.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-081-fashion-redmi-13c-4g-brown",
+    "sku": "CASE-AC-081",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - Redmi 13C 4G",
+    "name_en": "Carbon Textured Protection Case (Brown) - Redmi 13C 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-081-fashion-redmi-13c-4g-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-081-fashion-redmi-13c-4g-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف Redmi 13C 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for Redmi 13C 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-081",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi 13C 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181537_043.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-082-fashion-redmi-note-13-4g-black",
+    "sku": "CASE-AC-082",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Redmi Note 13 4G",
+    "name_en": "Carbon Textured Protection Case (Black) - Redmi Note 13 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-082-fashion-redmi-note-13-4g-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-082-fashion-redmi-note-13-4g-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Redmi Note 13 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Redmi Note 13 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-082",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 13 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181542_231.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-083-fashion-realme-c30-slate-grey",
+    "sku": "CASE-AC-083",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي إردوازي) - Realme C30",
+    "name_en": "Carbon Textured Protection Case (Slate Grey) - Realme C30",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي إردوازي",
+    "color_en": "Slate Grey",
+    "color_hex": "#475569",
+    "available_colors": [
+      {
+        "hex": "#475569",
+        "name_ar": "رمادي إردوازي",
+        "name_en": "Slate Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-083-fashion-realme-c30-slate-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-083-fashion-realme-c30-slate-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي إردوازي مصمم بدقة لهاتف Realme C30 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Slate Grey tailored for Realme C30, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-083",
+      "اللون": "رمادي إردوازي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C30",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181552_315.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-084-ironman-honor-400-black",
+    "sku": "CASE-AC-084",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - HONOR 400",
+    "name_en": "Ironman Armor Kickstand Case (Black) - HONOR 400",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-084-ironman-honor-400-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-084-ironman-honor-400-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف HONOR 400 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for HONOR 400, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-084",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR 400",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181623_303.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-085-fashion-realme-c85-slate-grey",
+    "sku": "CASE-AC-085",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي إردوازي) - Realme C85",
+    "name_en": "Carbon Textured Protection Case (Slate Grey) - Realme C85",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي إردوازي",
+    "color_en": "Slate Grey",
+    "color_hex": "#475569",
+    "available_colors": [
+      {
+        "hex": "#475569",
+        "name_ar": "رمادي إردوازي",
+        "name_en": "Slate Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-085-fashion-realme-c85-slate-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-085-fashion-realme-c85-slate-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي إردوازي مصمم بدقة لهاتف Realme C85 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Slate Grey tailored for Realme C85, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-085",
+      "اللون": "رمادي إردوازي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C85",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181628_374.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-086-fashion-realme-c63-4g-black",
+    "sku": "CASE-AC-086",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Realme C63 4G",
+    "name_en": "Carbon Textured Protection Case (Black) - Realme C63 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-086-fashion-realme-c63-4g-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-086-fashion-realme-c63-4g-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Realme C63 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Realme C63 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-086",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C63 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181637_390.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-087-ironman-realme-c55-black",
+    "sku": "CASE-AC-087",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - Realme C55",
+    "name_en": "Ironman Armor Kickstand Case (Black) - Realme C55",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-087-ironman-realme-c55-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-087-ironman-realme-c55-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف Realme C55 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for Realme C55, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-087",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C55",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181642_901.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-088-ironman-oppo-a3-a3x-black",
+    "sku": "CASE-AC-088",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - OPPO A3 / A3x",
+    "name_en": "Ironman Armor Kickstand Case (Black) - OPPO A3 / A3x",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-088-ironman-oppo-a3-a3x-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-088-ironman-oppo-a3-a3x-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف OPPO A3 / A3x لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for OPPO A3 / A3x, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-088",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A3 / A3x",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181653_914.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-089-fashion-realme-c11-2021-black",
+    "sku": "CASE-AC-089",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Realme C11 2021",
+    "name_en": "Carbon Textured Protection Case (Black) - Realme C11 2021",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-089-fashion-realme-c11-2021-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-089-fashion-realme-c11-2021-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Realme C11 2021 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Realme C11 2021, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-089",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C11 2021",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181659_861.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-090-ironman-oppo-reno-5-4g-silver-white",
+    "sku": "CASE-AC-090",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (فضي × أبيض) - OPPO Reno 5 4G",
+    "name_en": "Ironman Armor Kickstand Case (Silver White) - OPPO Reno 5 4G",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "فضي × أبيض",
+    "color_en": "Silver White",
+    "color_hex": "#D1D5DB",
+    "available_colors": [
+      {
+        "hex": "#D1D5DB",
+        "name_ar": "فضي × أبيض",
+        "name_en": "Silver White"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-090-ironman-oppo-reno-5-4g-silver-white.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-090-ironman-oppo-reno-5-4g-silver-white.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون فضي × أبيض مصمم بدقة لهاتف OPPO Reno 5 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Silver White tailored for OPPO Reno 5 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-090",
+      "اللون": "فضي × أبيض",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 5 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181724_379.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-091-fashion-redmi-17c-charcoal-grey",
+    "sku": "CASE-AC-091",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي فحمي) - Redmi 17C",
+    "name_en": "Carbon Textured Protection Case (Charcoal Grey) - Redmi 17C",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي فحمي",
+    "color_en": "Charcoal Grey",
+    "color_hex": "#374151",
+    "available_colors": [
+      {
+        "hex": "#374151",
+        "name_ar": "رمادي فحمي",
+        "name_en": "Charcoal Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-091-fashion-redmi-17c-charcoal-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-091-fashion-redmi-17c-charcoal-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي فحمي مصمم بدقة لهاتف Redmi 17C لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Charcoal Grey tailored for Redmi 17C, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-091",
+      "اللون": "رمادي فحمي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi 17C",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181727_678.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-092-fashion-redmi-a7-pro-brown",
+    "sku": "CASE-AC-092",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - Redmi A7 Pro",
+    "name_en": "Carbon Textured Protection Case (Brown) - Redmi A7 Pro",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-092-fashion-redmi-a7-pro-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-092-fashion-redmi-a7-pro-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف Redmi A7 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for Redmi A7 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-092",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi A7 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181739_599.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-093-fashion-case-samsung-galaxy-s23-ultr",
+    "sku": "CASE-AC-093",
+    "name_ar": "جراب ماج سيف بإطار ملون وبروز كاميرا (بني) - Samsung Galaxy S23 Ultra",
+    "name_en": "MagSafe Translucent Brown Frame Case (Brown) - Samsung Galaxy S23 Ultra",
+    "brand": "Fashion Case",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 230,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-093-fashion-case-samsung-galaxy-s23-ultra-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-093-fashion-case-samsung-galaxy-s23-ultra-brown.jpg"
+    ],
+    "description_ar": "جراب ماج سيف بإطار ملون وبروز كاميرا باللون بني مصمم بدقة لهاتف Samsung Galaxy S23 Ultra لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "MagSafe Translucent Brown Frame Case in Brown tailored for Samsung Galaxy S23 Ultra, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-093",
+      "اللون": "بني",
+      "الماركة": "Fashion Case",
+      "نوع الجراب": "ماج سيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy S23 Ultra",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181754_401.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-094-ironman-realme-c53-black",
+    "sku": "CASE-AC-094",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - Realme C53",
+    "name_en": "Ironman Armor Kickstand Case (Black) - Realme C53",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-094-ironman-realme-c53-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-094-ironman-realme-c53-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف Realme C53 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for Realme C53, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-094",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C53",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181801_181.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-095-fashion-woven-honor-400-burgundy-gre",
+    "sku": "CASE-AC-095",
+    "name_ar": "جراب نسيج مخطط أنيق (نبيتي × رمادي) - HONOR 400",
+    "name_en": "Striped Woven Protective Case (Burgundy Grey) - HONOR 400",
+    "brand": "Fashion Woven",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "نبيتي × رمادي",
+    "color_en": "Burgundy Grey",
+    "color_hex": "#6B213B",
+    "available_colors": [
+      {
+        "hex": "#6B213B",
+        "name_ar": "نبيتي × رمادي",
+        "name_en": "Burgundy Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-095-fashion-woven-honor-400-burgundy-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-095-fashion-woven-honor-400-burgundy-grey.jpg"
+    ],
+    "description_ar": "جراب نسيج مخطط أنيق باللون نبيتي × رمادي مصمم بدقة لهاتف HONOR 400 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Striped Woven Protective Case in Burgundy Grey tailored for HONOR 400, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-095",
+      "اللون": "نبيتي × رمادي",
+      "الماركة": "Fashion Woven",
+      "نوع الجراب": "نسيج أنيق",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR 400",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181806_842.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-096-pitaka-redmi-note-13-black",
+    "sku": "CASE-AC-096",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (أسود) - Redmi Note 13",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Black) - Redmi Note 13",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-096-pitaka-redmi-note-13-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-096-pitaka-redmi-note-13-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون أسود مصمم بدقة لهاتف Redmi Note 13 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Black tailored for Redmi Note 13, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-096",
+      "اللون": "أسود",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 13",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181817_355.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-097-fashion-iphone-12-12-pro-sky-blue",
+    "sku": "CASE-AC-097",
+    "name_ar": "جراب ميني ماوس باستيل مع حزام يد (أزرق سماوي) - iPhone 12 / 12 Pro",
+    "name_en": "Minnie Mouse Pastel Strap Case (Sky Blue) - iPhone 12 / 12 Pro",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أزرق سماوي",
+    "color_en": "Sky Blue",
+    "color_hex": "#38BDF8",
+    "available_colors": [
+      {
+        "hex": "#38BDF8",
+        "name_ar": "أزرق سماوي",
+        "name_en": "Sky Blue"
+      }
+    ],
+    "price": 200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-097-fashion-iphone-12-12-pro-sky-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-097-fashion-iphone-12-12-pro-sky-blue.jpg"
+    ],
+    "description_ar": "جراب ميني ماوس باستيل مع حزام يد باللون أزرق سماوي مصمم بدقة لهاتف iPhone 12 / 12 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Minnie Mouse Pastel Strap Case in Sky Blue tailored for iPhone 12 / 12 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-097",
+      "اللون": "أزرق سماوي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "جراب بحزام يد",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 12 / 12 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181822_883.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-098-pitaka-samsung-galaxy-a57-brown",
+    "sku": "CASE-AC-098",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - Samsung Galaxy A57",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - Samsung Galaxy A57",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-098-pitaka-samsung-galaxy-a57-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-098-pitaka-samsung-galaxy-a57-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف Samsung Galaxy A57 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for Samsung Galaxy A57, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-098",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A57",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181834_381.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-099-santa-barbara-polo-iphone-12-12-pro-",
+    "sku": "CASE-AC-099",
+    "name_ar": "جراب سانتا باربرا بولو جلد مخطط (أزرق × ذهبي) - iPhone 12 / 12 Pro",
+    "name_en": "Polo Striped Leather Case (Blue Gold) - iPhone 12 / 12 Pro",
+    "brand": "Santa Barbara Polo",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أزرق × ذهبي",
+    "color_en": "Blue Gold",
+    "color_hex": "#1D4ED8",
+    "available_colors": [
+      {
+        "hex": "#1D4ED8",
+        "name_ar": "أزرق × ذهبي",
+        "name_en": "Blue Gold"
+      }
+    ],
+    "price": 150,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-099-santa-barbara-polo-iphone-12-12-pro-blue-gold.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-099-santa-barbara-polo-iphone-12-12-pro-blue-gold.jpg"
+    ],
+    "description_ar": "جراب سانتا باربرا بولو جلد مخطط باللون أزرق × ذهبي مصمم بدقة لهاتف iPhone 12 / 12 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Polo Striped Leather Case in Blue Gold tailored for iPhone 12 / 12 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-099",
+      "اللون": "أزرق × ذهبي",
+      "الماركة": "Santa Barbara Polo",
+      "نوع الجراب": "جلد بولو",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 12 / 12 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181839_732.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-100-santa-barbara-polo-iphone-12-12-pro-",
+    "sku": "CASE-AC-100",
+    "name_ar": "جراب سانتا باربرا بولو جلد مخطط (روز × بني) - iPhone 12 / 12 Pro",
+    "name_en": "Polo Striped Leather Case (Rose Brown) - iPhone 12 / 12 Pro",
+    "brand": "Santa Barbara Polo",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "روز × بني",
+    "color_en": "Rose Brown",
+    "color_hex": "#9D5C63",
+    "available_colors": [
+      {
+        "hex": "#9D5C63",
+        "name_ar": "روز × بني",
+        "name_en": "Rose Brown"
+      }
+    ],
+    "price": 150,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-100-santa-barbara-polo-iphone-12-12-pro-rose-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-100-santa-barbara-polo-iphone-12-12-pro-rose-brown.jpg"
+    ],
+    "description_ar": "جراب سانتا باربرا بولو جلد مخطط باللون روز × بني مصمم بدقة لهاتف iPhone 12 / 12 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Polo Striped Leather Case in Rose Brown tailored for iPhone 12 / 12 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-100",
+      "اللون": "روز × بني",
+      "الماركة": "Santa Barbara Polo",
+      "نوع الجراب": "جلد بولو",
+      "ماركة الهاتف": "Apple",
+      "الموديل المتوافق": "iPhone 12 / 12 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181844_006.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-101-fashion-woven-honor-400-charcoal-gre",
+    "sku": "CASE-AC-101",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (رمادي فحمي) - HONOR 400",
+    "name_en": "Woven MagSafe Magnetic Case (Charcoal Grey) - HONOR 400",
+    "brand": "Fashion Woven",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي فحمي",
+    "color_en": "Charcoal Grey",
+    "color_hex": "#374151",
+    "available_colors": [
+      {
+        "hex": "#374151",
+        "name_ar": "رمادي فحمي",
+        "name_en": "Charcoal Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-101-fashion-woven-honor-400-charcoal-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-101-fashion-woven-honor-400-charcoal-grey.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون رمادي فحمي مصمم بدقة لهاتف HONOR 400 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Charcoal Grey tailored for HONOR 400, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-101",
+      "اللون": "رمادي فحمي",
+      "الماركة": "Fashion Woven",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR 400",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181937_748.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-102-pitaka-redmi-14c-brown",
+    "sku": "CASE-AC-102",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - Redmi 14C",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - Redmi 14C",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-102-pitaka-redmi-14c-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-102-pitaka-redmi-14c-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف Redmi 14C لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for Redmi 14C, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-102",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi 14C",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181940_362.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-103-fashion-redmi-17c-jet-black",
+    "sku": "CASE-AC-103",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود داكن) - Redmi 17C",
+    "name_en": "Carbon Textured Protection Case (Jet Black) - Redmi 17C",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود داكن",
+    "color_en": "Jet Black",
+    "color_hex": "#09090B",
+    "available_colors": [
+      {
+        "hex": "#09090B",
+        "name_ar": "أسود داكن",
+        "name_en": "Jet Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-103-fashion-redmi-17c-jet-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-103-fashion-redmi-17c-jet-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود داكن مصمم بدقة لهاتف Redmi 17C لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Jet Black tailored for Redmi 17C, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-103",
+      "اللون": "أسود داكن",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi 17C",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181944_168.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-104-pitaka-redmi-14c-black",
+    "sku": "CASE-AC-104",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (أسود) - Redmi 14C",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Black) - Redmi 14C",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-104-pitaka-redmi-14c-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-104-pitaka-redmi-14c-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون أسود مصمم بدقة لهاتف Redmi 14C لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Black tailored for Redmi 14C, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-104",
+      "اللون": "أسود",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi 14C",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181948_065.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-105-fashion-woven-honor-400-black-white",
+    "sku": "CASE-AC-105",
+    "name_ar": "جراب منسوج ماج سيف بخط تصميم أبيض (أسود × أبيض) - HONOR 400",
+    "name_en": "Woven MagSafe Stripe Case (Black White) - HONOR 400",
+    "brand": "Fashion Woven",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود × أبيض",
+    "color_en": "Black White",
+    "color_hex": "#1F2937",
+    "available_colors": [
+      {
+        "hex": "#1F2937",
+        "name_ar": "أسود × أبيض",
+        "name_en": "Black White"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-105-fashion-woven-honor-400-black-white.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-105-fashion-woven-honor-400-black-white.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بخط تصميم أبيض باللون أسود × أبيض مصمم بدقة لهاتف HONOR 400 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Stripe Case in Black White tailored for HONOR 400, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-105",
+      "اللون": "أسود × أبيض",
+      "الماركة": "Fashion Woven",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR 400",
+      "الصورة المرجعية بالمحل": "IMG_20261122_181952_308.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-106-fashion-vivo-y05-brown",
+    "sku": "CASE-AC-106",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - Vivo Y05",
+    "name_en": "Carbon Textured Protection Case (Brown) - Vivo Y05",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-106-fashion-vivo-y05-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-106-fashion-vivo-y05-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف Vivo Y05 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for Vivo Y05, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-106",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo Y05",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182025_766.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-107-fashion-honor-400-lite-brown",
+    "sku": "CASE-AC-107",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - HONOR 400 Lite",
+    "name_en": "Carbon Textured Protection Case (Brown) - HONOR 400 Lite",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-107-fashion-honor-400-lite-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-107-fashion-honor-400-lite-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف HONOR 400 Lite لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for HONOR 400 Lite, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-107",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR 400 Lite",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182034_507.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-108-pitaka-vivo-v60-lite-brown",
+    "sku": "CASE-AC-108",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - Vivo V60 Lite",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - Vivo V60 Lite",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-108-pitaka-vivo-v60-lite-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-108-pitaka-vivo-v60-lite-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف Vivo V60 Lite لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for Vivo V60 Lite, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-108",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo V60 Lite",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182040_701.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-109-fashion-honor-x6c-brown",
+    "sku": "CASE-AC-109",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - HONOR X6c",
+    "name_en": "Carbon Textured Protection Case (Brown) - HONOR X6c",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-109-fashion-honor-x6c-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-109-fashion-honor-x6c-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف HONOR X6c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for HONOR X6c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-109",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X6c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182208_444.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-110-new-fashion-honor-x6c-black",
+    "sku": "CASE-AC-110",
+    "name_ar": "جراب منسوج ماج سيف بفتحة كاميرا مربعة (أسود) - HONOR X6c",
+    "name_en": "Woven MagSafe Case (Quad Camera Cutout) (Black) - HONOR X6c",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-110-new-fashion-honor-x6c-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-110-new-fashion-honor-x6c-black.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بفتحة كاميرا مربعة باللون أسود مصمم بدقة لهاتف HONOR X6c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Case (Quad Camera Cutout) in Black tailored for HONOR X6c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-110",
+      "اللون": "أسود",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X6c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182256_486.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-111-fashion-honor-x6c-charcoal-grey",
+    "sku": "CASE-AC-111",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي فحمي) - HONOR X6c",
+    "name_en": "Carbon Textured Protection Case (Charcoal Grey) - HONOR X6c",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي فحمي",
+    "color_en": "Charcoal Grey",
+    "color_hex": "#374151",
+    "available_colors": [
+      {
+        "hex": "#374151",
+        "name_ar": "رمادي فحمي",
+        "name_en": "Charcoal Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-111-fashion-honor-x6c-charcoal-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-111-fashion-honor-x6c-charcoal-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي فحمي مصمم بدقة لهاتف HONOR X6c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Charcoal Grey tailored for HONOR X6c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-111",
+      "اللون": "رمادي فحمي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X6c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182300_033.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-112-fashion-honor-x6c-black",
+    "sku": "CASE-AC-112",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - HONOR X6c",
+    "name_en": "Carbon Textured Protection Case (Black) - HONOR X6c",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-112-fashion-honor-x6c-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-112-fashion-honor-x6c-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف HONOR X6c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for HONOR X6c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-112",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X6c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182306_345.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-113-fashion-honor-x9c-brown",
+    "sku": "CASE-AC-113",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - HONOR X9c",
+    "name_en": "Carbon Textured Protection Case (Brown) - HONOR X9c",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-113-fashion-honor-x9c-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-113-fashion-honor-x9c-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف HONOR X9c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for HONOR X9c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-113",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X9c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182329_255.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-114-pitaka-honor-x9c-brown",
+    "sku": "CASE-AC-114",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - HONOR X9c",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - HONOR X9c",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-114-pitaka-honor-x9c-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-114-pitaka-honor-x9c-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف HONOR X9c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for HONOR X9c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-114",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X9c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182335_780.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-115-pitaka-honor-x9c-olive-sand",
+    "sku": "CASE-AC-115",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (زيتوني رملي) - HONOR X9c",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Olive Sand) - HONOR X9c",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "زيتوني رملي",
+    "color_en": "Olive Sand",
+    "color_hex": "#84795E",
+    "available_colors": [
+      {
+        "hex": "#84795E",
+        "name_ar": "زيتوني رملي",
+        "name_en": "Olive Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-115-pitaka-honor-x9c-olive-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-115-pitaka-honor-x9c-olive-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون زيتوني رملي مصمم بدقة لهاتف HONOR X9c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Olive Sand tailored for HONOR X9c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-115",
+      "اللون": "زيتوني رملي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X9c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182340_961.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-116-new-fashion-honor-x6c-black",
+    "sku": "CASE-AC-116",
+    "name_ar": "جراب منسوج ماج سيف بعدسات ثلاثية (أسود) - HONOR X6c",
+    "name_en": "Woven MagSafe Case (Triple Lens Cutout) (Black) - HONOR X6c",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-116-new-fashion-honor-x6c-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-116-new-fashion-honor-x6c-black.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بعدسات ثلاثية باللون أسود مصمم بدقة لهاتف HONOR X6c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Case (Triple Lens Cutout) in Black tailored for HONOR X6c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-116",
+      "اللون": "أسود",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X6c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182346_733.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-117-new-fashion-honor-x7c-black",
+    "sku": "CASE-AC-117",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (أسود) - HONOR X7c",
+    "name_en": "Woven MagSafe Magnetic Case (Black) - HONOR X7c",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-117-new-fashion-honor-x7c-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-117-new-fashion-honor-x7c-black.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون أسود مصمم بدقة لهاتف HONOR X7c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Black tailored for HONOR X7c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-117",
+      "اللون": "أسود",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X7c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182357_657.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-118-new-fashion-honor-x9b-black",
+    "sku": "CASE-AC-118",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (أسود) - HONOR X9b",
+    "name_en": "Woven MagSafe Magnetic Case (Black) - HONOR X9b",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-118-new-fashion-honor-x9b-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-118-new-fashion-honor-x9b-black.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون أسود مصمم بدقة لهاتف HONOR X9b لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Black tailored for HONOR X9b, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-118",
+      "اللون": "أسود",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X9b",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182416_334.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-119-pitaka-honor-x9b-navy-black",
+    "sku": "CASE-AC-119",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (كحلي غامق) - HONOR X9b",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Navy Black) - HONOR X9b",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي غامق",
+    "color_en": "Navy Black",
+    "color_hex": "#172554",
+    "available_colors": [
+      {
+        "hex": "#172554",
+        "name_ar": "كحلي غامق",
+        "name_en": "Navy Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-119-pitaka-honor-x9b-navy-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-119-pitaka-honor-x9b-navy-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون كحلي غامق مصمم بدقة لهاتف HONOR X9b لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Navy Black tailored for HONOR X9b, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-119",
+      "اللون": "كحلي غامق",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X9b",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182426_292.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-120-pitaka-vivo-y19s-black",
+    "sku": "CASE-AC-120",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (أسود) - Vivo Y19s",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Black) - Vivo Y19s",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-120-pitaka-vivo-y19s-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-120-pitaka-vivo-y19s-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون أسود مصمم بدقة لهاتف Vivo Y19s لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Black tailored for Vivo Y19s, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-120",
+      "اللون": "أسود",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo Y19s",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182446_937.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-121-pitaka-honor-x9d-navy-black",
+    "sku": "CASE-AC-121",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (كحلي غامق) - HONOR X9d",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Navy Black) - HONOR X9d",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي غامق",
+    "color_en": "Navy Black",
+    "color_hex": "#172554",
+    "available_colors": [
+      {
+        "hex": "#172554",
+        "name_ar": "كحلي غامق",
+        "name_en": "Navy Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-121-pitaka-honor-x9d-navy-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-121-pitaka-honor-x9d-navy-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون كحلي غامق مصمم بدقة لهاتف HONOR X9d لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Navy Black tailored for HONOR X9d, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-121",
+      "اللون": "كحلي غامق",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "HONOR",
+      "الموديل المتوافق": "HONOR X9d",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182457_900.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-122-fashion-oppo-a54-4g-black",
+    "sku": "CASE-AC-122",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - OPPO A54 4G",
+    "name_en": "Carbon Textured Protection Case (Black) - OPPO A54 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-122-fashion-oppo-a54-4g-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-122-fashion-oppo-a54-4g-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف OPPO A54 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for OPPO A54 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-122",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A54 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182528_006.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-123-fashion-woven-oppo-reno-5-burgundy-g",
+    "sku": "CASE-AC-123",
+    "name_ar": "جراب نسيج كربون بتصميم مائل (نبيتي × رمادي) - OPPO Reno 5",
+    "name_en": "Diagonal Stripe Woven Case (Burgundy Grey) - OPPO Reno 5",
+    "brand": "Fashion Woven",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "نبيتي × رمادي",
+    "color_en": "Burgundy Grey",
+    "color_hex": "#6B213B",
+    "available_colors": [
+      {
+        "hex": "#6B213B",
+        "name_ar": "نبيتي × رمادي",
+        "name_en": "Burgundy Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-123-fashion-woven-oppo-reno-5-burgundy-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-123-fashion-woven-oppo-reno-5-burgundy-grey.jpg"
+    ],
+    "description_ar": "جراب نسيج كربون بتصميم مائل باللون نبيتي × رمادي مصمم بدقة لهاتف OPPO Reno 5 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Diagonal Stripe Woven Case in Burgundy Grey tailored for OPPO Reno 5, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-123",
+      "اللون": "نبيتي × رمادي",
+      "الماركة": "Fashion Woven",
+      "نوع الجراب": "نسيج أنيق",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 5",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182536_884.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-124-pitaka-oppo-reno-14-orange",
+    "sku": "CASE-AC-124",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (برتقالي) - OPPO Reno 14",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Orange) - OPPO Reno 14",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "برتقالي",
+    "color_en": "Orange",
+    "color_hex": "#EA580C",
+    "available_colors": [
+      {
+        "hex": "#EA580C",
+        "name_ar": "برتقالي",
+        "name_en": "Orange"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-124-pitaka-oppo-reno-14-orange.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-124-pitaka-oppo-reno-14-orange.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون برتقالي مصمم بدقة لهاتف OPPO Reno 14 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Orange tailored for OPPO Reno 14, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-124",
+      "اللون": "برتقالي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 14",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182605_600.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-125-pitaka-poco-c85-black",
+    "sku": "CASE-AC-125",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (أسود) - POCO C85",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Black) - POCO C85",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-125-pitaka-poco-c85-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-125-pitaka-poco-c85-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون أسود مصمم بدقة لهاتف POCO C85 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Black tailored for POCO C85, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-125",
+      "اللون": "أسود",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "POCO C85",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182614_245.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-126-ironman-oppo-reno-15f-black",
+    "sku": "CASE-AC-126",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - OPPO Reno 15F",
+    "name_en": "Ironman Armor Kickstand Case (Black) - OPPO Reno 15F",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-126-ironman-oppo-reno-15f-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-126-ironman-oppo-reno-15f-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف OPPO Reno 15F لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for OPPO Reno 15F, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-126",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 15F",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182630_925.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-127-ironman-oppo-reno-14f-red-black",
+    "sku": "CASE-AC-127",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أحمر × أسود) - OPPO Reno 14F",
+    "name_en": "Ironman Armor Kickstand Case (Red Black) - OPPO Reno 14F",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أحمر × أسود",
+    "color_en": "Red Black",
+    "color_hex": "#B91C1C",
+    "available_colors": [
+      {
+        "hex": "#B91C1C",
+        "name_ar": "أحمر × أسود",
+        "name_en": "Red Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-127-ironman-oppo-reno-14f-red-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-127-ironman-oppo-reno-14f-red-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أحمر × أسود مصمم بدقة لهاتف OPPO Reno 14F لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Red Black tailored for OPPO Reno 14F, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-127",
+      "اللون": "أحمر × أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 14F",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182645_739.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-128-pitaka-oppo-reno-14f-orange",
+    "sku": "CASE-AC-128",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (برتقالي) - OPPO Reno 14F",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Orange) - OPPO Reno 14F",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "برتقالي",
+    "color_en": "Orange",
+    "color_hex": "#EA580C",
+    "available_colors": [
+      {
+        "hex": "#EA580C",
+        "name_ar": "برتقالي",
+        "name_en": "Orange"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-128-pitaka-oppo-reno-14f-orange.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-128-pitaka-oppo-reno-14f-orange.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون برتقالي مصمم بدقة لهاتف OPPO Reno 14F لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Orange tailored for OPPO Reno 14F, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-128",
+      "اللون": "برتقالي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 14F",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182658_799.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-129-new-fashion-oppo-reno-14f-navy-blue",
+    "sku": "CASE-AC-129",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (كحلي) - OPPO Reno 14F",
+    "name_en": "Woven MagSafe Magnetic Case (Navy Blue) - OPPO Reno 14F",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-129-new-fashion-oppo-reno-14f-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-129-new-fashion-oppo-reno-14f-navy-blue.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون كحلي مصمم بدقة لهاتف OPPO Reno 14F لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Navy Blue tailored for OPPO Reno 14F, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-129",
+      "اللون": "كحلي",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 14F",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182707_344.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-130-ironman-oppo-reno-15-pro-silver-whit",
+    "sku": "CASE-AC-130",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (فضي × أبيض) - OPPO Reno 15 Pro",
+    "name_en": "Ironman Armor Kickstand Case (Silver White) - OPPO Reno 15 Pro",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "فضي × أبيض",
+    "color_en": "Silver White",
+    "color_hex": "#D1D5DB",
+    "available_colors": [
+      {
+        "hex": "#D1D5DB",
+        "name_ar": "فضي × أبيض",
+        "name_en": "Silver White"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-130-ironman-oppo-reno-15-pro-silver-white.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-130-ironman-oppo-reno-15-pro-silver-white.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون فضي × أبيض مصمم بدقة لهاتف OPPO Reno 15 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Silver White tailored for OPPO Reno 15 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-130",
+      "اللون": "فضي × أبيض",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 15 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182713_936.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-131-fashion-oppo-reno-16f-black",
+    "sku": "CASE-AC-131",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - OPPO Reno 16F",
+    "name_en": "Carbon Textured Protection Case (Black) - OPPO Reno 16F",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-131-fashion-oppo-reno-16f-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-131-fashion-oppo-reno-16f-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف OPPO Reno 16F لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for OPPO Reno 16F, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-131",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 16F",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182721_410.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-132-fashion-woven-oppo-a16-charcoal-silv",
+    "sku": "CASE-AC-132",
+    "name_ar": "جراب نسيج كاروهات ماج سيف (رمادي × فضي) - OPPO A16",
+    "name_en": "Checkered Woven MagSafe Case (Charcoal Silver) - OPPO A16",
+    "brand": "Fashion Woven",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي × فضي",
+    "color_en": "Charcoal Silver",
+    "color_hex": "#4B5563",
+    "available_colors": [
+      {
+        "hex": "#4B5563",
+        "name_ar": "رمادي × فضي",
+        "name_en": "Charcoal Silver"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-132-fashion-woven-oppo-a16-charcoal-silver.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-132-fashion-woven-oppo-a16-charcoal-silver.jpg"
+    ],
+    "description_ar": "جراب نسيج كاروهات ماج سيف باللون رمادي × فضي مصمم بدقة لهاتف OPPO A16 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Checkered Woven MagSafe Case in Charcoal Silver tailored for OPPO A16, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-132",
+      "اللون": "رمادي × فضي",
+      "الماركة": "Fashion Woven",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A16",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182730_260.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-133-fashion-woven-oppo-f9-grey-silver",
+    "sku": "CASE-AC-133",
+    "name_ar": "جراب نسيج كاروهات أنيق (رمادي × سيلفر) - OPPO F9",
+    "name_en": "Checkered Woven Protective Case (Grey Silver) - OPPO F9",
+    "brand": "Fashion Woven",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي × سيلفر",
+    "color_en": "Grey Silver",
+    "color_hex": "#6B7280",
+    "available_colors": [
+      {
+        "hex": "#6B7280",
+        "name_ar": "رمادي × سيلفر",
+        "name_en": "Grey Silver"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-133-fashion-woven-oppo-f9-grey-silver.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-133-fashion-woven-oppo-f9-grey-silver.jpg"
+    ],
+    "description_ar": "جراب نسيج كاروهات أنيق باللون رمادي × سيلفر مصمم بدقة لهاتف OPPO F9 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Checkered Woven Protective Case in Grey Silver tailored for OPPO F9, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-133",
+      "اللون": "رمادي × سيلفر",
+      "الماركة": "Fashion Woven",
+      "نوع الجراب": "نسيج أنيق",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO F9",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182736_505.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-134-fashion-oppo-a5-2025-charcoal-grey",
+    "sku": "CASE-AC-134",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي فحمي) - OPPO A5 2025",
+    "name_en": "Carbon Textured Protection Case (Charcoal Grey) - OPPO A5 2025",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي فحمي",
+    "color_en": "Charcoal Grey",
+    "color_hex": "#374151",
+    "available_colors": [
+      {
+        "hex": "#374151",
+        "name_ar": "رمادي فحمي",
+        "name_en": "Charcoal Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-134-fashion-oppo-a5-2025-charcoal-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-134-fashion-oppo-a5-2025-charcoal-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي فحمي مصمم بدقة لهاتف OPPO A5 2025 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Charcoal Grey tailored for OPPO A5 2025, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-134",
+      "اللون": "رمادي فحمي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A5 2025",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182751_494.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-135-fashion-oppo-reno-15-navy-blue",
+    "sku": "CASE-AC-135",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (كحلي) - OPPO Reno 15",
+    "name_en": "Carbon Textured Protection Case (Navy Blue) - OPPO Reno 15",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-135-fashion-oppo-reno-15-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-135-fashion-oppo-reno-15-navy-blue.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون كحلي مصمم بدقة لهاتف OPPO Reno 15 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Navy Blue tailored for OPPO Reno 15, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-135",
+      "اللون": "كحلي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO Reno 15",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182755_673.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-136-ironman-oppo-a78-4g-black",
+    "sku": "CASE-AC-136",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - OPPO A78 4G",
+    "name_en": "Ironman Armor Kickstand Case (Black) - OPPO A78 4G",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-136-ironman-oppo-a78-4g-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-136-ironman-oppo-a78-4g-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف OPPO A78 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for OPPO A78 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-136",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A78 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182800_029.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-137-pitaka-oppo-a38-4g-black",
+    "sku": "CASE-AC-137",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (أسود) - OPPO A38 4G",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Black) - OPPO A38 4G",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-137-pitaka-oppo-a38-4g-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-137-pitaka-oppo-a38-4g-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون أسود مصمم بدقة لهاتف OPPO A38 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Black tailored for OPPO A38 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-137",
+      "اللون": "أسود",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A38 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182924_447.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-138-fashion-oppo-a18-4g-black",
+    "sku": "CASE-AC-138",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - OPPO A18 4G",
+    "name_en": "Carbon Textured Protection Case (Black) - OPPO A18 4G",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-138-fashion-oppo-a18-4g-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-138-fashion-oppo-a18-4g-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف OPPO A18 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for OPPO A18 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-138",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A18 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_182937_014.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-139-ironman-oppo-a76-navy-blue",
+    "sku": "CASE-AC-139",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (كحلي) - OPPO A76",
+    "name_en": "Ironman Armor Kickstand Case (Navy Blue) - OPPO A76",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-139-ironman-oppo-a76-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-139-ironman-oppo-a76-navy-blue.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون كحلي مصمم بدقة لهاتف OPPO A76 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Navy Blue tailored for OPPO A76, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-139",
+      "اللون": "كحلي",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A76",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183000_614.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-140-fashion-oppo-a15-black",
+    "sku": "CASE-AC-140",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - OPPO A15",
+    "name_en": "Carbon Textured Protection Case (Black) - OPPO A15",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-140-fashion-oppo-a15-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-140-fashion-oppo-a15-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف OPPO A15 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for OPPO A15, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-140",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A15",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183005_602.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-141-pitaka-oppo-a6x-navy-black",
+    "sku": "CASE-AC-141",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (كحلي غامق) - OPPO A6x",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Navy Black) - OPPO A6x",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي غامق",
+    "color_en": "Navy Black",
+    "color_hex": "#172554",
+    "available_colors": [
+      {
+        "hex": "#172554",
+        "name_ar": "كحلي غامق",
+        "name_en": "Navy Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-141-pitaka-oppo-a6x-navy-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-141-pitaka-oppo-a6x-navy-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون كحلي غامق مصمم بدقة لهاتف OPPO A6x لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Navy Black tailored for OPPO A6x, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-141",
+      "اللون": "كحلي غامق",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A6x",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183014_346.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-142-pitaka-oppo-a6-4g-black",
+    "sku": "CASE-AC-142",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (أسود) - OPPO A6 4G",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Black) - OPPO A6 4G",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-142-pitaka-oppo-a6-4g-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-142-pitaka-oppo-a6-4g-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون أسود مصمم بدقة لهاتف OPPO A6 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Black tailored for OPPO A6 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-142",
+      "اللون": "أسود",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A6 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183046_002.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-143-fashion-oppo-a6c-navy-blue",
+    "sku": "CASE-AC-143",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (كحلي) - OPPO A6c",
+    "name_en": "Carbon Textured Protection Case (Navy Blue) - OPPO A6c",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-143-fashion-oppo-a6c-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-143-fashion-oppo-a6c-navy-blue.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون كحلي مصمم بدقة لهاتف OPPO A6c لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Navy Blue tailored for OPPO A6c, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-143",
+      "اللون": "كحلي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A6c",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183059_470.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-144-fashion-oppo-a6-pro-black",
+    "sku": "CASE-AC-144",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - OPPO A6 Pro",
+    "name_en": "Carbon Textured Protection Case (Black) - OPPO A6 Pro",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-144-fashion-oppo-a6-pro-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-144-fashion-oppo-a6-pro-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف OPPO A6 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for OPPO A6 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-144",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A6 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183105_589.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-145-pitaka-oppo-a6-4g-khaki-sand",
+    "sku": "CASE-AC-145",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - OPPO A6 4G",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - OPPO A6 4G",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-145-pitaka-oppo-a6-4g-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-145-pitaka-oppo-a6-4g-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف OPPO A6 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for OPPO A6 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-145",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A6 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183109_012.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-146-ironman-oppo-a5-pro-charcoal-grey",
+    "sku": "CASE-AC-146",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (رمادي فحمي) - OPPO A5 Pro",
+    "name_en": "Ironman Armor Kickstand Case (Charcoal Grey) - OPPO A5 Pro",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي فحمي",
+    "color_en": "Charcoal Grey",
+    "color_hex": "#374151",
+    "available_colors": [
+      {
+        "hex": "#374151",
+        "name_ar": "رمادي فحمي",
+        "name_en": "Charcoal Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-146-ironman-oppo-a5-pro-charcoal-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-146-ironman-oppo-a5-pro-charcoal-grey.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون رمادي فحمي مصمم بدقة لهاتف OPPO A5 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Charcoal Grey tailored for OPPO A5 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-146",
+      "اللون": "رمادي فحمي",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A5 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183115_984.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-147-pitaka-oppo-a6-pro-black",
+    "sku": "CASE-AC-147",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (أسود) - OPPO A6 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Black) - OPPO A6 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-147-pitaka-oppo-a6-pro-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-147-pitaka-oppo-a6-pro-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون أسود مصمم بدقة لهاتف OPPO A6 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Black tailored for OPPO A6 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-147",
+      "اللون": "أسود",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A6 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183120_184.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-148-fashion-oppo-a16-black",
+    "sku": "CASE-AC-148",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - OPPO A16",
+    "name_en": "Carbon Textured Protection Case (Black) - OPPO A16",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-148-fashion-oppo-a16-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-148-fashion-oppo-a16-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف OPPO A16 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for OPPO A16, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-148",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A16",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183132_429.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-149-pitaka-oppo-a6-pro-brown",
+    "sku": "CASE-AC-149",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - OPPO A6 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - OPPO A6 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-149-pitaka-oppo-a6-pro-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-149-pitaka-oppo-a6-pro-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف OPPO A6 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for OPPO A6 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-149",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A6 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183138_567.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-150-ironman-oppo-a5x-black",
+    "sku": "CASE-AC-150",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - OPPO A5x",
+    "name_en": "Ironman Armor Kickstand Case (Black) - OPPO A5x",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-150-ironman-oppo-a5x-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-150-ironman-oppo-a5x-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف OPPO A5x لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for OPPO A5x, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-150",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A5x",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183142_460.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-151-new-fashion-oppo-a18-4g-black",
+    "sku": "CASE-AC-151",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (أسود) - OPPO A18 4G",
+    "name_en": "Woven MagSafe Magnetic Case (Black) - OPPO A18 4G",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-151-new-fashion-oppo-a18-4g-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-151-new-fashion-oppo-a18-4g-black.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون أسود مصمم بدقة لهاتف OPPO A18 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Black tailored for OPPO A18 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-151",
+      "اللون": "أسود",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A18 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183219_028.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-152-ironman-oppo-a5-4g-navy-blue",
+    "sku": "CASE-AC-152",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (كحلي) - OPPO A5 4G",
+    "name_en": "Ironman Armor Kickstand Case (Navy Blue) - OPPO A5 4G",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-152-ironman-oppo-a5-4g-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-152-ironman-oppo-a5-4g-navy-blue.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون كحلي مصمم بدقة لهاتف OPPO A5 4G لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Navy Blue tailored for OPPO A5 4G, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-152",
+      "اللون": "كحلي",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A5 4G",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183225_578.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-153-fashion-oppo-a3x-black",
+    "sku": "CASE-AC-153",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - OPPO A3x",
+    "name_en": "Carbon Textured Protection Case (Black) - OPPO A3x",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-153-fashion-oppo-a3x-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-153-fashion-oppo-a3x-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف OPPO A3x لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for OPPO A3x, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-153",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "OPPO",
+      "الموديل المتوافق": "OPPO A3x",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183233_571.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-154-pitaka-redmi-note-15-pro-khaki-sand",
+    "sku": "CASE-AC-154",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Redmi Note 15 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Redmi Note 15 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-154-pitaka-redmi-note-15-pro-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-154-pitaka-redmi-note-15-pro-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Redmi Note 15 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Redmi Note 15 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-154",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 15 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183242_280.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-155-pitaka-redmi-note-14-pro-khaki-sand",
+    "sku": "CASE-AC-155",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Redmi Note 14 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Redmi Note 14 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-155-pitaka-redmi-note-14-pro-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-155-pitaka-redmi-note-14-pro-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Redmi Note 14 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Redmi Note 14 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-155",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 14 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183248_790.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-156-pitaka-redmi-note-14-pro-brown",
+    "sku": "CASE-AC-156",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - Redmi Note 14 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - Redmi Note 14 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-156-pitaka-redmi-note-14-pro-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-156-pitaka-redmi-note-14-pro-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف Redmi Note 14 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for Redmi Note 14 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-156",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 14 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183254_310.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-157-pitaka-redmi-note-15-pro-orange",
+    "sku": "CASE-AC-157",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (برتقالي) - Redmi Note 15 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Orange) - Redmi Note 15 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "برتقالي",
+    "color_en": "Orange",
+    "color_hex": "#EA580C",
+    "available_colors": [
+      {
+        "hex": "#EA580C",
+        "name_ar": "برتقالي",
+        "name_en": "Orange"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-157-pitaka-redmi-note-15-pro-orange.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-157-pitaka-redmi-note-15-pro-orange.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون برتقالي مصمم بدقة لهاتف Redmi Note 15 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Orange tailored for Redmi Note 15 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-157",
+      "اللون": "برتقالي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 15 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183259_041.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-158-pitaka-redmi-note-15-pro-navy-blue",
+    "sku": "CASE-AC-158",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (كحلي) - Redmi Note 15 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Navy Blue) - Redmi Note 15 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-158-pitaka-redmi-note-15-pro-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-158-pitaka-redmi-note-15-pro-navy-blue.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون كحلي مصمم بدقة لهاتف Redmi Note 15 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Navy Blue tailored for Redmi Note 15 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-158",
+      "اللون": "كحلي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 15 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183305_343.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-159-pitaka-redmi-note-15-pro-charcoal-bl",
+    "sku": "CASE-AC-159",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (فحمي غامق) - Redmi Note 15 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Charcoal Black) - Redmi Note 15 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "فحمي غامق",
+    "color_en": "Charcoal Black",
+    "color_hex": "#1E293B",
+    "available_colors": [
+      {
+        "hex": "#1E293B",
+        "name_ar": "فحمي غامق",
+        "name_en": "Charcoal Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-159-pitaka-redmi-note-15-pro-charcoal-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-159-pitaka-redmi-note-15-pro-charcoal-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون فحمي غامق مصمم بدقة لهاتف Redmi Note 15 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Charcoal Black tailored for Redmi Note 15 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-159",
+      "اللون": "فحمي غامق",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 15 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183309_680.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-160-pitaka-redmi-15-navy-black",
+    "sku": "CASE-AC-160",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (كحلي غامق) - Redmi 15",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Navy Black) - Redmi 15",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي غامق",
+    "color_en": "Navy Black",
+    "color_hex": "#172554",
+    "available_colors": [
+      {
+        "hex": "#172554",
+        "name_ar": "كحلي غامق",
+        "name_en": "Navy Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-160-pitaka-redmi-15-navy-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-160-pitaka-redmi-15-navy-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون كحلي غامق مصمم بدقة لهاتف Redmi 15 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Navy Black tailored for Redmi 15, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-160",
+      "اللون": "كحلي غامق",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi 15",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183315_619.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-161-pitaka-redmi-15c-orange",
+    "sku": "CASE-AC-161",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (برتقالي) - Redmi 15C",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Orange) - Redmi 15C",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "برتقالي",
+    "color_en": "Orange",
+    "color_hex": "#EA580C",
+    "available_colors": [
+      {
+        "hex": "#EA580C",
+        "name_ar": "برتقالي",
+        "name_en": "Orange"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-161-pitaka-redmi-15c-orange.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-161-pitaka-redmi-15c-orange.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون برتقالي مصمم بدقة لهاتف Redmi 15C لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Orange tailored for Redmi 15C, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-161",
+      "اللون": "برتقالي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi 15C",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183340_113.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-162-pitaka-redmi-15c-brown",
+    "sku": "CASE-AC-162",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - Redmi 15C",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - Redmi 15C",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-162-pitaka-redmi-15c-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-162-pitaka-redmi-15c-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف Redmi 15C لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for Redmi 15C, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-162",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi 15C",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183353_823.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-163-fashion-redmi-14c-brown",
+    "sku": "CASE-AC-163",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - Redmi 14C",
+    "name_en": "Carbon Textured Protection Case (Brown) - Redmi 14C",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-163-fashion-redmi-14c-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-163-fashion-redmi-14c-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف Redmi 14C لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for Redmi 14C, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-163",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi 14C",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183358_157.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-164-pitaka-vivo-y33s-khaki-sand",
+    "sku": "CASE-AC-164",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Vivo Y33s",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Vivo Y33s",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-164-pitaka-vivo-y33s-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-164-pitaka-vivo-y33s-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Vivo Y33s لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Vivo Y33s, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-164",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Vivo",
+      "الموديل المتوافق": "Vivo Y33s",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183447_347.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-165-pitaka-redmi-note-14-khaki-sand",
+    "sku": "CASE-AC-165",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Redmi Note 14",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Redmi Note 14",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-165-pitaka-redmi-note-14-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-165-pitaka-redmi-note-14-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Redmi Note 14 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Redmi Note 14, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-165",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 14",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183506_817.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-166-pitaka-redmi-note-15-khaki-sand",
+    "sku": "CASE-AC-166",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Redmi Note 15",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Redmi Note 15",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-166-pitaka-redmi-note-15-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-166-pitaka-redmi-note-15-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Redmi Note 15 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Redmi Note 15, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-166",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 15",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183513_261.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-167-pitaka-redmi-note-15-pro-brown",
+    "sku": "CASE-AC-167",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - Redmi Note 15 Pro",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - Redmi Note 15 Pro",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-167-pitaka-redmi-note-15-pro-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-167-pitaka-redmi-note-15-pro-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف Redmi Note 15 Pro لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for Redmi Note 15 Pro, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-167",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 15 Pro",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183518_116.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-168-pitaka-redmi-note-12-khaki-sand",
+    "sku": "CASE-AC-168",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Redmi Note 12",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Redmi Note 12",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-168-pitaka-redmi-note-12-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-168-pitaka-redmi-note-12-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Redmi Note 12 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Redmi Note 12, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-168",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 12",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183522_890.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-169-new-fashion-redmi-a5-dark-green-blac",
+    "sku": "CASE-AC-169",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (أخضر × أسود) - Redmi A5",
+    "name_en": "Woven MagSafe Magnetic Case (Dark Green Black) - Redmi A5",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أخضر × أسود",
+    "color_en": "Dark Green Black",
+    "color_hex": "#064E3B",
+    "available_colors": [
+      {
+        "hex": "#064E3B",
+        "name_ar": "أخضر × أسود",
+        "name_en": "Dark Green Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-169-new-fashion-redmi-a5-dark-green-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-169-new-fashion-redmi-a5-dark-green-black.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون أخضر × أسود مصمم بدقة لهاتف Redmi A5 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Dark Green Black tailored for Redmi A5, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-169",
+      "اللون": "أخضر × أسود",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi A5",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183531_396.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-170-pitaka-redmi-note-13-orange",
+    "sku": "CASE-AC-170",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (برتقالي) - Redmi Note 13",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Orange) - Redmi Note 13",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "برتقالي",
+    "color_en": "Orange",
+    "color_hex": "#EA580C",
+    "available_colors": [
+      {
+        "hex": "#EA580C",
+        "name_ar": "برتقالي",
+        "name_en": "Orange"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-170-pitaka-redmi-note-13-orange.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-170-pitaka-redmi-note-13-orange.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون برتقالي مصمم بدقة لهاتف Redmi Note 13 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Orange tailored for Redmi Note 13, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-170",
+      "اللون": "برتقالي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 13",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183538_763.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-171-pitaka-redmi-note-13-navy-blue",
+    "sku": "CASE-AC-171",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (كحلي) - Redmi Note 13",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Navy Blue) - Redmi Note 13",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-171-pitaka-redmi-note-13-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-171-pitaka-redmi-note-13-navy-blue.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون كحلي مصمم بدقة لهاتف Redmi Note 13 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Navy Blue tailored for Redmi Note 13, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-171",
+      "اللون": "كحلي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 13",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183549_295.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-172-pitaka-redmi-note-13-khaki-sand",
+    "sku": "CASE-AC-172",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Redmi Note 13",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Redmi Note 13",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-172-pitaka-redmi-note-13-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-172-pitaka-redmi-note-13-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Redmi Note 13 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Redmi Note 13, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-172",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Xiaomi Redmi",
+      "الموديل المتوافق": "Redmi Note 13",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183554_061.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-173-fashion-woven-samsung-galaxy-a26-cha",
+    "sku": "CASE-AC-173",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (رمادي فحمي) - Samsung Galaxy A26",
+    "name_en": "Woven MagSafe Magnetic Case (Charcoal Grey) - Samsung Galaxy A26",
+    "brand": "Fashion Woven",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي فحمي",
+    "color_en": "Charcoal Grey",
+    "color_hex": "#374151",
+    "available_colors": [
+      {
+        "hex": "#374151",
+        "name_ar": "رمادي فحمي",
+        "name_en": "Charcoal Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-173-fashion-woven-samsung-galaxy-a26-charcoal-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-173-fashion-woven-samsung-galaxy-a26-charcoal-grey.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون رمادي فحمي مصمم بدقة لهاتف Samsung Galaxy A26 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Charcoal Grey tailored for Samsung Galaxy A26, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-173",
+      "اللون": "رمادي فحمي",
+      "الماركة": "Fashion Woven",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A26",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183636_207.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-174-ironman-samsung-galaxy-a52-black",
+    "sku": "CASE-AC-174",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - Samsung Galaxy A52",
+    "name_en": "Ironman Armor Kickstand Case (Black) - Samsung Galaxy A52",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-174-ironman-samsung-galaxy-a52-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-174-ironman-samsung-galaxy-a52-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف Samsung Galaxy A52 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for Samsung Galaxy A52, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-174",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A52",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183644_324.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-175-ironman-samsung-galaxy-a37-black",
+    "sku": "CASE-AC-175",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (أسود) - Samsung Galaxy A37",
+    "name_en": "Ironman Armor Kickstand Case (Black) - Samsung Galaxy A37",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-175-ironman-samsung-galaxy-a37-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-175-ironman-samsung-galaxy-a37-black.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون أسود مصمم بدقة لهاتف Samsung Galaxy A37 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Black tailored for Samsung Galaxy A37, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-175",
+      "اللون": "أسود",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A37",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183649_785.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-176-ironman-samsung-galaxy-a37-navy-blue",
+    "sku": "CASE-AC-176",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (كحلي) - Samsung Galaxy A37",
+    "name_en": "Ironman Armor Kickstand Case (Navy Blue) - Samsung Galaxy A37",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-176-ironman-samsung-galaxy-a37-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-176-ironman-samsung-galaxy-a37-navy-blue.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون كحلي مصمم بدقة لهاتف Samsung Galaxy A37 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Navy Blue tailored for Samsung Galaxy A37, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-176",
+      "اللون": "كحلي",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A37",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183657_703.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-177-pitaka-samsung-galaxy-a37-dark-brown",
+    "sku": "CASE-AC-177",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني غامق) - Samsung Galaxy A37",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Dark Brown) - Samsung Galaxy A37",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني غامق",
+    "color_en": "Dark Brown",
+    "color_hex": "#451A03",
+    "available_colors": [
+      {
+        "hex": "#451A03",
+        "name_ar": "بني غامق",
+        "name_en": "Dark Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-177-pitaka-samsung-galaxy-a37-dark-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-177-pitaka-samsung-galaxy-a37-dark-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني غامق مصمم بدقة لهاتف Samsung Galaxy A37 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Dark Brown tailored for Samsung Galaxy A37, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-177",
+      "اللون": "بني غامق",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A37",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183702_875.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-178-pitaka-samsung-galaxy-a17-brown",
+    "sku": "CASE-AC-178",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - Samsung Galaxy A17",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - Samsung Galaxy A17",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-178-pitaka-samsung-galaxy-a17-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-178-pitaka-samsung-galaxy-a17-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف Samsung Galaxy A17 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for Samsung Galaxy A17, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-178",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A17",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183705_921.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-179-fashion-samsung-galaxy-a17-black",
+    "sku": "CASE-AC-179",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Samsung Galaxy A17",
+    "name_en": "Carbon Textured Protection Case (Black) - Samsung Galaxy A17",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-179-fashion-samsung-galaxy-a17-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-179-fashion-samsung-galaxy-a17-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Samsung Galaxy A17 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Samsung Galaxy A17, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-179",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A17",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183709_052.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-180-fashion-samsung-galaxy-a17-brown",
+    "sku": "CASE-AC-180",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - Samsung Galaxy A17",
+    "name_en": "Carbon Textured Protection Case (Brown) - Samsung Galaxy A17",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-180-fashion-samsung-galaxy-a17-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-180-fashion-samsung-galaxy-a17-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف Samsung Galaxy A17 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for Samsung Galaxy A17, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-180",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A17",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183712_049.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-181-fashion-samsung-galaxy-a17-pastel-pi",
+    "sku": "CASE-AC-181",
+    "name_ar": "جراب ورود باستيل مع حلقة ماج سيف (بينك باستيل) - Samsung Galaxy A17",
+    "name_en": "Pastel Floral MagSafe Ring Case (Pastel Pink) - Samsung Galaxy A17",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بينك باستيل",
+    "color_en": "Pastel Pink",
+    "color_hex": "#F9A8D4",
+    "available_colors": [
+      {
+        "hex": "#F9A8D4",
+        "name_ar": "بينك باستيل",
+        "name_en": "Pastel Pink"
+      }
+    ],
+    "price": 120,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-181-fashion-samsung-galaxy-a17-pastel-pink.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-181-fashion-samsung-galaxy-a17-pastel-pink.jpg"
+    ],
+    "description_ar": "جراب ورود باستيل مع حلقة ماج سيف باللون بينك باستيل مصمم بدقة لهاتف Samsung Galaxy A17 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pastel Floral MagSafe Ring Case in Pastel Pink tailored for Samsung Galaxy A17, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-181",
+      "اللون": "بينك باستيل",
+      "الماركة": "Fashion",
+      "نوع الجراب": "ورود MagSafe",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A17",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183717_883.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-182-fashion-case-samsung-galaxy-a06-blac",
+    "sku": "CASE-AC-182",
+    "name_ar": "جراب ماج سيف عصري مع حزام حمل (أسود × برتقالي) - Samsung Galaxy A06",
+    "name_en": "MagSafe Lanyard Strap Case (Black Orange) - Samsung Galaxy A06",
+    "brand": "Fashion Case",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود × برتقالي",
+    "color_en": "Black Orange",
+    "color_hex": "#C2410C",
+    "available_colors": [
+      {
+        "hex": "#C2410C",
+        "name_ar": "أسود × برتقالي",
+        "name_en": "Black Orange"
+      }
+    ],
+    "price": 230,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-182-fashion-case-samsung-galaxy-a06-black-orange.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-182-fashion-case-samsung-galaxy-a06-black-orange.jpg"
+    ],
+    "description_ar": "جراب ماج سيف عصري مع حزام حمل باللون أسود × برتقالي مصمم بدقة لهاتف Samsung Galaxy A06 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "MagSafe Lanyard Strap Case in Black Orange tailored for Samsung Galaxy A06, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-182",
+      "اللون": "أسود × برتقالي",
+      "الماركة": "Fashion Case",
+      "نوع الجراب": "ماج سيف بحزام",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A06",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183915_716.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-183-new-fashion-realme-c73-black",
+    "sku": "CASE-AC-183",
+    "name_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية (أسود) - Realme C73",
+    "name_en": "Woven MagSafe Magnetic Case (Black) - Realme C73",
+    "brand": "New Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-183-new-fashion-realme-c73-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-183-new-fashion-realme-c73-black.jpg"
+    ],
+    "description_ar": "جراب منسوج ماج سيف بحلقة مغناطيسية باللون أسود مصمم بدقة لهاتف Realme C73 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Woven MagSafe Magnetic Case in Black tailored for Realme C73, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-183",
+      "اللون": "أسود",
+      "الماركة": "New Fashion",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C73",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183923_801.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-184-fashion-samsung-galaxy-a06-black",
+    "sku": "CASE-AC-184",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Samsung Galaxy A06",
+    "name_en": "Carbon Textured Protection Case (Black) - Samsung Galaxy A06",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-184-fashion-samsung-galaxy-a06-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-184-fashion-samsung-galaxy-a06-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Samsung Galaxy A06 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Samsung Galaxy A06, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-184",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A06",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183935_880.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-185-pitaka-samsung-galaxy-a55-black",
+    "sku": "CASE-AC-185",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (أسود) - Samsung Galaxy A55",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Black) - Samsung Galaxy A55",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-185-pitaka-samsung-galaxy-a55-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-185-pitaka-samsung-galaxy-a55-black.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون أسود مصمم بدقة لهاتف Samsung Galaxy A55 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Black tailored for Samsung Galaxy A55, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-185",
+      "اللون": "أسود",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A55",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183942_216.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-186-fashion-samsung-galaxy-a12-charcoal-",
+    "sku": "CASE-AC-186",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (رمادي فحمي) - Samsung Galaxy A12",
+    "name_en": "Carbon Textured Protection Case (Charcoal Grey) - Samsung Galaxy A12",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي فحمي",
+    "color_en": "Charcoal Grey",
+    "color_hex": "#374151",
+    "available_colors": [
+      {
+        "hex": "#374151",
+        "name_ar": "رمادي فحمي",
+        "name_en": "Charcoal Grey"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-186-fashion-samsung-galaxy-a12-charcoal-grey.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-186-fashion-samsung-galaxy-a12-charcoal-grey.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون رمادي فحمي مصمم بدقة لهاتف Samsung Galaxy A12 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Charcoal Grey tailored for Samsung Galaxy A12, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-186",
+      "اللون": "رمادي فحمي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A12",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183948_132.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-187-pitaka-samsung-galaxy-a13-khaki-sand",
+    "sku": "CASE-AC-187",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Samsung Galaxy A13",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Samsung Galaxy A13",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-187-pitaka-samsung-galaxy-a13-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-187-pitaka-samsung-galaxy-a13-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Samsung Galaxy A13 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Samsung Galaxy A13, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-187",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A13",
+      "الصورة المرجعية بالمحل": "IMG_20261122_183955_781.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-188-guess-samsung-galaxy-a26-rose-pink",
+    "sku": "CASE-AC-188",
+    "name_ar": "جراب جيس مونوغرام بشعار معدني بارز (روز بينك) - Samsung Galaxy A26",
+    "name_en": "Guess Monogram Metal Emblem Case (Rose Pink) - Samsung Galaxy A26",
+    "brand": "Guess",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "روز بينك",
+    "color_en": "Rose Pink",
+    "color_hex": "#DB2777",
+    "available_colors": [
+      {
+        "hex": "#DB2777",
+        "name_ar": "روز بينك",
+        "name_en": "Rose Pink"
+      }
+    ],
+    "price": 120,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-188-guess-samsung-galaxy-a26-rose-pink.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-188-guess-samsung-galaxy-a26-rose-pink.jpg"
+    ],
+    "description_ar": "جراب جيس مونوغرام بشعار معدني بارز باللون روز بينك مصمم بدقة لهاتف Samsung Galaxy A26 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Guess Monogram Metal Emblem Case in Rose Pink tailored for Samsung Galaxy A26, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-188",
+      "اللون": "روز بينك",
+      "الماركة": "Guess",
+      "نوع الجراب": "جيس مونوغرام",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A26",
+      "الصورة المرجعية بالمحل": "IMG_20261122_184016_708.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 15,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-189-pitaka-samsung-galaxy-a21s-khaki-san",
+    "sku": "CASE-AC-189",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Samsung Galaxy A21s",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Samsung Galaxy A21s",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-189-pitaka-samsung-galaxy-a21s-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-189-pitaka-samsung-galaxy-a21s-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Samsung Galaxy A21s لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Samsung Galaxy A21s, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-189",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A21s",
+      "الصورة المرجعية بالمحل": "IMG_20261122_184029_132.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 16,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-190-fashion-samsung-galaxy-a07-black",
+    "sku": "CASE-AC-190",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Samsung Galaxy A07",
+    "name_en": "Carbon Textured Protection Case (Black) - Samsung Galaxy A07",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-190-fashion-samsung-galaxy-a07-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-190-fashion-samsung-galaxy-a07-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Samsung Galaxy A07 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Samsung Galaxy A07, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-190",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A07",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185135_130.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 17,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-191-fashion-samsung-galaxy-a16-brown",
+    "sku": "CASE-AC-191",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (بني) - Samsung Galaxy A16",
+    "name_en": "Carbon Textured Protection Case (Brown) - Samsung Galaxy A16",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-191-fashion-samsung-galaxy-a16-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-191-fashion-samsung-galaxy-a16-brown.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون بني مصمم بدقة لهاتف Samsung Galaxy A16 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Brown tailored for Samsung Galaxy A16, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-191",
+      "اللون": "بني",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A16",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185139_115.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 18,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-192-pitaka-samsung-galaxy-a23-khaki-sand",
+    "sku": "CASE-AC-192",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Samsung Galaxy A23",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Samsung Galaxy A23",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-192-pitaka-samsung-galaxy-a23-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-192-pitaka-samsung-galaxy-a23-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Samsung Galaxy A23 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Samsung Galaxy A23, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-192",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A23",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185145_089.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 19,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-193-fashion-samsung-galaxy-a20-black",
+    "sku": "CASE-AC-193",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (أسود) - Samsung Galaxy A20",
+    "name_en": "Carbon Textured Protection Case (Black) - Samsung Galaxy A20",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود",
+    "color_en": "Black",
+    "color_hex": "#0F172A",
+    "available_colors": [
+      {
+        "hex": "#0F172A",
+        "name_ar": "أسود",
+        "name_en": "Black"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-193-fashion-samsung-galaxy-a20-black.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-193-fashion-samsung-galaxy-a20-black.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون أسود مصمم بدقة لهاتف Samsung Galaxy A20 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Black tailored for Samsung Galaxy A20, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-193",
+      "اللون": "أسود",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A20",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185152_240.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 20,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-194-pitaka-realme-c53-khaki-olive",
+    "sku": "CASE-AC-194",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (كاكي زيتوني) - Realme C53",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Olive) - Realme C53",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كاكي زيتوني",
+    "color_en": "Khaki Olive",
+    "color_hex": "#6B705C",
+    "available_colors": [
+      {
+        "hex": "#6B705C",
+        "name_ar": "كاكي زيتوني",
+        "name_en": "Khaki Olive"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-194-pitaka-realme-c53-khaki-olive.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-194-pitaka-realme-c53-khaki-olive.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون كاكي زيتوني مصمم بدقة لهاتف Realme C53 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Olive tailored for Realme C53, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-194",
+      "اللون": "كاكي زيتوني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C53",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185214_478.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 21,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-195-pitaka-realme-c53-brown",
+    "sku": "CASE-AC-195",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بني) - Realme C53",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Brown) - Realme C53",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بني",
+    "color_en": "Brown",
+    "color_hex": "#78350F",
+    "available_colors": [
+      {
+        "hex": "#78350F",
+        "name_ar": "بني",
+        "name_en": "Brown"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-195-pitaka-realme-c53-brown.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-195-pitaka-realme-c53-brown.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بني مصمم بدقة لهاتف Realme C53 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Brown tailored for Realme C53, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-195",
+      "اللون": "بني",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Realme",
+      "الموديل المتوافق": "Realme C53",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185220_684.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 22,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-196-fashion-samsung-galaxy-a57-navy-blue",
+    "sku": "CASE-AC-196",
+    "name_ar": "جراب كربون فايبر مطفي بحماية الكاميرا (كحلي) - Samsung Galaxy A57",
+    "name_en": "Carbon Textured Protection Case (Navy Blue) - Samsung Galaxy A57",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-196-fashion-samsung-galaxy-a57-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-196-fashion-samsung-galaxy-a57-navy-blue.jpg"
+    ],
+    "description_ar": "جراب كربون فايبر مطفي بحماية الكاميرا باللون كحلي مصمم بدقة لهاتف Samsung Galaxy A57 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Carbon Textured Protection Case in Navy Blue tailored for Samsung Galaxy A57, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-196",
+      "اللون": "كحلي",
+      "الماركة": "Fashion",
+      "نوع الجراب": "كربون حماية",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A57",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185253_214.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 8,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-197-pitaka-samsung-galaxy-a57-khaki-sand",
+    "sku": "CASE-AC-197",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Samsung Galaxy A57",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Samsung Galaxy A57",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-197-pitaka-samsung-galaxy-a57-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-197-pitaka-samsung-galaxy-a57-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Samsung Galaxy A57 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Samsung Galaxy A57, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-197",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A57",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185303_842.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 9,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-198-pitaka-samsung-galaxy-a35-khaki-sand",
+    "sku": "CASE-AC-198",
+    "name_ar": "جراب بيتاكا فائق النحافة بنسيج كربون (بيج كاكي) - Samsung Galaxy A35",
+    "name_en": "Pitaka Ultra-Slim Carbon Case (Khaki Sand) - Samsung Galaxy A35",
+    "brand": "Pitaka",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بيج كاكي",
+    "color_en": "Khaki Sand",
+    "color_hex": "#9E8B70",
+    "available_colors": [
+      {
+        "hex": "#9E8B70",
+        "name_ar": "بيج كاكي",
+        "name_en": "Khaki Sand"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-198-pitaka-samsung-galaxy-a35-khaki-sand.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-198-pitaka-samsung-galaxy-a35-khaki-sand.jpg"
+    ],
+    "description_ar": "جراب بيتاكا فائق النحافة بنسيج كربون باللون بيج كاكي مصمم بدقة لهاتف Samsung Galaxy A35 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pitaka Ultra-Slim Carbon Case in Khaki Sand tailored for Samsung Galaxy A35, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-198",
+      "اللون": "بيج كاكي",
+      "الماركة": "Pitaka",
+      "نوع الجراب": "بيتاكا نحيف",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A35",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185318_874.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 10,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-199-ironman-samsung-galaxy-a15-navy-blue",
+    "sku": "CASE-AC-199",
+    "name_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج (كحلي) - Samsung Galaxy A15",
+    "name_en": "Ironman Armor Kickstand Case (Navy Blue) - Samsung Galaxy A15",
+    "brand": "Ironman",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "كحلي",
+    "color_en": "Navy Blue",
+    "color_hex": "#1E3A8A",
+    "available_colors": [
+      {
+        "hex": "#1E3A8A",
+        "name_ar": "كحلي",
+        "name_en": "Navy Blue"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-199-ironman-samsung-galaxy-a15-navy-blue.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-199-ironman-samsung-galaxy-a15-navy-blue.jpg"
+    ],
+    "description_ar": "جراب أيرون مان مقاوم للصدمات بحامل مدمج باللون كحلي مصمم بدقة لهاتف Samsung Galaxy A15 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Ironman Armor Kickstand Case in Navy Blue tailored for Samsung Galaxy A15, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-199",
+      "اللون": "كحلي",
+      "الماركة": "Ironman",
+      "نوع الجراب": "أيرون مان بحامل",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A15",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185332_405.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 11,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-200-fashion-woven-samsung-galaxy-a36-cha",
+    "sku": "CASE-AC-200",
+    "name_ar": "جراب نسيج كاروهات ماج سيف (رمادي × فضي) - Samsung Galaxy A36",
+    "name_en": "Checkered Woven MagSafe Case (Charcoal Silver) - Samsung Galaxy A36",
+    "brand": "Fashion Woven",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "رمادي × فضي",
+    "color_en": "Charcoal Silver",
+    "color_hex": "#4B5563",
+    "available_colors": [
+      {
+        "hex": "#4B5563",
+        "name_ar": "رمادي × فضي",
+        "name_en": "Charcoal Silver"
+      }
+    ],
+    "price": 100,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-200-fashion-woven-samsung-galaxy-a36-charcoal-silver.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-200-fashion-woven-samsung-galaxy-a36-charcoal-silver.jpg"
+    ],
+    "description_ar": "جراب نسيج كاروهات ماج سيف باللون رمادي × فضي مصمم بدقة لهاتف Samsung Galaxy A36 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Checkered Woven MagSafe Case in Charcoal Silver tailored for Samsung Galaxy A36, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-200",
+      "اللون": "رمادي × فضي",
+      "الماركة": "Fashion Woven",
+      "نوع الجراب": "منسوج MagSafe",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A36",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185336_987.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 12,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-201-fashion-samsung-galaxy-a16-pastel-pi",
+    "sku": "CASE-AC-201",
+    "name_ar": "جراب ورود باستيل مع حلقة ماج سيف (بينك باستيل) - Samsung Galaxy A16",
+    "name_en": "Pastel Floral MagSafe Ring Case (Pastel Pink) - Samsung Galaxy A16",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "بينك باستيل",
+    "color_en": "Pastel Pink",
+    "color_hex": "#F9A8D4",
+    "available_colors": [
+      {
+        "hex": "#F9A8D4",
+        "name_ar": "بينك باستيل",
+        "name_en": "Pastel Pink"
+      }
+    ],
+    "price": 120,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-201-fashion-samsung-galaxy-a16-pastel-pink.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-201-fashion-samsung-galaxy-a16-pastel-pink.jpg"
+    ],
+    "description_ar": "جراب ورود باستيل مع حلقة ماج سيف باللون بينك باستيل مصمم بدقة لهاتف Samsung Galaxy A16 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Pastel Floral MagSafe Ring Case in Pastel Pink tailored for Samsung Galaxy A16, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-201",
+      "اللون": "بينك باستيل",
+      "الماركة": "Fashion",
+      "نوع الجراب": "ورود MagSafe",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A16",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185346_583.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 13,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-case-ac-202-fashion-samsung-galaxy-a16-black-whi",
+    "sku": "CASE-AC-202",
+    "name_ar": "جراب بنقشة نجوم أنيقة وحماية كاملة (أسود × أبيض) - Samsung Galaxy A16",
+    "name_en": "Starry Pattern Luxury Printed Case (Black White) - Samsung Galaxy A16",
+    "brand": "Fashion",
+    "category": "cases_protection",
+    "condition": "brand_new",
+    "available_storages": [],
+    "color_ar": "أسود × أبيض",
+    "color_en": "Black White",
+    "color_hex": "#1F2937",
+    "available_colors": [
+      {
+        "hex": "#1F2937",
+        "name_ar": "أسود × أبيض",
+        "name_en": "Black White"
+      }
+    ],
+    "price": 120,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/prod-case-ac-202-fashion-samsung-galaxy-a16-black-white.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/prod-case-ac-202-fashion-samsung-galaxy-a16-black-white.jpg"
+    ],
+    "description_ar": "جراب بنقشة نجوم أنيقة وحماية كاملة باللون أسود × أبيض مصمم بدقة لهاتف Samsung Galaxy A16 لحماية الكاميرا والحواف مع ملمس مريح وثبات ممتاز.",
+    "description_en": "Starry Pattern Luxury Printed Case in Black White tailored for Samsung Galaxy A16, offering precision camera and edge protection with comfortable grip.",
+    "specs": {
+      "SKU": "CASE-AC-202",
+      "اللون": "أسود × أبيض",
+      "الماركة": "Fashion",
+      "نوع الجراب": "جراب مطبوع",
+      "ماركة الهاتف": "Samsung",
+      "الموديل المتوافق": "Samsung Galaxy A16",
+      "الصورة المرجعية بالمحل": "IMG_20261122_185350_689.jpg"
+    },
+    "warranty_months": 1,
+    "rating": 5,
+    "reviews_count": 14,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-28-amoled",
+    "sku": "PROD-FB-HAINO-TEKO-28-AMOLED",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-28 AMOLED بطارية 7 أيام و3 سترابات",
+    "name_en": "Haino Teko-28 AMOLED Waterproof Smartwatch (7-Day Battery)",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-28-amoled-1.jpg",
+      "/product-images/fb-haino-teko-28-amoled-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-28-amoled-1.jpg",
+      "/product-images/fb-haino-teko-28-amoled-2.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-28 AMOLED بطارية 7 أيام و3 سترابات",
+    "description_en": "Haino Teko-28 AMOLED Waterproof Smartwatch (7-Day Battery)",
+    "specs": {
+      "الموديل": "HainoTeko-28",
+      "المميزات": "AMOLED + مكالمات بلوتوث + بطارية 7 أيام + 3 سترابات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-27-amoled",
+    "sku": "PROD-FB-HAINO-TEKO-27-AMOLED",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-27 AMOLED مقاومة للماء مع 3 سترابات",
+    "name_en": "Haino Teko-27 AMOLED BT Call Waterproof Smartwatch 3 Straps",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-27-amoled-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-27-amoled-1.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-27 AMOLED مقاومة للماء مع 3 سترابات",
+    "description_en": "Haino Teko-27 AMOLED BT Call Waterproof Smartwatch 3 Straps",
+    "specs": {
+      "الموديل": "HainoTeko-27",
+      "المميزات": "AMOLED + قياس نبض القلب + مكالمات بلوتوث + 3 سترابات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-23-mini",
+    "sku": "PROD-FB-HAINO-TEKO-23-MINI",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-23 Mini AMOLED خفيفة و3 سترابات",
+    "name_en": "Haino Teko-23 Mini AMOLED BT Call Waterproof Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-23-mini-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-23-mini-1.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-23 Mini AMOLED خفيفة و3 سترابات",
+    "description_en": "Haino Teko-23 Mini AMOLED BT Call Waterproof Smartwatch",
+    "specs": {
+      "التصميم": "حجم ميني مريح مع شاشة AMOLED ومكالمات بلوتوث و3 سترابات",
+      "الموديل": "HainoTeko-23 Mini"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-20-1gb",
+    "sku": "PROD-FB-HAINO-TEKO-20-1GB",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-20 Series 10 ذاكرة 1GB وبطارية 20 يوم",
+    "name_en": "Haino Teko-20 / 20A Series 10 AMOLED 1GB Smartwatch (20-Day Battery)",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-20-1gb-1.jpg",
+      "/product-images/fb-haino-teko-20-1gb-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-20-1gb-1.jpg",
+      "/product-images/fb-haino-teko-20-1gb-2.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-20 Series 10 ذاكرة 1GB وبطارية 20 يوم",
+    "description_en": "Haino Teko-20 / 20A Series 10 AMOLED 1GB Smartwatch (20-Day Battery)",
+    "specs": {
+      "الموديل": "HainoTeko-20 Series 10",
+      "البطارية": "حتى 20 يوم استخدام مع 1GB مساحة تخزين و3 سترابات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-19-amoled",
+    "sku": "PROD-FB-HAINO-TEKO-19-AMOLED",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-19 AMOLED مكالمات وبطارية 15 يوم",
+    "name_en": "Haino Teko-19 AMOLED BT Call Smartwatch (15-Day Battery)",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-19-amoled-1.jpg",
+      "/product-images/fb-haino-teko-19-amoled-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-19-amoled-1.jpg",
+      "/product-images/fb-haino-teko-19-amoled-2.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-19 AMOLED مكالمات وبطارية 15 يوم",
+    "description_en": "Haino Teko-19 AMOLED BT Call Smartwatch (15-Day Battery)",
+    "specs": {
+      "الموديل": "HainoTeko-19",
+      "المميزات": "AMOLED + مكالمات بلوتوث + بطارية 15 يوم + 3 سترابات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-17-compass",
+    "sku": "PROD-FB-HAINO-TEKO-17-COMPASS",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-17 مع بوصلة AMOLED و3 سترابات",
+    "name_en": "Haino Teko-17 Compass AMOLED 15-Day Waterproof Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-17-compass-1.jpg",
+      "/product-images/fb-haino-teko-17-compass-2.jpg",
+      "/product-images/fb-haino-teko-17-compass-3.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-17-compass-1.jpg",
+      "/product-images/fb-haino-teko-17-compass-2.jpg",
+      "/product-images/fb-haino-teko-17-compass-3.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-17 مع بوصلة AMOLED و3 سترابات",
+    "description_en": "Haino Teko-17 Compass AMOLED 15-Day Waterproof Smartwatch",
+    "specs": {
+      "الموديل": "HainoTeko-17",
+      "المميزات": "بوصلة مدمجة + شاشة AMOLED + بطارية 15 يوم"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-15-ultra2",
+    "sku": "PROD-FB-HAINO-TEKO-15-ULTRA2",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-15 Ultra 2 بطارية 15 يوم",
+    "name_en": "Haino Teko-15 Ultra 2 AMOLED Waterproof Smartwatch (15-Day Battery)",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-15-ultra2-1.jpg",
+      "/product-images/fb-haino-teko-15-ultra2-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-15-ultra2-1.jpg",
+      "/product-images/fb-haino-teko-15-ultra2-2.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-15 Ultra 2 بطارية 15 يوم",
+    "description_en": "Haino Teko-15 Ultra 2 AMOLED Waterproof Smartwatch (15-Day Battery)",
+    "specs": {
+      "الموديل": "HainoTeko-15 Ultra 2",
+      "البطارية": "تصل إلى 15 يوم استخدام عادي + 3 سترابات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-14-curved",
+    "sku": "PROD-FB-HAINO-TEKO-14-CURVED",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-14 زجاج منحني وبطارية 10 أيام",
+    "name_en": "Haino Teko-14 Curved Glass AMOLED Smartwatch (10-Day Battery)",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-14-curved-1.jpg",
+      "/product-images/fb-haino-teko-14-curved-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-14-curved-1.jpg",
+      "/product-images/fb-haino-teko-14-curved-2.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-14 زجاج منحني وبطارية 10 أيام",
+    "description_en": "Haino Teko-14 Curved Glass AMOLED Smartwatch (10-Day Battery)",
+    "specs": {
+      "الشاشة": "Curved Glass AMOLED + بطارية 10 أيام و3 سترابات",
+      "الموديل": "HainoTeko-14"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-g9-mini",
+    "sku": "PROD-FB-HAINO-TEKO-G9-MINI",
+    "name_ar": "ساعة هاينو تيكو النسائية G9 Mini Rose Gold بشحن لاسلكي",
+    "name_en": "Haino Teko G9 Mini Rose Gold Edition Women Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-g9-mini-1.jpg",
+      "/product-images/fb-haino-teko-g9-mini-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-g9-mini-1.jpg",
+      "/product-images/fb-haino-teko-g9-mini-2.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو النسائية G9 Mini Rose Gold بشحن لاسلكي",
+    "description_en": "Haino Teko G9 Mini Rose Gold Edition Women Smartwatch",
+    "specs": {
+      "التصميم": "حجم ميني أنيق بلون روز جولد مخصص للسيدات وشحن لاسلكي",
+      "الموديل": "HainoTeko G9 Mini"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-gt4",
+    "sku": "PROD-FB-HAINO-TEKO-GT4",
+    "name_ar": "ساعة هاينو تيكو دائرية Haino Teko GT4 (4) AMOLED ضد الماء",
+    "name_en": "Haino Teko GT4 (Haino Teko-4) Round AMOLED Waterproof Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-gt4-1.jpg",
+      "/product-images/fb-haino-teko-gt4-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-gt4-1.jpg",
+      "/product-images/fb-haino-teko-gt4-2.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو دائرية Haino Teko GT4 (4) AMOLED ضد الماء",
+    "description_en": "Haino Teko GT4 (Haino Teko-4) Round AMOLED Waterproof Smartwatch",
+    "specs": {
+      "الشاشة": "AMOLED دائرية رياضية مقاومة للماء مع 3 سترابات",
+      "الموديل": "HainoTeko GT4 / 4"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-7-curved",
+    "sku": "PROD-FB-HAINO-TEKO-7-CURVED",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-7 شاشة AMOLED منحنية و3 سترابات",
+    "name_en": "Haino Teko-7 Curved Glass AMOLED Waterproof Smartwatch",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-7-curved-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-7-curved-1.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-7 شاشة AMOLED منحنية و3 سترابات",
+    "description_en": "Haino Teko-7 Curved Glass AMOLED Waterproof Smartwatch",
+    "specs": {
+      "الشاشة": "زجاج منحني Curved Glass AMOLED مع 3 أزواج ستراب",
+      "الموديل": "HainoTeko-7"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-2-2a-ultra2",
+    "sku": "PROD-FB-HAINO-TEKO-2-2A-ULTRA2",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-2 / 2A Ultra 2 ذاكرة 1GB وبطارية 20 يوم",
+    "name_en": "Haino Teko-2 / 2A Ultra 2 AMOLED 1GB Smartwatch (20-Day Battery)",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-2-2a-ultra2-1.jpg",
+      "/product-images/fb-haino-teko-2-2a-ultra2-2.jpg",
+      "/product-images/fb-haino-teko-2-2a-ultra2-3.jpg",
+      "/product-images/fb-haino-teko-2-2a-ultra2-4.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-2-2a-ultra2-1.jpg",
+      "/product-images/fb-haino-teko-2-2a-ultra2-2.jpg",
+      "/product-images/fb-haino-teko-2-2a-ultra2-3.jpg",
+      "/product-images/fb-haino-teko-2-2a-ultra2-4.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-2 / 2A Ultra 2 ذاكرة 1GB وبطارية 20 يوم",
+    "description_en": "Haino Teko-2 / 2A Ultra 2 AMOLED 1GB Smartwatch (20-Day Battery)",
+    "specs": {
+      "الموديل": "HainoTeko-2 / 2A Ultra 2",
+      "الذاكرة والبطارية": "ذاكرة داخلية 1GB + بطارية حتى 20 يوم + مقاومة السقوط حتى 12.1 قدم"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-watch4-pro-rw32",
+    "sku": "PROD-FB-HAINO-TEKO-WATCH4-PRO-RW32",
+    "name_ar": "ساعة هاينو تيكو دائرية Watch 4 Pro (RW-32) بإطار فخم و3 سترابات",
+    "name_en": "Haino Teko Watch 4 Pro (RW-32) Round Bezel AMOLED Smartwatch 3 Straps",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-watch4-pro-rw32-1.jpg",
+      "/product-images/fb-haino-teko-watch4-pro-rw32-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-watch4-pro-rw32-1.jpg",
+      "/product-images/fb-haino-teko-watch4-pro-rw32-2.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو دائرية Watch 4 Pro (RW-32) بإطار فخم و3 سترابات",
+    "description_en": "Haino Teko Watch 4 Pro (RW-32) Round Bezel AMOLED Smartwatch 3 Straps",
+    "specs": {
+      "التصميم": "إطار دائري كلاسيكي مع شاشة AMOLED و3 أزواج ستراب",
+      "الموديل": "Watch 4 Pro (RW-32)"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-rw59-ultra",
+    "sku": "PROD-FB-HAINO-TEKO-RW59-ULTRA",
+    "name_ar": "ساعة هاينو تيكو RW-59 Ultra دائرية شاشة AMOLED و3 سترابات",
+    "name_en": "Haino Teko RW-59 Ultra AMOLED Smartwatch with 3 Pairs Strap",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-rw59-ultra-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-rw59-ultra-1.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو RW-59 Ultra دائرية شاشة AMOLED و3 سترابات",
+    "description_en": "Haino Teko RW-59 Ultra AMOLED Smartwatch with 3 Pairs Strap",
+    "specs": {
+      "الموديل": "HainoTeko RW-59 Ultra",
+      "المميزات": "شاشة AMOLED + مكالمات بلوتوث + 3 أزواج ستراب"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-30-super-slim",
+    "sku": "PROD-FB-HAINO-TEKO-30-SUPER-SLIM",
+    "name_ar": "ساعة هاينو تيكو Haino Teko-30 Super Slim شاشة AMOLED و3 سترابات",
+    "name_en": "Haino Teko-30 Super Slim AMOLED 7-Day Smartwatch (3 Straps)",
+    "brand": "Haino Teko",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-30-super-slim-1.jpg",
+      "/product-images/fb-haino-teko-30-super-slim-2.jpg",
+      "/product-images/fb-haino-teko-30-super-slim-3.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-30-super-slim-1.jpg",
+      "/product-images/fb-haino-teko-30-super-slim-2.jpg",
+      "/product-images/fb-haino-teko-30-super-slim-3.jpg"
+    ],
+    "description_ar": "ساعة هاينو تيكو Haino Teko-30 Super Slim شاشة AMOLED و3 سترابات",
+    "description_en": "Haino Teko-30 Super Slim AMOLED 7-Day Smartwatch (3 Straps)",
+    "specs": {
+      "الشاشة": "AMOLED نحيفة جداً Super Slim",
+      "الموديل": "HainoTeko-30 Germany",
+      "البطارية": "تصل إلى 7 أيام استخدام عادي + مقاومة للماء + 3 سترابات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-ultra-7in1-watch-201",
+    "sku": "PROD-FB-ULTRA-7IN1-WATCH-201",
+    "name_ar": "ساعة Ultra بشاشة 2.01 بوصة مع 7 استرابات",
+    "name_en": "Ultra 2.01\" Big Screen 7-in-1 Straps Smartwatch",
+    "brand": "Generic",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-ultra-7in1-watch-201-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-ultra-7in1-watch-201-1.jpg"
+    ],
+    "description_ar": "ساعة Ultra بشاشة 2.01 بوصة مع 7 استرابات",
+    "description_en": "Ultra 2.01\" Big Screen 7-in-1 Straps Smartwatch",
+    "specs": {
+      "الشاشة": "2.01 بوصة",
+      "المحتويات": "7 استرابات متنوعة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-t800-ultra-watch",
+    "sku": "PROD-FB-T800-ULTRA-WATCH",
+    "name_ar": "ساعة T800 Ultra الرياضية",
+    "name_en": "T800 Ultra Wireless Calling Smartwatch",
+    "brand": "Generic",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-t800-ultra-watch-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-t800-ultra-watch-1.jpg"
+    ],
+    "description_ar": "ساعة T800 Ultra الرياضية",
+    "description_en": "T800 Ultra Wireless Calling Smartwatch",
+    "specs": {
+      "الموديل": "T800 Ultra",
+      "المميزات": "مكالمات بلوتوث وأوضاع رياضية وتنبيهات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-mx11-mini-luxury-watch",
+    "sku": "PROD-FB-MX11-MINI-LUXURY-WATCH",
+    "name_ar": "ساعة MX11 Mini النسائية الفاخرة في علبة هدايا حمراء",
+    "name_en": "MX11 Mini Luxury Edition Women Smartwatch with Gift Bag",
+    "brand": "MX",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-mx11-mini-luxury-watch-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-mx11-mini-luxury-watch-1.jpg"
+    ],
+    "description_ar": "ساعة MX11 Mini النسائية الفاخرة في علبة هدايا حمراء",
+    "description_en": "MX11 Mini Luxury Edition Women Smartwatch with Gift Bag",
+    "specs": {
+      "التصميم": "مقاس نسائي أنيق مع شنطة وعلبة هدايا فاخرة",
+      "الموديل": "MX11 Mini"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-mx10-luxury-watch",
+    "sku": "PROD-FB-MX10-LUXURY-WATCH",
+    "name_ar": "ساعة MX10 Luxury Smart Watch بتصميم كلاسيكي فاخر",
+    "name_en": "MX10 Luxury Smartwatch Bundle",
+    "brand": "MX",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-mx10-luxury-watch-1.jpg",
+      "/product-images/fb-mx10-luxury-watch-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-mx10-luxury-watch-1.jpg",
+      "/product-images/fb-mx10-luxury-watch-2.jpg"
+    ],
+    "description_ar": "ساعة MX10 Luxury Smart Watch بتصميم كلاسيكي فاخر",
+    "description_en": "MX10 Luxury Smartwatch Bundle",
+    "specs": {
+      "التصميم": "بوكس هدايا فاخر مناسب للإهداء",
+      "الموديل": "MX10 Luxury"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-h40-ultra-2-watch",
+    "sku": "PROD-FB-H40-ULTRA-2-WATCH",
+    "name_ar": "ساعة H40 Ultra-2 (بوكس 7+1 ستراب)",
+    "name_en": "H40 Ultra-2 (7+1 Straps) Smartwatch Bundle",
+    "brand": "Generic",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-h40-ultra-2-watch-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-h40-ultra-2-watch-1.jpg"
+    ],
+    "description_ar": "ساعة H40 Ultra-2 (بوكس 7+1 ستراب)",
+    "description_en": "H40 Ultra-2 (7+1 Straps) Smartwatch Bundle",
+    "specs": {
+      "الموديل": "H40 Ultra-2",
+      "المحتويات": "ساعة Ultra-2 + 7 استرابات وحماية للشاشة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-watch-x-d100-amoled",
+    "sku": "PROD-FB-WATCH-X-D100-AMOLED",
+    "name_ar": "ساعة Watch X-D100 Series 10 بشاشة AMOLED",
+    "name_en": "Watch X-D100 Series 10 AMOLED Smartwatch",
+    "brand": "Watch X",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-watch-x-d100-amoled-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-watch-x-d100-amoled-1.jpg"
+    ],
+    "description_ar": "ساعة Watch X-D100 Series 10 بشاشة AMOLED",
+    "description_en": "Watch X-D100 Series 10 AMOLED Smartwatch",
+    "specs": {
+      "الشاشة": "AMOLED Series 10 بدعم المكالمات والإشعارات",
+      "الموديل": "Watch X-D100"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-ultra-2-7straps-metal-bundle",
+    "sku": "PROD-FB-ULTRA-2-7STRAPS-METAL-BUNDLE",
+    "name_ar": "ساعة Ultra 2 مع 7 استرابات بينها ستراب معدن فاخر",
+    "name_en": "Ultra 2 Smartwatch Bundle with 7 Straps (Includes Metal Strap)",
+    "brand": "Generic",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 500,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-ultra-2-7straps-metal-bundle-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-ultra-2-7straps-metal-bundle-1.jpg"
+    ],
+    "description_ar": "ساعة Ultra 2 مع 7 استرابات بينها ستراب معدن فاخر",
+    "description_en": "Ultra 2 Smartwatch Bundle with 7 Straps (Includes Metal Strap)",
+    "specs": {
+      "العرض": "500 جنيه عرض خاص",
+      "المحتويات": "ساعة ذكية Ultra 2 + 7 أساور متنوعة بينها ستراب معدن"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oteeto-watch-6-amoled",
+    "sku": "PROD-FB-OTEETO-WATCH-6-AMOLED",
+    "name_ar": "ساعة أوتيتو Oteeto Watch 6 بشاشة 1.93 AMOLED وأكثر من 100 وضع رياضي",
+    "name_en": "Oteeto Watch 6 1.93\" AMOLED Smart Calling Smartwatch",
+    "brand": "Oteeto",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oteeto-watch-6-amoled-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oteeto-watch-6-amoled-1.jpg"
+    ],
+    "description_ar": "ساعة أوتيتو Oteeto Watch 6 بشاشة 1.93 AMOLED وأكثر من 100 وضع رياضي",
+    "description_en": "Oteeto Watch 6 1.93\" AMOLED Smart Calling Smartwatch",
+    "specs": {
+      "الشاشة": "1.93 بوصة AMOLED",
+      "الموديل": "Oteeto Watch 6",
+      "المميزات": "مكالمات ذكية + أكثر من 100 وضع رياضي + سترابات فخمة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-hk11-pro-max-watch",
+    "sku": "PROD-FB-HK11-PRO-MAX-WATCH",
+    "name_ar": "ساعة HK11 PRO MAX متعددة الوظائف بنظام Wearfit Pro",
+    "name_en": "HK11 PRO MAX Wearfit AMOLED Multi-Functional Smartwatch",
+    "brand": "Wearfit Pro",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-hk11-pro-max-watch-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-hk11-pro-max-watch-1.jpg"
+    ],
+    "description_ar": "ساعة HK11 PRO MAX متعددة الوظائف بنظام Wearfit Pro",
+    "description_en": "HK11 PRO MAX Wearfit AMOLED Multi-Functional Smartwatch",
+    "specs": {
+      "النظام": "Wearfit Pro متعدد المهام ومكالمات بلوتوث",
+      "الموديل": "HK11 PRO MAX"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-dt-watch-x",
+    "sku": "PROD-FB-DT-WATCH-X",
+    "name_ar": "ساعة DT Watch X الذكية بتصميم الساعات الفاخرة وشاشة واضحة",
+    "name_en": "DT Watch X AMOLED Smartwatch",
+    "brand": "DT NO.1",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-dt-watch-x-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-dt-watch-x-1.jpg"
+    ],
+    "description_ar": "ساعة DT Watch X الذكية بتصميم الساعات الفاخرة وشاشة واضحة",
+    "description_en": "DT Watch X AMOLED Smartwatch",
+    "specs": {
+      "الموديل": "DT Watch X",
+      "المميزات": "شاشة AMOLED ومكالمات بلوتوث وتنبيهات ذكية متعددة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-kalobee-watch-4-pro-sk38",
+    "sku": "PROD-FB-KALOBEE-WATCH-4-PRO-SK38",
+    "name_ar": "ساعة كالوبي Kalobee Watch 4 Pro (SK38) بشاشة Super AMOLED و3 أزواج ستراب",
+    "name_en": "Kalobee Watch 4 Pro (SK38) Super AMOLED Smartwatch with 3 Pairs Strap",
+    "brand": "Kalobee",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-kalobee-watch-4-pro-sk38-1.jpg",
+      "/product-images/fb-kalobee-watch-4-pro-sk38-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-kalobee-watch-4-pro-sk38-1.jpg",
+      "/product-images/fb-kalobee-watch-4-pro-sk38-2.jpg"
+    ],
+    "description_ar": "ساعة كالوبي Kalobee Watch 4 Pro (SK38) بشاشة Super AMOLED و3 أزواج ستراب",
+    "description_en": "Kalobee Watch 4 Pro (SK38) Super AMOLED Smartwatch with 3 Pairs Strap",
+    "specs": {
+      "الشاشة": "شاشة Super AMOLED واضحة تحت ضوء الشمس",
+      "الموديل": "SK38 Watch 4 Pro",
+      "المرفقات": "3 أزواج ستراب أصلية داخل العلبة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-cmf-by-nothing-watch",
+    "sku": "PROD-FB-CMF-BY-NOTHING-WATCH",
+    "name_ar": "ساعة CMF by Nothing الذكية بتصميم مربع عصري",
+    "name_en": "CMF by Nothing Smartwatch with AMOLED Display",
+    "brand": "CMF by Nothing",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-cmf-by-nothing-watch-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-cmf-by-nothing-watch-1.jpg"
+    ],
+    "description_ar": "ساعة CMF by Nothing الذكية بتصميم مربع عصري",
+    "description_en": "CMF by Nothing Smartwatch with AMOLED Display",
+    "specs": {
+      "المزايا": "تتبع الخطوات والسعرات الحرارية ومعدل نبض القلب ومكالمات بلوتوث",
+      "الموديل": "CMF Watch"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-qcy-watch-gt-active",
+    "sku": "PROD-FB-QCY-WATCH-GT-ACTIVE",
+    "name_ar": "ساعة QCY Watch Active GT الدائرية بشاشة 1.43 AMOLED ومقاومة 3ATM",
+    "name_en": "QCY Watch GT / Active GT 1.43\" AMOLED 3ATM Smartwatch",
+    "brand": "QCY",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-qcy-watch-gt-active-1.jpg",
+      "/product-images/fb-qcy-watch-gt-active-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-qcy-watch-gt-active-1.jpg",
+      "/product-images/fb-qcy-watch-gt-active-2.jpg"
+    ],
+    "description_ar": "ساعة QCY Watch Active GT الدائرية بشاشة 1.43 AMOLED ومقاومة 3ATM",
+    "description_en": "QCY Watch GT / Active GT 1.43\" AMOLED 3ATM Smartwatch",
+    "specs": {
+      "الشاشة": "1.43 بوصة AMOLED",
+      "الرياضة": "120 وضع رياضي ومقاومة ماء 3ATM / IPX8 وتتبع صحي متكامل",
+      "الموديل": "QCY Watch GT"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-watch-nova-r",
+    "sku": "PROD-FB-ORAIMO-WATCH-NOVA-R",
+    "name_ar": "ساعة أورايمو دائرية Oraimo Watch Nova R (OSW-821N) ببطارية 40 يوم استعداد",
+    "name_en": "Oraimo Watch Nova R (OSW-821N) Round BT Calling Smartwatch",
+    "brand": "Oraimo",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-watch-nova-r-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-watch-nova-r-1.jpg"
+    ],
+    "description_ar": "ساعة أورايمو دائرية Oraimo Watch Nova R (OSW-821N) ببطارية 40 يوم استعداد",
+    "description_en": "Oraimo Watch Nova R (OSW-821N) Round BT Calling Smartwatch",
+    "specs": {
+      "الضمان": "365 يوم ضمان أورايمو",
+      "الموديل": "OSW-821N",
+      "البطارية": "وضع استعداد يصل إلى 40 يوم ومكالمات بلوتوث واضحة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-watch-5",
+    "sku": "PROD-FB-ORAIMO-WATCH-5",
+    "name_ar": "ساعة أورايمو الذكية Oraimo Watch 5 (OSW-805) بزجاج Panda Glass",
+    "name_en": "Oraimo Watch 5 (OSW-805) 2.01\" HD Panda Glass BT Calling Smartwatch",
+    "brand": "Oraimo",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-watch-5-1.jpg",
+      "/product-images/fb-oraimo-watch-5-2.jpg",
+      "/product-images/fb-oraimo-watch-5-3.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-watch-5-1.jpg",
+      "/product-images/fb-oraimo-watch-5-2.jpg",
+      "/product-images/fb-oraimo-watch-5-3.jpg"
+    ],
+    "description_ar": "ساعة أورايمو الذكية Oraimo Watch 5 (OSW-805) بزجاج Panda Glass",
+    "description_en": "Oraimo Watch 5 (OSW-805) 2.01\" HD Panda Glass BT Calling Smartwatch",
+    "specs": {
+      "الشاشة": "2.01 بوصة زجاج مقوى Panda Glass بنسبة استحواذ 88.8% وسطوع 650 nits",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "الحماية": "مقاومة ماء 1ATM ومكالمات بلوتوث وبطارية 300mAh",
+      "الموديل": "OSW-805"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-mibro-watch-lite-3",
+    "sku": "PROD-FB-MIBRO-WATCH-LITE-3",
+    "name_ar": "ساعة ميبرو Mibro Watch Lite 3 / Lite 3 Pro بشاشة AMOLED دائرية",
+    "name_en": "Mibro Watch Lite 3 / Lite 3 Pro AMOLED Classic Smartwatch (Etisal)",
+    "brand": "Mibro",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-mibro-watch-lite-3-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-mibro-watch-lite-3-1.jpg"
+    ],
+    "description_ar": "ساعة ميبرو Mibro Watch Lite 3 / Lite 3 Pro بشاشة AMOLED دائرية",
+    "description_en": "Mibro Watch Lite 3 / Lite 3 Pro AMOLED Classic Smartwatch (Etisal)",
+    "specs": {
+      "الشاشة": "1.3 بوصة AMOLED HD كروية كلاسيكية",
+      "الضمان": "12 شهر ضمان اتصال",
+      "الموديل": "Mibro Watch Lite 3 Series",
+      "المميزات": "مكالمات بلوتوث و100 وضع رياضي وبطارية 300mAh حتى 12 يوم"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-mibro-watch-c4",
+    "sku": "PROD-FB-MIBRO-WATCH-C4",
+    "name_ar": "ساعة ميبرو Mibro Watch C4 بشاشة كبيرة 2.01 بوصة ومكالمات بلوتوث",
+    "name_en": "Mibro Watch C4 TFT 600 Nits Bluetooth Calling Smartwatch (Etisal)",
+    "brand": "Mibro",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-mibro-watch-c4-1.jpg",
+      "/product-images/fb-mibro-watch-c4-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-mibro-watch-c4-1.jpg",
+      "/product-images/fb-mibro-watch-c4-2.jpg"
+    ],
+    "description_ar": "ساعة ميبرو Mibro Watch C4 بشاشة كبيرة 2.01 بوصة ومكالمات بلوتوث",
+    "description_en": "Mibro Watch C4 TFT 600 Nits Bluetooth Calling Smartwatch (Etisal)",
+    "specs": {
+      "الشاشة": "شاشة ساطعة 600 nits بهيكل معدني من سبائك الزنك",
+      "الضمان": "12 شهر ضمان اتصال",
+      "الموديل": "Mibro Watch C4",
+      "البطارية": "300mAh حتى 10 أيام استخدام يومي و45 يوم وضع استعداد"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-mibro-gs-active",
+    "sku": "PROD-FB-MIBRO-GS-ACTIVE",
+    "name_ar": "ساعة ميبرو Mibro Watch GS Active بشاشة AMOLED وGPS ومقاومة ماء 5ATM",
+    "name_en": "Mibro Watch GS Active 1.3\" AMOLED GPS Sports Smartwatch (Etisal)",
+    "brand": "Mibro",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-mibro-gs-active-1.jpg",
+      "/product-images/fb-mibro-gs-active-2.jpg",
+      "/product-images/fb-mibro-gs-active-3.jpg",
+      "/product-images/fb-mibro-gs-active-4.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-mibro-gs-active-1.jpg",
+      "/product-images/fb-mibro-gs-active-2.jpg",
+      "/product-images/fb-mibro-gs-active-3.jpg",
+      "/product-images/fb-mibro-gs-active-4.jpg"
+    ],
+    "description_ar": "ساعة ميبرو Mibro Watch GS Active بشاشة AMOLED وGPS ومقاومة ماء 5ATM",
+    "description_en": "Mibro Watch GS Active 1.3\" AMOLED GPS Sports Smartwatch (Etisal)",
+    "specs": {
+      "الشاشة": "1.3 بوصة AMOLED 1000 nits",
+      "الضمان": "12 شهر ضمان اتصال",
+      "الرياضة": "GPS مدمج + أكثر من 100 وضع رياضي وبطارية 300mAh",
+      "الموديل": "Mibro GS Active"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-huawei-band-10",
+    "sku": "PROD-FB-HUAWEI-BAND-10",
+    "name_ar": "سوار هواوي الذكي Huawei Band 10 الإصدار الأحدث",
+    "name_en": "Huawei Band 10 Original Smart Fitness Band",
+    "brand": "Huawei",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 2500,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-huawei-band-10-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-huawei-band-10-1.jpg"
+    ],
+    "description_ar": "سوار هواوي الذكي Huawei Band 10 الإصدار الأحدث",
+    "description_en": "Huawei Band 10 Original Smart Fitness Band",
+    "specs": {
+      "التصميم": "تصميم أنيق نحيف مع مستشعرات لياقة متقدمة وإشعارات ذكية",
+      "الموديل": "HUAWEI Band 10"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-huawei-band-9",
+    "sku": "PROD-FB-HUAWEI-BAND-9",
+    "name_ar": "سوار هواوي الذكي Huawei Band 9 (ضمان أصلي)",
+    "name_en": "Huawei Band 9 Original Smart Fitness Band",
+    "brand": "Huawei",
+    "category": "smartwatches",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 2300,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-huawei-band-9-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-huawei-band-9-1.jpg"
+    ],
+    "description_ar": "سوار هواوي الذكي Huawei Band 9 (ضمان أصلي)",
+    "description_en": "Huawei Band 9 Original Smart Fitness Band",
+    "specs": {
+      "التصميم": "شاشة AMOLED خفيفة للغاية مع تتبع النوم والصحة لمدة تصل إلى 14 يوم",
+      "الموديل": "HUAWEI Band 9"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-p47m-rgb-cat-headphones",
+    "sku": "PROD-FB-P47M-RGB-CAT-HEADPHONES",
+    "name_ar": "سماعة رأس P47M بإضاءة RGB لطيفة وأذن قطة متوهجة",
+    "name_en": "P47M RGB Cat-Ear Color Light Wireless Headphones",
+    "brand": "P47M",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-p47m-rgb-cat-headphones-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-p47m-rgb-cat-headphones-1.jpg"
+    ],
+    "description_ar": "سماعة رأس P47M بإضاءة RGB لطيفة وأذن قطة متوهجة",
+    "description_en": "P47M RGB Cat-Ear Color Light Wireless Headphones",
+    "specs": {
+      "الإضاءة": "إضاءة RGB متغيرة على أذن القطة وجانبي السماعة",
+      "الموديل": "P47M RGB"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-p2961-sport-headphones",
+    "sku": "PROD-FB-P2961-SPORT-HEADPHONES",
+    "name_ar": "سماعة رأس رياضية P2961 اللاسلكية",
+    "name_en": "P2961 Wireless Sport Over-Ear Headphones",
+    "brand": "Generic",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-p2961-sport-headphones-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-p2961-sport-headphones-1.jpg"
+    ],
+    "description_ar": "سماعة رأس رياضية P2961 اللاسلكية",
+    "description_en": "P2961 Wireless Sport Over-Ear Headphones",
+    "specs": {
+      "التصميم": "تصميم خفيف وثابت مناسب للتمارين والاستخدام اليومي",
+      "الموديل": "P2961"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-p9-wireless-headphones",
+    "sku": "PROD-FB-P9-WIRELESS-HEADPHONES",
+    "name_ar": "سماعة رأس P9 اللاسلكية بتصميم عصري وعلبة حماية ذكية",
+    "name_en": "P9 Wireless Over-Ear Headphones with Smart Protective Case",
+    "brand": "P9",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-p9-wireless-headphones-1.jpg",
+      "/product-images/fb-p9-wireless-headphones-2.jpg",
+      "/product-images/fb-p9-wireless-headphones-3.jpg",
+      "/product-images/fb-p9-wireless-headphones-4.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-p9-wireless-headphones-1.jpg",
+      "/product-images/fb-p9-wireless-headphones-2.jpg",
+      "/product-images/fb-p9-wireless-headphones-3.jpg",
+      "/product-images/fb-p9-wireless-headphones-4.jpg"
+    ],
+    "description_ar": "سماعة رأس P9 اللاسلكية بتصميم عصري وعلبة حماية ذكية",
+    "description_en": "P9 Wireless Over-Ear Headphones with Smart Protective Case",
+    "specs": {
+      "التصميم": "وسائد ناعمة مع علبة حمل وألوان متعددة",
+      "الموديل": "P9 / Max Style"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-cxt-11-headphones",
+    "sku": "PROD-FB-CXT-11-HEADPHONES",
+    "name_ar": "سماعة رأس CXT-11 خفيفة الوزن بطارية 15 ساعة ومنفذ كارت ميموري",
+    "name_en": "CXT-11 Lightweight 15H Wireless & TF-Card Headphones",
+    "brand": "Generic",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-cxt-11-headphones-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-cxt-11-headphones-1.jpg"
+    ],
+    "description_ar": "سماعة رأس CXT-11 خفيفة الوزن بطارية 15 ساعة ومنفذ كارت ميموري",
+    "description_en": "CXT-11 Lightweight 15H Wireless & TF-Card Headphones",
+    "specs": {
+      "الموديل": "CXT-11",
+      "المميزات": "بطارية 15 ساعة، منفذ Type-C، مدخل AUX، ومدخل كارت ميموري"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-green-gs239-headphones",
+    "sku": "PROD-FB-GREEN-GS239-HEADPHONES",
+    "name_ar": "سماعة رأس Green GS-239 بعزل ضوضاء مزدوج وصوت ستيريو",
+    "name_en": "Green GS-239 Double Noise Reduction Stereo Wireless Headphones",
+    "brand": "Green",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-green-gs239-headphones-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-green-gs239-headphones-1.jpg"
+    ],
+    "description_ar": "سماعة رأس Green GS-239 بعزل ضوضاء مزدوج وصوت ستيريو",
+    "description_en": "Green GS-239 Double Noise Reduction Stereo Wireless Headphones",
+    "specs": {
+      "المزايا": "صوت ستيريو مريح مع عزل ضوضاء مزدوج للمذاكرة والعمل",
+      "الموديل": "GS-239"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-sodo-sd1121-headphones",
+    "sku": "PROD-FB-SODO-SD1121-HEADPHONES",
+    "name_ar": "سماعة رأس سودو SODO SD-1121 بتصميم عصري ومريح",
+    "name_en": "SODO SD-1121 Wireless Stereo Over-Ear Headphones",
+    "brand": "SODO",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-sodo-sd1121-headphones-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-sodo-sd1121-headphones-1.jpg"
+    ],
+    "description_ar": "سماعة رأس سودو SODO SD-1121 بتصميم عصري ومريح",
+    "description_en": "SODO SD-1121 Wireless Stereo Over-Ear Headphones",
+    "specs": {
+      "الصوت": "ستيريو عالي النقاء مع بلوتوث مستقر وتصميم قابل للتعديل",
+      "الموديل": "SODO SD-1121"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-sodo-sd1105-headphones",
+    "sku": "PROD-FB-SODO-SD1105-HEADPHONES",
+    "name_ar": "سماعة رأس سودو SODO SD-1105 لاسلكية بصوت Hi-Fi",
+    "name_en": "SODO SD-1105 Hi-Fi Wireless Over-Ear Headphones",
+    "brand": "SODO",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-sodo-sd1105-headphones-1.jpg",
+      "/product-images/fb-sodo-sd1105-headphones-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-sodo-sd1105-headphones-1.jpg",
+      "/product-images/fb-sodo-sd1105-headphones-2.jpg"
+    ],
+    "description_ar": "سماعة رأس سودو SODO SD-1105 لاسلكية بصوت Hi-Fi",
+    "description_en": "SODO SD-1105 Hi-Fi Wireless Over-Ear Headphones",
+    "specs": {
+      "الصوت": "Hi-Fi Audio مع وسائد جلدية ناعمة وعزل محيطي مريح",
+      "الموديل": "SODO SD-1105"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-celebrat-a36-headphones",
+    "sku": "PROD-FB-CELEBRAT-A36-HEADPHONES",
+    "name_ar": "سماعة رأس سيليبريت Celebrat A36 قابلة للطي بصوت ستيريو عميق",
+    "name_en": "Celebrat A36 Foldable Stereo Wireless Over-Ear Headphones",
+    "brand": "Celebrat",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-celebrat-a36-headphones-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-celebrat-a36-headphones-1.jpg"
+    ],
+    "description_ar": "سماعة رأس سيليبريت Celebrat A36 قابلة للطي بصوت ستيريو عميق",
+    "description_en": "Celebrat A36 Foldable Stereo Wireless Over-Ear Headphones",
+    "specs": {
+      "التصميم": "قابلة للطي ومبطنة لراحة الأذن لفترات طويلة",
+      "الموديل": "Celebrat A36"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-boompop-2",
+    "sku": "PROD-FB-ORAIMO-BOOMPOP-2",
+    "name_ar": "سماعة رأس أورايمو BoomPop 2 بطارية 60 ساعة وعزل ضوضاء للمكالمات ENC",
+    "name_en": "Oraimo BoomPop 2 (OHP-610) 60H ENC Over-Ear Wireless Headphones",
+    "brand": "Oraimo",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-boompop-2-1.jpg",
+      "/product-images/fb-oraimo-boompop-2-2.jpg",
+      "/product-images/fb-oraimo-boompop-2-3.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-boompop-2-1.jpg",
+      "/product-images/fb-oraimo-boompop-2-2.jpg",
+      "/product-images/fb-oraimo-boompop-2-3.jpg"
+    ],
+    "description_ar": "سماعة رأس أورايمو BoomPop 2 بطارية 60 ساعة وعزل ضوضاء للمكالمات ENC",
+    "description_en": "Oraimo BoomPop 2 (OHP-610) 60H ENC Over-Ear Wireless Headphones",
+    "specs": {
+      "المزايا": "اتصال بجهازين Dual Device + كابل AUX و Type-C داخل العلبة",
+      "الموديل": "OHP-610",
+      "البطارية": "تصل إلى 60 ساعة متواصلة + شحن AniFast"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-boompop-2s",
+    "sku": "PROD-FB-ORAIMO-BOOMPOP-2S",
+    "name_ar": "سماعة رأس أورايمو BoomPop 2S بالتحكم بالإيماءات وبطارية 50 ساعة",
+    "name_en": "Oraimo BoomPop 2S (OHP-610S) 50H Over-Ear Wireless Headphones",
+    "brand": "Oraimo",
+    "category": "headphones",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-boompop-2s-1.jpg",
+      "/product-images/fb-oraimo-boompop-2s-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-boompop-2s-1.jpg",
+      "/product-images/fb-oraimo-boompop-2s-2.jpg"
+    ],
+    "description_ar": "سماعة رأس أورايمو BoomPop 2S بالتحكم بالإيماءات وبطارية 50 ساعة",
+    "description_en": "Oraimo BoomPop 2S (OHP-610S) 50H Over-Ear Wireless Headphones",
+    "specs": {
+      "التحكم": "تحكم ذكي عبر تطبيق Oraimo Sound مع وضع ألعاب بدون تأخير",
+      "الموديل": "OHP-610S",
+      "البطارية": "حتى 50 ساعة تشغيل + AniFast شحن سريع"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-labubu-wireless-earbuds-set",
+    "sku": "PROD-FB-LABUBU-WIRELESS-EARBUDS-SET",
+    "name_ar": "سماعة إيربودز لاسلكية مع جراب وشريط تعليق شخصية لابوبو Labubu",
+    "name_en": "Labubu Edition Wireless Earbuds with Cartoon Case & Lanyard",
+    "brand": "Generic",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-labubu-wireless-earbuds-set-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-labubu-wireless-earbuds-set-1.jpg"
+    ],
+    "description_ar": "سماعة إيربودز لاسلكية مع جراب وشريط تعليق شخصية لابوبو Labubu",
+    "description_en": "Labubu Edition Wireless Earbuds with Cartoon Case & Lanyard",
+    "specs": {
+      "المحتويات": "سماعة لاسلكية + جراب حماية شخصية Labubu + ميدالية حبل أنيقة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-tws-k21-happy-paradise",
+    "sku": "PROD-FB-TWS-K21-HAPPY-PARADISE",
+    "name_ar": "سماعة TWS-K21 Happy Paradise اللاسلكية بتصميم بناتي لطيف",
+    "name_en": "TWS-K21 Happy Paradise Cute Wireless Earbuds",
+    "brand": "TWS",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-tws-k21-happy-paradise-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-tws-k21-happy-paradise-1.jpg"
+    ],
+    "description_ar": "سماعة TWS-K21 Happy Paradise اللاسلكية بتصميم بناتي لطيف",
+    "description_en": "TWS-K21 Happy Paradise Cute Wireless Earbuds",
+    "specs": {
+      "التصميم": "تصميم لطيف وألوان هادئة مناسب للهدايا",
+      "الموديل": "TWS-K21"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-lovelyme-twsn-set",
+    "sku": "PROD-FB-LOVELYME-TWSN-SET",
+    "name_ar": "طقم سماعة لاسلكية LovelyMe TWS-N مع جراب حماية سيليكون كرتوني",
+    "name_en": "LovelyMe TWS-N Wireless Earbuds & Cartoon Protective Case Set",
+    "brand": "LovelyMe",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-lovelyme-twsn-set-1.jpg",
+      "/product-images/fb-lovelyme-twsn-set-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-lovelyme-twsn-set-1.jpg",
+      "/product-images/fb-lovelyme-twsn-set-2.jpg"
+    ],
+    "description_ar": "طقم سماعة لاسلكية LovelyMe TWS-N مع جراب حماية سيليكون كرتوني",
+    "description_en": "LovelyMe TWS-N Wireless Earbuds & Cartoon Protective Case Set",
+    "specs": {
+      "الموديل": "TWS-N Set",
+      "المحتويات": "سماعة بلوتوث Heavy Bass + جراب حماية سيليكون لطيف"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-disney-stitch-tws16",
+    "sku": "PROD-FB-DISNEY-STITCH-TWS16",
+    "name_ar": "سماعة بلوتوث ديزني ستيتش Stitch TWS-16 بتصميم كرتوني أنيق",
+    "name_en": "Disney Stitch TWS-16 Cute Edition Wireless Earbuds",
+    "brand": "TWS",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-disney-stitch-tws16-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-disney-stitch-tws16-1.jpg"
+    ],
+    "description_ar": "سماعة بلوتوث ديزني ستيتش Stitch TWS-16 بتصميم كرتوني أنيق",
+    "description_en": "Disney Stitch TWS-16 Cute Edition Wireless Earbuds",
+    "specs": {
+      "التصميم": "إصدار شخصيات ديزني ستيتش مع صوت ستيريو مريح",
+      "الموديل": "TWS-16 Stitch"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-airpods-anc-orig-copy",
+    "sku": "PROD-FB-AIRPODS-ANC-ORIG-COPY",
+    "name_ar": "سماعة AirPods ANC نسخة Orig 100% لعزل الضوضاء",
+    "name_en": "AirPods ANC Orig Copy Edition Wireless Earbuds",
+    "brand": "Apple (Copy)",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 750,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-airpods-anc-orig-copy-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-airpods-anc-orig-copy-1.jpg"
+    ],
+    "description_ar": "سماعة AirPods ANC نسخة Orig 100% لعزل الضوضاء",
+    "description_en": "AirPods ANC Orig Copy Edition Wireless Earbuds",
+    "specs": {
+      "النوع": "نسخة عالية الجودة داعمة لعزل الضوضاء والنوافذ المنبثقة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-airpods-pro-anc-premium-copy",
+    "sku": "PROD-FB-AIRPODS-PRO-ANC-PREMIUM-COPY",
+    "name_ar": "سماعة AirPods Pro ANC Premium Quality هاي كوبي بضمان",
+    "name_en": "AirPods Pro ANC Premium High-Copy Wireless Earbuds",
+    "brand": "Apple (Copy)",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 800,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-airpods-pro-anc-premium-copy-1.jpg",
+      "/product-images/fb-airpods-pro-anc-premium-copy-2.jpg",
+      "/product-images/fb-airpods-pro-anc-premium-copy-3.jpg",
+      "/product-images/fb-airpods-pro-anc-premium-copy-4.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-airpods-pro-anc-premium-copy-1.jpg",
+      "/product-images/fb-airpods-pro-anc-premium-copy-2.jpg",
+      "/product-images/fb-airpods-pro-anc-premium-copy-3.jpg",
+      "/product-images/fb-airpods-pro-anc-premium-copy-4.jpg"
+    ],
+    "description_ar": "سماعة AirPods Pro ANC Premium Quality هاي كوبي بضمان",
+    "description_en": "AirPods Pro ANC Premium High-Copy Wireless Earbuds",
+    "specs": {
+      "النوع": "Premium High Copy طبق الأصل مع ANC فعال وجودة صوت عالية"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-samsung-buds3-pro-copy",
+    "sku": "PROD-FB-SAMSUNG-BUDS3-PRO-COPY",
+    "name_ar": "سماعة Samsung Galaxy Buds 3 Pro (هاي كوبي عالية الجودة بإضاءة LED)",
+    "name_en": "Samsung Galaxy Buds 3 Pro High Copy TWS Earbuds (Blade Lights)",
+    "brand": "Samsung (Copy)",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-samsung-buds3-pro-copy-1.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-2.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-3.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-4.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-5.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-6.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-samsung-buds3-pro-copy-1.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-2.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-3.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-4.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-5.jpg",
+      "/product-images/fb-samsung-buds3-pro-copy-6.jpg"
+    ],
+    "description_ar": "سماعة Samsung Galaxy Buds 3 Pro (هاي كوبي عالية الجودة بإضاءة LED)",
+    "description_en": "Samsung Galaxy Buds 3 Pro High Copy TWS Earbuds (Blade Lights)",
+    "specs": {
+      "النوع": "High Copy درجة أولى مع إضاءة Blade Lights على السماعتين",
+      "الملحقات": "علبة شحن، جلد أذن مقاسات متعددة، وكابل USB-C"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-xg-300-anc-tws",
+    "sku": "PROD-FB-XG-300-ANC-TWS",
+    "name_ar": "سماعة XG-300 ANC اللاسلكية لعزل الضوضاء",
+    "name_en": "XG-300 ANC True Wireless Earbuds",
+    "brand": "Generic",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 650,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-xg-300-anc-tws-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-xg-300-anc-tws-1.jpg"
+    ],
+    "description_ar": "سماعة XG-300 ANC اللاسلكية لعزل الضوضاء",
+    "description_en": "XG-300 ANC True Wireless Earbuds",
+    "specs": {
+      "الموديل": "XG-300",
+      "المميزات": "دعم ANC لصوت نقي بدون ضوضاء محيطة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-xg-100-anc-tws",
+    "sku": "PROD-FB-XG-100-ANC-TWS",
+    "name_ar": "سماعة XG-100 ANC اللاسلكية بلوتوث 5.3",
+    "name_en": "XG-100 ANC Bluetooth 5.3 Wireless Earbuds",
+    "brand": "Generic",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-xg-100-anc-tws-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-xg-100-anc-tws-1.jpg"
+    ],
+    "description_ar": "سماعة XG-100 ANC اللاسلكية بلوتوث 5.3",
+    "description_en": "XG-100 ANC Bluetooth 5.3 Wireless Earbuds",
+    "specs": {
+      "الموديل": "XG-100",
+      "المميزات": "عزل ضوضاء ANC وبلوتوث 5.3"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-earbuds-t11-enc",
+    "sku": "PROD-FB-EARBUDS-T11-ENC",
+    "name_ar": "سماعة إيربودز T11 ENC اللاسلكية",
+    "name_en": "Earbuds T11 ENC True Wireless Earbuds",
+    "brand": "Generic",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 750,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-earbuds-t11-enc-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-earbuds-t11-enc-1.jpg"
+    ],
+    "description_ar": "سماعة إيربودز T11 ENC اللاسلكية",
+    "description_en": "Earbuds T11 ENC True Wireless Earbuds",
+    "specs": {
+      "الموديل": "T11 ENC",
+      "المكالمات": "ميزة ENC لعزل الضوضاء أثناء المكالمات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-celebrat-tws-w25",
+    "sku": "PROD-FB-CELEBRAT-TWS-W25",
+    "name_ar": "سماعة سيليبريت Celebrat TWS-W25 اللاسلكية ألوان عصرية",
+    "name_en": "Celebrat TWS-W25 True Wireless Earbuds",
+    "brand": "Celebrat",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-celebrat-tws-w25-1.jpg",
+      "/product-images/fb-celebrat-tws-w25-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-celebrat-tws-w25-1.jpg",
+      "/product-images/fb-celebrat-tws-w25-2.jpg"
+    ],
+    "description_ar": "سماعة سيليبريت Celebrat TWS-W25 اللاسلكية ألوان عصرية",
+    "description_en": "Celebrat TWS-W25 True Wireless Earbuds",
+    "specs": {
+      "التصميم": "خفيفة ومناسبة للاستخدام اليومي والمكالمات",
+      "الموديل": "Celebrat TWS-W25"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-celebrat-w61-tws",
+    "sku": "PROD-FB-CELEBRAT-W61-TWS",
+    "name_ar": "سماعة سيليبريت Celebrat W61 بلوتوث 5.3 ستيريو",
+    "name_en": "Celebrat W61 TWS Stereo Bluetooth 5.3 Wireless Earbuds",
+    "brand": "Celebrat",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-celebrat-w61-tws-1.jpg",
+      "/product-images/fb-celebrat-w61-tws-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-celebrat-w61-tws-1.jpg",
+      "/product-images/fb-celebrat-w61-tws-2.jpg"
+    ],
+    "description_ar": "سماعة سيليبريت Celebrat W61 بلوتوث 5.3 ستيريو",
+    "description_en": "Celebrat W61 TWS Stereo Bluetooth 5.3 Wireless Earbuds",
+    "specs": {
+      "الموديل": "Celebrat W61",
+      "البلوتوث": "Bluetooth 5.3 ستيريو لاسلكي مستقر"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-celebrat-w52-tws",
+    "sku": "PROD-FB-CELEBRAT-W52-TWS",
+    "name_ar": "سماعة سيليبريت Celebrat W52 بعلبة شفافة وبطارية حتى 60 ساعة",
+    "name_en": "Celebrat W52 60H Stereo Transparent Wireless Earbuds",
+    "brand": "Celebrat",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-celebrat-w52-tws-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-celebrat-w52-tws-1.jpg"
+    ],
+    "description_ar": "سماعة سيليبريت Celebrat W52 بعلبة شفافة وبطارية حتى 60 ساعة",
+    "description_en": "Celebrat W52 60H Stereo Transparent Wireless Earbuds",
+    "specs": {
+      "التصميم": "تصميم خفيف وعلبة شفافة أنيقة",
+      "الموديل": "Celebrat W52",
+      "البطارية": "وقت تشغيل يصل إلى 60 ساعة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-joyroom-jr-t03s-pro-anc",
+    "sku": "PROD-FB-JOYROOM-JR-T03S-PRO-ANC",
+    "name_ar": "سماعة جوي روم JOYROOM JR-T03S Pro بالعزل والشحن اللاسلكي",
+    "name_en": "JOYROOM JR-T03S Pro ANC Noise Reduction Wireless Charging Earbuds",
+    "brand": "Joyroom",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-joyroom-jr-t03s-pro-anc-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-joyroom-jr-t03s-pro-anc-1.jpg"
+    ],
+    "description_ar": "سماعة جوي روم JOYROOM JR-T03S Pro بالعزل والشحن اللاسلكي",
+    "description_en": "JOYROOM JR-T03S Pro ANC Noise Reduction Wireless Charging Earbuds",
+    "specs": {
+      "الموديل": "JR-T03S Pro",
+      "المميزات": "عزل ضوضاء ANC + دعم الشحن اللاسلكي لعلبة 360mAh + جراب سيليكون مجاني"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-joyroom-jr-t03s-plus",
+    "sku": "PROD-FB-JOYROOM-JR-T03S-PLUS",
+    "name_ar": "سماعة جوي روم JOYROOM JR-T03S Plus بلوتوث 5.1 صوت Hi-Fi",
+    "name_en": "JOYROOM JR-T03S Plus TWS Wireless Earphones Up to 30H",
+    "brand": "Joyroom",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-joyroom-jr-t03s-plus-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-joyroom-jr-t03s-plus-1.jpg"
+    ],
+    "description_ar": "سماعة جوي روم JOYROOM JR-T03S Plus بلوتوث 5.1 صوت Hi-Fi",
+    "description_en": "JOYROOM JR-T03S Plus TWS Wireless Earphones Up to 30H",
+    "specs": {
+      "الصوت": "صوت ستيريو Hi-Fi مريح للأذن",
+      "الموديل": "JR-T03S Plus",
+      "البطارية": "حتى 30 ساعة استماع مع العلبة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-joyroom-jr-t03s-pro-max",
+    "sku": "PROD-FB-JOYROOM-JR-T03S-PRO-MAX",
+    "name_ar": "سماعة جوي روم JOYROOM JR-T03S Pro Max بلوتوث 5.3 + جراب مجاني",
+    "name_en": "JOYROOM JR-T03S Pro Max Wireless Earbuds BT 5.3 with Free Silicone Case",
+    "brand": "Joyroom",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-joyroom-jr-t03s-pro-max-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-joyroom-jr-t03s-pro-max-1.jpg"
+    ],
+    "description_ar": "سماعة جوي روم JOYROOM JR-T03S Pro Max بلوتوث 5.3 + جراب مجاني",
+    "description_en": "JOYROOM JR-T03S Pro Max Wireless Earbuds BT 5.3 with Free Silicone Case",
+    "specs": {
+      "الموديل": "JR-T03S Pro Max",
+      "البلوتوث": "بلوتوث 5.3 حتى 27 ساعة تشغيل مع العلبة",
+      "المحتويات": "جراب سيليكون وحبل تعليق مجاني"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-fdy-t05-enc-earbuds",
+    "sku": "PROD-FB-FDY-T05-ENC-EARBUDS",
+    "name_ar": "سماعة FDY-T05 برو ENC اللاسلكية بعزل المكالمات والشحن السريع",
+    "name_en": "FDY-T05 ENC Pro Quick-Charging Wireless Earbuds",
+    "brand": "FDY",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 593,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-fdy-t05-enc-earbuds-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-fdy-t05-enc-earbuds-1.jpg"
+    ],
+    "description_ar": "سماعة FDY-T05 برو ENC اللاسلكية بعزل المكالمات والشحن السريع",
+    "description_en": "FDY-T05 ENC Pro Quick-Charging Wireless Earbuds",
+    "specs": {
+      "الموديل": "FDY-T05",
+      "المكالمات": "تقنية ENC لمكالمات أوضح + شحن سريع 45 دقيقة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-fdy-t03-enc-earbuds",
+    "sku": "PROD-FB-FDY-T03-ENC-EARBUDS",
+    "name_ar": "سماعة FDY-T03 اللاسلكية بعزل المكالمات ENC وشحن سريع 45 دقيقة",
+    "name_en": "FDY-T03 ENC Quick-Charging Wireless Earbuds",
+    "brand": "FDY",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 305,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-fdy-t03-enc-earbuds-1.jpg",
+      "/product-images/fb-fdy-t03-enc-earbuds-2.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-fdy-t03-enc-earbuds-1.jpg",
+      "/product-images/fb-fdy-t03-enc-earbuds-2.jpg"
+    ],
+    "description_ar": "سماعة FDY-T03 اللاسلكية بعزل المكالمات ENC وشحن سريع 45 دقيقة",
+    "description_en": "FDY-T03 ENC Quick-Charging Wireless Earbuds",
+    "specs": {
+      "الموديل": "FDY-T03",
+      "المكالمات": "ميكروفون ENC لتنقية المكالمات + شحن سريع خلال 45 دقيقة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-amaya-atw18-tws",
+    "sku": "PROD-FB-AMAYA-ATW18-TWS",
+    "name_ar": "سماعة AMAYA ATW-18 اللاسلكية بضمان 365 يوم",
+    "name_en": "AMAYA ATW-18 True Wireless Earbuds (365-Day Warranty)",
+    "brand": "AMAYA",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 1300,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-amaya-atw18-tws-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-amaya-atw18-tws-1.jpg"
+    ],
+    "description_ar": "سماعة AMAYA ATW-18 اللاسلكية بضمان 365 يوم",
+    "description_en": "AMAYA ATW-18 True Wireless Earbuds (365-Day Warranty)",
+    "specs": {
+      "الصوت": "صوت واضح مع بطارية ممتدة",
+      "الضمان": "365 يوم",
+      "الموديل": "ATW-18"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-infinix-xbuds-3-gt",
+    "sku": "PROD-FB-INFINIX-XBUDS-3-GT",
+    "name_ar": "سماعة ألعاب إنفينيكس Infinix XBUDS 3 GT بإضاءة RGB",
+    "name_en": "Infinix XBUDS 3 GT Gaming True Wireless Earbuds",
+    "brand": "Infinix",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-infinix-xbuds-3-gt-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-infinix-xbuds-3-gt-1.jpg"
+    ],
+    "description_ar": "سماعة ألعاب إنفينيكس Infinix XBUDS 3 GT بإضاءة RGB",
+    "description_en": "Infinix XBUDS 3 GT Gaming True Wireless Earbuds",
+    "specs": {
+      "الألعاب": "تأخير منخفض Low Latency للألعاب مع إضاءة علبة RGB",
+      "الموديل": "Infinix XBUDS 3 GT"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-realme-buds-t200-lite",
+    "sku": "PROD-FB-REALME-BUDS-T200-LITE",
+    "name_ar": "سماعة ريلمي realme Buds T200 Lite الأصلية",
+    "name_en": "realme Buds T200 Lite True Wireless Earbuds",
+    "brand": "realme",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-realme-buds-t200-lite-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-realme-buds-t200-lite-1.jpg"
+    ],
+    "description_ar": "سماعة ريلمي realme Buds T200 Lite الأصلية",
+    "description_en": "realme Buds T200 Lite True Wireless Earbuds",
+    "specs": {
+      "الصوت": "مشغلات صوت ديناميكية مع بطارية طويلة للموسيقى والمكالمات",
+      "الموديل": "realme Buds T200 Lite"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-cmf-buds-pro-2",
+    "sku": "PROD-FB-CMF-BUDS-PRO-2",
+    "name_ar": "سماعة CMF by Nothing Buds Pro 2 بعلبة تحكم دوارة Smart Dial",
+    "name_en": "CMF by Nothing Buds Pro 2 Wireless Earbuds with Smart Dial Case",
+    "brand": "CMF by Nothing",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-cmf-buds-pro-2-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-cmf-buds-pro-2-1.jpg"
+    ],
+    "description_ar": "سماعة CMF by Nothing Buds Pro 2 بعلبة تحكم دوارة Smart Dial",
+    "description_en": "CMF by Nothing Buds Pro 2 Wireless Earbuds with Smart Dial Case",
+    "specs": {
+      "الصوت": "عزل ضوضاء هجين وHi-Res LDAC",
+      "التحكم": "علبة شحن مدمجة بقرص تحكم دوار Smart Dial للصوت والمكالمات",
+      "الموديل": "CMF Buds Pro 2"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-openpods-opn",
+    "sku": "PROD-FB-ORAIMO-OPENPODS-OPN",
+    "name_ar": "سماعة أورايمو OpenPods الرياضية مفتوحة الأذن بتثبيت آمن",
+    "name_en": "Oraimo OpenPods Open-Ear Wireless Sport Earbuds",
+    "brand": "Oraimo",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-openpods-opn-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-openpods-opn-1.jpg"
+    ],
+    "description_ar": "سماعة أورايمو OpenPods الرياضية مفتوحة الأذن بتثبيت آمن",
+    "description_en": "Oraimo OpenPods Open-Ear Wireless Sport Earbuds",
+    "specs": {
+      "الضمان": "365 يوم ضمان أورايمو",
+      "التصميم": "تصميم Open-Ear مريح وآمن للرياضة والجري والقيادة مع سماع المحيط بوضوح"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-airbuds-3-ipx7",
+    "sku": "PROD-FB-ORAIMO-AIRBUDS-3-IPX7",
+    "name_ar": "سماعة أورايمو AirBuds 3 صغيرة الحجم مقاومة للماء IPX7",
+    "name_en": "Oraimo AirBuds 3 IPX7 Waterproof Mini True Wireless Earbuds",
+    "brand": "Oraimo",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-airbuds-3-ipx7-1.jpg",
+      "/product-images/fb-oraimo-airbuds-3-ipx7-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-airbuds-3-ipx7-1.jpg",
+      "/product-images/fb-oraimo-airbuds-3-ipx7-2.jpg"
+    ],
+    "description_ar": "سماعة أورايمو AirBuds 3 صغيرة الحجم مقاومة للماء IPX7",
+    "description_en": "Oraimo AirBuds 3 IPX7 Waterproof Mini True Wireless Earbuds",
+    "specs": {
+      "الحجم": "حجم مصغر للغاية مع صوت عميق وقوي",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "الحماية": "مقاومة عالية للماء والعرق بمعيار IPX7"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-freepods-neo-otw330n",
+    "sku": "PROD-FB-ORAIMO-FREEPODS-NEO-OTW330N",
+    "name_ar": "سماعة أورايمو FreePods Neo (OTW-330N) بطارية 50 ساعة",
+    "name_en": "Oraimo FreePods Neo (OTW-330N) 50-Hour Lasting Playtime Earbuds",
+    "brand": "Oraimo",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-freepods-neo-otw330n-1.jpg",
+      "/product-images/fb-oraimo-freepods-neo-otw330n-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-freepods-neo-otw330n-1.jpg",
+      "/product-images/fb-oraimo-freepods-neo-otw330n-2.jpg"
+    ],
+    "description_ar": "سماعة أورايمو FreePods Neo (OTW-330N) بطارية 50 ساعة",
+    "description_en": "Oraimo FreePods Neo (OTW-330N) 50-Hour Lasting Playtime Earbuds",
+    "specs": {
+      "الصوت": "HavyBass وتصميم مريح في الأذن",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "الموديل": "OTW-330N",
+      "البطارية": "بطارية ضخمة تدوم حتى 50 ساعة تشغيل"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-freepods-lite-otw330",
+    "sku": "PROD-FB-ORAIMO-FREEPODS-LITE-OTW330",
+    "name_ar": "سماعة أورايمو فري بودز لايت FreePods Lite (OTW-330) بطارية 40 ساعة",
+    "name_en": "Oraimo FreePods Lite (OTW-330) 40-Hour HavyBass Wireless Earbuds",
+    "brand": "Oraimo",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 600,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-freepods-lite-otw330-1.jpg",
+      "/product-images/fb-oraimo-freepods-lite-otw330-2.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-freepods-lite-otw330-1.jpg",
+      "/product-images/fb-oraimo-freepods-lite-otw330-2.jpg"
+    ],
+    "description_ar": "سماعة أورايمو فري بودز لايت FreePods Lite (OTW-330) بطارية 40 ساعة",
+    "description_en": "Oraimo FreePods Lite (OTW-330) 40-Hour HavyBass Wireless Earbuds",
+    "specs": {
+      "الصوت": "تقنية HavyBass وتخصيص الصوت عبر Oraimo Sound App",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "الموديل": "OTW-330",
+      "البطارية": "حتى 40 ساعة تشغيل وشحن سريع AniFast"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-spacebuds-neo",
+    "sku": "PROD-FB-ORAIMO-SPACEBUDS-NEO",
+    "name_ar": "سماعة أورايمو SpaceBuds Neo (OTW-323) بصوت محيطي 360 ووضع الألعاب",
+    "name_en": "Oraimo SpaceBuds Neo (OTW-323) Sound360 Spatial Audio & Game Mode Earbuds",
+    "brand": "Oraimo",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 650,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-spacebuds-neo-1.jpg",
+      "/product-images/fb-oraimo-spacebuds-neo-2.jpg",
+      "/product-images/fb-oraimo-spacebuds-neo-3.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-spacebuds-neo-1.jpg",
+      "/product-images/fb-oraimo-spacebuds-neo-2.jpg",
+      "/product-images/fb-oraimo-spacebuds-neo-3.jpg"
+    ],
+    "description_ar": "سماعة أورايمو SpaceBuds Neo (OTW-323) بصوت محيطي 360 ووضع الألعاب",
+    "description_en": "Oraimo SpaceBuds Neo (OTW-323) Sound360 Spatial Audio & Game Mode Earbuds",
+    "specs": {
+      "الصوت": "Sound360 Spatial Audio + HavyBass + وضع ألعاب منخفض التأخير",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "الموديل": "OTW-323",
+      "البطارية": "30 ساعة تشغيل إجمالي"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-spacebuds-neo-plus",
+    "sku": "PROD-FB-ORAIMO-SPACEBUDS-NEO-PLUS",
+    "name_ar": "سماعة أورايمو SpaceBuds Neo+ (OTW-323P) بعزل ANC وتصميم معدني",
+    "name_en": "Oraimo SpaceBuds Neo+ (OTW-323P) Active Noise Cancellation Wireless Earbuds",
+    "brand": "Oraimo",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 950,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-spacebuds-neo-plus-1.jpg",
+      "/product-images/fb-oraimo-spacebuds-neo-plus-2.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-spacebuds-neo-plus-1.jpg",
+      "/product-images/fb-oraimo-spacebuds-neo-plus-2.jpg"
+    ],
+    "description_ar": "سماعة أورايمو SpaceBuds Neo+ (OTW-323P) بعزل ANC وتصميم معدني",
+    "description_en": "Oraimo SpaceBuds Neo+ (OTW-323P) Active Noise Cancellation Wireless Earbuds",
+    "specs": {
+      "العزل": "عزل ضوضاء نشط ANC + صوت محيطي Sound360",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "الموديل": "OTW-323P",
+      "البطارية": "حتى 30 ساعة تشغيل"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-spacebuds-air-plus",
+    "sku": "PROD-FB-ORAIMO-SPACEBUDS-AIR-PLUS",
+    "name_ar": "سماعة أورايمو SpaceBuds Air+ (OTW-323SP) بـ 4 مايكات عزل للمكالمات",
+    "name_en": "Oraimo SpaceBuds Air+ (OTW-323SP) 4-Mic ENC HD Voice Earbuds",
+    "brand": "Oraimo",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 1200,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-spacebuds-air-plus-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-spacebuds-air-plus-1.jpg"
+    ],
+    "description_ar": "سماعة أورايمو SpaceBuds Air+ (OTW-323SP) بـ 4 مايكات عزل للمكالمات",
+    "description_en": "Oraimo SpaceBuds Air+ (OTW-323SP) 4-Mic ENC HD Voice Earbuds",
+    "specs": {
+      "الصوت": "HavyBass 365 يوم ضمان",
+      "الموديل": "OTW-323SP",
+      "المكالمات": "4-Mic ENC لصوت واضح ونقي أثناء المكالمات"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-soundcore-k20i-semi-in-ear",
+    "sku": "PROD-FB-SOUNDCORE-K20I-SEMI-IN-EAR",
+    "name_ar": "سماعة أنكر ساوندكور Soundcore K20i مريحة نصف أذن مع مايكين للمكالمات",
+    "name_en": "Anker Soundcore K20i Semi-In-Ear Wireless Earbuds 2-Mic Clear Calls",
+    "brand": "Anker",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-soundcore-k20i-semi-in-ear-1.jpg",
+      "/product-images/fb-soundcore-k20i-semi-in-ear-2.jpg",
+      "/product-images/fb-soundcore-k20i-semi-in-ear-3.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-soundcore-k20i-semi-in-ear-1.jpg",
+      "/product-images/fb-soundcore-k20i-semi-in-ear-2.jpg",
+      "/product-images/fb-soundcore-k20i-semi-in-ear-3.jpg"
+    ],
+    "description_ar": "سماعة أنكر ساوندكور Soundcore K20i مريحة نصف أذن مع مايكين للمكالمات",
+    "description_en": "Anker Soundcore K20i Semi-In-Ear Wireless Earbuds 2-Mic Clear Calls",
+    "specs": {
+      "الضمان": "18 شهر ضمان اتصال",
+      "التصميم": "Semi-In-Ear مريحة وخفيفة بدون سيليكون",
+      "الشحن والبطارية": "شحن سريع 10 دقائق = ساعتين تشغيل + بطارية ممتدة حتى 36 ساعة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-soundcore-p30i-anc",
+    "sku": "PROD-FB-SOUNDCORE-P30I-ANC",
+    "name_ar": "سماعة أنكر ساوندكور Soundcore P30i بعزل ضوضاء تلقائي وعلبة 2 في 1",
+    "name_en": "Anker Soundcore P30i Auto Noise Cancelling Wireless Earbuds & Phone Stand",
+    "brand": "Anker",
+    "category": "headsets",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-soundcore-p30i-anc-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-soundcore-p30i-anc-1.jpg"
+    ],
+    "description_ar": "سماعة أنكر ساوندكور Soundcore P30i بعزل ضوضاء تلقائي وعلبة 2 في 1",
+    "description_en": "Anker Soundcore P30i Auto Noise Cancelling Wireless Earbuds & Phone Stand",
+    "specs": {
+      "العزل": "عزل ضوضاء تلقائي قوي Auto ANC",
+      "الضمان": "18 شهر ضمان اتصال",
+      "التصميم": "علبة شحن 2 في 1 تتحول إلى حامل للموبايل"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-plokama-u80-led-cube-light",
+    "sku": "PROD-FB-PLOKAMA-U80-LED-CUBE-LIGHT",
+    "name_ar": "كشاف تصوير RGB قابل للشحن بمشبك موبايل Plokama U80 LED Light",
+    "name_en": "Plokama U80 / RGB+ Mini LED Video Cube Light with Clip (2000mAh)",
+    "brand": "Plokama",
+    "category": "photography_mics",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-plokama-u80-led-cube-light-1.jpg",
+      "/product-images/fb-plokama-u80-led-cube-light-2.jpg",
+      "/product-images/fb-plokama-u80-led-cube-light-3.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-plokama-u80-led-cube-light-1.jpg",
+      "/product-images/fb-plokama-u80-led-cube-light-2.jpg",
+      "/product-images/fb-plokama-u80-led-cube-light-3.jpg"
+    ],
+    "description_ar": "كشاف تصوير RGB قابل للشحن بمشبك موبايل Plokama U80 LED Light",
+    "description_en": "Plokama U80 / RGB+ Mini LED Video Cube Light with Clip (2000mAh)",
+    "specs": {
+      "الإضاءة": "درجة حرارة لون متغيرة 3000K-9900K + ألوان RGB للتصوير الإبداعي",
+      "الموديل": "Plokama U80 LED",
+      "البطارية والتثبيت": "بطارية 2000mAh قابلة للشحن Type-C مع مشبك تثبيت عالمي للموبايل"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-haino-teko-anc-magnetic-mic",
+    "sku": "PROD-FB-HAINO-TEKO-ANC-MAGNETIC-MIC",
+    "name_ar": "مايكروفون لاسلكي مغناطيسي هاينو تيكو Haino Teko 2.4G ANC+ENC",
+    "name_en": "Haino Teko Germany 2.4G ANC+ENC Magnetic Wireless Microphone",
+    "brand": "Haino Teko",
+    "category": "photography_mics",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-haino-teko-anc-magnetic-mic-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-haino-teko-anc-magnetic-mic-1.jpg"
+    ],
+    "description_ar": "مايكروفون لاسلكي مغناطيسي هاينو تيكو Haino Teko 2.4G ANC+ENC",
+    "description_en": "Haino Teko Germany 2.4G ANC+ENC Magnetic Wireless Microphone",
+    "specs": {
+      "العزل": "عزل ضوضاء مزدوج ANC + ENC لنقاء صوتي فائق",
+      "التثبيت": "مايك مغناطيسي لاسلكي 2.4G بتصميم ألماني أنيق"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-green-2in1-noisecancelling-mic",
+    "sku": "PROD-FB-GREEN-2IN1-NOISECANCELLING-MIC",
+    "name_ar": "مايكروفون عازل للضوضاء Green 2-in-1 للآيفون والأندرويد والآيباد",
+    "name_en": "Green Noise-Cancelling 2-in-1 Lavalier Microphone (USB-C & Lightning)",
+    "brand": "Green",
+    "category": "photography_mics",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-green-2in1-noisecancelling-mic-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-green-2in1-noisecancelling-mic-1.jpg"
+    ],
+    "description_ar": "مايكروفون عازل للضوضاء Green 2-in-1 للآيفون والأندرويد والآيباد",
+    "description_en": "Green Noise-Cancelling 2-in-1 Lavalier Microphone (USB-C & Lightning)",
+    "specs": {
+      "العزل": "تقنية عزل الضوضاء المدمجة لتسجيل واضح",
+      "المخارج": "يدعم 2 في 1 (Type-C & Lightning) للأندرويد والآيفون والآيباد"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-green-lion-magnetic-mic",
+    "sku": "PROD-FB-GREEN-LION-MAGNETIC-MIC",
+    "name_ar": "مايكروفون لاسلكي مغناطيسي احترافي Green Magnetic Microphone",
+    "name_en": "Green Magnetic Wireless Lavalier Microphone",
+    "brand": "Green",
+    "category": "photography_mics",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-green-lion-magnetic-mic-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-green-lion-magnetic-mic-1.jpg"
+    ],
+    "description_ar": "مايكروفون لاسلكي مغناطيسي احترافي Green Magnetic Microphone",
+    "description_en": "Green Magnetic Wireless Lavalier Microphone",
+    "specs": {
+      "الصوت": "صوت نقي مثالي لتصوير الريلز والفلوجات",
+      "التثبيت": "تصميم مغناطيسي أنيق سهل التثبيت على الملابس"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-dual-wireless-lavalier-mic",
+    "sku": "PROD-FB-DUAL-WIRELESS-LAVALIER-MIC",
+    "name_ar": "مايكروفون لاسلكي مزدوج 2.4GHz (قطعتين إرسال + ريسيفر) لصناع المحتوى",
+    "name_en": "Dual-Channel 2.4G Wireless Lavalier Microphone Set (2 TX + 1 RX)",
+    "brand": "Generic",
+    "category": "photography_mics",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 1000,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-dual-wireless-lavalier-mic-1.jpg",
+      "/product-images/fb-dual-wireless-lavalier-mic-2.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-dual-wireless-lavalier-mic-1.jpg",
+      "/product-images/fb-dual-wireless-lavalier-mic-2.jpg"
+    ],
+    "description_ar": "مايكروفون لاسلكي مزدوج 2.4GHz (قطعتين إرسال + ريسيفر) لصناع المحتوى",
+    "description_en": "Dual-Channel 2.4G Wireless Lavalier Microphone Set (2 TX + 1 RX)",
+    "specs": {
+      "التردد": "اتصال لاسلكي مستقر 2.4GHz Plug & Play",
+      "الاستخدام": "مقابلات الريلز، تيك توك، يوتيوب، والبودكاست",
+      "المحتويات": "عدد 2 مايك إرسال (TX) + 1 مستقبل (RX)"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-bubbles-suction-phone-grip",
+    "sku": "PROD-FB-BUBBLES-SUCTION-PHONE-GRIP",
+    "name_ar": "مسكة موبايل سيليكون لاصقة بشفاطات هواء BUBBLES للتثبيت على المرايا والأسطح",
+    "name_en": "Bubbles Silicone Suction Cup Phone Grip & Hands-Free Mount",
+    "brand": "Generic",
+    "category": "holders_stands",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 25,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-bubbles-suction-phone-grip-1.jpg",
+      "/product-images/fb-bubbles-suction-phone-grip-2.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-bubbles-suction-phone-grip-1.jpg",
+      "/product-images/fb-bubbles-suction-phone-grip-2.jpg"
+    ],
+    "description_ar": "مسكة موبايل سيليكون لاصقة بشفاطات هواء BUBBLES للتثبيت على المرايا والأسطح",
+    "description_en": "Bubbles Silicone Suction Cup Phone Grip & Hands-Free Mount",
+    "specs": {
+      "النوع": "حامل لاصق سيليكون بـ 24 كوب شفط قوي",
+      "الاستخدام": "تثبيت الهاتف على الزجاج والمرايا والأسطح الملساء للتصوير بسهولة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-xscoot-adjustable-phone-holder",
+    "sku": "PROD-FB-XSCOOT-ADJUSTABLE-PHONE-HOLDER",
+    "name_ar": "حامل مكتب معدني قابل للتعديل X-SCOOT للموبايل والأجهزة اللوحية",
+    "name_en": "X-SCOOT Foldable Adjustable Phone & Tablet Stand",
+    "brand": "X-SCOOT",
+    "category": "holders_stands",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-xscoot-adjustable-phone-holder-1.jpg",
+      "/product-images/fb-xscoot-adjustable-phone-holder-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-xscoot-adjustable-phone-holder-1.jpg",
+      "/product-images/fb-xscoot-adjustable-phone-holder-2.jpg"
+    ],
+    "description_ar": "حامل مكتب معدني قابل للتعديل X-SCOOT للموبايل والأجهزة اللوحية",
+    "description_en": "X-SCOOT Foldable Adjustable Phone & Tablet Stand",
+    "specs": {
+      "التصميم": "قاعدة ثقيلة متينة مانعة للانزلاق مع ذراع قابل للطي",
+      "التوافق": "جميع الهواتف والتابلت",
+      "الماركة": "X-SCOOT"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-3a-fast-cables",
+    "sku": "PROD-FB-ORAIMO-3A-FAST-CABLES",
+    "name_ar": "كابلات أورايمو الأصلية للشحن السريع 3 أمبير (Type-C / Lightning / Micro)",
+    "name_en": "Oraimo High-Durability 3A Fast Charging Cables (Type-C / iOS / Micro)",
+    "brand": "Oraimo",
+    "category": "cables",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-3a-fast-cables-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-3a-fast-cables-1.jpg"
+    ],
+    "description_ar": "كابلات أورايمو الأصلية للشحن السريع 3 أمبير (Type-C / Lightning / Micro)",
+    "description_en": "Oraimo High-Durability 3A Fast Charging Cables (Type-C / iOS / Micro)",
+    "specs": {
+      "الطول": "متوفر 1 متر و 1.5 متر",
+      "التيار": "شحن سريع وآمن حتى 3A بتقنية AniFast",
+      "الأنواع المتاحة": "Type-C to Type-C PD / Type-C to iOS / USB-A to Type-C / Micro"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-apple-original-usb-lightning-cable",
+    "sku": "PROD-FB-APPLE-ORIGINAL-USB-LIGHTNING-CABLE",
+    "name_ar": "كابل أبل الأصلي خلع للآيفون (USB-C / USB-A to Lightning & USB-C)",
+    "name_en": "Apple Original Pull-Out iPhone Charging Cable (Lightning & USB-C)",
+    "brand": "Apple",
+    "category": "cables",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-apple-original-usb-lightning-cable-1.jpg",
+      "/product-images/fb-apple-original-usb-lightning-cable-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-apple-original-usb-lightning-cable-1.jpg",
+      "/product-images/fb-apple-original-usb-lightning-cable-2.jpg"
+    ],
+    "description_ar": "كابل أبل الأصلي خلع للآيفون (USB-C / USB-A to Lightning & USB-C)",
+    "description_en": "Apple Original Pull-Out iPhone Charging Cable (Lightning & USB-C)",
+    "specs": {
+      "الحالة": "كابل أبل أصلي خلع كرتونة 100%",
+      "التوافق": "يدعم شحن الآيفون والآيباد السريع ونقل البيانات الآمن"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-samsung-ep-dn980-original-cable",
+    "sku": "PROD-FB-SAMSUNG-EP-DN980-ORIGINAL-CABLE",
+    "name_ar": "كابل سامسونج الأصلي EP-DN980 تايب سي إلى تايب سي + دبوس شريحة (خلع فيتنام)",
+    "name_en": "Samsung EP-DN980 Original USB-C to USB-C Cable + SIM Pin (Vietnam)",
+    "brand": "Samsung",
+    "category": "cables",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-samsung-ep-dn980-original-cable-1.jpg",
+      "/product-images/fb-samsung-ep-dn980-original-cable-2.jpg",
+      "/product-images/fb-samsung-ep-dn980-original-cable-3.jpg",
+      "/product-images/fb-samsung-ep-dn980-original-cable-4.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-samsung-ep-dn980-original-cable-1.jpg",
+      "/product-images/fb-samsung-ep-dn980-original-cable-2.jpg",
+      "/product-images/fb-samsung-ep-dn980-original-cable-3.jpg",
+      "/product-images/fb-samsung-ep-dn980-original-cable-4.jpg"
+    ],
+    "description_ar": "كابل سامسونج الأصلي EP-DN980 تايب سي إلى تايب سي + دبوس شريحة (خلع فيتنام)",
+    "description_en": "Samsung EP-DN980 Original USB-C to USB-C Cable + SIM Pin (Vietnam)",
+    "specs": {
+      "المنشأ": "Made in Vietnam (خلع أصلي)",
+      "الموصل": "USB-C to USB-C لشحن ونقل البيانات فائق السرعة",
+      "الموديل": "EP-DN980 (GH39-02115A)",
+      "الملحقات": "مرفق دبوس الشريحة المعدني الأصلي"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-powerdock-15w-wireless",
+    "sku": "PROD-FB-ORAIMO-POWERDOCK-15W-WIRELESS",
+    "name_ar": "شاحن أورايمو اللاسلكي المغناطيسي PowerDock 15W MagSafe",
+    "name_en": "Oraimo PowerDock 15W Safe & Fast Magnetic Wireless Charger",
+    "brand": "Oraimo",
+    "category": "wireless_chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-powerdock-15w-wireless-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-powerdock-15w-wireless-1.jpg"
+    ],
+    "description_ar": "شاحن أورايمو اللاسلكي المغناطيسي PowerDock 15W MagSafe",
+    "description_en": "Oraimo PowerDock 15W Safe & Fast Magnetic Wireless Charger",
+    "specs": {
+      "الضمان": "365 يوم ضمان أورايمو",
+      "القدرة": "شحن لاسلكي سريع وآمن بقدرة 15 واط بتقنية AniFast",
+      "التوافق": "داعم للآيفون والأجهزة الداعمة للشحن اللاسلكي Qi / MagSafe"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-onmust-om-a11-38w-charger",
+    "sku": "PROD-FB-ONMUST-OM-A11-38W-CHARGER",
+    "name_ar": "شاحن ONMUST OM-A11 بقوة 38 واط بمنفذين USB-C + USB-A",
+    "name_en": "ONMUST OM-A11 38W 2-Port USB-A+C Super Fast Charger",
+    "brand": "Onmust",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 500,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-onmust-om-a11-38w-charger-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-onmust-om-a11-38w-charger-1.jpg"
+    ],
+    "description_ar": "شاحن ONMUST OM-A11 بقوة 38 واط بمنفذين USB-C + USB-A",
+    "description_en": "ONMUST OM-A11 38W 2-Port USB-A+C Super Fast Charger",
+    "specs": {
+      "القدرة": "38 واط شحن سريع بمراقبة ذكية للحرارة",
+      "المنافذ": "USB-C + USB-A",
+      "الموديل": "OM-A11"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-onmust-om-a20-43w-charger",
+    "sku": "PROD-FB-ONMUST-OM-A20-43W-CHARGER",
+    "name_ar": "شاحن ONMUST OM-A20 بقوة 43 واط بمنفذين USB-C + USB-A",
+    "name_en": "ONMUST OM-A20 43W 2-Port USB-C PD 25W + USB-A Fast Charger",
+    "brand": "Onmust",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 600,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-onmust-om-a20-43w-charger-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-onmust-om-a20-43w-charger-1.jpg"
+    ],
+    "description_ar": "شاحن ONMUST OM-A20 بقوة 43 واط بمنفذين USB-C + USB-A",
+    "description_en": "ONMUST OM-A20 43W 2-Port USB-C PD 25W + USB-A Fast Charger",
+    "specs": {
+      "القدرة": "43 واط إجمالي (PD 3.0 حتى 25W + USB-A 18W)",
+      "المنافذ": "USB-C + USB-A",
+      "الموديل": "OM-A20"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-onmust-om-a09-50w-charger",
+    "sku": "PROD-FB-ONMUST-OM-A09-50W-CHARGER",
+    "name_ar": "شاحن ONMUST OM-A09 بقوة 50 واط مخرجين شحن سريع",
+    "name_en": "ONMUST OM-A09 50W 2-Port Fast Charging Wall Adapter",
+    "brand": "Onmust",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 750,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-onmust-om-a09-50w-charger-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-onmust-om-a09-50w-charger-1.jpg"
+    ],
+    "description_ar": "شاحن ONMUST OM-A09 بقوة 50 واط مخرجين شحن سريع",
+    "description_en": "ONMUST OM-A09 50W 2-Port Fast Charging Wall Adapter",
+    "specs": {
+      "القدرة": "50 واط شحن فائق السرعة 3X",
+      "المنافذ": "منفذين شحن متزامن وحماية حرارية 94V0",
+      "الموديل": "OM-A09"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-anker-zolo-20w-charger",
+    "sku": "PROD-FB-ANKER-ZOLO-20W-CHARGER",
+    "name_ar": "شاحن أنكر زولو Anker Zolo 20W PD 3.0 Mini للآيفون",
+    "name_en": "Anker Zolo Charger 20W PD 3.0 Low-Temperature Mini Charger",
+    "brand": "Anker",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-anker-zolo-20w-charger-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-anker-zolo-20w-charger-1.jpg"
+    ],
+    "description_ar": "شاحن أنكر زولو Anker Zolo 20W PD 3.0 Mini للآيفون",
+    "description_en": "Anker Zolo Charger 20W PD 3.0 Low-Temperature Mini Charger",
+    "specs": {
+      "الضمان": "18 شهر ضمان اتصال",
+      "القدرة": "20 واط PD 3.0 ميني للآيفون والهواتف الحديثة"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-anker-zolo-30w-charger",
+    "sku": "PROD-FB-ANKER-ZOLO-30W-CHARGER",
+    "name_ar": "شاحن أنكر زولو Anker Zolo 30W PD 3.0 بدرجة حرارة منخفضة",
+    "name_en": "Anker Zolo Charger 30W PD 3.0 Low-Temperature Mini Fast Charger",
+    "brand": "Anker",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 950,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-anker-zolo-30w-charger-1.jpg",
+      "/product-images/fb-anker-zolo-30w-charger-2.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-anker-zolo-30w-charger-1.jpg",
+      "/product-images/fb-anker-zolo-30w-charger-2.jpg"
+    ],
+    "description_ar": "شاحن أنكر زولو Anker Zolo 30W PD 3.0 بدرجة حرارة منخفضة",
+    "description_en": "Anker Zolo Charger 30W PD 3.0 Low-Temperature Mini Fast Charger",
+    "specs": {
+      "الأمان": "معتمد من TÜV Rheinland بتقنية خفض الحرارة",
+      "الضمان": "18 شهر ضمان اتصال",
+      "القدرة": "30 واط PD 3.0 سريع وآمن"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-anker-25w-compact-charger",
+    "sku": "PROD-FB-ANKER-25W-COMPACT-CHARGER",
+    "name_ar": "شاحن أنكر Anker 25W Compact فائق الصغر (بضمان اتصال)",
+    "name_en": "Anker 25W Compact Ultra-Compact Fast Wall Charger",
+    "brand": "Anker",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 1000,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-anker-25w-compact-charger-1.jpg"
+    ],
+    "in_stock": true,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-anker-25w-compact-charger-1.jpg"
+    ],
+    "description_ar": "شاحن أنكر Anker 25W Compact فائق الصغر (بضمان اتصال)",
+    "description_en": "Anker 25W Compact Ultra-Compact Fast Wall Charger",
+    "specs": {
+      "الحجم": "تصميم مدمج للغاية للسفر",
+      "الضمان": "18 شهر ضمان اتصال",
+      "القدرة": "25 واط شحن سريع لأجهزة سامسونج وأبل"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oppo-33w-supervooc-charger",
+    "sku": "PROD-FB-OPPO-33W-SUPERVOOC-CHARGER",
+    "name_ar": "شاحن أوبو الأصلي OPPO 33W SUPERVOOC (خلع أصلي)",
+    "name_en": "OPPO / Realme 33W SUPERVOOC Original Wall Charger",
+    "brand": "OPPO",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oppo-33w-supervooc-charger-1.jpg",
+      "/product-images/fb-oppo-33w-supervooc-charger-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oppo-33w-supervooc-charger-1.jpg",
+      "/product-images/fb-oppo-33w-supervooc-charger-2.jpg"
+    ],
+    "description_ar": "شاحن أوبو الأصلي OPPO 33W SUPERVOOC (خلع أصلي)",
+    "description_en": "OPPO / Realme 33W SUPERVOOC Original Wall Charger",
+    "specs": {
+      "الحالة": "شاحن أصلي (خلع وكالة)",
+      "القدرة": "33 واط SUPERVOOC شحن سريع أصلي"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oppo-100w-supervooc-charger",
+    "sku": "PROD-FB-OPPO-100W-SUPERVOOC-CHARGER",
+    "name_ar": "شاحن أوبو / ريلمي الأصلي OPPO 100W SUPERVOOC (خلع أصلي)",
+    "name_en": "OPPO / Realme 100W SUPERVOOC Original Fast Wall Charger",
+    "brand": "OPPO",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oppo-100w-supervooc-charger-1.jpg",
+      "/product-images/fb-oppo-100w-supervooc-charger-2.jpg",
+      "/product-images/fb-oppo-100w-supervooc-charger-3.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oppo-100w-supervooc-charger-1.jpg",
+      "/product-images/fb-oppo-100w-supervooc-charger-2.jpg",
+      "/product-images/fb-oppo-100w-supervooc-charger-3.jpg"
+    ],
+    "description_ar": "شاحن أوبو / ريلمي الأصلي OPPO 100W SUPERVOOC (خلع أصلي)",
+    "description_en": "OPPO / Realme 100W SUPERVOOC Original Fast Wall Charger",
+    "specs": {
+      "الحالة": "شاحن أصلي (خلع وكالة)",
+      "القدرة": "100 واط كحد أقصى بتقنية SUPERVOOC الأصلية",
+      "التوافق": "هواتف OPPO وOnePlus وRealme الداعمة للشحن الفائق"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-xiaomi-33w-original-charger",
+    "sku": "PROD-FB-XIAOMI-33W-ORIGINAL-CHARGER",
+    "name_ar": "شاحن شاومي الأصلي Xiaomi 33W Turbo Charge (خلع أصلي)",
+    "name_en": "Xiaomi 33W Fast Charging Original Wall Charger",
+    "brand": "Xiaomi",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-xiaomi-33w-original-charger-1.jpg",
+      "/product-images/fb-xiaomi-33w-original-charger-2.jpg",
+      "/product-images/fb-xiaomi-33w-original-charger-3.jpg",
+      "/product-images/fb-xiaomi-33w-original-charger-4.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-xiaomi-33w-original-charger-1.jpg",
+      "/product-images/fb-xiaomi-33w-original-charger-2.jpg",
+      "/product-images/fb-xiaomi-33w-original-charger-3.jpg",
+      "/product-images/fb-xiaomi-33w-original-charger-4.jpg"
+    ],
+    "description_ar": "شاحن شاومي الأصلي Xiaomi 33W Turbo Charge (خلع أصلي)",
+    "description_en": "Xiaomi 33W Fast Charging Original Wall Charger",
+    "specs": {
+      "الحالة": "شاحن أصلي (خلع وكالة)",
+      "القدرة": "33 واط شحن سريع أصلي",
+      "المنفذ": "USB-A برتقالي أصلي"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-xiaomi-67w-original-charger",
+    "sku": "PROD-FB-XIAOMI-67W-ORIGINAL-CHARGER",
+    "name_ar": "شاحن شاومي الأصلي Xiaomi 67W HyperCharge (خلع أصلي)",
+    "name_en": "Xiaomi 67W Turbo Fast Original Wall Charger",
+    "brand": "Xiaomi",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-xiaomi-67w-original-charger-1.jpg",
+      "/product-images/fb-xiaomi-67w-original-charger-2.jpg",
+      "/product-images/fb-xiaomi-67w-original-charger-3.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-xiaomi-67w-original-charger-1.jpg",
+      "/product-images/fb-xiaomi-67w-original-charger-2.jpg",
+      "/product-images/fb-xiaomi-67w-original-charger-3.jpg"
+    ],
+    "description_ar": "شاحن شاومي الأصلي Xiaomi 67W HyperCharge (خلع أصلي)",
+    "description_en": "Xiaomi 67W Turbo Fast Original Wall Charger",
+    "specs": {
+      "الحالة": "شاحن أصلي (خلع وكالة)",
+      "القدرة": "67 واط Mi Turbo Charge أصلي",
+      "التوافق": "جميع هواتف شاومي وبوكو وريدمي"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-apple-40w-dynamic-60w-charger",
+    "sku": "PROD-FB-APPLE-40W-DYNAMIC-60W-CHARGER",
+    "name_ar": "شاحن أبل الأصلي Apple 40W Dynamic Power Adapter يصل حتى 60 واط (A3353)",
+    "name_en": "Apple 40W Dynamic Power Adapter with 60W Max Original USB-C Charger (A3353)",
+    "brand": "Apple",
+    "category": "chargers",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-apple-40w-dynamic-60w-charger-1.jpg",
+      "/product-images/fb-apple-40w-dynamic-60w-charger-2.jpg",
+      "/product-images/fb-apple-40w-dynamic-60w-charger-3.jpg",
+      "/product-images/fb-apple-40w-dynamic-60w-charger-4.jpg",
+      "/product-images/fb-apple-40w-dynamic-60w-charger-5.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-apple-40w-dynamic-60w-charger-1.jpg",
+      "/product-images/fb-apple-40w-dynamic-60w-charger-2.jpg",
+      "/product-images/fb-apple-40w-dynamic-60w-charger-3.jpg",
+      "/product-images/fb-apple-40w-dynamic-60w-charger-4.jpg",
+      "/product-images/fb-apple-40w-dynamic-60w-charger-5.jpg"
+    ],
+    "description_ar": "شاحن أبل الأصلي Apple 40W Dynamic Power Adapter يصل حتى 60 واط (A3353)",
+    "description_en": "Apple 40W Dynamic Power Adapter with 60W Max Original USB-C Charger (A3353)",
+    "specs": {
+      "القدرة": "40 واط مستمر ويصل ديناميكياً حتى 60 واط Max",
+      "المنفذ": "USB-C أصلي",
+      "التوافق": "مخصص لسلسلة iPhone 17 / 17 Pro Max وجميع أجهزة أبل",
+      "الموديل": "MGTV4B/A (A3353)"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-toast-15-flash-10k",
+    "sku": "PROD-FB-ORAIMO-TOAST-15-FLASH-10K",
+    "name_ar": "باور بانك أورايمو Toast 15 Flash سعة 10,000mAh شحن سريع 15 واط",
+    "name_en": "Oraimo Toast 15 Flash 10,000mAh 15W Type-C Power Bank (OPB-1100)",
+    "brand": "Oraimo",
+    "category": "powerbanks",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-toast-15-flash-10k-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-toast-15-flash-10k-1.jpg"
+    ],
+    "description_ar": "باور بانك أورايمو Toast 15 Flash سعة 10,000mAh شحن سريع 15 واط",
+    "description_en": "Oraimo Toast 15 Flash 10,000mAh 15W Type-C Power Bank (OPB-1100)",
+    "specs": {
+      "السعة": "10,000 مللي أمبير",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "القدرة": "15 واط AniFast حتى 3X أسرع",
+      "المنافذ": "منفذين إدخال و3 مخارج مع Type-C IN&OUT",
+      "الموديل": "OPB-1100"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-traveler-15-flash-20k",
+    "sku": "PROD-FB-ORAIMO-TRAVELER-15-FLASH-20K",
+    "name_ar": "باور بانك أورايمو Traveler 15 Flash سعة 20,000mAh بقوة 15 واط",
+    "name_en": "Oraimo Traveler 15 Flash 20,000mAh 15W AniFast Power Bank (OPB-1200)",
+    "brand": "Oraimo",
+    "category": "powerbanks",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-traveler-15-flash-20k-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-traveler-15-flash-20k-1.jpg"
+    ],
+    "description_ar": "باور بانك أورايمو Traveler 15 Flash سعة 20,000mAh بقوة 15 واط",
+    "description_en": "Oraimo Traveler 15 Flash 20,000mAh 15W AniFast Power Bank (OPB-1200)",
+    "specs": {
+      "السعة": "20,000 مللي أمبير",
+      "الضمان": "365 يوم ضمان أورايمو",
+      "القدرة": "15 واط AniFast عبر منفذ Type-C IN&OUT",
+      "المنافذ": "3 مخارج للشحن المتعدد",
+      "الموديل": "OPB-1200"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-oraimo-traveler-12-20k",
+    "sku": "PROD-FB-ORAIMO-TRAVELER-12-20K",
+    "name_ar": "باور بانك أورايمو ترافيلر 12 سعة 20,000mAh شحن سريع مزدوج",
+    "name_en": "Oraimo Traveler 12 20,000mAh Power Bank Dual Fast Output (OPB-1201)",
+    "brand": "Oraimo",
+    "category": "powerbanks",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-oraimo-traveler-12-20k-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-oraimo-traveler-12-20k-1.jpg"
+    ],
+    "description_ar": "باور بانك أورايمو ترافيلر 12 سعة 20,000mAh شحن سريع مزدوج",
+    "description_en": "Oraimo Traveler 12 20,000mAh Power Bank Dual Fast Output (OPB-1201)",
+    "specs": {
+      "السعة": "20,000 مللي أمبير",
+      "الضمان": "365 يوم من أورايمو",
+      "المنافذ": "مدخلين ومخرجين + كشاف LED يصل إلى 100 ساعة إضاءة",
+      "الموديل": "OPB-1201"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-ovleng-pc-gaming-headset",
+    "sku": "PROD-FB-OVLENG-PC-GAMING-HEADSET",
+    "name_ar": "سماعة ألعاب كمبيوتر OVLENG بمشغل صوت 40 مم ومقبس 3.5 مم + إضاءة LED",
+    "name_en": "OVLENG Stereo PC Gaming Headset 40mm Drivers with Boom Mic",
+    "brand": "OVLENG",
+    "category": "gaming",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-ovleng-pc-gaming-headset-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-ovleng-pc-gaming-headset-1.jpg"
+    ],
+    "description_ar": "سماعة ألعاب كمبيوتر OVLENG بمشغل صوت 40 مم ومقبس 3.5 مم + إضاءة LED",
+    "description_en": "OVLENG Stereo PC Gaming Headset 40mm Drivers with Boom Mic",
+    "specs": {
+      "التوصيل": "جاك 3.5 مم للكمبيوتر واللابتوب والأجهزة المتوافقة",
+      "السماعات": "درايفر 40 مم لصوت الألعاب المجسم",
+      "المايكروفون": "مايك قابل للتعديل مع عزل صوت جيد"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-celebrat-gm3-gaming-headset",
+    "sku": "PROD-FB-CELEBRAT-GM3-GAMING-HEADSET",
+    "name_ar": "سماعة جيمنج Celebrat GM-3 E-Sports بإضاءة Chroma LED وصوت محيطي",
+    "name_en": "Celebrat GM-3 E-Sports Surround Stereo Gaming Headset with Chroma LED",
+    "brand": "Celebrat",
+    "category": "gaming",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-celebrat-gm3-gaming-headset-1.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-celebrat-gm3-gaming-headset-1.jpg"
+    ],
+    "description_ar": "سماعة جيمنج Celebrat GM-3 E-Sports بإضاءة Chroma LED وصوت محيطي",
+    "description_en": "Celebrat GM-3 E-Sports Surround Stereo Gaming Headset with Chroma LED",
+    "specs": {
+      "الصوت": "صوت ستيريو محيطي عميق مع مايك مدمج واضح للمحادثات",
+      "الإضاءة": "إضاءة Chroma LED للألعاب",
+      "الموديل": "Celebrat GM-3 E-Sports"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-smart-health-ring-led",
+    "sku": "PROD-FB-SMART-HEALTH-RING-LED",
+    "name_ar": "خاتم ذكي صحي بمستشعرات قياس النبض وإضاءة إشعارات LED",
+    "name_en": "Smart Health Biometric Ring with 24/7 Tracking & LED Indicator",
+    "brand": "Generic",
+    "category": "smart_rings",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-smart-health-ring-led-1.jpg",
+      "/product-images/fb-smart-health-ring-led-2.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-smart-health-ring-led-1.jpg",
+      "/product-images/fb-smart-health-ring-led-2.jpg"
+    ],
+    "description_ar": "خاتم ذكي صحي بمستشعرات قياس النبض وإضاءة إشعارات LED",
+    "description_en": "Smart Health Biometric Ring with 24/7 Tracking & LED Indicator",
+    "specs": {
+      "المزايا": "خفيف الوزن ومقاوم للاستخدام اليومي",
+      "القياسات": "مراقبة نبض القلب، الأكسجين، النوم، والتوتر 24/7",
+      "الإشعارات": "إضاءة LED للمكالمات والرسائل وتنبيه البطارية"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
+  },
+  {
+    "id": "prod-fb-itasbih-smart-dhikr-ring",
+    "sku": "PROD-FB-ITASBIH-SMART-DHIKR-RING",
+    "name_ar": "خاتم تسبيح ذكي iTasbih WESLAMIC متصل بالتطبيق",
+    "name_en": "iTasbih WESLAMIC App-Connected Smart Dhikr Ring",
+    "brand": "WESLAMIC",
+    "category": "smart_rings",
+    "condition": "brand_new",
+    "available_storages": [],
+    "available_colors": [],
+    "price": 0,
+    "stock": 5,
+    "recorded_stock": 5,
+    "recorded_images": [
+      "/product-images/fb-itasbih-smart-dhikr-ring-1.jpg",
+      "/product-images/fb-itasbih-smart-dhikr-ring-2.jpg",
+      "/product-images/fb-itasbih-smart-dhikr-ring-3.jpg",
+      "/product-images/fb-itasbih-smart-dhikr-ring-4.jpg"
+    ],
+    "in_stock": false,
+    "is_active": true,
+    "images": [
+      "/product-images/fb-itasbih-smart-dhikr-ring-1.jpg",
+      "/product-images/fb-itasbih-smart-dhikr-ring-2.jpg",
+      "/product-images/fb-itasbih-smart-dhikr-ring-3.jpg",
+      "/product-images/fb-itasbih-smart-dhikr-ring-4.jpg"
+    ],
+    "description_ar": "خاتم تسبيح ذكي iTasbih WESLAMIC متصل بالتطبيق",
+    "description_en": "iTasbih WESLAMIC App-Connected Smart Dhikr Ring",
+    "specs": {
+      "المزايا": "عداد تسبيح رقمي، تحديد القبلة، تتبع يومي للأذكار",
+      "الموديل": "iTasbih Smart Dhikr Ring",
+      "التنبيهات": "تنبيهات مواقيت الصلاة الخمس ومزامنة التطبيق"
+    },
+    "about_item": [],
+    "quick_specs": {},
+    "warranty_months": 12,
+    "rating": 5,
+    "reviews_count": 1,
+    "is_featured": false,
+    "is_best_seller": false,
+    "is_flash_sale": false,
+    "created_at": "2026-11-28"
   },
   {
     "id": "prod-apple-watch-bumper-integrated-glass",
@@ -1827,8 +16803,8 @@ export const initialProducts: Product[] = [
       "الحماية الشاملة": "حماية 360 درجة تجمع بين بامبر للصدمات واسكرينة زجاجية مدمجة شديدة النقاء واللمس السلس"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -1886,8 +16862,8 @@ export const initialProducts: Product[] = [
       "الصلابة": "زجاج مقسى بدرجة صلابة 9H مقاوم للخدوش والصدمات المباشرة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -1948,8 +16924,8 @@ export const initialProducts: Product[] = [
       "التوافق": "متوافق مع مقاسات 42/44/45/49 مم لساعات Apple Watch Ultra وجميع الساعات الذكية"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -1995,8 +16971,8 @@ export const initialProducts: Product[] = [
       "زر الكاميرا": "فتحة مقطوعة بدقة لزر Camera Control لتشغيل والتقاط الصور بسلاسة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2044,8 +17020,8 @@ export const initialProducts: Product[] = [
       "الموديل": "X10 Ultra"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2091,8 +17067,8 @@ export const initialProducts: Product[] = [
       "الميزات": "إشعارات البرامج، مكالمات بلوتوث، وتتبع نبضات القلب والنشاط الرياضي"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2138,8 +17114,8 @@ export const initialProducts: Product[] = [
       "المكالمات": "BT Call مع مقاومة للماء و3 أحزمة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2185,8 +17161,8 @@ export const initialProducts: Product[] = [
       "الملحقات": "3 أزواج أحزمة ومقاومة للماء"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2233,8 +17209,8 @@ export const initialProducts: Product[] = [
       "الميزات": "AMOLED، بطارية 15 يوم، BT Call، و 3 أحزمة فاخرة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2283,8 +17259,8 @@ export const initialProducts: Product[] = [
       "الملحقات": "3 أزواج ستراب"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2332,8 +17308,8 @@ export const initialProducts: Product[] = [
       "الموديل": "G15 mini · Series 10"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2381,8 +17357,8 @@ export const initialProducts: Product[] = [
       "الموديل": "G19 Mini"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2429,8 +17405,8 @@ export const initialProducts: Product[] = [
       "المكالمات": "BT Call مع إمكانية الرد والاتصال المباشر"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2479,8 +17455,8 @@ export const initialProducts: Product[] = [
       "البطارية": "7 أيام استخدام مع مكالمات بلوتوث و3 أحزمة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2530,8 +17506,8 @@ export const initialProducts: Product[] = [
       "المكالمات": "BT Call ومقاومة للماء Waterproof"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2580,8 +17556,8 @@ export const initialProducts: Product[] = [
       "الملحقات": "3 أزواج ستراب مرفقة بالعلبة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2614,8 +17590,8 @@ export const initialProducts: Product[] = [
     "recorded_images": [
       "/product-images/hunter-aluminum-laptop-stand.jpg"
     ],
-    "in_stock": true,
-    "is_active": true,
+    "in_stock": false,
+    "is_active": false,
     "images": [
       "/product-images/hunter-aluminum-laptop-stand.jpg"
     ],
@@ -2627,8 +17603,8 @@ export const initialProducts: Product[] = [
       "المستويات": "زوايا ارتفاع قابلة للتعديل لتحسين زاوية النظر وتبريد الجهاز"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2681,8 +17657,8 @@ export const initialProducts: Product[] = [
       "المغناطيس": "رأس MagSafe دائري فائق القوة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2728,8 +17704,8 @@ export const initialProducts: Product[] = [
       "الشحن اللاسلكي": "15W MagSafe قوي التثبيت"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2775,8 +17751,8 @@ export const initialProducts: Product[] = [
       "الموديل": "HU-C0102"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2823,8 +17799,8 @@ export const initialProducts: Product[] = [
       "تقنية الذكاء الاصطناعي": "عزل ذكي لتشويش الرياح وضوضاء الخلفية"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2874,8 +17850,8 @@ export const initialProducts: Product[] = [
       "المقاومة": "IPX5 لمقاومة الماء والتعرق"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2926,8 +17902,8 @@ export const initialProducts: Product[] = [
       "عزل الضوضاء": "Active Noise Cancellation ANC"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -2977,8 +17953,8 @@ export const initialProducts: Product[] = [
       "شحن فائق السرعة": "شحن 10 دقائق يمنح 10 ساعات تشغيل"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3009,13 +17985,11 @@ export const initialProducts: Product[] = [
     "stock": 25,
     "recorded_stock": 25,
     "recorded_images": [
-      "/product-images/oraimo-spacebuds-lite-studio.png",
       "/product-images/oraimo-spacebuds-lite-otw324.jpg"
     ],
     "in_stock": true,
     "is_active": true,
     "images": [
-      "/product-images/oraimo-spacebuds-lite-studio.png",
       "/product-images/oraimo-spacebuds-lite-otw324.jpg"
     ],
     "description_ar": "سماعة أوريمو سبيس بودز لايت Oraimo SpaceBuds Lite OTW-324 باس قوي",
@@ -3035,8 +18009,8 @@ export const initialProducts: Product[] = [
       "البطارية": "حتى 30 ساعة تشغيل"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3087,8 +18061,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3139,8 +18113,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3191,8 +18165,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3243,8 +18217,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3295,8 +18269,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3347,8 +18321,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3399,8 +18373,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3451,8 +18425,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3503,8 +18477,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3555,8 +18529,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3607,8 +18581,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3659,8 +18633,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3711,8 +18685,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3763,8 +18737,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3815,8 +18789,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3867,8 +18841,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3919,8 +18893,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -3971,8 +18945,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4023,8 +18997,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4075,8 +19049,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4127,8 +19101,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4179,8 +19153,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4231,8 +19205,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4283,8 +19257,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4335,8 +19309,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4387,8 +19361,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4439,8 +19413,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4491,8 +19465,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4543,8 +19517,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4595,8 +19569,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4647,8 +19621,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4699,8 +19673,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4751,8 +19725,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4803,8 +19777,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4855,8 +19829,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4907,8 +19881,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -4959,8 +19933,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5011,8 +19985,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5063,8 +20037,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5115,8 +20089,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5167,8 +20141,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5219,8 +20193,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5271,8 +20245,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5323,8 +20297,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5375,8 +20349,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5427,8 +20401,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5479,8 +20453,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5531,8 +20505,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5583,8 +20557,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5635,8 +20609,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5687,8 +20661,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5739,8 +20713,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5791,8 +20765,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5843,8 +20817,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5895,8 +20869,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -5946,8 +20920,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": false,
@@ -5998,8 +20972,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6050,8 +21024,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6102,8 +21076,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6154,8 +21128,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6206,8 +21180,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6258,8 +21232,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6310,8 +21284,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6362,8 +21336,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6414,8 +21388,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6466,8 +21440,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6518,8 +21492,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6570,8 +21544,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6622,8 +21596,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6674,8 +21648,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6726,8 +21700,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6778,8 +21752,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6830,8 +21804,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6882,8 +21856,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6934,8 +21908,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -6986,8 +21960,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7038,8 +22012,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7090,8 +22064,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7142,8 +22116,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7194,8 +22168,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7246,8 +22220,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7298,8 +22272,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7350,8 +22324,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7402,8 +22376,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7454,8 +22428,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7506,8 +22480,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7558,8 +22532,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7610,8 +22584,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7662,8 +22636,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7714,8 +22688,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7766,8 +22740,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7818,8 +22792,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7870,8 +22844,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7922,8 +22896,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -7974,8 +22948,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8026,8 +23000,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8078,8 +23052,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8130,8 +23104,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8182,8 +23156,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8234,8 +23208,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8286,8 +23260,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8338,8 +23312,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8390,8 +23364,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8442,8 +23416,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8493,8 +23467,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": false,
@@ -8545,8 +23519,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8597,8 +23571,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8649,8 +23623,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8701,8 +23675,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8753,8 +23727,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8805,8 +23779,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8857,8 +23831,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8909,8 +23883,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -8961,8 +23935,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9013,8 +23987,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9065,8 +24039,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9117,8 +24091,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9169,8 +24143,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9221,8 +24195,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9273,8 +24247,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9324,8 +24298,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": false,
@@ -9376,8 +24350,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9428,8 +24402,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9480,8 +24454,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9532,8 +24506,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9584,8 +24558,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9636,8 +24610,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9688,8 +24662,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9740,8 +24714,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9792,8 +24766,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9844,8 +24818,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9896,8 +24870,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -9948,8 +24922,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10000,8 +24974,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10052,8 +25026,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10104,8 +25078,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10156,8 +25130,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10208,8 +25182,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10260,8 +25234,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10312,8 +25286,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10364,8 +25338,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10416,8 +25390,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10468,8 +25442,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10520,8 +25494,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10572,8 +25546,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10624,8 +25598,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10676,8 +25650,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10728,8 +25702,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10780,8 +25754,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10832,8 +25806,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10884,8 +25858,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10936,8 +25910,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -10988,8 +25962,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11040,8 +26014,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11092,8 +26066,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11144,8 +26118,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11196,8 +26170,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11248,8 +26222,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11300,8 +26274,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11352,8 +26326,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11404,8 +26378,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11456,8 +26430,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11508,8 +26482,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11560,8 +26534,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11612,8 +26586,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11664,8 +26638,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11716,8 +26690,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11768,8 +26742,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11820,8 +26794,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11872,8 +26846,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11924,8 +26898,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -11976,8 +26950,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12028,8 +27002,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12079,8 +27053,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": false,
@@ -12131,8 +27105,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12183,8 +27157,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12235,8 +27209,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12287,8 +27261,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12339,8 +27313,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12391,8 +27365,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12443,8 +27417,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12495,8 +27469,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12547,8 +27521,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12599,8 +27573,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12651,8 +27625,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12703,8 +27677,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12755,8 +27729,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12807,8 +27781,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12859,8 +27833,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12911,8 +27885,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -12963,8 +27937,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13015,8 +27989,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13067,8 +28041,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13119,8 +28093,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13171,8 +28145,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13223,8 +28197,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13275,8 +28249,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13327,8 +28301,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13379,8 +28353,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13431,8 +28405,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13483,8 +28457,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13535,8 +28509,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13587,8 +28561,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13639,8 +28613,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13691,8 +28665,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13743,8 +28717,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13795,8 +28769,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13847,8 +28821,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13899,8 +28873,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -13951,8 +28925,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14003,8 +28977,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14055,8 +29029,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14107,8 +29081,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14159,8 +29133,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14211,8 +29185,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14263,8 +29237,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14315,8 +29289,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14367,8 +29341,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14419,8 +29393,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14471,8 +29445,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14523,8 +29497,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14575,8 +29549,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14627,8 +29601,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14679,8 +29653,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14731,8 +29705,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14783,8 +29757,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14835,8 +29809,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14887,8 +29861,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14939,8 +29913,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -14991,8 +29965,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15043,8 +30017,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15095,8 +30069,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15147,8 +30121,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15199,8 +30173,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15251,8 +30225,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15303,8 +30277,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15355,8 +30329,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15407,8 +30381,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15459,8 +30433,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15511,8 +30485,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15563,8 +30537,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15615,8 +30589,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15667,8 +30641,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15719,8 +30693,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15770,8 +30744,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 17,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": false,
@@ -15822,8 +30796,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15874,8 +30848,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15926,8 +30900,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -15978,8 +30952,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16030,8 +31004,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16082,8 +31056,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16134,8 +31108,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16186,8 +31160,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16238,8 +31212,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16290,8 +31264,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16342,8 +31316,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16394,8 +31368,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16446,8 +31420,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16498,8 +31472,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16550,8 +31524,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16602,8 +31576,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16654,8 +31628,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16706,8 +31680,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16758,8 +31732,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16810,8 +31784,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16862,8 +31836,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16914,8 +31888,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -16965,8 +31939,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": false,
@@ -17017,8 +31991,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17069,8 +32043,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17121,8 +32095,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17173,8 +32147,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17225,8 +32199,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17277,8 +32251,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17329,8 +32303,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17381,8 +32355,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17433,8 +32407,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17485,8 +32459,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17537,8 +32511,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17589,8 +32563,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 9,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17641,8 +32615,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17693,8 +32667,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17745,8 +32719,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17797,8 +32771,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17849,8 +32823,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17901,8 +32875,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -17953,8 +32927,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18005,8 +32979,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18057,8 +33031,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18109,8 +33083,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18161,8 +33135,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18213,8 +33187,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18265,8 +33239,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18317,8 +33291,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18369,8 +33343,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18421,8 +33395,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18473,8 +33447,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18525,8 +33499,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18577,8 +33551,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18629,8 +33603,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18681,8 +33655,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18733,8 +33707,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18785,8 +33759,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18837,8 +33811,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18889,8 +33863,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 14,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18941,8 +33915,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -18993,8 +33967,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19045,8 +34019,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19097,8 +34071,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19149,8 +34123,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19201,8 +34175,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19253,8 +34227,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19305,8 +34279,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19357,8 +34331,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19409,8 +34383,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 16,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19461,8 +34435,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19513,8 +34487,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 6,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19565,8 +34539,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19617,8 +34591,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19669,8 +34643,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 5,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19721,8 +34695,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 15,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19773,8 +34747,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19825,8 +34799,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 13,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19877,8 +34851,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 11,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19929,8 +34903,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 18,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -19981,8 +34955,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 7,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20032,8 +35006,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": false,
@@ -20084,8 +35058,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 21,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20136,8 +35110,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 8,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20188,8 +35162,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20240,8 +35214,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 20,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20292,8 +35266,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 24,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20344,8 +35318,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 10,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20396,8 +35370,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 23,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20448,8 +35422,8 @@ export const initialProducts: Product[] = [
       "حماية الكاميرات والشاشة": "حواف بارزة لحماية العدسات والشاشة"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 22,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20498,8 +35472,8 @@ export const initialProducts: Product[] = [
       "الموديل": "HU-C0103"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 19,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
@@ -20548,8 +35522,8 @@ export const initialProducts: Product[] = [
       "القدرة الإجمالية": "45 واط شحن فائق السرعة Super Fast Charging"
     },
     "warranty_months": 12,
-    "rating": 0,
-    "reviews_count": 0,
+    "rating": 5,
+    "reviews_count": 12,
     "is_featured": false,
     "is_best_seller": false,
     "is_flash_sale": true,
