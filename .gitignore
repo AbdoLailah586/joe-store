@@ -52,3 +52,7 @@ scripts/process_bmw_images.py
 
 
 
+
+.vercel
+.env*
+!.env.example
