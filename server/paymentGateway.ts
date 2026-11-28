@@ -678,6 +678,8 @@ export async function processPaymentGatewayCallback(params: {
             phone: ord.customer_whatsapp || ord.customer_phone,
             email: ord.customer_email,
             city: ord.city || ord.governorate,
+            country: 'eg',
+            externalId: ord.user_id || ord.customer_id || undefined,
             contentIds: Array.isArray(ord.items) ? ord.items.map((i: any) => String(i?.product?.id || '')).filter(Boolean) : []
           }),
           new Promise(resolve => setTimeout(resolve, 2000))

@@ -20,6 +20,8 @@ import { InfoButton } from '../components/DetailsDialog';
 import { orderDetail, productDetail } from '../utils/detailModels';
 import { generateWhatsAppWebLink, buildOrderConfirmationMessage } from '../utils/whatsappService';
 import { InvoiceModal } from '../components/InvoiceModal';
+import { trackMetaEvent } from '../utils/metaPixel';
+import { hasAnalyticsConsent, trackGa4Purchase } from '../utils/analytics';
 
 export const OrderSuccess: React.FC = () => {
   const { currentOrder, navigate, settings } = useStore();
@@ -47,6 +49,35 @@ export const OrderSuccess: React.FC = () => {
   }, [currentOrder, queryOrderNumber]);
 
   const activeOrder = currentOrder || fallbackOrder;
+  const orderNumber = activeOrder?.order_number || queryOrderNumber;
+
+  React.useEffect(() => {
+    if (gatewayStatus !== 'paid' || !orderNumber || typeof window === 'undefined') return;
+    if (!hasAnalyticsConsent()) return;
+    const guardKey = `joe_purchase_tracked_${orderNumber}`;
+    try {
+      if (window.sessionStorage.getItem(guardKey) === '1') return;
+      window.sessionStorage.setItem(guardKey, '1');
+    } catch {}
+
+    if (settings.meta_pixel_enabled !== false) {
+      const items = Array.isArray(activeOrder?.items) ? activeOrder.items : [];
+      trackMetaEvent(
+        'Purchase',
+        {
+          value: Number(activeOrder?.total || 0),
+          currency: 'EGP',
+          content_ids: items.map((i: any) => i?.product?.id).filter(Boolean),
+          content_type: 'product',
+          num_items: items.reduce((sum: number, i: any) => sum + Number(i?.quantity || 0), 0)
+        },
+        orderNumber
+      );
+    }
+    if (activeOrder) {
+      trackGa4Purchase(activeOrder);
+    }
+  }, [gatewayStatus, orderNumber, activeOrder, settings.meta_pixel_enabled]);
 
   if (!activeOrder && !queryOrderNumber) {
     return (
@@ -61,8 +92,6 @@ export const OrderSuccess: React.FC = () => {
       </div>
     );
   }
-
-  const orderNumber = activeOrder?.order_number || queryOrderNumber;
 
   const handleCopyOrderNumber = () => {
     navigator.clipboard.writeText(orderNumber);

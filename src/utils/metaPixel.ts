@@ -50,13 +50,36 @@ export function initMetaPixel(rawPixelId?: string | null): boolean {
   return true;
 }
 
+export function disableMetaPixel(): void {
+  initializedPixelId = '';
+}
+
+export function getMetaBrowserCookies(): { fbp?: string; fbc?: string } {
+  if (typeof document === 'undefined' || !document.cookie) return {};
+  const out: { fbp?: string; fbc?: string } = {};
+  for (const part of document.cookie.split(';')) {
+    const idx = part.indexOf('=');
+    if (idx <= 0) continue;
+    const key = part.slice(0, idx).trim();
+    const val = part.slice(idx + 1).trim();
+    if ((key === '_fbp' || key === '_fbc') && /^fb\.\d+\.\d+\.[A-Za-z0-9_.-]{4,160}$/.test(val)) {
+      if (key === '_fbp') out.fbp = val;
+      if (key === '_fbc') out.fbc = val;
+    }
+  }
+  return out;
+}
+
 export function trackMetaEvent(
   eventName: 'PageView' | 'ViewContent' | 'AddToCart' | 'InitiateCheckout' | 'Purchase' | 'Search',
-  params?: Record<string, any>
+  params?: Record<string, any>,
+  eventId?: string
 ) {
   if (typeof window === 'undefined' || typeof window.fbq !== 'function' || !initializedPixelId) return;
   try {
-    if (params && Object.keys(params).length > 0) {
+    if (eventId) {
+      window.fbq('track', eventName, params || {}, { eventID: eventId });
+    } else if (params && Object.keys(params).length > 0) {
       window.fbq('track', eventName, params);
     } else {
       window.fbq('track', eventName);

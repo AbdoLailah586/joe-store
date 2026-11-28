@@ -383,6 +383,7 @@ export interface StoreSettings {
   // Analytics, SEO & Legal Compliance
   ga4_measurement_id?: string;
   gsc_verification_token?: string;
+  meta_domain_verification_token?: string;
   meta_capi_enabled?: boolean;
   commercial_register?: string;
   tax_id?: string;

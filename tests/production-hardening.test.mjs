@@ -491,3 +491,92 @@ test('DSAR deleteUser anonymizes orders/tickets/reviews & submitBreachReport rec
   assert.ok(breachRes.report_deadline_at);
   assert.ok(alerts.some(a => a.source === 'legal.dataBreachReport' && a.severity === 'critical'));
 });
+
+test('Meta Pixel deduplicates Purchase events via eventID & CAPI includes EMQ fields on live origin', async () => {
+  const fbqCalls = [];
+  const headAttrs = [];
+  const prevWin = globalThis.window;
+  const prevDoc = globalThis.document;
+  globalThis.document = {
+    cookie: '_fbp=fb.1.1700000000000.123456789; _fbc=fb.1.1700000000001.AbCdEf_123',
+    getElementById: () => ({ id: 'joe-meta-pixel-script' }),
+    head: {
+      appendChild(el) { headAttrs.push(el); },
+      querySelector: () => null
+    },
+    createElement: () => {
+      const attrs = {};
+      return {
+        setAttribute(k, v) { attrs[k] = v; },
+        getAttribute(k) { return attrs[k]; },
+        _attrs: attrs
+      };
+    }
+  };
+  globalThis.window = {
+    fbq: (...args) => fbqCalls.push(args)
+  };
+  try {
+    const metaPixel = compile('src/utils/metaPixel.ts');
+    assert.equal(metaPixel.initMetaPixel('123456789012345'), true);
+    metaPixel.trackMetaEvent('Purchase', { value: 2500, currency: 'EGP' }, 'JOE-99881');
+    const purchaseCall = fbqCalls.find(c => c[0] === 'track' && c[1] === 'Purchase');
+    assert.deepEqual(purchaseCall, ['track', 'Purchase', { value: 2500, currency: 'EGP' }, { eventID: 'JOE-99881' }]);
+
+    const cookies = metaPixel.getMetaBrowserCookies();
+    assert.equal(cookies.fbp, 'fb.1.1700000000000.123456789');
+    assert.equal(cookies.fbc, 'fb.1.1700000000001.AbCdEf_123');
+
+    metaPixel.disableMetaPixel();
+    const countBefore = fbqCalls.length;
+    metaPixel.trackMetaEvent('PageView');
+    assert.equal(fbqCalls.length, countBefore, 'disabled Meta Pixel must not fire events');
+
+    const seo = compile('src/utils/seo.ts');
+    seo.syncSiteVerificationMeta('gsc-tok', '<meta name="facebook-domain-verification" content="fb-verify-xyz" />');
+    assert.ok(headAttrs.some(el => el._attrs.name === 'facebook-domain-verification' && el._attrs.content === 'fb-verify-xyz'));
+  } finally {
+    globalThis.window = prevWin;
+    globalThis.document = prevDoc;
+  }
+
+  let capturedPayload = null;
+  const prevToken = process.env.META_CAPI_ACCESS_TOKEN;
+  process.env.META_CAPI_ACCESS_TOKEN = 'test-capi-token';
+  try {
+    const capi = compile('server/metaCapi.ts', {
+      './monitoring.js': {
+        logStructured() {},
+        fetchWithTimeout: async (_url, init) => {
+          capturedPayload = JSON.parse(init.body);
+          return new Response(JSON.stringify({ events_received: 1 }), { status: 200 });
+        }
+      }
+    });
+    const res = await capi.sendMetaConversionEvent({
+      pixelId: '123456789012345',
+      eventName: 'Purchase',
+      eventId: 'JOE-99881',
+      value: 2500,
+      orderNumber: 'JOE-99881',
+      phone: '01554826209',
+      email: 'buyer@example.com',
+      city: 'Mansoura',
+      externalId: 'usr-123',
+      fbp: 'fb.1.1700000000000.123456789',
+      fbc: 'fb.1.1700000000001.AbCdEf_123',
+      testEventCode: 'TEST12345'
+    });
+    assert.equal(res.sent, true);
+    assert.equal(capturedPayload.test_event_code, 'TEST12345');
+    assert.equal(capturedPayload.data[0].event_id, 'JOE-99881');
+    assert.equal(capturedPayload.data[0].event_source_url, 'https://joe-store-2026.vercel.app/');
+    assert.equal(capturedPayload.data[0].user_data.fbp, 'fb.1.1700000000000.123456789');
+    assert.equal(capturedPayload.data[0].user_data.fbc, 'fb.1.1700000000001.AbCdEf_123');
+    assert.ok(Array.isArray(capturedPayload.data[0].user_data.country) && capturedPayload.data[0].user_data.country[0].length === 64);
+    assert.ok(Array.isArray(capturedPayload.data[0].user_data.external_id) && capturedPayload.data[0].user_data.external_id[0].length === 64);
+  } finally {
+    if (prevToken === undefined) delete process.env.META_CAPI_ACCESS_TOKEN;
+    else process.env.META_CAPI_ACCESS_TOKEN = prevToken;
+  }
+});

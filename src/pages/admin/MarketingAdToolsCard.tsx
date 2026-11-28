@@ -116,6 +116,19 @@ export const MarketingAdToolsCard: React.FC<{
             </span>
           </label>
 
+          <label className="sm:col-span-2 space-y-1 font-bold text-slate-700">
+            <span>رمز توثيق النطاق في Meta Business (facebook-domain-verification)</span>
+            <input
+              type="text"
+              dir="ltr"
+              value={settings.meta_domain_verification_token || ''}
+              onChange={e => updateSettings({ meta_domain_verification_token: e.target.value })}
+              placeholder="domain verification meta tag content token"
+              className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50 font-mono"
+            />
+            <span className="text-[11px] font-normal text-slate-500 block">يُستخدم عند طلب Meta توثيق ملكية الدومين داخل Business Manager.</span>
+          </label>
+
           <label className="sm:col-span-2 flex items-center gap-2.5 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 cursor-pointer font-bold text-emerald-950">
             <input
               type="checkbox"

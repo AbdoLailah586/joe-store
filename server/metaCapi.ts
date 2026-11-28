@@ -24,10 +24,15 @@ export async function sendMetaConversionEvent(params: {
   phone?: string;
   email?: string;
   city?: string;
+  country?: string;
+  externalId?: string;
+  fbp?: string;
+  fbc?: string;
   clientIp?: string;
   userAgent?: string;
   contentIds?: string[];
   sourceUrl?: string;
+  testEventCode?: string;
 }): Promise<{ sent: boolean; reason?: string }> {
   const accessToken = String(process.env.META_CAPI_ACCESS_TOKEN || '').trim();
   const pixelId = String(params.pixelId || process.env.META_PIXEL_ID || '').replace(/\D/g, '').trim();
@@ -39,20 +44,27 @@ export async function sendMetaConversionEvent(params: {
   const ph = normalizePhoneForCapi(params.phone);
   const em = sha256Lower(params.email);
   const ct = sha256Lower(params.city);
+  const co = sha256Lower(params.country || 'eg');
+  const ext = sha256Lower(params.externalId);
   if (ph) userData.ph = [ph];
   if (em) userData.em = [em];
   if (ct) userData.ct = [ct];
+  if (co) userData.country = [co];
+  if (ext) userData.external_id = [ext];
+  if (params.fbp && /^fb\.\d+\.\d+\.[A-Za-z0-9_.-]{4,160}$/.test(params.fbp)) userData.fbp = params.fbp;
+  if (params.fbc && /^fb\.\d+\.\d+\.[A-Za-z0-9_.-]{4,160}$/.test(params.fbc)) userData.fbc = params.fbc;
   if (params.clientIp) userData.client_ip_address = params.clientIp;
   if (params.userAgent) userData.client_user_agent = params.userAgent;
 
-  const payload = {
+  const testCode = String(params.testEventCode || process.env.META_CAPI_TEST_EVENT_CODE || '').trim();
+  const payload: Record<string, any> = {
     data: [
       {
         event_name: params.eventName,
         event_time: Math.floor(Date.now() / 1000),
         event_id: params.eventId,
         action_source: 'website',
-        event_source_url: params.sourceUrl || 'https://joe-store.vercel.app/',
+        event_source_url: params.sourceUrl || 'https://joe-store-2026.vercel.app/',
         user_data: userData,
         custom_data: {
           currency: params.currency || 'EGP',
@@ -64,6 +76,9 @@ export async function sendMetaConversionEvent(params: {
       },
     ],
   };
+  if (testCode) {
+    payload.test_event_code = testCode;
+  }
 
   try {
     const endpoint = `https://graph.facebook.com/v20.0/${encodeURIComponent(pixelId)}/events?access_token=${encodeURIComponent(accessToken)}`;

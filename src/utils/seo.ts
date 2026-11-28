@@ -20,20 +20,28 @@ function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
   el.setAttribute('content', content);
 }
 
-export function syncSiteVerificationMeta(token?: string) {
+function applyVerificationTag(metaName: string, rawToken?: string) {
   if (typeof document === 'undefined') return;
-  const cleaned = String(token || '').trim();
-  const existing = document.head.querySelector('meta[name="google-site-verification"]');
+  const cleaned = String(rawToken || '').trim();
+  const existing = document.head.querySelector(`meta[name="${metaName}"]`);
   if (!cleaned) {
-    existing?.remove();
+    if (existing?.getAttribute('data-dynamic') === 'true') {
+      existing.remove();
+    }
     return;
   }
-  // Accept either full meta tag or bare verification token
   const match = cleaned.match(/content=["']([^"']+)["']/i);
   const contentVal = match ? match[1].trim() : cleaned;
   if (contentVal) {
-    upsertMeta('name', 'google-site-verification', contentVal);
+    upsertMeta('name', metaName, contentVal);
+    const el = document.head.querySelector(`meta[name="${metaName}"]`);
+    if (el && !existing) el.setAttribute('data-dynamic', 'true');
   }
+}
+
+export function syncSiteVerificationMeta(googleToken?: string, metaToken?: string) {
+  applyVerificationTag('google-site-verification', googleToken);
+  applyVerificationTag('facebook-domain-verification', metaToken);
 }
 
 function upsertCanonical(href: string) {

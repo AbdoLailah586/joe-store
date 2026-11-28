@@ -46,7 +46,7 @@ function sanitizeProductSocialLinks(input: any): Product['social_links'] {
   return Object.keys(out).length ? out : undefined;
 }
 import { applyPageSeo, buildProductJsonLd, buildStoreJsonLd } from '../utils/seo';
-import { initMetaPixel, trackMetaEvent } from '../utils/metaPixel';
+import { disableMetaPixel, initMetaPixel, trackMetaEvent } from '../utils/metaPixel';
 import {
   hasAnalyticsConsent,
   initGa4,
@@ -562,28 +562,34 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Initialize Meta Pixel, GA4 & Core Web Vitals (strictly after analytics consent) + Dynamic SEO/JSON-LD
   useEffect(() => {
-    syncSiteVerificationMeta(settings.gsc_verification_token);
+    syncSiteVerificationMeta(settings.gsc_verification_token, settings.meta_domain_verification_token);
 
     if (hasAnalyticsConsent()) {
-      initMetaPixel(settings.meta_pixel_id);
+      const pixelActive = settings.meta_pixel_enabled !== false && initMetaPixel(settings.meta_pixel_id);
+      if (!pixelActive) {
+        disableMetaPixel();
+      }
       initGa4(settings.ga4_measurement_id);
       const stopVitals = startWebVitalsObserver();
       const routeKey = `${currentTab}:${selectedProductId || ''}:${selectedCategory || ''}:${searchQuery || ''}`;
       if (lastPixelRouteRef.current !== routeKey) {
         lastPixelRouteRef.current = routeKey;
-        trackMetaEvent('PageView');
+        if (pixelActive) trackMetaEvent('PageView');
         if (typeof window !== 'undefined') {
           trackGa4PageView(`${window.location.pathname}${window.location.search}`);
         }
       }
       return stopVitals;
     } else {
+      disableMetaPixel();
       revokeAnalyticsIfDeclined(settings.ga4_measurement_id);
     }
   }, [
     settings.meta_pixel_id,
+    settings.meta_pixel_enabled,
     settings.ga4_measurement_id,
     settings.gsc_verification_token,
+    settings.meta_domain_verification_token,
     consentVersion,
     currentTab,
     selectedProductId,
@@ -1037,15 +1043,26 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     } catch {}
 
-    if (hasAnalyticsConsent()) {
-      trackMetaEvent('Purchase', {
-        value: newOrder.total,
-        currency: 'EGP',
-        content_ids: newOrder.items.map(i => i.product.id),
-        content_type: 'product',
-        num_items: newOrder.items.reduce((sum, i) => sum + i.quantity, 0)
-      });
+    if (!newOrder.checkout_url && hasAnalyticsConsent()) {
+      if (settings.meta_pixel_enabled !== false) {
+        trackMetaEvent(
+          'Purchase',
+          {
+            value: newOrder.total,
+            currency: 'EGP',
+            content_ids: newOrder.items.map(i => i.product.id),
+            content_type: 'product',
+            num_items: newOrder.items.reduce((sum, i) => sum + i.quantity, 0)
+          },
+          newOrder.order_number
+        );
+      }
       trackGa4Purchase(newOrder);
+      try {
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.setItem(`joe_purchase_tracked_${newOrder.order_number}`, '1');
+        }
+      } catch {}
     }
 
     setOrders(prev => [newOrder, ...prev]);

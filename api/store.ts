@@ -86,6 +86,27 @@ function requestVisitorMeta(req: any): Record<string, string> {
   }
 }
 
+function extractMetaTrackingCookies(req: any): { fbp?: string; fbc?: string } {
+  try {
+    const rawCookie = String(req?.headers?.cookie || '');
+    if (!rawCookie) return {};
+    const out: { fbp?: string; fbc?: string } = {};
+    for (const part of rawCookie.split(';')) {
+      const idx = part.indexOf('=');
+      if (idx <= 0) continue;
+      const key = part.slice(0, idx).trim();
+      const val = part.slice(idx + 1).trim();
+      if ((key === '_fbp' || key === '_fbc') && /^fb\.\d+\.\d+\.[A-Za-z0-9_.-]{4,160}$/.test(val)) {
+        if (key === '_fbp') out.fbp = val;
+        if (key === '_fbc') out.fbc = val;
+      }
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
 export async function execute(req: any,res: any,body: any,deps?: any) {
   const sql=deps?.sql || database();
   const store=deps?.store || neonDb;
@@ -296,6 +317,9 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
         'policy_pages',
         'ga4_measurement_id',
         'gsc_verification_token',
+        'meta_pixel_id',
+        'meta_pixel_enabled',
+        'meta_domain_verification_token',
         'meta_capi_enabled',
         'commercial_register',
         'tax_id',
@@ -852,6 +876,7 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
     }
     if (orderSettings?.meta_capi_enabled !== false && !gatewayActiveForOrder) {
       const serverMeta = requestVisitorMeta(req);
+      const metaCookies = extractMetaTrackingCookies(req);
       await Promise.race([
         sendMetaConversionEvent({
           pixelId: orderSettings?.meta_pixel_id,
@@ -862,6 +887,10 @@ export async function execute(req: any,res: any,body: any,deps?: any) {
           phone,
           email: user?.email || undefined,
           city: order.city || order.governorate,
+          country: 'eg',
+          externalId: user?.id || undefined,
+          fbp: metaCookies.fbp,
+          fbc: metaCookies.fbc,
           clientIp: serverMeta.ip_address,
           userAgent: serverMeta.server_user_agent,
           contentIds: authoritativeItems.map((it: any) => String(it?.product?.id || '')).filter(Boolean),
